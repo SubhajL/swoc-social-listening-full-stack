@@ -1,0 +1,14 @@
+# dependencies
+node_modules
+.DS_Store
+*.log
+
+# build
+apps/frontend/dist
+apps/**/dist
+
+# env
+.env
+.env.*
+!.env.example
+.aider*
