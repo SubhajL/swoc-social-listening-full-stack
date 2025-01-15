@@ -12,3 +12,8 @@ apps/**/dist
 .env.*
 !.env.example
 .aider*
+
+# context
+.cursorrules
+ProjectStructure.md
+CONVENTIONS.md

@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import mapboxgl from "mapbox-gl";
+import { useEffect, useState, useRef } from 'react';
+import { postsApi } from '@/lib/api-client';
+import { useRealTime } from '@/contexts/RealTimeContext';
+import type { ProcessedPostDTO } from '@/types/processed-post';
+import mapboxgl from 'mapbox-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useNavigate } from "react-router-dom";
 import MapError from "./map/MapError";
 import MapMarker from "./map/MapMarker";
-import { socialPosts } from "./map/utils";
 import { sampleComplaints } from "@/models/complaint";
 
 interface MapProps {
@@ -13,11 +15,43 @@ interface MapProps {
   selectedProvince: string | null;
 }
 
-const Map = ({ token, selectedCategories, selectedProvince }: MapProps) => {
+export function Map({ token, selectedCategories, selectedProvince }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const navigate = useNavigate();
+  const { latestPost } = useRealTime();
+  const [apiPosts, setApiPosts] = useState<ProcessedPostDTO[]>([]);
+
+  // Load initial posts from API
+  useEffect(() => {
+    const loadPosts = async () => {
+      try {
+        const posts = await postsApi.getUnprocessed();
+        setApiPosts(posts);
+      } catch (error) {
+        console.error('Failed to load posts:', error);
+        setError("Failed to load posts from API");
+      }
+    };
+
+    loadPosts();
+  }, []);
+
+  // Handle real-time updates
+  useEffect(() => {
+    if (latestPost) {
+      setApiPosts(current => {
+        const index = current.findIndex(p => p.processed_post_id === latestPost.processed_post_id);
+        if (index >= 0) {
+          const updated = [...current];
+          updated[index] = latestPost;
+          return updated;
+        }
+        return [...current, latestPost];
+      });
+    }
+  }, [latestPost]);
 
   useEffect(() => {
     console.log('Map effect starting', { token, mapContainer: !!mapContainer.current });
@@ -57,41 +91,37 @@ const Map = ({ token, selectedCategories, selectedProvince }: MapProps) => {
       // Only show markers if at least one category is selected
       if (selectedCategories.length > 0) {
         console.log('Adding markers for categories:', selectedCategories);
-        // Add filtered markers
-        const filteredPosts = socialPosts.filter(post => {
-          const categoryMatch = selectedCategories.includes(post.category);
-          const provinceMatch = !selectedProvince || post.province === selectedProvince;
+        const filteredPosts = apiPosts.filter(post => {
+          const categoryMatch = selectedCategories.includes(post.category_name);
+          const provinceMatch = !selectedProvince || 
+            (post.location.province && post.location.province === selectedProvince);
           return categoryMatch && provinceMatch;
         });
 
         console.log('Filtered posts:', filteredPosts);
 
         markersRef.current = filteredPosts.map(post => {
-          const complaintData = sampleComplaints.find(complaint => {
-            console.log('Comparing:', { 
-              postId: post.id, 
-              complaintId: complaint.id,
-              match: complaint.id === post.id
-            });
-            return complaint.id === post.id;
-          });
-
-          console.log('Found complaint data for post:', { 
-            postId: post.id, 
-            complaintData: complaintData || 'No matching complaint found'
-          });
+          const complaintData = sampleComplaints.find(complaint => 
+            String(complaint.id) === post.processed_post_id
+          );
 
           return MapMarker({ 
-            post, 
+            post: {
+              id: parseInt(post.processed_post_id, 10),
+              category: post.category_name,
+              location: {
+                latitude: post.location.latitude,
+                longitude: post.location.longitude
+              },
+              province: post.location.province || ''
+            },
             map, 
             onClick: () => {
               if (complaintData) {
-                console.log('Navigating to complaint form with data:', complaintData);
                 navigate('/complaint-form', { 
-                  state: { ...complaintData }  // Spread operator to ensure we pass a new object
+                  state: { ...complaintData }
                 });
               } else {
-                console.log('No matching complaint data found for post:', post);
                 navigate('/complaint-form');
               }
             } 
@@ -112,7 +142,7 @@ const Map = ({ token, selectedCategories, selectedProvince }: MapProps) => {
       console.error('Map initialization error:', err);
       setError("Error initializing map. Please check your Mapbox token.");
     }
-  }, [token, selectedCategories, selectedProvince, navigate]);
+  }, [token, selectedCategories, selectedProvince, navigate, apiPosts]);
 
   if (error) {
     return <MapError error={error} />;
@@ -123,6 +153,6 @@ const Map = ({ token, selectedCategories, selectedProvince }: MapProps) => {
       <div ref={mapContainer} className="w-full h-full rounded-lg" />
     </div>
   );
-};
+}
 
 export default Map;

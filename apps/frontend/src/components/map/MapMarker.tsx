@@ -6,10 +6,13 @@ interface MapMarkerProps {
     id: number;
     category: string;
     province: string;
-    coordinates: [number, number];
+    location: {
+      latitude: number;
+      longitude: number;
+    };
   };
   map: mapboxgl.Map;
-  onClick?: () => void;
+  onClick: () => void;
 }
 
 const MapMarker = ({ post, map, onClick }: MapMarkerProps) => {
@@ -31,9 +34,12 @@ const MapMarker = ({ post, map, onClick }: MapMarkerProps) => {
     el.addEventListener('click', onClick);
   }
 
+  // Convert location to LngLatLike format [longitude, latitude]
+  const coordinates: [number, number] = [post.location.longitude, post.location.latitude];
+
   // Add marker to map
   const marker = new mapboxgl.Marker(el)
-    .setLngLat(post.coordinates)
+    .setLngLat(coordinates)
     .setPopup(
       new mapboxgl.Popup({ offset: 25 })
         .setHTML(`<h3>${post.category}</h3><p>${post.province}</p>`)
