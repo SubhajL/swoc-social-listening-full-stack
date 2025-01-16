@@ -1,6 +1,9 @@
-import { Pool } from 'pg';
-import { ProcessedPost } from '../models/processed-post.js';
-import { ProcessedPostDTO, ProcessedPostSchema } from '../dto/processed-post.dto.js';
+import pkg from 'pg';
+import type { QueryResultRow } from 'pg';
+const { Pool } = pkg;
+type PoolType = InstanceType<typeof Pool>;
+import { ProcessedPost } from '../types/processed-post.js';
+import { ProcessedPostDTO } from '../types/processed-post.dto.js';
 import { logger } from '../utils/logger.js';
 import { TransactionManager, TransactionClient } from '../utils/transaction-manager.js';
 import {
@@ -11,7 +14,6 @@ import {
 import { randomUUID } from 'crypto';
 import { BatchProgressManager } from '../utils/batch-progress-manager.js';
 import { BatchOperation, BatchProgress } from '../models/batch-progress.js';
-import { QueryResultRow } from 'pg';
 import { Server } from 'socket.io';
 
 interface BatchUpdateStatus {
@@ -40,7 +42,7 @@ export class ProcessedPostService {
   private io: Server;
 
   constructor(
-    private readonly pool: Pool,
+    private readonly pool: PoolType,
     io: Server
   ) {
     this.transactionManager = new TransactionManager(pool);
@@ -51,7 +53,7 @@ export class ProcessedPostService {
   private async executeQuery<T extends QueryResultRow>(
     query: string,
     params: any[],
-    client: Pool | TransactionClient = this.pool
+    client: PoolType | TransactionClient = this.pool
   ): Promise<T[]> {
     try {
       const result = await client.query<T>(query, params);
@@ -61,26 +63,29 @@ export class ProcessedPostService {
     }
   }
 
-  async getUnprocessedPosts(client: Pool | TransactionClient = this.pool): Promise<ProcessedPostDTO[]> {
+  private toDTO(post: ProcessedPost): ProcessedPostDTO {
+    return {
+      ...post,
+      created_at: post.created_at.toISOString(),
+      updated_at: post.updated_at.toISOString()
+    };
+  }
+
+  async getUnprocessedPosts(): Promise<ProcessedPostDTO[]> {
     try {
       const posts = await this.executeQuery<ProcessedPost>(
-        'SELECT * FROM processed_posts WHERE status = $1 ORDER BY created_at DESC',
-        ['unprocessed'],
-        client
+        'SELECT * FROM processed_posts WHERE status = $1',
+        ['unprocessed']
       );
 
-      return posts.map(post => ({
-        ...post,
-        created_at: new Date(post.created_at),
-        updated_at: new Date(post.updated_at)
-      }));
+      return posts.map(this.toDTO);
     } catch (error) {
       logger.error('Error fetching unprocessed posts:', error);
       throw error;
     }
   }
 
-  async getPostById(id: string, client: Pool | TransactionClient = this.pool): Promise<ProcessedPostDTO> {
+  async getPostById(id: string, client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO> {
     try {
       const result = await this.executeQuery<ProcessedPost>(
         'SELECT * FROM processed_posts WHERE processed_post_id = $1',
@@ -93,11 +98,7 @@ export class ProcessedPostService {
       }
 
       const post = result[0];
-      return {
-        ...post,
-        created_at: new Date(post.created_at),
-        updated_at: new Date(post.updated_at)
-      };
+      return this.toDTO(post);
     } catch (error) {
       if (error instanceof PostNotFoundError) {
         throw error;
@@ -107,7 +108,7 @@ export class ProcessedPostService {
     }
   }
 
-  async getPostsByLocation(latitude: number, longitude: number, radiusKm: number, client: Pool | TransactionClient = this.pool): Promise<ProcessedPostDTO[]> {
+  async getPostsByLocation(latitude: number, longitude: number, radiusKm: number, client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO[]> {
     try {
       const result = await this.executeQuery<ProcessedPost>(`
         SELECT *, 
@@ -121,18 +122,14 @@ export class ProcessedPostService {
         ORDER BY distance;
       `, [latitude, longitude, radiusKm], client);
 
-      return result.map(post => ({
-        ...post,
-        created_at: new Date(post.created_at),
-        updated_at: new Date(post.updated_at)
-      }));
+      return result.map(this.toDTO);
     } catch (error) {
       logger.error('Error fetching posts by location:', error);
       throw new Error('Failed to fetch posts by location');
     }
   }
 
-  async updatePostStatus(id: string, status: ProcessedPost['status'], client: Pool | TransactionClient = this.pool): Promise<ProcessedPostDTO | null> {
+  async updatePostStatus(id: string, status: ProcessedPost['status'], client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO | null> {
     try {
       const result = await this.executeQuery<ProcessedPost>(
         'UPDATE processed_posts SET status = $1, updated_at = NOW() WHERE processed_post_id = $2 RETURNING *',
@@ -146,11 +143,7 @@ export class ProcessedPostService {
 
       const post = result[0];
       this.io.to('posts').emit('post:update', post);
-      return {
-        ...post,
-        created_at: new Date(post.created_at),
-        updated_at: new Date(post.updated_at)
-      };
+      return this.toDTO(post);
     } catch (error) {
       logger.error(`Error updating post status for id ${id}:`, error);
       throw new Error('Failed to update post status');
@@ -162,7 +155,7 @@ export class ProcessedPostService {
     tumbon?: string,
     amphure?: string,
     province?: string,
-    client: Pool | TransactionClient = this.pool
+    client: PoolType | TransactionClient = this.pool
   ): Promise<ProcessedPostDTO | null> {
     try {
       const result = await this.executeQuery<ProcessedPost>(
@@ -192,18 +185,14 @@ export class ProcessedPostService {
       }
 
       const post = result[0];
-      return {
-        ...post,
-        created_at: new Date(post.created_at),
-        updated_at: new Date(post.updated_at)
-      };
+      return this.toDTO(post);
     } catch (error) {
       logger.error(`Error updating location details for post ${id}:`, error);
       throw new Error('Failed to update location details');
     }
   }
 
-  async updateNearestSensor(id: string, sensorId: string, client: Pool | TransactionClient = this.pool): Promise<ProcessedPostDTO | null> {
+  async updateNearestSensor(id: string, sensorId: string, client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO | null> {
     try {
       const result = await this.executeQuery<ProcessedPost>(
         'UPDATE processed_posts SET nearest_sensor_id = $1, updated_at = NOW() WHERE processed_post_id = $2 RETURNING *',
@@ -216,18 +205,14 @@ export class ProcessedPostService {
       }
 
       const post = result[0];
-      return {
-        ...post,
-        created_at: new Date(post.created_at),
-        updated_at: new Date(post.updated_at)
-      };
+      return this.toDTO(post);
     } catch (error) {
       logger.error(`Error updating nearest sensor for post ${id}:`, error);
       throw new Error('Failed to update nearest sensor');
     }
   }
 
-  async getRecentPosts(minutes: number = 5, client: Pool | TransactionClient = this.pool): Promise<ProcessedPostDTO[]> {
+  async getRecentPosts(minutes: number = 5, client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO[]> {
     try {
       const result = await this.executeQuery<ProcessedPost>(
         'SELECT * FROM processed_posts WHERE created_at >= NOW() - INTERVAL \'$1 minutes\' ORDER BY created_at DESC',
@@ -235,11 +220,7 @@ export class ProcessedPostService {
         client
       );
 
-      return result.map(post => ({
-        ...post,
-        created_at: new Date(post.created_at),
-        updated_at: new Date(post.updated_at)
-      }));
+      return result.map(this.toDTO);
     } catch (error) {
       logger.error('Error fetching recent posts:', error);
       throw new Error('Failed to fetch recent posts');
@@ -257,7 +238,7 @@ export class ProcessedPostService {
       };
       nearest_sensor_id?: string;
     },
-    client: Pool | TransactionClient = this.pool
+    client: PoolType | TransactionClient = this.pool
   ): Promise<ProcessedPostDTO> {
     return this.transactionManager.withTransaction(async (client) => {
       // First verify the post exists
@@ -305,11 +286,7 @@ export class ProcessedPostService {
           updates.map(u => u.status)
         ], client);
 
-        return result.map(post => ({
-          ...post,
-          created_at: new Date(post.created_at),
-          updated_at: new Date(post.updated_at)
-        }));
+        return result.map(this.toDTO);
       } catch (error) {
         logger.error('Batch status update failed:', error);
         throw new DatabaseError('Failed to update post statuses', error);
@@ -353,11 +330,7 @@ export class ProcessedPostService {
           updates.map(u => u.province)
         ], client);
 
-        return result.map(post => ({
-          ...post,
-          created_at: new Date(post.created_at),
-          updated_at: new Date(post.updated_at)
-        }));
+        return result.map(this.toDTO);
       } catch (error) {
         logger.error('Batch location update failed:', error);
         throw new DatabaseError('Failed to update post locations', error);
@@ -384,11 +357,7 @@ export class ProcessedPostService {
           updates.map(u => u.sensorId)
         ], client);
 
-        return result.map(post => ({
-          ...post,
-          created_at: new Date(post.created_at),
-          updated_at: new Date(post.updated_at)
-        }));
+        return result.map(this.toDTO);
       } catch (error) {
         logger.error('Batch sensor update failed:', error);
         throw new DatabaseError('Failed to update post sensors', error);

@@ -1,17 +1,17 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { SocketClient } from '@/lib/socket-client';
-import type { ProcessedPostDTO } from '@/types/processed-post';
+import type { ProcessedPost } from '@/types/processed-post';
 import type { BatchProgress } from '@/types/batch-progress';
 
 interface RealTimeContextType {
-  latestPost?: ProcessedPostDTO;
+  latestPost?: ProcessedPost;
   batchProgress?: BatchProgress;
 }
 
 const RealTimeContext = createContext<RealTimeContextType>({});
 
 export function RealTimeProvider({ children }: { children: React.ReactNode }) {
-  const [latestPost, setLatestPost] = useState<ProcessedPostDTO>();
+  const [latestPost, setLatestPost] = useState<ProcessedPost>();
   const [batchProgress, setBatchProgress] = useState<BatchProgress>();
 
   useEffect(() => {

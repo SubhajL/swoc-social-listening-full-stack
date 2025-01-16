@@ -1,5 +1,5 @@
 import { io, Socket } from 'socket.io-client';
-import type { ProcessedPostDTO } from '@/types/processed-post';
+import type { ProcessedPost } from '@/types/processed-post';
 import type { BatchProgress } from '@/types/batch-progress';
 
 // Add debug logging
@@ -40,7 +40,7 @@ export class SocketClient {
     });
   }
 
-  onPostUpdate(callback: (post: ProcessedPostDTO) => void) {
+  onPostUpdate(callback: (post: ProcessedPost) => void) {
     this.socket.on('post:update', callback);
     return () => this.socket.off('post:update', callback);
   }

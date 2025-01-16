@@ -12,7 +12,7 @@ export interface ProcessedPost {
     province?: string;
   };
   status: 'unprocessed' | 'processing' | 'resolved';
-  created_at: string;
-  updated_at: string;
+  created_at: Date;    // Date for internal use
+  updated_at: Date;    // Date for internal use
   nearest_sensor_id?: string;
 } 

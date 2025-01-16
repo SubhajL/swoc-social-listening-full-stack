@@ -1,4 +1,7 @@
-import { Pool, PoolClient } from 'pg';
+import pkg from 'pg';
+import type { PoolClient } from 'pg';
+import type { Pool as PoolType } from 'pg';
+const { Pool } = pkg;
 import { logger } from './logger.js';
 
 export class TransactionError extends Error {
@@ -13,7 +16,7 @@ export interface TransactionClient extends PoolClient {
 }
 
 export async function withTransaction<T>(
-  pool: Pool,
+  pool: PoolType,
   operation: (client: TransactionClient) => Promise<T>
 ): Promise<T> {
   const client = await pool.connect() as TransactionClient;

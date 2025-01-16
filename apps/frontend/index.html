@@ -8,11 +8,17 @@
     <meta name="author" content="Lovable" />
     <meta property="og:image" content="/og-image.png" />
   </head>
-
   <body>
     <div id="root"></div>
-    <!-- Ensure gptengineer.js is loaded before the main application -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script>
+      // Only load in development
+      if (window.location.hostname === 'localhost') {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.gpteng.co/gptengineer.js';
+        script.type = 'module';
+        document.body.appendChild(script);
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

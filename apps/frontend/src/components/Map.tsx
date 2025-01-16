@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
-import { postsApi } from '@/lib/api-client';
+import { apiClient } from '@/lib/api-client';
 import { useRealTime } from '@/contexts/RealTimeContext';
-import type { ProcessedPostDTO } from '@/types/processed-post';
+import type { ProcessedPost } from '@/types/processed-post';
 import mapboxgl from 'mapbox-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,7 @@ import MapMarker from "./map/MapMarker";
 import { sampleComplaints } from "@/models/complaint";
 
 interface MapProps {
-  token: string;
+  token: string;  // Mapbox token
   selectedCategories: string[];
   selectedProvince: string | null;
 }
@@ -21,13 +21,13 @@ export function Map({ token, selectedCategories, selectedProvince }: MapProps) {
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const navigate = useNavigate();
   const { latestPost } = useRealTime();
-  const [apiPosts, setApiPosts] = useState<ProcessedPostDTO[]>([]);
+  const [apiPosts, setApiPosts] = useState<ProcessedPost[]>([]);
 
   // Load initial posts from API
   useEffect(() => {
     const loadPosts = async () => {
       try {
-        const posts = await postsApi.getUnprocessed();
+        const posts = await apiClient.getUnprocessedPosts();
         setApiPosts(posts);
       } catch (error) {
         console.error('Failed to load posts:', error);

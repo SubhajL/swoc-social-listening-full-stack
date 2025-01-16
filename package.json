@@ -1,18 +1,15 @@
 {
   "name": "swoc-social-listening-fullstack",
   "private": true,
-  "workspaces": [
-    "apps/*"
-  ],
   "engines": {
     "node": ">=20.10.0"
   },
   "scripts": {
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:frontend": "npm run dev --workspace=apps/frontend",
-    "dev:backend": "npm run dev --workspace=apps/backend",
-    "build": "npm run build --workspace=apps/frontend",
-    "lint": "npm run lint --workspace=apps/frontend"
+    "dev": "concurrently \"pnpm run dev:backend\" \"pnpm run dev:frontend\"",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:backend": "pnpm --filter backend dev",
+    "build": "pnpm --filter frontend build",
+    "lint": "pnpm --filter frontend lint"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

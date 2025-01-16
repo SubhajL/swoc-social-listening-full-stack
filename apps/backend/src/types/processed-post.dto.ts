@@ -1,4 +1,4 @@
-export interface ProcessedPost {
+export interface ProcessedPostDTO {
   processed_post_id: string;
   category_name: string;
   sub1_category_name: string;
@@ -12,7 +12,7 @@ export interface ProcessedPost {
     province?: string;
   };
   status: 'unprocessed' | 'processing' | 'resolved';
-  created_at: string;
-  updated_at: string;
+  created_at: string;  // ISO string for API
+  updated_at: string;  // ISO string for API
   nearest_sensor_id?: string;
 } 

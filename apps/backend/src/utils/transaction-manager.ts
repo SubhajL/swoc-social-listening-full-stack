@@ -1,4 +1,7 @@
-import { Pool, PoolClient } from 'pg';
+import pkg from 'pg';
+import type { PoolClient } from 'pg';
+const { Pool } = pkg;
+type PoolType = InstanceType<typeof Pool>;
 import { logger } from './logger.js';
 import { DatabaseError } from '../errors/index.js';
 
@@ -7,7 +10,7 @@ export interface TransactionClient extends PoolClient {
 }
 
 export class TransactionManager {
-  constructor(private readonly pool: Pool) {}
+  constructor(private readonly pool: PoolType) {}
 
   async withTransaction<T>(
     operation: (client: TransactionClient) => Promise<T>,

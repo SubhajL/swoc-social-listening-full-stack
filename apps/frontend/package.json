@@ -8,7 +8,10 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -85,6 +88,17 @@
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.11",
     "@types/mapbox-gl": "^2.7.19",
-    "@types/axios": "^0.14.0"
+    "@types/axios": "^0.14.0",
+    "msw": "^2.2.3",
+    "vitest": "^1.0.0",
+    "@vitest/ui": "^1.0.0",
+    "jsdom": "^24.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^6.0.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
