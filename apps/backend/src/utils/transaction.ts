@@ -1,6 +1,6 @@
 import pkg from 'pg';
 import type { PoolClient } from 'pg';
-import type { Pool as PoolType } from 'pg';
+type PoolType = InstanceType<typeof Pool>;
 const { Pool } = pkg;
 import { logger } from './logger.js';
 

@@ -9,7 +9,10 @@ describe('Posts API Integration', () => {
 
   beforeAll(async () => {
     pool = new Pool({
-      connectionString: process.env.TEST_DATABASE_URL
+      connectionString: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false
+      }
     });
   });
 

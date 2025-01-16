@@ -11,7 +11,10 @@ const getIo = (req: express.Request) => req.app.get('io');
 
 // Create a pool instance
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false  // Required for some AWS/EC2 PostgreSQL instances
+  }
 });
 
 // Create service instance with pool and io
