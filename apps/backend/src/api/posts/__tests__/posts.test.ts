@@ -1,40 +1,24 @@
 import request from 'supertest';
 import { app } from '../../../app.js';
-import { Pool } from 'pg';
 import { ProcessedPostService } from '../../../services/processed-post.service.js';
-import { mockPool } from '../../../test/mocks/db.js';
-import { mockPost } from '../../../test/fixtures/posts.js';
-import { mockProcessedPostService, ProcessedPostServiceMock } from '../../../test/mocks/processed-post.service.js';
-import { Server } from 'socket.io';
+import { mockPost, mockProcessedPostService } from '../../../test/mocks/processed-post.service.js';
+import { ProcessedPostDTO } from '../../../types/processed-post.dto.js';
 
-jest.mock('../../../services/processed-post.service.js', () => ({
-  ProcessedPostService: jest.fn().mockImplementation(() => new ProcessedPostServiceMock(mockPool, {} as Server))
-}));
+// Mock ProcessedPostService
+jest.mock('../../../services/processed-post.service.js');
 
 describe('Posts API Routes', () => {
-  let pool: Pool;
-  
   beforeEach(() => {
     // Clear all mocks before each test
     jest.clearAllMocks();
-    pool = mockPool;
+
+    // Reset ProcessedPostService mock
+    (ProcessedPostService as jest.Mock).mockImplementation(() => mockProcessedPostService);
   });
 
   describe('GET /api/posts/unprocessed', () => {
     it('should return unprocessed posts', async () => {
-      const mockPosts = [{
-        processed_post_id: '123',
-        category_name: 'Test Category',
-        sub1_category_name: 'Test Sub Category',
-        location: {
-          latitude: 13.7563,
-          longitude: 100.5018,
-          source: 'coordinates' as const
-        },
-        status: 'unprocessed' as const,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }];
+      const mockPosts = [mockPost];
 
       // Mock service response
       mockProcessedPostService.getUnprocessedPosts.mockResolvedValueOnce(mockPosts);
@@ -69,25 +53,11 @@ describe('Posts API Routes', () => {
 
   describe('GET /api/posts/:id', () => {
     it('should return a post by ID', async () => {
-      const mockPost = {
-        processed_post_id: '123',
-        category_name: 'Test Category',
-        sub1_category_name: 'Test Sub Category',
-        location: {
-          latitude: 13.7563,
-          longitude: 100.5018,
-          source: 'coordinates' as const
-        },
-        status: 'unprocessed' as const,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-
       // Mock service response
       mockProcessedPostService.getPostById.mockResolvedValueOnce(mockPost);
 
       const response = await request(app)
-        .get('/api/posts/123')
+        .get(`/api/posts/${mockPost.processed_post_id}`)
         .expect('Content-Type', /json/)
         .expect(200);
 
@@ -116,19 +86,7 @@ describe('Posts API Routes', () => {
 
   describe('GET /api/posts/location', () => {
     it('should return posts by location', async () => {
-      const mockPosts = [{
-        processed_post_id: '123',
-        category_name: 'Test Category',
-        sub1_category_name: 'Test Sub Category',
-        location: {
-          latitude: 13.7563,
-          longitude: 100.5018,
-          source: 'coordinates' as const
-        },
-        status: 'unprocessed' as const,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }];
+      const mockPosts = [mockPost];
 
       mockProcessedPostService.getPostsByLocation.mockResolvedValueOnce(mockPosts);
 
@@ -139,6 +97,65 @@ describe('Posts API Routes', () => {
 
       expect(response.body).toEqual({
         data: mockPosts
+      });
+    });
+  });
+
+  describe('POST /api/posts', () => {
+    it('should create a new post', async () => {
+      const newPost: Omit<ProcessedPostDTO, 'processed_post_id' | 'created_at' | 'updated_at'> = {
+        category_name: 'Test Category',
+        sub1_category_name: 'Test Sub Category',
+        location: {
+          latitude: 13.7563,
+          longitude: 100.5018,
+          source: 'coordinates' as const
+        },
+        status: 'unprocessed' as const
+      };
+
+      mockProcessedPostService.createPost.mockImplementationOnce(async (data: typeof newPost) => ({
+        ...data,
+        processed_post_id: mockPost.processed_post_id,
+        created_at: mockPost.created_at,
+        updated_at: mockPost.updated_at
+      }));
+
+      const response = await request(app)
+        .post('/api/posts')
+        .send(newPost)
+        .expect('Content-Type', /json/)
+        .expect(201);
+
+      expect(response.body.data).toMatchObject(newPost);
+      expect(mockProcessedPostService.createPost).toHaveBeenCalledWith(newPost);
+    });
+
+    it('should handle creation errors', async () => {
+      const newPost: Omit<ProcessedPostDTO, 'processed_post_id' | 'created_at' | 'updated_at'> = {
+        category_name: 'Test Category',
+        sub1_category_name: 'Test Sub Category',
+        location: {
+          latitude: 13.7563,
+          longitude: 100.5018,
+          source: 'coordinates' as const
+        },
+        status: 'unprocessed' as const
+      };
+
+      mockProcessedPostService.createPost.mockRejectedValueOnce(new Error('Database error'));
+
+      const response = await request(app)
+        .post('/api/posts')
+        .send(newPost)
+        .expect('Content-Type', /json/)
+        .expect(500);
+
+      expect(response.body).toEqual({
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to create post'
+        }
       });
     });
   });
