@@ -71,6 +71,36 @@ export class ProcessedPostService {
     };
   }
 
+  async createPost(data: Omit<ProcessedPost, 'processed_post_id' | 'created_at' | 'updated_at'>): Promise<ProcessedPostDTO> {
+    try {
+      const result = await this.executeQuery<ProcessedPost>(
+        `INSERT INTO processed_posts (
+          processed_post_id,
+          category_name,
+          sub1_category_name,
+          location,
+          status,
+          created_at,
+          updated_at
+        ) VALUES ($1, $2, $3, $4, $5, NOW(), NOW()) RETURNING *`,
+        [
+          randomUUID(),
+          data.category_name,
+          data.sub1_category_name,
+          data.location,
+          data.status
+        ]
+      );
+
+      const post = result[0];
+      this.io.to('posts').emit('post:create', post);
+      return this.toDTO(post);
+    } catch (error) {
+      logger.error('Error creating post:', error);
+      throw new DatabaseError('Failed to create post', error);
+    }
+  }
+
   async getUnprocessedPosts(): Promise<ProcessedPostDTO[]> {
     try {
       const posts = await this.executeQuery<ProcessedPost>(
@@ -262,7 +292,6 @@ export class ProcessedPostService {
         await this.updateNearestSensor(id, updates.nearest_sensor_id, client);
       }
 
-      // Get the final updated post
       return this.getPostById(id, client);
     });
   }

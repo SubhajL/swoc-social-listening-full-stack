@@ -20,6 +20,26 @@ const createPostService = (req: express.Request) => {
   return new ProcessedPostService(pool, io);
 };
 
+// Create a new post
+router.post('/', async (req, res) => {
+  try {
+    const postService = createPostService(req);
+    const post = await postService.createPost(req.body);
+    
+    res.status(201).json({
+      data: post
+    });
+  } catch (error) {
+    logger.error('Error creating post:', error);
+    res.status(500).json({
+      error: {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to create post'
+      }
+    });
+  }
+});
+
 // Get unprocessed posts
 router.get('/unprocessed', async (req, res) => {
   try {
@@ -35,6 +55,31 @@ router.get('/unprocessed', async (req, res) => {
       error: {
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to fetch unprocessed posts'
+      }
+    });
+  }
+});
+
+// Get posts by location
+router.get('/location', async (req, res) => {
+  try {
+    const { latitude, longitude, radius } = req.query;
+    const postService = createPostService(req);
+    const posts = await postService.getPostsByLocation(
+      parseFloat(latitude as string),
+      parseFloat(longitude as string),
+      parseFloat(radius as string)
+    );
+    
+    res.json({
+      data: posts
+    });
+  } catch (error) {
+    logger.error('Error fetching posts by location:', error);
+    res.status(500).json({
+      error: {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to fetch posts by location'
       }
     });
   }
