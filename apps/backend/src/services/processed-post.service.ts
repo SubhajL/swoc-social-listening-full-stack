@@ -453,16 +453,43 @@ export class ProcessedPostService {
   }
 
   async createPost(data: CreatePostDTO): Promise<ProcessedPostDTO> {
-    const { category_name, sub1_category_name, location, status } = data;
-    
-    const result = await this.pool.query(
-      `INSERT INTO processed_posts 
-       (category_name, sub1_category_name, location, status)
-       VALUES ($1, $2, $3, $4)
-       RETURNING *`,
-      [category_name, sub1_category_name, location, status]
-    );
-    
-    return result.rows[0];
+    try {
+      const { category_name, sub1_category_name, location, status } = data;
+      
+      // Validate location object
+      if (!location || typeof location.latitude !== 'number' || typeof location.longitude !== 'number') {
+        throw new ValidationError('Invalid location data');
+      }
+
+      const result = await this.executeQuery<ProcessedPost>(
+        `INSERT INTO processed_posts 
+         (category_name, sub1_category_name, location, status)
+         VALUES ($1, $2, $3, $4)
+         RETURNING *`,
+        [
+          category_name,
+          sub1_category_name,
+          {
+            ...location,
+            source: location.source || 'coordinates'
+          },
+          status || 'unprocessed'
+        ]
+      );
+      
+      if (result.length === 0) {
+        throw new DatabaseError('Failed to create post');
+      }
+
+      const post = result[0];
+      this.io?.to('posts').emit('post:create', this.toDTO(post));
+      return this.toDTO(post);
+    } catch (error) {
+      logger.error('Error creating post:', error);
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+      throw new DatabaseError('Failed to create post', error);
+    }
   }
 } 

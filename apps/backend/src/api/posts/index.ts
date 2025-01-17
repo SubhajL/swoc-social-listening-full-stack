@@ -92,11 +92,23 @@ router.post('/', async (req, res) => {
   try {
     const postService = createPostService(req);
     const post = await postService.createPost(req.body);
+    
     res.status(201).json({
       data: post
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error creating post:', error);
+    
+    if (error instanceof Error && error.name === 'ValidationError') {
+      res.status(400).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: error.message
+        }
+      });
+      return;
+    }
+
     res.status(500).json({
       error: {
         code: 'INTERNAL_SERVER_ERROR',
