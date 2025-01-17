@@ -4,10 +4,11 @@ import { Pool } from 'pg';
 import { ProcessedPostService } from '../../../services/processed-post.service.js';
 import { mockPool } from '../../../test/mocks/db.js';
 import { mockPost } from '../../../test/fixtures/posts.js';
-import { mockProcessedPostService } from '../../../test/mocks/processed-post.service.js';
+import { mockProcessedPostService, ProcessedPostServiceMock } from '../../../test/mocks/processed-post.service.js';
+import { Server } from 'socket.io';
 
 jest.mock('../../../services/processed-post.service.js', () => ({
-  ProcessedPostService: jest.fn().mockImplementation(() => mockProcessedPostService)
+  ProcessedPostService: jest.fn().mockImplementation(() => new ProcessedPostServiceMock(mockPool, {} as Server))
 }));
 
 describe('Posts API Routes', () => {
@@ -16,11 +17,7 @@ describe('Posts API Routes', () => {
   beforeEach(() => {
     // Clear all mocks before each test
     jest.clearAllMocks();
-    pool = new Pool();
-    mockProcessedPostService.getUnprocessedPosts.mockResolvedValue([mockPost]);
-    mockProcessedPostService.getPostById.mockResolvedValue(mockPost);
-    mockProcessedPostService.getPostsByLocation.mockResolvedValue([mockPost]);
-    mockProcessedPostService.createPost.mockResolvedValue(mockPost);
+    pool = mockPool;
   });
 
   describe('GET /api/posts/unprocessed', () => {
