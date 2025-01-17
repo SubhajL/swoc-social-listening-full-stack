@@ -2,18 +2,14 @@ import request from 'supertest';
 import { app } from '../../../app.js';
 import { Pool } from 'pg';
 import { ProcessedPostService } from '../../../services/processed-post.service.js';
+import { mockPool } from '../../../test/mocks/db.js';
+import { mockPost } from '../../../test/fixtures/posts.js';
+import { mockProcessedPostService, ProcessedPostServiceMock } from '../../../test/mocks/processed-post.service.js';
+import { Server } from 'socket.io';
 
-// Mock dependencies
-jest.mock('pg', () => {
-  const mPool = {
-    query: jest.fn(),
-    connect: jest.fn(),
-    end: jest.fn(),
-  };
-  return { Pool: jest.fn(() => mPool) };
-});
-
-jest.mock('../../../services/processed-post.service.js');
+jest.mock('../../../services/processed-post.service.js', () => ({
+  ProcessedPostService: jest.fn().mockImplementation(() => new ProcessedPostServiceMock(mockPool, {} as Server))
+}));
 
 describe('Posts API Routes', () => {
   let pool: Pool;
@@ -21,7 +17,7 @@ describe('Posts API Routes', () => {
   beforeEach(() => {
     // Clear all mocks before each test
     jest.clearAllMocks();
-    pool = new Pool();
+    pool = mockPool;
   });
 
   describe('GET /api/posts/unprocessed', () => {
@@ -41,8 +37,7 @@ describe('Posts API Routes', () => {
       }];
 
       // Mock service response
-      (ProcessedPostService.prototype.getUnprocessedPosts as jest.Mock)
-        .mockResolvedValueOnce(mockPosts);
+      mockProcessedPostService.getUnprocessedPosts.mockResolvedValueOnce(mockPosts);
 
       const response = await request(app)
         .get('/api/posts/unprocessed')
@@ -56,8 +51,7 @@ describe('Posts API Routes', () => {
 
     it('should handle errors', async () => {
       // Mock service error
-      (ProcessedPostService.prototype.getUnprocessedPosts as jest.Mock)
-        .mockRejectedValueOnce(new Error('Database error'));
+      mockProcessedPostService.getUnprocessedPosts.mockRejectedValueOnce(new Error('Database error'));
 
       const response = await request(app)
         .get('/api/posts/unprocessed')
@@ -90,8 +84,7 @@ describe('Posts API Routes', () => {
       };
 
       // Mock service response
-      (ProcessedPostService.prototype.getPostById as jest.Mock)
-        .mockResolvedValueOnce(mockPost);
+      mockProcessedPostService.getPostById.mockResolvedValueOnce(mockPost);
 
       const response = await request(app)
         .get('/api/posts/123')
@@ -105,8 +98,7 @@ describe('Posts API Routes', () => {
 
     it('should handle not found error', async () => {
       // Mock service error
-      (ProcessedPostService.prototype.getPostById as jest.Mock)
-        .mockRejectedValueOnce(new Error('Post not found'));
+      mockProcessedPostService.getPostById.mockRejectedValueOnce(new Error('Post not found'));
 
       const response = await request(app)
         .get('/api/posts/nonexistent')
@@ -131,15 +123,17 @@ describe('Posts API Routes', () => {
         location: {
           latitude: 13.7563,
           longitude: 100.5018,
-          source: 'coordinates' as const
+          source: 'coordinates' as const,
+          tumbon: 'Test Tumbon',
+          amphure: 'Test Amphure',
+          province: 'Test Province'
         },
         status: 'unprocessed' as const,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       }];
 
-      (ProcessedPostService.prototype.getPostsByLocation as jest.Mock)
-        .mockResolvedValueOnce(mockPosts);
+      mockProcessedPostService.getPostsByLocation.mockResolvedValueOnce(mockPosts);
 
       const response = await request(app)
         .get('/api/posts/location?latitude=13.7563&longitude=100.5018&radius=5')
