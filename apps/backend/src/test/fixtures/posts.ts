@@ -5,12 +5,12 @@ export const mockPost = {
   location: {
     latitude: 13.7563,
     longitude: 100.5018,
-    source: 'coordinates',
+    source: 'coordinates' as const,
     tumbon: 'Test Tumbon',
     amphure: 'Test Amphure',
     province: 'Test Province'
   },
-  status: 'unprocessed',
+  status: 'unprocessed' as const,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString()
 };

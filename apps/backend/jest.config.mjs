@@ -11,7 +11,15 @@ export default {
       'ts-jest',
       {
         useESM: true,
+        module: 'ESNext'
       },
     ],
   },
+  globals: {
+    'ts-jest': {
+      useESM: true,
+      module: 'ESNext'
+    }
+  },
+  setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
 }; 

@@ -2,18 +2,13 @@ import request from 'supertest';
 import { app } from '../../../app.js';
 import { Pool } from 'pg';
 import { ProcessedPostService } from '../../../services/processed-post.service.js';
+import { mockPool } from '../../../test/mocks/db.js';
+import { mockPost } from '../../../test/fixtures/posts.js';
+import { mockProcessedPostService } from '../../../test/mocks/processed-post.service.js';
 
-// Mock dependencies
-jest.mock('pg', () => {
-  const mPool = {
-    query: jest.fn(),
-    connect: jest.fn(),
-    end: jest.fn(),
-  };
-  return { Pool: jest.fn(() => mPool) };
-});
-
-jest.mock('../../../services/processed-post.service.js');
+jest.mock('../../../services/processed-post.service.js', () => ({
+  ProcessedPostService: jest.fn().mockImplementation(() => mockProcessedPostService)
+}));
 
 describe('Posts API Routes', () => {
   let pool: Pool;
@@ -22,6 +17,10 @@ describe('Posts API Routes', () => {
     // Clear all mocks before each test
     jest.clearAllMocks();
     pool = new Pool();
+    mockProcessedPostService.getUnprocessedPosts.mockResolvedValue([mockPost]);
+    mockProcessedPostService.getPostById.mockResolvedValue(mockPost);
+    mockProcessedPostService.getPostsByLocation.mockResolvedValue([mockPost]);
+    mockProcessedPostService.createPost.mockResolvedValue(mockPost);
   });
 
   describe('GET /api/posts/unprocessed', () => {

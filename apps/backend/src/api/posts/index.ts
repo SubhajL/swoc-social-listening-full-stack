@@ -63,4 +63,47 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// Create post
+router.post('/', async (req, res) => {
+  try {
+    const postService = createPostService(req);
+    const post = await postService.createPost(req.body);
+    res.status(201).json({
+      data: post
+    });
+  } catch (error) {
+    logger.error('Error creating post:', error);
+    res.status(500).json({
+      error: {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to create post'
+      }
+    });
+  }
+});
+
+// Get posts by location
+router.get('/location', async (req, res) => {
+  try {
+    const postService = createPostService(req);
+    const { latitude, longitude, radius } = req.query;
+    const posts = await postService.getPostsByLocation(
+      Number(latitude),
+      Number(longitude),
+      Number(radius)
+    );
+    res.json({
+      data: posts
+    });
+  } catch (error) {
+    logger.error('Error fetching posts by location:', error);
+    res.status(500).json({
+      error: {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to fetch posts by location'
+      }
+    });
+  }
+});
+
 // Other routes... 

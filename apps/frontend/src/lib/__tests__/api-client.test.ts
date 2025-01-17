@@ -23,4 +23,9 @@ describe('apiClient', () => {
     expect(posts).toHaveLength(1);
     expect(posts[0].processed_post_id).toBe('123');
   });
+
+  it('should fetch post by id', async () => {
+    const post = await apiClient.getPostById('123');
+    expect(post.processed_post_id).toBe('123');
+  });
 }); 

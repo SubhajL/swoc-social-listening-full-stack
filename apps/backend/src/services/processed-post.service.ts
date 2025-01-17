@@ -4,6 +4,7 @@ const { Pool } = pkg;
 type PoolType = InstanceType<typeof Pool>;
 import { ProcessedPost } from '../types/processed-post.js';
 import { ProcessedPostDTO } from '../types/processed-post.dto.js';
+import { CreatePostDTO } from '../types/create-post.dto.js';
 import { logger } from '../utils/logger.js';
 import { TransactionManager, TransactionClient } from '../utils/transaction-manager.js';
 import {
@@ -108,25 +109,22 @@ export class ProcessedPostService {
     }
   }
 
-  async getPostsByLocation(latitude: number, longitude: number, radiusKm: number, client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO[]> {
-    try {
-      const result = await this.executeQuery<ProcessedPost>(`
-        SELECT *, 
-        ( 6371 * acos( cos( radians($1) ) 
-          * cos( radians(location->>'latitude') ) 
-          * cos( radians(location->>'longitude') - radians($2) ) 
-          + sin( radians($1) ) 
-          * sin( radians(location->>'latitude') ) ) AS distance 
-        FROM processed_posts 
-        HAVING distance < $3 
-        ORDER BY distance;
-      `, [latitude, longitude, radiusKm], client);
-
-      return result.map(this.toDTO);
-    } catch (error) {
-      logger.error('Error fetching posts by location:', error);
-      throw new Error('Failed to fetch posts by location');
-    }
+  async getPostsByLocation(
+    latitude: number,
+    longitude: number,
+    radiusKm: number
+  ): Promise<ProcessedPostDTO[]> {
+    const result = await this.pool.query(
+      `SELECT * FROM processed_posts
+       WHERE ST_DWithin(
+         ST_MakePoint(location->>'longitude', location->>'latitude')::geography,
+         ST_MakePoint($1, $2)::geography,
+         $3 * 1000
+       )`,
+      [longitude, latitude, radiusKm]
+    );
+    
+    return result.rows;
   }
 
   async updatePostStatus(id: string, status: ProcessedPost['status'], client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO | null> {
@@ -452,5 +450,19 @@ export class ProcessedPostService {
 
   getBatchProgress(batchId: string): BatchProgress | undefined {
     return this.batchProgressManager.getBatchProgress(batchId);
+  }
+
+  async createPost(data: CreatePostDTO): Promise<ProcessedPostDTO> {
+    const { category_name, sub1_category_name, location, status } = data;
+    
+    const result = await this.pool.query(
+      `INSERT INTO processed_posts 
+       (category_name, sub1_category_name, location, status)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [category_name, sub1_category_name, location, status]
+    );
+    
+    return result.rows[0];
   }
 } 

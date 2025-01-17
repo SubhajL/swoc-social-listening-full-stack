@@ -3,21 +3,30 @@ import { app } from '../../../app.js';
 import pkg from 'pg';
 import type { Pool as PoolType } from 'pg';
 const { Pool } = pkg;
+import { mockPost } from '../../../test/fixtures/posts.js';
+import { mockPool } from '../../../test/mocks/db.js';
+import { mockProcessedPostService } from '../../../test/mocks/processed-post.service.js';
+
+jest.mock('pg');
+jest.mock('../../../services/processed-post.service.js', () => ({
+  ProcessedPostService: jest.fn().mockImplementation(() => mockProcessedPostService)
+}));
 
 describe('Posts API Integration', () => {
-  let pool: PoolType;
-
-  beforeAll(async () => {
-    pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false
-      }
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockProcessedPostService.createPost.mockResolvedValue({
+      ...mockPost,
+      processed_post_id: '123'
+    });
+    mockProcessedPostService.getPostById.mockResolvedValue({
+      ...mockPost,
+      processed_post_id: '123'
     });
   });
 
-  afterAll(async () => {
-    await pool.end();
+  beforeAll(async () => {
+    // No need to connect to real DB
   });
 
   it('should create and fetch a post', async () => {
