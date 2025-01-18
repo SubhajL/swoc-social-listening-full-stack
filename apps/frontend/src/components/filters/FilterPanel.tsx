@@ -33,13 +33,6 @@ export function FilterPanel({
       onDateRangeChange(dateRange);
     }
   }, [dateRange, onDateRangeChange]);
-
-  const toggleCategory = (category: CategoryName) => {
-    setExpandedCategories(prev => ({
-      ...prev,
-      [category]: !prev[category]
-    }));
-  };
   const isAllSelected = (category: CategoryName) => {
     const subcategories = SubCategories[category].filter(sub => sub !== 'All');
     const selectedCount = subcategories.filter(sub => 
@@ -60,7 +53,7 @@ export function FilterPanel({
 
   const renderCategory = (category: CategoryName, title: string) => (
     <div key={category} className="bg-white rounded-2xl p-6">
-      <div className="space-y-3">
+      <div className="space-y-6">
         <div className="flex items-center space-x-2">
           <Checkbox 
             id={`${category}-all`}
@@ -99,7 +92,7 @@ export function FilterPanel({
   });
 
   return (
-    <div className="flex flex-col space-y-4 p-4">
+    <div className="flex flex-col space-y-6 p-6 h-screen overflow-y-auto">
       <div className="space-y-3">
         {renderCategory(CategoryName.REPORT_INCIDENT, "การรายงานและแจ้งเหตุ")}
         {renderCategory(CategoryName.REQUEST_SUPPORT, "การขอการสนับสนุน")}

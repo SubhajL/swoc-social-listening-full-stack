@@ -81,7 +81,7 @@ export function MainPage() {
   return (
     <div className="flex h-screen">
       {/* Main content area */}
-      <div className="flex-1 relative">
+      <div className="flex-1">
         <Map
           token={MAPBOX_TOKEN}
           selectedCategories={selectedSubCategories}
