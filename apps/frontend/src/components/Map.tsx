@@ -8,14 +8,16 @@ import { useNavigate } from "react-router-dom";
 import MapError from "./map/MapError";
 import MapMarker from "./map/MapMarker";
 import { sampleComplaints } from "@/models/complaint";
+import { IrrigationOfficeFilter } from "./filters/IrrigationOfficeFilter";
 
 interface MapProps {
   token: string;  // Mapbox token
   selectedCategories: string[];
   selectedProvince: string | null;
+  selectedOffice: string | null;
 }
 
-export function Map({ token, selectedCategories, selectedProvince }: MapProps) {
+export function Map({ token, selectedCategories, selectedProvince, selectedOffice }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
@@ -95,7 +97,9 @@ export function Map({ token, selectedCategories, selectedProvince }: MapProps) {
           const categoryMatch = selectedCategories.includes(post.category_name);
           const provinceMatch = !selectedProvince || 
             (post.location.province && post.location.province === selectedProvince);
-          return categoryMatch && provinceMatch;
+          const officeMatch = !selectedOffice ||
+            (post.location.irrigation_office && post.location.irrigation_office === selectedOffice);
+          return categoryMatch && provinceMatch && officeMatch;
         });
 
         console.log('Filtered posts:', filteredPosts);
@@ -142,7 +146,7 @@ export function Map({ token, selectedCategories, selectedProvince }: MapProps) {
       console.error('Map initialization error:', err);
       setError("Error initializing map. Please check your Mapbox token.");
     }
-  }, [token, selectedCategories, selectedProvince, navigate, apiPosts]);
+  }, [token, selectedCategories, selectedProvince, selectedOffice, navigate, apiPosts]);
 
   if (error) {
     return <MapError error={error} />;
