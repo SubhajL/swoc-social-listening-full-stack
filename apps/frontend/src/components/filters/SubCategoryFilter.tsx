@@ -1,5 +1,5 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CategoryName, SubCategories } from "@/types/processed-post";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface SubCategoryFilterProps {
   category: CategoryName | null;
@@ -7,29 +7,34 @@ interface SubCategoryFilterProps {
   onSubCategoryChange: (subCategory: string | null) => void;
 }
 
-export function SubCategoryFilter({ 
-  category, 
-  selectedSubCategory, 
-  onSubCategoryChange 
+export function SubCategoryFilter({
+  category,
+  selectedSubCategory,
+  onSubCategoryChange,
 }: SubCategoryFilterProps) {
-  if (!category || category === CategoryName.SUGGESTION) return null;
+  if (!category) return null;
 
-  const subCategories = SubCategories[category];
-  const displaySubCategories = subCategories.slice(1); // Remove 'ทั้งหมด' from the array
+  // Filter out duplicate "ทั้งหมด" from the subcategories array
+  const subcategories = SubCategories[category].filter((sub, index, arr) => {
+    if (sub === 'ทั้งหมด') {
+      return arr.indexOf(sub) === index;
+    }
+    return true;
+  });
 
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium">หมวดหมู่ย่อย</label>
       <Select
-        value={selectedSubCategory || ""}
-        onValueChange={(value) => onSubCategoryChange(value || null)}
+        value={selectedSubCategory || "all"}
+        onValueChange={(value) => onSubCategoryChange(value === "all" ? null : value)}
       >
-        <SelectTrigger className="w-full">
+        <SelectTrigger aria-label="หมวดหมู่ย่อย">
           <SelectValue placeholder="เลือกหมวดหมู่ย่อย" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">ทั้งหมด</SelectItem>
-          {displaySubCategories.map((subCategory) => (
+          <SelectItem value="all">ทั้งหมด</SelectItem>
+          {subcategories.filter(sub => sub !== 'ทั้งหมด').map((subCategory) => (
             <SelectItem key={subCategory} value={subCategory}>
               {subCategory}
             </SelectItem>

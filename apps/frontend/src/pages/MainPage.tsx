@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Map } from "@/components/Map";
 import { FilterPanel } from "@/components/filters/FilterPanel";
-import { CategoryName } from "@/types/processed-post";
+import { CategoryName, SubCategories } from "@/types/processed-post";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -13,31 +13,35 @@ const PROVINCES = [
   // ... add more provinces
 ];
 
+// Categories to show by default
+const DEFAULT_CATEGORIES = [
+  CategoryName.REPORT_INCIDENT,
+  CategoryName.REQUEST_SUPPORT,
+  CategoryName.REQUEST_INFO
+];
+
 export function MainPage() {
-  const [selectedCategory, setSelectedCategory] = useState<CategoryName | null>(null);
-  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
+  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([]);
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
   const [selectedOffice, setSelectedOffice] = useState<string | null>(null);
 
-  const handleCategoryChange = useCallback((category: CategoryName | null) => {
-    if (category === selectedCategory) {
-      // If clicking the same category, deselect it
-      setSelectedCategory(null);
-    } else {
-      setSelectedCategory(category);
-    }
-    // Reset subcategory when category changes
-    setSelectedSubCategory(null);
-  }, [selectedCategory]);
+  // Initialize subcategories for the three main categories
+  useEffect(() => {
+    const initialSubCategories = DEFAULT_CATEGORIES.flatMap(category => 
+      SubCategories[category].filter(sub => sub !== 'ทั้งหมด')
+    );
+    setSelectedSubCategories(initialSubCategories);
+  }, []);
 
-  const handleSubCategoryChange = useCallback((subCategory: string | null) => {
-    if (subCategory === selectedSubCategory) {
-      // If clicking the same subcategory, deselect it
-      setSelectedSubCategory(null);
-    } else {
-      setSelectedSubCategory(subCategory);
-    }
-  }, [selectedSubCategory]);
+  const handleSubCategoryChange = useCallback((subCategory: string, checked: boolean) => {
+    setSelectedSubCategories(prev => {
+      if (checked) {
+        return [...prev, subCategory];
+      } else {
+        return prev.filter(sc => sc !== subCategory);
+      }
+    });
+  }, []);
 
   return (
     <div className="flex h-screen">
@@ -45,7 +49,7 @@ export function MainPage() {
       <div className="flex-1 p-6">
         <Map
           token={MAPBOX_TOKEN}
-          selectedCategories={selectedCategory ? [selectedCategory] : []}
+          selectedCategories={[]} // No category selection needed
           selectedProvince={selectedProvince}
           selectedOffice={selectedOffice}
         />
@@ -54,9 +58,7 @@ export function MainPage() {
       {/* Right sidebar */}
       <div className="w-80 border-l border-gray-200">
         <FilterPanel
-          selectedCategory={selectedCategory}
-          onCategoryChange={handleCategoryChange}
-          selectedSubCategory={selectedSubCategory}
+          selectedSubCategories={selectedSubCategories}
           onSubCategoryChange={handleSubCategoryChange}
           selectedProvince={selectedProvince}
           onProvinceChange={setSelectedProvince}

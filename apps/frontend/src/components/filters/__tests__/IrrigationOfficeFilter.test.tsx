@@ -6,7 +6,7 @@ describe('IrrigationOfficeFilter', () => {
   const mockOnChange = vi.fn();
 
   beforeEach(() => {
-    mockOnChange.mockClear();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', () => {
@@ -17,11 +17,11 @@ describe('IrrigationOfficeFilter', () => {
       />
     );
 
-    expect(screen.getByText('สำนักงานชลประทาน')).toBeInTheDocument();
-    expect(screen.getByText('เลือกสำนักงานชลประทาน')).toBeInTheDocument();
+    const combobox = screen.getByRole('combobox', { name: 'สำนักงานชลประทาน' });
+    expect(combobox).toHaveTextContent('ทั้งหมด');
   });
 
-  it('shows all irrigation offices', async () => {
+  it('shows all irrigation offices', () => {
     render(
       <IrrigationOfficeFilter
         selectedOffice={null}
@@ -29,12 +29,11 @@ describe('IrrigationOfficeFilter', () => {
       />
     );
 
-    const trigger = screen.getByRole('combobox');
-    fireEvent.click(trigger);
+    const combobox = screen.getByRole('combobox', { name: 'สำนักงานชลประทาน' });
+    fireEvent.click(combobox);
 
-    // Check that all offices are listed
-    IrrigationOffices.forEach(office => {
-      expect(screen.getByText(office)).toBeInTheDocument();
+    IrrigationOffices.forEach((office) => {
+      expect(screen.getByRole('option', { name: office })).toBeInTheDocument();
     });
   });
 
@@ -47,6 +46,7 @@ describe('IrrigationOfficeFilter', () => {
       />
     );
 
-    expect(screen.getByText(selectedOffice)).toBeInTheDocument();
+    const combobox = screen.getByRole('combobox', { name: 'สำนักงานชลประทาน' });
+    expect(combobox).toHaveTextContent(selectedOffice);
   });
 }); 

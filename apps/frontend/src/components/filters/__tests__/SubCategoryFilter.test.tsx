@@ -6,11 +6,11 @@ describe('SubCategoryFilter', () => {
   const mockOnChange = vi.fn();
 
   beforeEach(() => {
-    mockOnChange.mockClear();
+    vi.clearAllMocks();
   });
 
   it('renders nothing when no category is selected', () => {
-    const { container } = render(
+    render(
       <SubCategoryFilter
         category={null}
         selectedSubCategory={null}
@@ -18,7 +18,7 @@ describe('SubCategoryFilter', () => {
       />
     );
 
-    expect(container).toBeEmptyDOMElement();
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
   });
 
   it('renders subcategories for REPORT_INCIDENT', () => {
@@ -30,16 +30,22 @@ describe('SubCategoryFilter', () => {
       />
     );
 
-    const trigger = screen.getByRole('combobox');
-    fireEvent.click(trigger);
+    const combobox = screen.getByRole('combobox', { name: 'หมวดหมู่ย่อย' });
+    fireEvent.click(combobox);
 
-    SubCategories[CategoryName.REPORT_INCIDENT].forEach(subCategory => {
-      expect(screen.getByText(subCategory)).toBeInTheDocument();
+    // Check for non-"ทั้งหมด" subcategories
+    const nonAllSubCategories = SubCategories[CategoryName.REPORT_INCIDENT].filter(sub => sub !== 'ทั้งหมด');
+    nonAllSubCategories.forEach((subCategory) => {
+      expect(screen.getByRole('option', { name: subCategory })).toBeInTheDocument();
     });
+
+    // Check for "ทั้งหมด" option
+    const allOptions = screen.getAllByRole('option', { name: 'ทั้งหมด' });
+    expect(allOptions.length).toBe(1);
   });
 
   it('shows selected subcategory', () => {
-    const selectedSubCategory = SubCategories[CategoryName.REPORT_INCIDENT][1];
+    const selectedSubCategory = SubCategories[CategoryName.REPORT_INCIDENT].find(sub => sub !== 'ทั้งหมด')!;
     render(
       <SubCategoryFilter
         category={CategoryName.REPORT_INCIDENT}
@@ -48,6 +54,7 @@ describe('SubCategoryFilter', () => {
       />
     );
 
-    expect(screen.getByText(selectedSubCategory)).toBeInTheDocument();
+    const combobox = screen.getByRole('combobox', { name: 'หมวดหมู่ย่อย' });
+    expect(combobox).toHaveTextContent(selectedSubCategory);
   });
 }); 

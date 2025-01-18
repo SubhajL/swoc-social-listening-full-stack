@@ -1,6 +1,6 @@
 export enum CategoryName {
-  REQUEST_SUPPORT = 'การขอการสนับสนุน/ช่วยดำเนินการ',
   REPORT_INCIDENT = 'การรายงานและแจ้งเหตุ',
+  REQUEST_SUPPORT = 'การขอการสนับสนุน',
   REQUEST_INFO = 'การขอข้อมูล',
   SUGGESTION = 'ข้อเสนอแนะ'
 }
@@ -32,7 +32,7 @@ export const CategoryIconMap = {
   [CategoryName.SUGGESTION]: 'hexa'
 } as const;
 
-export const SubCategories = {
+export const SubCategories: Record<CategoryName, string[]> = {
   [CategoryName.REPORT_INCIDENT]: [
     'ทั้งหมด',
     'อาคารชลประทานชำรุด',
@@ -77,7 +77,7 @@ export const SubCategories = {
     'แผนงานโครงการเพื่อการแก้ไขปัญหา'
   ],
   [CategoryName.SUGGESTION]: ['ทั้งหมด']
-} as const;
+}
 
 export const IrrigationOffices = [
   'สำนักงานชลประทานที่ 1',
