@@ -41,18 +41,18 @@ export function FilterPanel({
   };
 
   const renderCategory = (category: CategoryName, title: string) => (
-    <div key={category} className="bg-white rounded-xl p-4">
-      <div className="space-y-2">
+    <div key={category} className="bg-white rounded-xl p-6">
+      <div className="space-y-4">
         <div className="flex items-center space-x-2">
           <Checkbox 
             id={`${category}-all`}
             checked={isAllSelected(category)}
             onCheckedChange={(checked) => handleAllChange(category, checked === true)}
-            className="h-4 w-4"
+            className="h-5 w-5 rounded-sm border-gray-300"
           />
-          <label htmlFor={`${category}-all`} className="text-base font-medium">{title}</label>
+          <label htmlFor={`${category}-all`} className="text-lg font-medium">{title}</label>
         </div>
-        <div className="ml-6 space-y-2">
+        <div className="ml-7 space-y-3">
           {SubCategories[category]
             .filter(sub => sub !== 'All')
             .map(subCategory => (
@@ -61,9 +61,9 @@ export function FilterPanel({
                   id={`${category}-${subCategory}`}
                   checked={selectedSubCategories.includes(subCategory)}
                   onCheckedChange={(checked) => onSubCategoryChange(subCategory, checked === true)}
-                  className="h-4 w-4"
+                  className="h-4 w-4 rounded-sm border-gray-300"
                 />
-                <label htmlFor={`${category}-${subCategory}`} className="text-sm">{subCategory}</label>
+                <label htmlFor={`${category}-${subCategory}`} className="text-base text-gray-600">{subCategory}</label>
               </div>
             ))
           }
@@ -89,21 +89,21 @@ export function FilterPanel({
       </div>
 
       {/* Date Range */}
-      <div className="bg-white rounded-xl p-4">
-        <h3 className="text-base mb-4">การตั้งค่าช่วงวันที่</h3>
-        <div className="flex items-center space-x-2">
+      <div className="bg-white rounded-xl p-6">
+        <h3 className="text-lg font-medium mb-4">การตั้งค่าช่วงวันที่</h3>
+        <div className="flex items-center space-x-3">
           <div className="flex-1">
-            <input type="date" className="w-full p-2 border rounded" />
+            <input type="date" className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" />
           </div>
-          <span>-</span>
+          <span className="text-gray-500">-</span>
           <div className="flex-1">
-            <input type="date" className="w-full p-2 border rounded" />
+            <input type="date" className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" />
           </div>
         </div>
       </div>
 
       {/* Province Selection */}
-      <div className="bg-[#8B5CF6] text-white rounded-xl p-4">
+      <div className="bg-[#8B5CF6] text-white rounded-xl p-6">
         <Select
           value={selectedProvince || "all"}
           onValueChange={(value) => onProvinceChange(value === "all" ? null : value)}
@@ -123,8 +123,8 @@ export function FilterPanel({
       </div>
 
       {/* Irrigation Office */}
-      <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-        <h3 className="text-xl font-medium mb-3 text-gray-900">สำนักงานชลประทาน</h3>
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <h3 className="text-lg font-medium mb-4">สำนักงานชลประทาน</h3>
         <IrrigationOfficeFilter
           selectedOffice={selectedOffice}
           onOfficeChange={onOfficeChange}
