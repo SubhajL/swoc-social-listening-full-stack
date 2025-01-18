@@ -42,8 +42,7 @@ export function FilterPanel({
 
   // Render categories unconditionally
   const renderCategory = (category: CategoryName, title: string) => (
-    <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-      <h3 className="text-xl font-medium mb-4 text-gray-900">{title}</h3>
+    <div key={category} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
       <div className="space-y-3">
         <div className="flex items-center space-x-2">
           <Checkbox 
@@ -52,24 +51,26 @@ export function FilterPanel({
             onCheckedChange={(checked) => handleAllChange(category, checked === true)}
             className="h-5 w-5 border-2"
           />
-          <label htmlFor={`${category}-all`} className="font-medium text-gray-700">ทั้งหมด</label>
+          <label htmlFor={`${category}-all`} className="font-medium text-gray-700">{title}</label>
         </div>
-        <div className="pl-6 space-y-2.5">
-          {SubCategories[category]
-            .filter(sub => sub !== 'All')
-            .map(sub => (
-              <div key={sub} className="flex items-center space-x-2">
-                <Checkbox 
-                  id={sub}
-                  checked={selectedSubCategories.includes(sub)}
-                  onCheckedChange={(checked) => onSubCategoryChange(sub, checked === true)}
-                  className="h-4 w-4"
-                />
-                <label htmlFor={sub} className="text-sm text-gray-600">{sub}</label>
-              </div>
-            ))
-          }
-        </div>
+        {isAllSelected(category) && (
+          <div className="pl-6 space-y-2.5">
+            {SubCategories[category]
+              .filter(sub => sub !== 'All')
+              .map(sub => (
+                <div key={sub} className="flex items-center space-x-2">
+                  <Checkbox 
+                    id={sub}
+                    checked={selectedSubCategories.includes(sub)}
+                    onCheckedChange={(checked) => onSubCategoryChange(sub, checked === true)}
+                    className="h-4 w-4"
+                  />
+                  <label htmlFor={sub} className="text-sm text-gray-600">{sub}</label>
+                </div>
+              ))
+            }
+          </div>
+        )}
       </div>
     </div>
   );
