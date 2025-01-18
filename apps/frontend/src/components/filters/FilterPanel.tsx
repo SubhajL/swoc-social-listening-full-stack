@@ -64,7 +64,7 @@ export function FilterPanel({
           <label htmlFor={`${category}-all`} className="text-base">ทั้งหมด</label>
         </div>
         <div className="text-xl font-medium -mt-1 mb-2">{title}</div>
-        <div className="ml-7 space-y-3">
+        <div className="ml-7 space-y-2 mt-2">
           {SubCategories[category]
             .filter(sub => sub !== 'All')
             .map(subCategory => (
@@ -75,7 +75,7 @@ export function FilterPanel({
                   onCheckedChange={(checked) => onSubCategoryChange(subCategory, checked === true)}
                   className="h-4 w-4 rounded-sm border-gray-300"
                 />
-                <label htmlFor={`${category}-${subCategory}`} className="text-base text-gray-600">{subCategory}</label>
+                <label htmlFor={`${category}-${subCategory}`} className="text-sm text-gray-700">{subCategory}</label>
               </div>
             ))
           }
@@ -92,8 +92,8 @@ export function FilterPanel({
   });
 
   return (
-    <div className="flex flex-col space-y-6 p-6 h-screen overflow-y-auto">
-      <div className="space-y-3">
+    <div className="flex flex-col space-y-4 p-6 overflow-y-auto">
+      <div className="space-y-4">
         {renderCategory(CategoryName.REPORT_INCIDENT, "การรายงานและแจ้งเหตุ")}
         {renderCategory(CategoryName.REQUEST_SUPPORT, "การขอการสนับสนุน")}
         {renderCategory(CategoryName.REQUEST_INFO, "การขอข้อมูล")}
