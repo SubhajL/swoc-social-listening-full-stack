@@ -1,6 +1,6 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Map } from "@/components/Map";
-import { FilterPanel } from "@/components/filters/FilterPanel";
+import { FilterPanel } from "../components/filters/FilterPanel";
 import { CategoryName, SubCategories } from "@/types/processed-post";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
@@ -13,40 +13,39 @@ const PROVINCES = [
   // ... add more provinces
 ];
 
-// Categories to show by default
-const DEFAULT_CATEGORIES = [
-  CategoryName.REPORT_INCIDENT,
-  CategoryName.REQUEST_SUPPORT,
-  CategoryName.REQUEST_INFO
-];
-
-// Get first subcategory for each category
-const getFirstSubCategories = () => {
-  return DEFAULT_CATEGORIES.map(category => {
-    const subs = SubCategories[category].filter(sub => sub !== 'ทั้งหมด');
-    return subs[0];
-  }).filter(Boolean) as string[];
+// Get all subcategories for initial display
+const getAllSubCategories = () => {
+  const categories = [
+    CategoryName.REPORT_INCIDENT,
+    CategoryName.REQUEST_SUPPORT,
+    CategoryName.REQUEST_INFO
+  ];
+  
+  return categories.flatMap(category => 
+    SubCategories[category].filter(sub => sub !== 'All')
+  );
 };
 
 export function MainPage() {
-  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([]);
+  // Initialize with all subcategories immediately
+  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>(() => getAllSubCategories());
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
   const [selectedOffice, setSelectedOffice] = useState<string | null>(null);
 
-  // Initialize with first subcategory from each category
+  // Log initial state for debugging
   useEffect(() => {
-    setSelectedSubCategories(getFirstSubCategories());
+    console.log('Initial subcategories:', selectedSubCategories);
   }, []);
 
-  const handleSubCategoryChange = useCallback((subCategory: string, checked: boolean) => {
+  const handleSubCategoryChange = (subCategory: string, checked: boolean) => {
     setSelectedSubCategories(prev => {
-      if (checked) {
-        return [...prev, subCategory];
-      } else {
-        return prev.filter(sc => sc !== subCategory);
-      }
+      const newState = checked 
+        ? [...prev, subCategory]
+        : prev.filter(sc => sc !== subCategory);
+      console.log('Updated subcategories:', newState);
+      return newState;
     });
-  }, []);
+  };
 
   return (
     <div className="flex h-screen">
@@ -60,17 +59,19 @@ export function MainPage() {
         />
       </div>
 
-      {/* Right sidebar */}
-      <div className="w-80 border-l border-gray-200">
-        <FilterPanel
-          selectedSubCategories={selectedSubCategories}
-          onSubCategoryChange={handleSubCategoryChange}
-          selectedProvince={selectedProvince}
-          onProvinceChange={setSelectedProvince}
-          selectedOffice={selectedOffice}
-          onOfficeChange={setSelectedOffice}
-          provinces={PROVINCES}
-        />
+      {/* Right sidebar - Updated with better overflow handling */}
+      <div className="w-80 border-l border-gray-200 bg-gray-50 flex flex-col h-full">
+        <div className="flex-1 overflow-y-auto">
+          <FilterPanel
+            selectedSubCategories={selectedSubCategories}
+            onSubCategoryChange={handleSubCategoryChange}
+            selectedProvince={selectedProvince}
+            onProvinceChange={setSelectedProvince}
+            selectedOffice={selectedOffice}
+            onOfficeChange={setSelectedOffice}
+            provinces={PROVINCES}
+          />
+        </div>
       </div>
     </div>
   );

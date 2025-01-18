@@ -2,7 +2,6 @@ import { CategoryName, SubCategories } from "@/types/processed-post";
 import { IrrigationOfficeFilter } from "./IrrigationOfficeFilter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useEffect } from "react";
 
 interface FilterPanelProps {
   selectedSubCategories: string[];
@@ -23,93 +22,83 @@ export function FilterPanel({
   onOfficeChange,
   provinces
 }: FilterPanelProps) {
-  // Helper function to check if all subcategories in a category are selected (excluding "ทั้งหมด")
+  // Simplified helper function - no conditions
   const isAllSelected = (category: CategoryName) => {
-    const subs = SubCategories[category].filter(sub => sub !== 'ทั้งหมด');
-    return subs.every(sub => selectedSubCategories.includes(sub));
+    return SubCategories[category]
+      .filter(sub => sub !== 'All')
+      .every(sub => selectedSubCategories.includes(sub));
   };
 
-  // Helper function to handle "All" checkbox changes for a specific category
+  // Simplified helper function - no conditions
   const handleAllChange = (category: CategoryName, checked: boolean) => {
-    const subs = SubCategories[category].filter(sub => sub !== 'ทั้งหมด');
-    if (checked) {
-      // Add all subcategories that aren't already selected
-      subs.forEach(sub => {
-        if (!selectedSubCategories.includes(sub)) {
-          onSubCategoryChange(sub, true);
-        }
-      });
-    } else {
-      // Remove all subcategories from this category
-      subs.forEach(sub => {
-        if (selectedSubCategories.includes(sub)) {
-          onSubCategoryChange(sub, false);
-        }
-      });
-    }
+    const subcategories = SubCategories[category].filter(sub => sub !== 'All');
+    subcategories.forEach(sub => onSubCategoryChange(sub, checked));
   };
 
-  // Get the first subcategory for each category (excluding "ทั้งหมด")
-  const getFirstSubCategory = (category: CategoryName) => {
-    const subs = SubCategories[category].filter(sub => sub !== 'ทั้งหมด');
-    return subs[0] || null;
-  };
+  // Render categories unconditionally
+  const renderCategory = (category: CategoryName, title: string) => (
+    <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+      <h3 className="text-xl font-medium mb-4 text-gray-900">{title}</h3>
+      <div className="space-y-3">
+        <div className="flex items-center space-x-2">
+          <Checkbox 
+            id={`${category}-all`}
+            checked={isAllSelected(category)}
+            onCheckedChange={(checked) => handleAllChange(category, checked === true)}
+            className="h-5 w-5 border-2"
+          />
+          <label htmlFor={`${category}-all`} className="font-medium text-gray-700">ทั้งหมด</label>
+        </div>
+        <div className="pl-6 space-y-2.5">
+          {SubCategories[category]
+            .filter(sub => sub !== 'All')
+            .map(sub => (
+              <div key={sub} className="flex items-center space-x-2">
+                <Checkbox 
+                  id={sub}
+                  checked={selectedSubCategories.includes(sub)}
+                  onCheckedChange={(checked) => onSubCategoryChange(sub, checked === true)}
+                  className="h-4 w-4"
+                />
+                <label htmlFor={sub} className="text-sm text-gray-600">{sub}</label>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="p-4">
-      <div className="space-y-6">
-        {/* Only show the three main categories */}
-        {[CategoryName.REPORT_INCIDENT, CategoryName.REQUEST_SUPPORT, CategoryName.REQUEST_INFO].map((category) => {
-          const firstSubCategory = getFirstSubCategory(category);
-          return (
-            <div key={category} className="bg-white rounded-lg p-4 shadow-sm">
-              <h3 className="text-base font-semibold text-gray-900 mb-4">{category}</h3>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={`${category}-all`}
-                    checked={isAllSelected(category)}
-                    onCheckedChange={(checked) => handleAllChange(category, checked === true)}
-                    className="border-gray-300"
-                  />
-                  <label htmlFor={`${category}-all`} className="text-sm font-medium text-gray-700">ทั้งหมด</label>
-                </div>
-                {firstSubCategory && (
-                  <div className="flex items-center space-x-2 ml-6">
-                    <Checkbox 
-                      id={firstSubCategory}
-                      checked={selectedSubCategories.includes(firstSubCategory)}
-                      onCheckedChange={(checked) => onSubCategoryChange(firstSubCategory, checked === true)}
-                      className="border-gray-300"
-                    />
-                    <label htmlFor={firstSubCategory} className="text-sm text-gray-600">{firstSubCategory}</label>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
+    <div className="flex flex-col space-y-4 p-4">
+      {/* Render all categories unconditionally */}
+      {renderCategory(CategoryName.REPORT_INCIDENT, "การรายงานและแจ้งเหตุ")}
+      {renderCategory(CategoryName.REQUEST_SUPPORT, "การขอการสนับสนุน")}
+      {renderCategory(CategoryName.REQUEST_INFO, "การขอข้อมูล")}
 
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <h3 className="text-base font-semibold text-gray-900 mb-4">จังหวัด</h3>
-          <Select
-            value={selectedProvince || "all"}
-            onValueChange={(value) => onProvinceChange(value === "all" ? null : value)}
-          >
-            <SelectTrigger aria-label="จังหวัด" className="w-full">
-              <SelectValue placeholder="จังหวัด" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">ทั้งหมด</SelectItem>
-              {provinces.map((province) => (
-                <SelectItem key={province} value={province}>
-                  {province}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+      {/* Province Selection */}
+      <div className="bg-[#8B5CF6] text-white rounded-xl p-4">
+        <Select
+          value={selectedProvince || "all"}
+          onValueChange={(value) => onProvinceChange(value === "all" ? null : value)}
+        >
+          <SelectTrigger className="bg-transparent border-none text-white text-lg font-medium">
+            <SelectValue placeholder="ทุกจังหวัด" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">ทุกจังหวัด</SelectItem>
+            {provinces.map((province) => (
+              <SelectItem key={province} value={province}>
+                {province}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
+      {/* Irrigation Office */}
+      <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+        <h3 className="text-xl font-medium mb-3 text-gray-900">สำนักงานชลประทาน</h3>
         <IrrigationOfficeFilter
           selectedOffice={selectedOffice}
           onOfficeChange={onOfficeChange}
