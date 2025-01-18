@@ -53,24 +53,22 @@ export function FilterPanel({
           />
           <label htmlFor={`${category}-all`} className="font-medium text-gray-700">{title}</label>
         </div>
-        {isAllSelected(category) && (
-          <div className="pl-6 space-y-2.5">
-            {SubCategories[category]
-              .filter(sub => sub !== 'All')
-              .map(sub => (
-                <div key={sub} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={sub}
-                    checked={selectedSubCategories.includes(sub)}
-                    onCheckedChange={(checked) => onSubCategoryChange(sub, checked === true)}
-                    className="h-4 w-4"
-                  />
-                  <label htmlFor={sub} className="text-sm text-gray-600">{sub}</label>
-                </div>
-              ))
-            }
-          </div>
-        )}
+        <div className="pl-6 space-y-2.5">
+          {SubCategories[category]
+            .filter(sub => sub !== 'All')
+            .map(sub => (
+              <div key={sub} className="flex items-center space-x-2">
+                <Checkbox 
+                  id={sub}
+                  checked={selectedSubCategories.includes(sub)}
+                  onCheckedChange={(checked) => onSubCategoryChange(sub, checked === true)}
+                  className="h-4 w-4"
+                />
+                <label htmlFor={sub} className="text-sm text-gray-600">{sub}</label>
+              </div>
+            ))
+          }
+        </div>
       </div>
     </div>
   );
