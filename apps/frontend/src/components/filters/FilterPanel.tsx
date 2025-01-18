@@ -52,7 +52,7 @@ export function FilterPanel({
   };
 
   const renderCategory = (category: CategoryName, title: string) => (
-    <div key={category} className="bg-white rounded-xl p-6">
+    <div key={category} className="bg-white rounded-2xl p-6">
       <div className="space-y-3">
         <div className="flex items-center space-x-2">
           <Checkbox 
@@ -63,7 +63,7 @@ export function FilterPanel({
           />
           <label htmlFor={`${category}-all`} className="text-base">ทั้งหมด</label>
         </div>
-        <div className="text-lg font-medium -mt-1 mb-2">{title}</div>
+        <div className="text-xl font-medium -mt-1 mb-2">{title}</div>
         <div className="ml-7 space-y-3">
           {SubCategories[category]
             .filter(sub => sub !== 'All')
@@ -101,7 +101,7 @@ export function FilterPanel({
       </div>
 
       {/* Date Range */}
-      <div className="bg-white rounded-xl p-6">
+      <div className="bg-white rounded-2xl p-6">
         <h3 className="text-lg font-medium mb-4">การตั้งค่าช่วงวันที่</h3>
         <div className="flex items-center space-x-3">
           <div className="flex-1">
@@ -110,7 +110,7 @@ export function FilterPanel({
               value={dateRange.start}
               onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
               className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-              placeholder="วันที่"
+              placeholder="เลือกวันที่"
             />
           </div>
           <span className="text-gray-500">-</span>
@@ -120,14 +120,14 @@ export function FilterPanel({
               value={dateRange.end}
               onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
               className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-              placeholder="วันที่"
+              placeholder="เลือกวันที่"
             />
           </div>
         </div>
       </div>
 
       {/* Province Selection */}
-      <div className="bg-[#8B5CF6] text-white rounded-xl p-6">
+      <div className="bg-[#8B5CF6] text-white rounded-2xl p-6">
         <Select
           value={selectedProvince || "all"}
           onValueChange={(value) => onProvinceChange(value === "all" ? null : value)}
@@ -147,7 +147,7 @@ export function FilterPanel({
       </div>
 
       {/* Irrigation Office */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
         <h3 className="text-lg font-medium mb-4">สำนักงานชลประทาน</h3>
         <IrrigationOfficeFilter
           selectedOffice={selectedOffice}
