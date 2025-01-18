@@ -49,50 +49,42 @@ export function FilterPanel({
     }
   };
 
-  // Effect to handle automatic "All" checkbox state when all subcategories are selected
-  useEffect(() => {
-    Object.keys(SubCategories).forEach(categoryKey => {
-      const category = categoryKey as CategoryName;
-      const subs = SubCategories[category].filter(sub => sub !== 'ทั้งหมด');
-      const allSelected = subs.every(sub => selectedSubCategories.includes(sub));
-      if (allSelected && !selectedSubCategories.includes('ทั้งหมด')) {
-        onSubCategoryChange('ทั้งหมด', true);
-      } else if (!allSelected && selectedSubCategories.includes('ทั้งหมด')) {
-        onSubCategoryChange('ทั้งหมด', false);
-      }
-    });
-  }, [selectedSubCategories, onSubCategoryChange]);
+  // Get the first subcategory for each category (excluding "ทั้งหมด")
+  const getFirstSubCategory = (category: CategoryName) => {
+    const subs = SubCategories[category].filter(sub => sub !== 'ทั้งหมด');
+    return subs[0] || null;
+  };
 
   return (
     <div className="p-4">
-      <div className="space-y-4">
+      <div className="space-y-6">
         {/* Only show the three main categories */}
         {[CategoryName.REPORT_INCIDENT, CategoryName.REQUEST_SUPPORT, CategoryName.REQUEST_INFO].map((category) => {
-          const subs = SubCategories[category];
+          const firstSubCategory = getFirstSubCategory(category);
           return (
             <div key={category} className="bg-white rounded-lg p-4 shadow-sm">
               <h3 className="text-base font-semibold text-gray-900 mb-4">{category}</h3>
-              <div className="flex items-center space-x-2 mb-3">
-                <Checkbox 
-                  id={`${category}-all`}
-                  checked={isAllSelected(category)}
-                  onCheckedChange={(checked) => handleAllChange(category, checked === true)}
-                  className="border-gray-300"
-                />
-                <label htmlFor={`${category}-all`} className="text-sm font-medium text-gray-700">ทั้งหมด</label>
-              </div>
-              <div className="space-y-2 ml-6">
-                {subs.filter(sub => sub !== 'ทั้งหมด').map(sub => (
-                  <div key={sub} className="flex items-center space-x-2">
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id={`${category}-all`}
+                    checked={isAllSelected(category)}
+                    onCheckedChange={(checked) => handleAllChange(category, checked === true)}
+                    className="border-gray-300"
+                  />
+                  <label htmlFor={`${category}-all`} className="text-sm font-medium text-gray-700">ทั้งหมด</label>
+                </div>
+                {firstSubCategory && (
+                  <div className="flex items-center space-x-2 ml-6">
                     <Checkbox 
-                      id={sub}
-                      checked={selectedSubCategories.includes(sub)}
-                      onCheckedChange={(checked) => onSubCategoryChange(sub, checked === true)}
+                      id={firstSubCategory}
+                      checked={selectedSubCategories.includes(firstSubCategory)}
+                      onCheckedChange={(checked) => onSubCategoryChange(firstSubCategory, checked === true)}
                       className="border-gray-300"
                     />
-                    <label htmlFor={sub} className="text-sm text-gray-600">{sub}</label>
+                    <label htmlFor={firstSubCategory} className="text-sm text-gray-600">{firstSubCategory}</label>
                   </div>
-                ))}
+                )}
               </div>
             </div>
           );

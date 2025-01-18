@@ -20,17 +20,22 @@ const DEFAULT_CATEGORIES = [
   CategoryName.REQUEST_INFO
 ];
 
+// Get first subcategory for each category
+const getFirstSubCategories = () => {
+  return DEFAULT_CATEGORIES.map(category => {
+    const subs = SubCategories[category].filter(sub => sub !== 'ทั้งหมด');
+    return subs[0];
+  }).filter(Boolean) as string[];
+};
+
 export function MainPage() {
   const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([]);
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
   const [selectedOffice, setSelectedOffice] = useState<string | null>(null);
 
-  // Initialize subcategories for the three main categories
+  // Initialize with first subcategory from each category
   useEffect(() => {
-    const initialSubCategories = DEFAULT_CATEGORIES.flatMap(category => 
-      SubCategories[category].filter(sub => sub !== 'ทั้งหมด')
-    );
-    setSelectedSubCategories(initialSubCategories);
+    setSelectedSubCategories(getFirstSubCategories());
   }, []);
 
   const handleSubCategoryChange = useCallback((subCategory: string, checked: boolean) => {
