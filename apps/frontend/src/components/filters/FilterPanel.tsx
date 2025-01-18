@@ -52,8 +52,8 @@ export function FilterPanel({
   };
 
   const renderCategory = (category: CategoryName, title: string) => (
-    <div key={category} className="bg-white rounded-2xl p-6">
-      <div className="space-y-6">
+    <div key={category} className="bg-white rounded-2xl p-6 shadow-sm">
+      <div className="space-y-4">
         <div className="flex items-center space-x-2">
           <Checkbox 
             id={`${category}-all`}
