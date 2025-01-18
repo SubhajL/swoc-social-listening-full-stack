@@ -20,14 +20,24 @@ export function MainPage() {
   const [selectedOffice, setSelectedOffice] = useState<string | null>(null);
 
   const handleCategoryChange = useCallback((category: CategoryName | null) => {
-    setSelectedCategory(category);
+    if (category === selectedCategory) {
+      // If clicking the same category, deselect it
+      setSelectedCategory(null);
+    } else {
+      setSelectedCategory(category);
+    }
     // Reset subcategory when category changes
     setSelectedSubCategory(null);
-  }, []);
+  }, [selectedCategory]);
 
   const handleSubCategoryChange = useCallback((subCategory: string | null) => {
-    setSelectedSubCategory(subCategory);
-  }, []);
+    if (subCategory === selectedSubCategory) {
+      // If clicking the same subcategory, deselect it
+      setSelectedSubCategory(null);
+    } else {
+      setSelectedSubCategory(subCategory);
+    }
+  }, [selectedSubCategory]);
 
   return (
     <div className="flex h-screen">

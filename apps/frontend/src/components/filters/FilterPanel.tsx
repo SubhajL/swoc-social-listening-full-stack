@@ -2,6 +2,7 @@ import { CategoryName, SubCategories } from "@/types/processed-post";
 import { IrrigationOfficeFilter } from "./IrrigationOfficeFilter";
 import { SubCategoryFilter } from "./SubCategoryFilter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface FilterPanelProps {
   selectedCategory: CategoryName | null;
@@ -26,49 +27,36 @@ export function FilterPanel({
   onOfficeChange,
   provinces
 }: FilterPanelProps) {
-  // Reset subcategory when category changes
-  const handleCategoryChange = (value: string | null) => {
-    const category = value ? value as CategoryName : null;
-    onCategoryChange(category);
-    // Reset subcategory when category changes
-    onSubCategoryChange(null);
-  };
-
-  // Show subcategories for the first three categories only
-  const shouldShowSubCategories = selectedCategory && selectedCategory !== CategoryName.SUGGESTION;
-
   return (
     <div className="space-y-6 p-6 bg-white rounded-lg shadow">
-      <div className="space-y-2">
-        <label className="text-sm font-medium">หมวดหมู่</label>
-        <Select
-          value={selectedCategory || ""}
-          onValueChange={(value) => handleCategoryChange(value || null)}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="เลือกหมวดหมู่" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">ทั้งหมด</SelectItem>
-            {Object.values(CategoryName).map((category) => (
-              <SelectItem key={category} value={category}>
-                {category}
-              </SelectItem>
+      {/* Categories and Subcategories */}
+      {Object.values(CategoryName).map((category) => (
+        <div key={category} className="space-y-2">
+          <h3 className="text-sm font-medium">{category}</h3>
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id={`${category}-all`}
+                checked={selectedCategory === category}
+                onCheckedChange={(checked) => onCategoryChange(checked ? category : null)}
+              />
+              <label htmlFor={`${category}-all`} className="text-sm">ทั้งหมด</label>
+            </div>
+            {SubCategories[category].slice(1).map((subCategory) => (
+              <div key={subCategory} className="flex items-center space-x-2 pl-6">
+                <Checkbox 
+                  id={`${category}-${subCategory}`}
+                  checked={selectedSubCategory === subCategory}
+                  onCheckedChange={(checked) => onSubCategoryChange(checked ? subCategory : null)}
+                />
+                <label htmlFor={`${category}-${subCategory}`} className="text-sm">{subCategory}</label>
+              </div>
             ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {shouldShowSubCategories && (
-        <div className="space-y-2">
-          <SubCategoryFilter
-            category={selectedCategory}
-            selectedSubCategory={selectedSubCategory}
-            onSubCategoryChange={onSubCategoryChange}
-          />
+          </div>
         </div>
-      )}
+      ))}
 
+      {/* Province Selection */}
       <div className="space-y-2">
         <label className="text-sm font-medium">จังหวัด</label>
         <Select
@@ -89,6 +77,7 @@ export function FilterPanel({
         </Select>
       </div>
 
+      {/* Irrigation Office Filter */}
       <IrrigationOfficeFilter
         selectedOffice={selectedOffice}
         onOfficeChange={onOfficeChange}
