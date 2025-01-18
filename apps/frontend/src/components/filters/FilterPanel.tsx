@@ -53,16 +53,17 @@ export function FilterPanel({
 
   const renderCategory = (category: CategoryName, title: string) => (
     <div key={category} className="bg-white rounded-xl p-6">
-      <div className="space-y-4">
+      <div className="space-y-3">
         <div className="flex items-center space-x-2">
           <Checkbox 
             id={`${category}-all`}
             checked={isAllSelected(category)}
             onCheckedChange={(checked) => handleAllChange(category, checked === true)}
-            className="h-5 w-5 rounded-sm border-gray-300"
+            className="h-4 w-4 rounded-sm border-gray-300"
           />
-          <label htmlFor={`${category}-all`} className="text-lg font-medium">{title}</label>
+          <label htmlFor={`${category}-all`} className="text-base">ทั้งหมด</label>
         </div>
+        <div className="text-lg font-medium -mt-1 mb-2">{title}</div>
         <div className="ml-7 space-y-3">
           {SubCategories[category]
             .filter(sub => sub !== 'All')
@@ -91,8 +92,8 @@ export function FilterPanel({
   });
 
   return (
-    <div className="flex flex-col space-y-6 p-4">
-      <div className="space-y-2">
+    <div className="flex flex-col space-y-4 p-4">
+      <div className="space-y-3">
         {renderCategory(CategoryName.REPORT_INCIDENT, "การรายงานและแจ้งเหตุ")}
         {renderCategory(CategoryName.REQUEST_SUPPORT, "การขอการสนับสนุน")}
         {renderCategory(CategoryName.REQUEST_INFO, "การขอข้อมูล")}
@@ -108,7 +109,8 @@ export function FilterPanel({
               type="date" 
               value={dateRange.start}
               onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" 
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+              placeholder="วันที่"
             />
           </div>
           <span className="text-gray-500">-</span>
@@ -117,7 +119,8 @@ export function FilterPanel({
               type="date" 
               value={dateRange.end}
               onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" 
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+              placeholder="วันที่"
             />
           </div>
         </div>
