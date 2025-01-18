@@ -76,7 +76,10 @@ export function MainPage() {
             selectedOffice={selectedOffice}
             onOfficeChange={setSelectedOffice}
             provinces={PROVINCES}
-            onDateRangeChange={setDateRange}
+            onDateRangeChange={(range) => {
+              setDateRange(range);
+              console.log('Date range updated:', range);
+            }}
           />
         </div>
       </div>

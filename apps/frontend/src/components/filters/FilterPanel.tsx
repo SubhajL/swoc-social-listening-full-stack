@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { CategoryName, SubCategories } from "@/types/processed-post";
 import { IrrigationOfficeFilter } from "./IrrigationOfficeFilter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -21,8 +22,17 @@ export function FilterPanel({
   onProvinceChange,
   selectedOffice,
   onOfficeChange,
-  provinces
+  provinces,
+  onDateRangeChange
 }: FilterPanelProps) {
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ start: '', end: '' });
+
+  // Update parent component when date range changes
+  useEffect(() => {
+    if (onDateRangeChange) {
+      onDateRangeChange(dateRange);
+    }
+  }, [dateRange, onDateRangeChange]);
   const isAllSelected = (category: CategoryName) => {
     const subcategories = SubCategories[category].filter(sub => sub !== 'All');
     const selectedCount = subcategories.filter(sub => 
