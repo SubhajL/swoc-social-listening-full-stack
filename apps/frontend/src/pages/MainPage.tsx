@@ -27,8 +27,8 @@ const getAllSubCategories = () => {
 };
 
 export function MainPage() {
-  // Initialize with empty selection
-  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([]);
+  // Initialize with all subcategories selected
+  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>(getAllSubCategories());
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
   const [selectedOffice, setSelectedOffice] = useState<string | null>(null);
 

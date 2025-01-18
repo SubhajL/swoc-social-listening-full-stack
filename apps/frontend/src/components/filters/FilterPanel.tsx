@@ -42,14 +42,32 @@ export function FilterPanel({
 
   const renderCategory = (category: CategoryName, title: string) => (
     <div key={category} className="bg-white rounded-xl p-4">
-      <div className="flex items-center space-x-2">
-        <Checkbox 
-          id={`${category}-all`}
-          checked={isAllSelected(category)}
-          onCheckedChange={(checked) => handleAllChange(category, checked === true)}
-          className="h-4 w-4"
-        />
-        <label htmlFor={`${category}-all`} className="text-base">{title}</label>
+      <div className="space-y-2">
+        <div className="flex items-center space-x-2">
+          <Checkbox 
+            id={`${category}-all`}
+            checked={isAllSelected(category)}
+            onCheckedChange={(checked) => handleAllChange(category, checked === true)}
+            className="h-4 w-4"
+          />
+          <label htmlFor={`${category}-all`} className="text-base font-medium">{title}</label>
+        </div>
+        <div className="ml-6 space-y-2">
+          {SubCategories[category]
+            .filter(sub => sub !== 'All')
+            .map(subCategory => (
+              <div key={subCategory} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`${category}-${subCategory}`}
+                  checked={selectedSubCategories.includes(subCategory)}
+                  onCheckedChange={(checked) => onSubCategoryChange(subCategory, checked === true)}
+                  className="h-4 w-4"
+                />
+                <label htmlFor={`${category}-${subCategory}`} className="text-sm">{subCategory}</label>
+              </div>
+            ))
+          }
+        </div>
       </div>
     </div>
   );
