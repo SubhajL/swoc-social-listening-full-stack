@@ -28,11 +28,14 @@ export function FilterPanel({
 }: FilterPanelProps) {
   // Reset subcategory when category changes
   const handleCategoryChange = (value: string | null) => {
-    onCategoryChange(value ? value as CategoryName : null);
-    if (selectedSubCategory) {
-      onSubCategoryChange(null);
-    }
+    const category = value ? value as CategoryName : null;
+    onCategoryChange(category);
+    // Reset subcategory when category changes
+    onSubCategoryChange(null);
   };
+
+  // Show subcategories for the first three categories only
+  const shouldShowSubCategories = selectedCategory && selectedCategory !== CategoryName.SUGGESTION;
 
   return (
     <div className="space-y-6 p-6 bg-white rounded-lg shadow">
@@ -56,7 +59,7 @@ export function FilterPanel({
         </Select>
       </div>
 
-      {selectedCategory && (
+      {shouldShowSubCategories && (
         <div className="space-y-2">
           <SubCategoryFilter
             category={selectedCategory}

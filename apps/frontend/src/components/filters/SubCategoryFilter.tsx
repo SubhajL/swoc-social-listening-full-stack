@@ -12,9 +12,10 @@ export function SubCategoryFilter({
   selectedSubCategory, 
   onSubCategoryChange 
 }: SubCategoryFilterProps) {
-  if (!category) return null;
+  if (!category || category === CategoryName.SUGGESTION) return null;
 
   const subCategories = SubCategories[category];
+  const displaySubCategories = subCategories.slice(1); // Remove 'ทั้งหมด' from the array
 
   return (
     <div className="space-y-2">
@@ -27,7 +28,8 @@ export function SubCategoryFilter({
           <SelectValue placeholder="เลือกหมวดหมู่ย่อย" />
         </SelectTrigger>
         <SelectContent>
-          {subCategories.map((subCategory) => (
+          <SelectItem value="">ทั้งหมด</SelectItem>
+          {displaySubCategories.map((subCategory) => (
             <SelectItem key={subCategory} value={subCategory}>
               {subCategory}
             </SelectItem>
