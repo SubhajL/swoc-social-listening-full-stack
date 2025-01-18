@@ -27,7 +27,8 @@ export function SubCategoryFilter({
           <SelectValue placeholder="เลือกหมวดหมู่ย่อย" />
         </SelectTrigger>
         <SelectContent>
-          {subCategories.map((subCategory) => (
+          <SelectItem value="">ทั้งหมด</SelectItem>
+          {subCategories.slice(1).map((subCategory) => (
             <SelectItem key={subCategory} value={subCategory}>
               {subCategory}
             </SelectItem>

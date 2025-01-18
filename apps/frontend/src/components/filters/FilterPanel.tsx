@@ -26,18 +26,27 @@ export function FilterPanel({
   onOfficeChange,
   provinces
 }: FilterPanelProps) {
+  // Reset subcategory when category changes
+  const handleCategoryChange = (value: string | null) => {
+    onCategoryChange(value ? value as CategoryName : null);
+    if (selectedSubCategory) {
+      onSubCategoryChange(null);
+    }
+  };
+
   return (
     <div className="space-y-6 p-6 bg-white rounded-lg shadow">
       <div className="space-y-2">
         <label className="text-sm font-medium">หมวดหมู่</label>
         <Select
           value={selectedCategory || ""}
-          onValueChange={(value) => onCategoryChange(value ? value as CategoryName : null)}
+          onValueChange={(value) => handleCategoryChange(value || null)}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="เลือกหมวดหมู่" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="">ทั้งหมด</SelectItem>
             {Object.values(CategoryName).map((category) => (
               <SelectItem key={category} value={category}>
                 {category}
@@ -48,11 +57,13 @@ export function FilterPanel({
       </div>
 
       {selectedCategory && (
-        <SubCategoryFilter
-          category={selectedCategory}
-          selectedSubCategory={selectedSubCategory}
-          onSubCategoryChange={onSubCategoryChange}
-        />
+        <div className="space-y-2">
+          <SubCategoryFilter
+            category={selectedCategory}
+            selectedSubCategory={selectedSubCategory}
+            onSubCategoryChange={onSubCategoryChange}
+          />
+        </div>
       )}
 
       <div className="space-y-2">

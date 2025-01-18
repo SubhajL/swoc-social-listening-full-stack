@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Map } from "@/components/Map";
 import { FilterPanel } from "@/components/filters/FilterPanel";
 import { CategoryName } from "@/types/processed-post";
@@ -19,6 +19,16 @@ export function MainPage() {
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
   const [selectedOffice, setSelectedOffice] = useState<string | null>(null);
 
+  const handleCategoryChange = useCallback((category: CategoryName | null) => {
+    setSelectedCategory(category);
+    // Reset subcategory when category changes
+    setSelectedSubCategory(null);
+  }, []);
+
+  const handleSubCategoryChange = useCallback((subCategory: string | null) => {
+    setSelectedSubCategory(subCategory);
+  }, []);
+
   return (
     <div className="flex h-screen">
       {/* Main content area */}
@@ -35,9 +45,9 @@ export function MainPage() {
       <div className="w-80 border-l border-gray-200">
         <FilterPanel
           selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
+          onCategoryChange={handleCategoryChange}
           selectedSubCategory={selectedSubCategory}
-          onSubCategoryChange={setSelectedSubCategory}
+          onSubCategoryChange={handleSubCategoryChange}
           selectedProvince={selectedProvince}
           onProvinceChange={setSelectedProvince}
           selectedOffice={selectedOffice}
