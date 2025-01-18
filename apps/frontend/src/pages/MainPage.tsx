@@ -42,7 +42,12 @@ export function MainPage() {
       const newState = checked 
         ? [...prev, subCategory]
         : prev.filter(sc => sc !== subCategory);
-      console.log('Updated subcategories:', newState);
+      console.log('Subcategory changed:', {
+        subCategory,
+        checked,
+        previousState: prev,
+        newState
+      });
       return newState;
     });
   };
@@ -53,7 +58,7 @@ export function MainPage() {
       <div className="flex-1 p-6">
         <Map
           token={MAPBOX_TOKEN}
-          selectedCategories={[]} // No category selection needed
+          selectedCategories={selectedSubCategories}
           selectedProvince={selectedProvince}
           selectedOffice={selectedOffice}
         />

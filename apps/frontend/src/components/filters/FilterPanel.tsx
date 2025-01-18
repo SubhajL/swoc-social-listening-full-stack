@@ -22,11 +22,16 @@ export function FilterPanel({
   onOfficeChange,
   provinces
 }: FilterPanelProps) {
-  // Simplified helper function - no conditions
   const isAllSelected = (category: CategoryName) => {
-    return SubCategories[category]
-      .filter(sub => sub !== 'All')
-      .every(sub => selectedSubCategories.includes(sub));
+    const subcategories = SubCategories[category].filter(sub => sub !== 'All');
+    const selectedCount = subcategories.filter(sub => 
+      selectedSubCategories.includes(sub)
+    ).length;
+    console.log(`Category ${category} selection status:`, {
+      total: subcategories.length,
+      selected: selectedCount
+    });
+    return selectedCount === subcategories.length;
   };
 
   // Simplified helper function - no conditions
