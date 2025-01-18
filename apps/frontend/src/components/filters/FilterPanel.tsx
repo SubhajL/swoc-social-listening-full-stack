@@ -40,38 +40,16 @@ export function FilterPanel({
     subcategories.forEach(sub => onSubCategoryChange(sub, checked));
   };
 
-  // Render categories unconditionally
   const renderCategory = (category: CategoryName, title: string) => (
-    <div key={category} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Checkbox 
-              id={`${category}-all`}
-              checked={isAllSelected(category)}
-              onCheckedChange={(checked) => handleAllChange(category, checked === true)}
-              className="h-5 w-5 border-2"
-            />
-            <label htmlFor={`${category}-all`} className="font-medium text-gray-700">{title}</label>
-          </div>
-        </div>
-        {/* Always show subcategories */}
-        <div className="pl-6 space-y-2.5">
-          {SubCategories[category]
-            .filter(sub => sub !== 'All')
-            .map(sub => (
-              <div key={sub} className="flex items-center space-x-2">
-                <Checkbox 
-                  id={sub}
-                  checked={selectedSubCategories.includes(sub)}
-                  onCheckedChange={(checked) => onSubCategoryChange(sub, checked === true)}
-                  className="h-4 w-4"
-                />
-                <label htmlFor={sub} className="text-sm text-gray-600">{sub}</label>
-              </div>
-            ))
-          }
-        </div>
+    <div key={category} className="bg-white rounded-xl p-4">
+      <div className="flex items-center space-x-2">
+        <Checkbox 
+          id={`${category}-all`}
+          checked={isAllSelected(category)}
+          onCheckedChange={(checked) => handleAllChange(category, checked === true)}
+          className="h-4 w-4"
+        />
+        <label htmlFor={`${category}-all`} className="text-base">{title}</label>
       </div>
     </div>
   );
@@ -84,11 +62,27 @@ export function FilterPanel({
   });
 
   return (
-    <div className="flex flex-col space-y-4 p-4">
-      {/* Render all categories unconditionally */}
-      {renderCategory(CategoryName.REPORT_INCIDENT, "การรายงานและแจ้งเหตุ")}
-      {renderCategory(CategoryName.REQUEST_SUPPORT, "การขอการสนับสนุน")}
-      {renderCategory(CategoryName.REQUEST_INFO, "การขอข้อมูล")}
+    <div className="flex flex-col space-y-6 p-4">
+      <div className="space-y-2">
+        {renderCategory(CategoryName.REPORT_INCIDENT, "การรายงานและแจ้งเหตุ")}
+        {renderCategory(CategoryName.REQUEST_SUPPORT, "การขอการสนับสนุน")}
+        {renderCategory(CategoryName.REQUEST_INFO, "การขอข้อมูล")}
+        {renderCategory(CategoryName.SUGGESTION, "ข้อเสนอแนะ")}
+      </div>
+
+      {/* Date Range */}
+      <div className="bg-white rounded-xl p-4">
+        <h3 className="text-base mb-4">การตั้งค่าช่วงวันที่</h3>
+        <div className="flex items-center space-x-2">
+          <div className="flex-1">
+            <input type="date" className="w-full p-2 border rounded" />
+          </div>
+          <span>-</span>
+          <div className="flex-1">
+            <input type="date" className="w-full p-2 border rounded" />
+          </div>
+        </div>
+      </div>
 
       {/* Province Selection */}
       <div className="bg-[#8B5CF6] text-white rounded-xl p-4">
