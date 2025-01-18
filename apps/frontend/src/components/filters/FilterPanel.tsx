@@ -73,6 +73,13 @@ export function FilterPanel({
     </div>
   );
 
+  // Temporary debug logging
+  console.log('FilterPanel render:', {
+    categories: Object.keys(SubCategories),
+    subcategoriesExample: SubCategories[CategoryName.REPORT_INCIDENT],
+    selectedSubCategories
+  });
+
   return (
     <div className="flex flex-col space-y-4 p-4">
       {/* Render all categories unconditionally */}
