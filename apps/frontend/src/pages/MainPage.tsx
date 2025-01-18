@@ -28,7 +28,8 @@ const getAllSubCategories = () => {
 
 export function MainPage() {
   // Initialize with all subcategories selected
-  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>(getAllSubCategories());
+  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([]);
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ start: '', end: '' });
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
   const [selectedOffice, setSelectedOffice] = useState<string | null>(null);
 
@@ -75,6 +76,7 @@ export function MainPage() {
             selectedOffice={selectedOffice}
             onOfficeChange={setSelectedOffice}
             provinces={PROVINCES}
+            onDateRangeChange={setDateRange}
           />
         </div>
       </div>

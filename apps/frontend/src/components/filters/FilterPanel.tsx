@@ -11,6 +11,7 @@ interface FilterPanelProps {
   selectedOffice: string | null;
   onOfficeChange: (office: string | null) => void;
   provinces: string[];
+  onDateRangeChange?: (range: { start: string; end: string }) => void;
 }
 
 export function FilterPanel({
@@ -93,11 +94,21 @@ export function FilterPanel({
         <h3 className="text-lg font-medium mb-4">การตั้งค่าช่วงวันที่</h3>
         <div className="flex items-center space-x-3">
           <div className="flex-1">
-            <input type="date" className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" />
+            <input 
+              type="date" 
+              value={dateRange.start}
+              onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" 
+            />
           </div>
           <span className="text-gray-500">-</span>
           <div className="flex-1">
-            <input type="date" className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" />
+            <input 
+              type="date" 
+              value={dateRange.end}
+              onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" 
+            />
           </div>
         </div>
       </div>
