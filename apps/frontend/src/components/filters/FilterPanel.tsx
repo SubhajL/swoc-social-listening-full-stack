@@ -26,12 +26,6 @@ export function FilterPanel({
   onDateRangeChange
 }: FilterPanelProps) {
   const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ start: '', end: '' });
-  const [expandedCategories, setExpandedCategories] = useState<Record<CategoryName, boolean>>({
-    [CategoryName.REPORT_INCIDENT]: true,
-    [CategoryName.REQUEST_SUPPORT]: true,
-    [CategoryName.REQUEST_INFO]: true,
-    [CategoryName.SUGGESTION]: true
-  });
 
   // Update parent component when date range changes
   useEffect(() => {
@@ -65,12 +59,9 @@ export function FilterPanel({
   };
 
   const renderCategory = (category: CategoryName, title: string) => (
-    <div key={category} className="bg-white rounded-2xl p-6 transition-all duration-200">
+    <div key={category} className="bg-white rounded-2xl p-6">
       <div className="space-y-3">
-        <div 
-          className="flex items-center space-x-2 cursor-pointer"
-          onClick={() => toggleCategory(category)}
-        >
+        <div className="flex items-center space-x-2">
           <Checkbox 
             id={`${category}-all`}
             checked={isAllSelected(category)}
@@ -80,9 +71,7 @@ export function FilterPanel({
           <label htmlFor={`${category}-all`} className="text-base">ทั้งหมด</label>
         </div>
         <div className="text-xl font-medium -mt-1 mb-2">{title}</div>
-        <div className={`ml-7 space-y-3 transition-all duration-200 ${
-          expandedCategories[category] ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
-        }`}>
+        <div className="ml-7 space-y-3">
           {SubCategories[category]
             .filter(sub => sub !== 'All')
             .map(subCategory => (
