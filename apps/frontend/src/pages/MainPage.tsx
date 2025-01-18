@@ -27,11 +27,36 @@ const getAllSubCategories = () => {
 };
 
 export function MainPage() {
-  // Initialize with all subcategories selected
+  // Initialize states
   const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>(getAllSubCategories());
   const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ start: '', end: '' });
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
   const [selectedOffice, setSelectedOffice] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Effect to handle filter changes
+  useEffect(() => {
+    const applyFilters = async () => {
+      setIsLoading(true);
+      try {
+        // Here you would typically call your API with the filter values
+        console.log('Applying filters:', {
+          selectedSubCategories,
+          dateRange,
+          selectedProvince,
+          selectedOffice
+        });
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 500));
+      } catch (error) {
+        console.error('Error applying filters:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    applyFilters();
+  }, [selectedSubCategories, dateRange, selectedProvince, selectedOffice]);
 
   // Log initial state for debugging
   useEffect(() => {
