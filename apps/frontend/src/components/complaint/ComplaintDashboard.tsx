@@ -9,15 +9,18 @@ import { DashboardNavigation } from "./DashboardNavigation";
 const ComplaintDashboard = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
+  const [selectedOffice, setSelectedOffice] = useState<string | null>(null);
   const [categoryStates, setCategoryStates] = useState<CategoryState>({
-    "ข้อร้องเรียน": false,
-    "การสนับสนุน": false,
-    "การขอข้อมูล": false
+    "การรายงานและแจ้งเหตุ": false,
+    "การขอการสนับสนุน": false,
+    "การขอข้อมูล": false,
+    "ข้อเสนอแนะ": false
   });
 
   const { data: complaints, isLoading } = useComplaints({
     categories: selectedCategories,
-    province: selectedProvince
+    province: selectedProvince,
+    office: selectedOffice
   });
 
   const handleCategoryChange = (category: string) => {
@@ -36,6 +39,11 @@ const ComplaintDashboard = () => {
     setSelectedProvince(englishProvince);
   };
 
+  const handleOfficeChange = (office: string) => {
+    const selectedOffice = office === "ทั้งหมด" ? null : office;
+    setSelectedOffice(selectedOffice);
+  };
+
   return (
     <div className="min-h-screen bg-[#F0F8FF] flex flex-col">
       <DashboardHeader />
@@ -46,11 +54,13 @@ const ComplaintDashboard = () => {
           isLoading={isLoading}
           selectedCategories={selectedCategories}
           selectedProvince={selectedProvince}
+          selectedOffice={selectedOffice}
         />
         <FilterSection
           categoryStates={categoryStates}
           onCategoryChange={handleCategoryChange}
           onProvinceChange={handleProvinceChange}
+          onOfficeChange={handleOfficeChange}
         />
       </div>
 

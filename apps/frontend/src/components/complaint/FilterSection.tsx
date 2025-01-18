@@ -3,18 +3,21 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
 import { FilterCard } from "@/components/map/FilterCard";
 import { ProvinceSelect } from "@/components/map/ProvinceSelect";
+import { IrrigationOfficeSelect } from "@/components/map/IrrigationOfficeSelect";
 import { FilterSectionProps } from "@/types/complaint";
 
 const categories = [
-  { id: "complaints", name: "ข้อร้องเรียน" },
-  { id: "support", name: "การสนับสนุน" },
-  { id: "info", name: "การขอข้อมูล" }
+  { id: "report_incident", name: "การรายงานและแจ้งเหตุ" },
+  { id: "request_support", name: "การขอการสนับสนุน" },
+  { id: "request_info", name: "การขอข้อมูล" },
+  { id: "suggestion", name: "ข้อเสนอแนะ" }
 ] as const;
 
 export const FilterSection = ({
   categoryStates,
   onCategoryChange,
-  onProvinceChange
+  onProvinceChange,
+  onOfficeChange
 }: FilterSectionProps) => {
   return (
     <div className="w-80 p-4 space-y-4">
@@ -43,6 +46,7 @@ export const FilterSection = ({
       </Card>
 
       <ProvinceSelect onProvinceChange={onProvinceChange} />
+      <IrrigationOfficeSelect onOfficeChange={onOfficeChange} />
     </div>
   );
 };

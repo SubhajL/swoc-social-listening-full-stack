@@ -39,6 +39,7 @@ export interface FilterSectionProps {
   categoryStates: CategoryState;
   onCategoryChange: (category: string) => void;
   onProvinceChange: (province: string) => void;
+  onOfficeChange: (office: string) => void;
 }
 
 export interface MapSectionProps {
@@ -46,6 +47,7 @@ export interface MapSectionProps {
   isLoading: boolean;
   selectedCategories: string[];
   selectedProvince: string | null;
+  selectedOffice: string | null;
 }
 
 // Validation type
