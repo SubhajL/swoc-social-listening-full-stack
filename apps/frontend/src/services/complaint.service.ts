@@ -8,23 +8,31 @@ class ComplaintService {
   async getComplaints(filters?: {
     categories?: string[];
     province?: string | null;
+    office?: string | null;
   }): Promise<Complaint[]> {
     try {
       console.log('Fetching complaints with filters:', filters);
       
       let filteredComplaints = [...this.complaints];
       
-      if (filters?.categories?.length) {
+      if (filters?.categories && filters.categories.length > 0) {
         console.log('Applying category filter:', filters.categories);
         filteredComplaints = filteredComplaints.filter(complaint => 
-          filters.categories.includes(complaint.category)
+          filters.categories!.includes(complaint.category)
         );
       }
 
       if (filters?.province) {
         console.log('Applying province filter:', filters.province);
         filteredComplaints = filteredComplaints.filter(complaint => 
-          complaint.location.includes(filters.province)
+          complaint.location.includes(filters.province!)
+        );
+      }
+
+      if (filters?.office) {
+        console.log('Applying office filter:', filters.office);
+        filteredComplaints = filteredComplaints.filter(complaint => 
+          complaint.location.includes(filters.office!)
         );
       }
 

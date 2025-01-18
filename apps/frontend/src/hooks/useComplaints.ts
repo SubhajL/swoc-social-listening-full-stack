@@ -4,6 +4,7 @@ import { complaintService } from "@/services/complaint.service";
 export const useComplaints = (filters?: {
   categories?: string[];
   province?: string | null;
+  office?: string | null;
 }) => {
   return useQuery({
     queryKey: ['complaints', filters],

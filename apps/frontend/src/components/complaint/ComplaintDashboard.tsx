@@ -24,7 +24,7 @@ const ComplaintDashboard = () => {
   });
 
   const handleCategoryChange = (category: string) => {
-    setCategoryStates(prev => {
+    setCategoryStates((prev: CategoryState) => {
       const newState = { ...prev, [category]: !prev[category] };
       const selectedCats = Object.entries(newState)
         .filter(([_, isSelected]) => isSelected)
