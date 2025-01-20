@@ -1,0 +1,53 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rid: <http://rid.irrigation.th/ontology#> .
+
+# Ontology Declaration
+<http://rid.irrigation.th/ontology> rdf:type owl:Ontology ;
+    rdfs:label "Royal Irrigation Department Ontology"@en ;
+    rdfs:comment "Ontology for water-related incidents and irrigation management"@en .
+
+# Main Classes
+rid:WaterIncident rdf:type owl:Class ;
+    rdfs:label "Water Incident"@en ;
+    rdfs:comment "A water-related incident such as flooding or drought"@en .
+
+rid:Location rdf:type owl:Class ;
+    rdfs:label "Location"@en ;
+    rdfs:comment "A geographical location"@en .
+
+rid:Response rdf:type owl:Class ;
+    rdfs:label "Response"@en ;
+    rdfs:comment "A response to a water-related incident"@en .
+
+# Incident Types
+rid:Flood rdf:type owl:Class ;
+    rdfs:subClassOf rid:WaterIncident ;
+    rdfs:label "Flood"@en .
+
+rid:Drought rdf:type owl:Class ;
+    rdfs:subClassOf rid:WaterIncident ;
+    rdfs:label "Drought"@en .
+
+# Properties
+rid:hasLocation rdf:type owl:ObjectProperty ;
+    rdfs:domain rid:WaterIncident ;
+    rdfs:range rid:Location ;
+    rdfs:label "has location"@en .
+
+rid:hasResponse rdf:type owl:ObjectProperty ;
+    rdfs:domain rid:WaterIncident ;
+    rdfs:range rid:Response ;
+    rdfs:label "has response"@en .
+
+rid:severity rdf:type owl:DatatypeProperty ;
+    rdfs:domain rid:WaterIncident ;
+    rdfs:range xsd:string ;
+    rdfs:label "severity"@en .
+
+rid:timestamp rdf:type owl:DatatypeProperty ;
+    rdfs:domain rid:WaterIncident ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "timestamp"@en . 

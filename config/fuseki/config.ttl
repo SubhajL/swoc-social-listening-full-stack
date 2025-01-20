@@ -1,0 +1,25 @@
+PREFIX :      <http://base/#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tdb:   <http://jena.hpl.hp.com/2008/tdb#>
+PREFIX owl:   <http://www.w3.org/2002/07/owl#>
+PREFIX rid:   <http://rid.irrigation.th/ontology#>
+PREFIX fuseki: <http://jena.apache.org/fuseki#>
+
+[] rdf:type fuseki:Server ;
+   fuseki:services (
+     :service1
+   ) .
+
+:service1 rdf:type fuseki:Service ;
+    fuseki:name                     "rid" ;
+    fuseki:serviceQuery            "query" ;
+    fuseki:serviceQuery            "sparql" ;
+    fuseki:serviceUpdate           "update" ;
+    fuseki:serviceUpload           "upload" ;
+    fuseki:serviceReadWriteGraphStore    "data" ;
+    fuseki:serviceReadGraphStore   "get" ;
+    fuseki:dataset [
+        rdf:type tdb:DatasetTDB ;
+        tdb:location "DB/rid" ;
+    ] . 
