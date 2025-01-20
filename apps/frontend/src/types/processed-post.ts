@@ -34,14 +34,14 @@ export const CategoryIconMap = {
 
 export const SubCategories: Record<CategoryName, string[]> = {
   [CategoryName.REPORT_INCIDENT]: [
-    'ทั้งหมด',
+    'All',
     'อาคารชลประทานชำรุด',
     'สถานการณ์น้ำท่วม',
     'สถานการณ์น้ำแล้ง',
     'ดำเนินการปลอดภัยอื่นๆ อาทิ หญ้าขึ้นสูงบังวิสัยทัศน์ และอื่นๆ'
   ],
   [CategoryName.REQUEST_SUPPORT]: [
-    'ทั้งหมด',
+    'All',
     'เพิ่ม/ลด การปล่อยน้ำ',
     'การขอความสนับสนุนเครื่องมือเครื่องจักร',
     'เปิด/ปิด ประตูน้ำ',
@@ -59,7 +59,7 @@ export const SubCategories: Record<CategoryName, string[]> = {
     'ข้อมูลในระบบสารสนเทศกรมชลประทานสูญหาย'
   ],
   [CategoryName.REQUEST_INFO]: [
-    'ทั้งหมด',
+    'All',
     'สภาพฝน',
     'สภาพแล้ง',
     'แหล่งข้อมูลฝน',
@@ -76,7 +76,7 @@ export const SubCategories: Record<CategoryName, string[]> = {
     'การใช้งานระบบ/อุปกรณ์',
     'แผนงานโครงการเพื่อการแก้ไขปัญหา'
   ],
-  [CategoryName.SUGGESTION]: ['ทั้งหมด']
+  [CategoryName.SUGGESTION]: ['All']
 }
 
 export const IrrigationOffices = [
