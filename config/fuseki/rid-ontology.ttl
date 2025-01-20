@@ -4,32 +4,33 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rid: <http://rid.irrigation.th/ontology#> .
 
-# Ontology Declaration
-<http://rid.irrigation.th/ontology> rdf:type owl:Ontology ;
-    rdfs:label "Royal Irrigation Department Ontology"@en ;
-    rdfs:comment "Ontology for water-related incidents and irrigation management"@en .
+# Ontology Definition
+rid: rdf:type owl:Ontology ;
+    rdfs:label "RID Irrigation Ontology"@en ;
+    rdfs:comment "Ontology for the Royal Irrigation Department's water incident tracking system"@en .
 
-# Main Classes
+# Classes
 rid:WaterIncident rdf:type owl:Class ;
     rdfs:label "Water Incident"@en ;
-    rdfs:comment "A water-related incident such as flooding or drought"@en .
+    rdfs:comment "A water-related incident such as flood or drought"@en .
 
-rid:Location rdf:type owl:Class ;
-    rdfs:label "Location"@en ;
-    rdfs:comment "A geographical location"@en .
-
-rid:Response rdf:type owl:Class ;
-    rdfs:label "Response"@en ;
-    rdfs:comment "A response to a water-related incident"@en .
-
-# Incident Types
 rid:Flood rdf:type owl:Class ;
     rdfs:subClassOf rid:WaterIncident ;
-    rdfs:label "Flood"@en .
+    rdfs:label "Flood"@en ;
+    rdfs:comment "A flood incident"@en .
 
 rid:Drought rdf:type owl:Class ;
     rdfs:subClassOf rid:WaterIncident ;
-    rdfs:label "Drought"@en .
+    rdfs:label "Drought"@en ;
+    rdfs:comment "A drought incident"@en .
+
+rid:Location rdf:type owl:Class ;
+    rdfs:label "Location"@en ;
+    rdfs:comment "Geographic location of an incident"@en .
+
+rid:Response rdf:type owl:Class ;
+    rdfs:label "Response"@en ;
+    rdfs:comment "Response action taken for an incident"@en .
 
 # Properties
 rid:hasLocation rdf:type owl:ObjectProperty ;
@@ -44,7 +45,7 @@ rid:hasResponse rdf:type owl:ObjectProperty ;
 
 rid:severity rdf:type owl:DatatypeProperty ;
     rdfs:domain rid:WaterIncident ;
-    rdfs:range xsd:string ;
+    rdfs:range xsd:integer ;
     rdfs:label "severity"@en .
 
 rid:timestamp rdf:type owl:DatatypeProperty ;
