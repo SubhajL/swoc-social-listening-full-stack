@@ -32,7 +32,19 @@ rid:Response rdf:type owl:Class ;
     rdfs:label "Response"@en ;
     rdfs:comment "Response action taken for an incident"@en .
 
-# Properties
+rid:SocialPost rdf:type owl:Class ;
+    rdfs:label "Social Media Post"@en ;
+    rdfs:comment "A social media post related to a water incident"@en .
+
+rid:User rdf:type owl:Class ;
+    rdfs:label "Social Media User"@en ;
+    rdfs:comment "A user who posted about a water incident"@en .
+
+rid:Sentiment rdf:type owl:Class ;
+    rdfs:label "Sentiment"@en ;
+    rdfs:comment "Sentiment analysis of a social media post"@en .
+
+# Object Properties
 rid:hasLocation rdf:type owl:ObjectProperty ;
     rdfs:domain rid:WaterIncident ;
     rdfs:range rid:Location ;
@@ -43,6 +55,22 @@ rid:hasResponse rdf:type owl:ObjectProperty ;
     rdfs:range rid:Response ;
     rdfs:label "has response"@en .
 
+rid:mentionsIncident rdf:type owl:ObjectProperty ;
+    rdfs:domain rid:SocialPost ;
+    rdfs:range rid:WaterIncident ;
+    rdfs:label "mentions incident"@en .
+
+rid:postedBy rdf:type owl:ObjectProperty ;
+    rdfs:domain rid:SocialPost ;
+    rdfs:range rid:User ;
+    rdfs:label "posted by"@en .
+
+rid:hasSentiment rdf:type owl:ObjectProperty ;
+    rdfs:domain rid:SocialPost ;
+    rdfs:range rid:Sentiment ;
+    rdfs:label "has sentiment"@en .
+
+# Datatype Properties
 rid:severity rdf:type owl:DatatypeProperty ;
     rdfs:domain rid:WaterIncident ;
     rdfs:range xsd:integer ;
@@ -51,4 +79,49 @@ rid:severity rdf:type owl:DatatypeProperty ;
 rid:timestamp rdf:type owl:DatatypeProperty ;
     rdfs:domain rid:WaterIncident ;
     rdfs:range xsd:dateTime ;
-    rdfs:label "timestamp"@en . 
+    rdfs:label "timestamp"@en .
+
+rid:postContent rdf:type owl:DatatypeProperty ;
+    rdfs:domain rid:SocialPost ;
+    rdfs:range xsd:string ;
+    rdfs:label "post content"@en .
+
+rid:postTimestamp rdf:type owl:DatatypeProperty ;
+    rdfs:domain rid:SocialPost ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "post timestamp"@en .
+
+rid:platform rdf:type owl:DatatypeProperty ;
+    rdfs:domain rid:SocialPost ;
+    rdfs:range xsd:string ;
+    rdfs:label "social media platform"@en .
+
+rid:userName rdf:type owl:DatatypeProperty ;
+    rdfs:domain rid:User ;
+    rdfs:range xsd:string ;
+    rdfs:label "user name"@en .
+
+rid:userLocation rdf:type owl:DatatypeProperty ;
+    rdfs:domain rid:User ;
+    rdfs:range xsd:string ;
+    rdfs:label "user location"@en .
+
+rid:sentimentScore rdf:type owl:DatatypeProperty ;
+    rdfs:domain rid:Sentiment ;
+    rdfs:range xsd:float ;
+    rdfs:label "sentiment score"@en .
+
+rid:latitude rdf:type owl:DatatypeProperty ;
+    rdfs:domain rid:Location ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "latitude"@en .
+
+rid:longitude rdf:type owl:DatatypeProperty ;
+    rdfs:domain rid:Location ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "longitude"@en .
+
+rid:locationName rdf:type owl:DatatypeProperty ;
+    rdfs:domain rid:Location ;
+    rdfs:range xsd:string ;
+    rdfs:label "location name"@en . 

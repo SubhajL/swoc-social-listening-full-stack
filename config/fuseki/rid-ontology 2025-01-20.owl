@@ -1,0 +1,5536 @@
+<?xml version="1.0"?>
+<Ontology xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://www.semanticweb.org/admin/ontologies/2567/11/untitled-ontology-32"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     ontologyIRI="http://www.semanticweb.org/admin/ontologies/2567/11/untitled-ontology-32">
+    <Prefix name="" IRI="http://www.semanticweb.org/admin/ontologies/2567/11/untitled-ontology-32"/>
+    <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    <Prefix name="xml" IRI="http://www.w3.org/XML/1998/namespace"/>
+    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
+    <Annotation>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <Literal xml:lang="th">ontology ของ ระบบการจัดการน้ำ ของกรมชลประทานในประเทศไทย</Literal>
+    </Annotation>
+    <Declaration>
+        <Class IRI="#Facebook"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#GISDA"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กรมชลประทาน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กรมป้องกันและบรรเทาสาธารณภัย"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กระบวนการก่อสร้าง"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กระบวนการจัดการสถานการณ์น้ำ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กระบวนการทางการเกษตร"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กระบวนการทางอุทกวิทยา"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การขอการสนับสนุน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การขอข้อมูล"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การขอช่วยดำเนินการ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การควบคุมวัชพืช"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการข้อร้องเรียน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการทรัพยากรน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการน้ำหลาก"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการภัยแล้ง"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการภาวะฉุกเฉิน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการอุทกภัย"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การติดต่อและติดตาม"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบริหารจัดการ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบริหารจัดการน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบริหารสถานการณ์น้ำ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบำรุงรักษาอาคารชลประทาน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การป้องกันน้ำท่วม"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การรายงานและแจ้งเหตุ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การเสนอความคิดเห็น"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การแก้ปัญหาภัยแล้ง"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การไฟฟ้าฝ่ายผลิต"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ข้อเสนอแนะ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#จังหวัด"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ช่องทางการสื่อสาร"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ตำบล"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทรัพยากร"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#น้ำท่วม"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#น้ำหลาก"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บุคคล"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บุคลากร"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประตูน้ำแบบบาน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประตูน้ำแบบปีกผีเสื้อ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประเภทข้อร้องเรียน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ปรากฏการณ์ทางธรณีวิทยา"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ปรากฏการณ์ทางน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ปรากฏการณ์ทางอากาศ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ปรากฏการณ์ธรรมชาติ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ผู้ที่มีส่วนเกี่ยวข้อง"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝ่าย"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#พื้นที่การปกครอง"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#พื้นที่ขาดแคลนน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#พื้นที่น้ำท่วมซ้ำซาก"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#พื้นที่ริมฝั่งน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#พื้นที่เสี่ยงภัย"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#พื้นที่เสี่ยงภัยแล้ง"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#พื้นที่เสี่ยงอุทกภัย"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ภัยแล้ง"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ภาค"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ภาคกลาง"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ภาคอีสาน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ภาคเหนือ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ภาคใต้"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ภูมิภาค"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#มาตรการ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#มาตรการภัยแล้ง"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#มาตรการอุทุกภัย"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#มาตราการรับมือฤดูฝน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ระบบ_SCADA"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ระบบโทรมาตร"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ลานีญา"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สถานะเรื่องร้องเรียน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สถานีสูบน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สายด่วน_1460"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_1"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_10"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_11"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_12"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_13"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_14"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_15"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_16"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_17"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_2"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_3"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_4"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_5"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_6"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_7"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_8"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#สำนักงานชลประทานที่_9"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#หน่วยงาน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#หมู่บ้าน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#องค์กรปกครองส่วนท้องถิ่น"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารและสิ่งก่อสร้าง"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อำเภอ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อุทกภัย"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เกษตรกรในพื้นที่"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขต"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เว็บไซต์กรมชลประทาน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เอลนีโญ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แผนงานการจัดการน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แผนบริหารจัดการน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แม่น้ำ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แหล่งน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แหล่งน้ำธรรมชาติ"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แหล่งน้ำในชุมชน"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โครงการกำจัดวัชพืช"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โครงการชลประทานจังหวัด"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โครงการส่งน้ำและบำรุงรักษา"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#X_(Twitter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กระบวนการซึม_(Infiltration_Process)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กระบวนการระเหย_(Evaporation_Process)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กระบวนการไหล_(Flow_Process)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กลยุทธ์_(Strategy)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กลุ่มเปราะบาง_(Vulnerable_Group)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กล้องระดับดัมปี_(DumpyLevel)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กล้องระดับมือถือ_(HandLevel)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การกระจายการผลิตพืช_(Crop_Diversification)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การกร่อน_(Erosion)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การกร่อนแบบร่องธาร_(Gully_Erosion)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การกัดเซาะ_(Erosion_Types)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การกัดเซาะชายฝั่ง_(Coastal_Erosion)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การกัดเซาะผิวหน้าลักษณะเป็นแผ่น_(Sheet_Erosion)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การควบคุมน้ำ_(Water_Control_Management)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การควบคุมวัชพืช_(Weed_Control)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การควบคุมโดยท้ายน้ำ_(Downstream_Control)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การควบคุมโดยเหนือน้ำ_(Upstream_Control)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การคายน้ำ_(Transpiration)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การคายระเหย_(Evapotranspiration)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการชลประทาน_(Irrigation_Management)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการทรัพยากรน้ำ_(Water_Resource_Management)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการทรัพยากรน้ำแบบบูรณาการ_(Integrated_Water_Resources_Management)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการน้ำชลประทานในแปลงนา_(Farm_Water_Management)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการน้ำท่วม_(Flood_Management)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการพืช_(Crop_Management)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการลุ่มน้ำ_(Watershed_Management)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การจัดการในภาวะฉุกเฉิน_(Emergency_Management)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การชลประทาน_(Irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การซึม_(Infiltration,_Seepage)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การซึมผ่านดินอิ่มตัว_(Percolation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การซึมลึก_(Deep_Percolation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การซ่อมสร้าง_(Reconstruction)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การดาด_(Lining)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การดาดคอนกรีต_(Concrete_Lining)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การตกตะกอน_(Sedimentation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การทดสอบการบดอัดมาตรฐาน_(Standard_Compaction_Test)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การทดสอบการยุบตัว_(Slump_Test)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การทรุดตัวที่ยอมได้_(Settlement_Allowance)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การทำไร่นาแบบมุ่งเน้น_(Intensive_Farming)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบริหารจัดการ_(Management)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบริหารจัดการลุ่มน้ำ_(Catchment_Management)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบัญชาการ_(Command)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบัญชาการร่วม_(Unified_Command)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบัญชาการเหตุการณ์_(Incident_Command)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบำรุงรักษา_(Maintenance)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบำรุงรักษา_(Maintenance_Management)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบำรุงรักษาปกติ_(Regular_Maintenance)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบำรุงรักษาเชิงแก้ไข_(Corrective_Maintenance)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบำรุงรักษาแบบป้องกัน_(Preventive_Maintenance)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การบ่มคอนกรีต_(Concrete_Curing)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การปลูกพืชหมุนเวียน_(Crop_Rotation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การปลูกพืชเชิงเดี่ยว_(Monoculture)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การระเหย_(Evaporation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การระเหยทั้งหมด_(Total_Evaporation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การส่งน้ำแบบตลอดเวลา_(Continuous_Flow_Irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การหดจากการแข็งตัว_(Settlement_Shrinkage)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การอัดฉีด_(Grouting)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การอัดฉีดฉาบผิว_(Slush_Grouting)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การอัดฉีดด้วยเบนทอไนต์_(Bentonite_Grouting)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การอัดฉีดโดยการพ่น_(Jet_Grouting)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การเกิดน้ำท่วม_(Flooding)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การเกิดโพรงท่อ_(Piping)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การเคลื่อนตัวของน้ำท่วม_(Flood_Routing)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การเคลื่อนตัวของน้ำหลากผ่านอ่างเก็บน้ำ_(Reservoir_Routing)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การเคลื่อนตัวของพื้นดิน_(Ground_Movement)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การเคลื่อนไหวของเปลือกโลก_(Crustal_Movement)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การเจาะ_(Drilling)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การเตรียมความพร้อม_(Preparedness)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การเตือนภัยล่วงหน้า_(Early_Warning)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การเตือนภัยและการป้องกัน_(Warning_and_Protection)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การไหลของน้ำใต้ดิน_(Groundwater_Flow)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การไหลตามฤดูกาล_(Seasonal_Flow)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การไหลแบบคงที่_(Steady_Flow)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การไหลแบบจม_(Submerged_Flow)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การไหลแบบปั่นป่วน_(Turbulent_Flow)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การไหลแบบราบเรียบ_(Laminar_Flow)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การไหลแบบวิกฤติ_(Critical_Flow)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การไหลแบบเนื้อเดียว_(Homogeneous_Flow)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#การไหลใต้ดิน_(Subsurface_Flow)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กาลักน้ำ_(Siphon)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กำแพงกันดิน_(Retaining_Wall)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กำแพงตีนลาด_(Toe_Wall)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กำแพงทึบน้ำ_(Diaphragm_Wall)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กำแพงนำน้ำ_(Guide_Wall)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กำแพงปีก_(Wing_Wall)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กำแพงป้องกันน้ำท่วม_(Flood_Wall)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กำแพงล่าง_(Cutoff_Wall)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กำแพงสารละลายทึบน้ำ_(Slurry_Wall)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#กำแพงใต้ร่องแกน_(Key_Wall)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ขั้นบันได_(Terrace)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ข้อมูล_(Data)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ข้อมูล_Diagram_(Data_Diagram)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ข้อมูลสภาพการก่อสร้าง_(Construction_Status_Data)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ข้อมูลอุปกรณ์_(Equipment_Data)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลอง_(Canal)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลองชลประทาน_(Irrigation_Canal)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลองชักน้ำ_(Feeder_Canal)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลองซอย_(Lateral/Secondary_Canal)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลองดาด_(Lined_Canal)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลองดิน_(Earth_Canal)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลองรับน้ำนอง_(Inundation_Canal)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลองลัด_(Cutoff)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลองส่งน้ำสายใหญ่/สายหลัก_(Main/Primary_Canal)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลองส่งน้ำสายใหญ่ฝั่งขวา_(Right_Main_Canal)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลองส่งน้ำสายใหญ่ฝั่งซ้าย_(Left_Main_Canal)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลองแยก_(Branch_Canal)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลองแยกซอย_(Sub-lateral)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คลื่นน้ำท่วม_(Flood_Wave)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#คัน_(Embankment)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#งานคอนกรีต_(Concrete_Works)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#งานดิน_(Ground_Works)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#งานอัดฉีด_(Grouting_Works)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานขนาดเล็ก_(Tank_Irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานจุลภาค_(Micro_Irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานฉีดฝอย_(Overhead/Spray/Sprinkler_Irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานน้ำขาด_(Sub-irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานน้ำนอง_(Flood_Irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานน้ำหยด_(Drip_Irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานผิวดิน_(Surface_Irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานร่องคู_(Furrow_Irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานลูกฟูก_(Corrugation_Irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานหมุนเวียน_(Irrigation_Rotation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานแบบท่วมขัง_(Border_Irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานแบบปรับระดับดินและท่วมขัง_(Basin/Level_Border_Irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานแบบร่องสลับร่อง_(Alternate_Furrow_Irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชลประทานใต้ผิวดิน_(Subsurface/Sub-irrigation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ชานพัก_(Berm)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ช่วงแผ่นดินไหว_(Earthquake_Period)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ช่องระบายทราย_(Sand_Sluice)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ช่องระบายน้ำ_(Bank_Sluice)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ช่องลัด_(Cutoff)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ช่องลัดลดน้ำท่วม_(Flood_Bypass)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ดินดอนสามเหลี่ยม_(Delta)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ดินไหล_(Earth_Flow)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ตอม่อ_(Pier)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ตอม่อริม_(Abutment)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ตะบันน้ำ_(Hydraulic_Ram)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ตะพัก_(Terrace)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ตะพักลุ่มน้ำ_(Alluvial_Terrace)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ตะแกรงกันสวะ_(Trash_Rack)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ตะแกรงปลา_(Fish_Screen)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ถังวัดการใช้น้ำ_(Lysimeter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ถังวัดการใช้น้ำของข้าว_(RiceLysimeter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ถังวัดการใช้น้ำของพืช_(PlantLysimeter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ถังวัดการใช้น้ำแบบระบายน้ำ_(PercolationTypeLysimeter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ถังวัดการใช้น้ำแบบไฮดรอลิค_(HydraulicWeighingLysimeter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ถาดวัดการระเหย_(EvaporationPan)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ถาดวัดการระเหย_ClassA_(ClassAPan)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายตะกอน_(Sluiceway)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายน้ำซึมแนวตั้ง_(Chimney_Drain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายน้ำท่วม_(Floodway)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายน้ำรวม_(Collector_Drain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายน้ำล้นฉุกเฉิน_(Emergency_Spillway)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายน้ำล้นด้านข้าง_(Lateral_Flow/Side_Channel_Spillway)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายน้ำล้นปากแตร_(Morning_Glory_Spillway)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายน้ำเพื่อลดแรงดัน_(Relief/Seepage_Drain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายน้ำแนวดิ่ง_(Vertical_Drain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายน้ำแบบรูตุ่น_(Mole_Drain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายน้ำแบบสกัดกั้น_(Intercepting_Drain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายน้ำใต้ดินท้ายเขื่อน_(Toe_Drain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ทางระบายน้ำใต้เขื่อน_(Trench_Drain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ที่ราบชายฝั่ง_(Coastal_Plain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ที่ราบตะกอนน้ำพา_(Alluvial_Plain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ที่ลุ่มน้ำเค็ม_(Salt_Marsh)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ท่อ_(Pipe)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ท่อกรุ_(Casing)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ท่อตั้ง_(Riser_Pipe)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ท่อนกั้นน้ำ_(Stoplogs)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ท่อนำน้ำเข้าเครื่องกังหันน้ำ_(Penstock)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ท่อระบายน้ำดินเผา_(Tile_Drain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ท่อลอด_(Culvert)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ท่อส่งน้ำเข้านา_(Farm_Intake/Turnout)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ท่อเชื่อมกาลักน้ำ_(Siphon)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#น้ำขึ้นลง_(Tide)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#น้ำขึ้นเต็มที่_(High_Tide)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#น้ำตาย_(Neap_Tide)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#น้ำท่วมฉับพลัน_(Flash_Flood)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#น้ำท่วมสุดโต่ง_(Extreme_Flood)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#น้ำท่า_(Runoff)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#น้ำเท้อ_(Backwater)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#น้ำโจน_(Hydraulic_Jump)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานกั้นน้ำชั่วคราว_(Bulkhead_Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานชนิดกระดก_(Flap_Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานชนิดจุดหมุนคงที่_(Fixed_Hinged_Gates)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานชนิดล้อเลื่อน_(Fixed_Roller/Wheel_Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานตรง_(Slide_Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานทดน้ำ_(Check_Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานบังคับน้ำรับแรงดันสูง_(High_Pressure_Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานบังคับน้ำอัตโนมัติ_(Automatic_Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานประตูเรือสัญจร_(Mitering_Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานปิดซ่อม_(Guard_Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานยกแนวดิ่ง_(Vertical_Lift_Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานระบายตะกอน_(Sluice_Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานหมุน_(Hinged/Swing_Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บานโค้ง_(Radial/Tainter_Gate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บ่อ_(Well)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บ่อดักทราย_(Sand_Trap/Trap_Box)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บ่อระบายน้ำ_(Drainage_Well)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บ่อลดแรงดัน_(Pressure_Relief/Relief_Well)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บ่อสังเกตการณ์_(Observation_Well)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#บ่อเติมน้ำ_(Diffusion/Inverted/Recharge_Well)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประตูตัดน้ำ/ลิ้นตัดน้ำ_(Isotating/Shut-off_Valve)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประตูน้ำ_(Valve)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประตูน้ำวงแหวน_(Hollow_Jet_Valve)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประตูน้ำแบบบาน_(Gate_Valve)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประตูน้ำแบบปีกผีเสื้อ_(Butterfly_Valve)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประตูน้ำและลิ้น_(Valve)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประตูระบายตะกอน_(Blowoff_Valve)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประตูเรือสัญจร_(Navigation_Lock)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประเภทของฝน_(Rain_Types)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประเภทของพายุ_(Storm_Types)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ประเภทหิน_(Rock_Types)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ปรากฏการณ์การไหล_(Flow_Phenomena)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ปรากฏการณ์ตะกอน_(Sediment_Related)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ปรากฏการณ์น้ำขึ้นน้ำลง_(Tidal_Related)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ปรากฏการณ์น้ำท่วม_(Flood_Related)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝนคาดการณ์_(Expected_Rainfall)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝนที่เกิดจากการพาความร้อน_(Convectional_Rain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝนละออง_(Drizzle)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝนเกิดจากพายุหมุน_(Cyclonic_Rain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝนเกิดจากลมปะทะภูเขา_(Orographic_Rain)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝนแรก_(Initial_Rainfall)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝนใช้การได้_(Effective_Rainfall)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายขั้นบันได_(Cascade/Step_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายจม_(Drowned/Submerged_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายชะลอน้ำ_(Check_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายทแยง_(Diagonal_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายท้ายน้ำ_(Subsidiary_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายบาก_(Notched_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายบานกระดก_(Flash_Board_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายปากเป็ด_(Duckbill_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายพอง_(Inflatable_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายยาง_(Rubber_Dam/Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายวัดน้ำ_(Measuring_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายวัดน้ำรูปสี่เหลี่ยมคางหมู_(Cipolletti_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายสันกว้าง_(Broad-crested_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายสันคม_(Sharp-crested_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายสันแข็ง_(Fixed_Crest_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายสามเหลี่ยม_(Triangular/V-notch_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายสี่เหลี่ยมผืนผ้า_(Rectangular_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายหยัก_(Labyrinth_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายหินก่อ_(Masonry_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายหินถม_(Rockfill_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายเคลื่อนที่ได้_(Movable_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายแบบการไหลอิสระ_(Clear_Overflow/Free_Fall/Free_Overfall_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายแรงโน้มถ่วง_(Gravity_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายโรไมน์_(Romijn_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายโอกี้_(Ogee_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ฝายไม้_(Timber_Weir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#พนัง_(Dike)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#พายุดีเปรสชั่น_(Depression)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#พายุฝน_(Rain_Storm)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#พายุฝนออกแบบ_(Design_Storm)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#พายุหมุน_(Cyclone)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#มาตรระยะทาง_(Odometer)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#มาตรวัดระยะ_(Geodimeter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#มาตรเวนจูรี_(VenturiMeter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#มาโนมิเตอร์_(Manometer)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#รถก่อสร้าง_(ConstructionVehicle)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#รถขุด_(ExcavatorVehicle)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#รถขุดบุ้งกี๋โยน_(Dragline)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#รถดันดิน_(Dozer)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#รถบด_(Roller)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#รถบดแบบสั่นสะเทือน_(VibratingRoller)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#รถบูลโดเซอร์_(Bulldozer)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#รถแบ๊คโฮ_(Backhoe)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ระบบชลประทาน_(Irrigation_System)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ระบบบัญชาการ_(Command_System)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ระบบรอยเลื่อน_(Fault_System)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ระบบระบายน้ำ_(Drainage_System)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ระบบส่งน้ำ_(Water_Conveyance_System)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ระแหงโคลน_(Mud_Crack)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ลักษณะทางภูมิประเทศ_(Geological_Features)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ลักษณะแม่น้ำ_(River_Features)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#วัสดุกรอง_(Filter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#วัสดุกันน้ำ_(Waterstop)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#วัสดุกั้นอัดฉีด_(Groutstop)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#วัสดุอัดฉีด_(Grout)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#วัสดุอุด_(Filler)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#วัสดุเฉพาะทาง_(SpecialMaterial)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ศูนย์กลางแผ่นดินไหว_(Epicenter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ส่วนคอดทางน้ำโค้งตวัด_(Meander_Neck)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#หินชนวน_(Slate)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#หินดินดาน_(Shale)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#หินทราย_(Sandstone)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#หินทรายแป้ง_(Siltstone)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#หินอัคนี_(Igneous_Rock)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#หินแกรนิต_(Granite)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ห้องบาน_(Gate_Chamber)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ห้องอากาศ_(Air_Chamber)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารกระจายน้ำ_(Distributor)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารควบคุม_(Regulating_Structure)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารควบคุมน้ำ_(Control_Structure)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารจุดหักโค้ง_(Bend_Structure)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารจ่ายน้ำแบบความต่างระดับน้ำคงที่_(Constant_Head_Orifice_Turnout)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารชลประทาน_(Irrigation_Structure)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารทดน้ำ_(Check)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารทางเข้า_(Inlet_Structure)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารท่อลอดคูส่งน้ำ_(Ditch-drain_Crossing_Structure)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารน้ำตก_(Drop/Vertical_Drop)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารน้ำตกทดน้ำ_(Check_Drop)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารน้ำตกเอียง_(Inclined_Drop)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารน้ำตกแบบท่อ_(Pipe_Drop)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อาคารประกอบ_(Appurtenant_Structure)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อุปกรณ์ตรวจวัดระยะไกล_(RemoteTerminalUnit)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อุปกรณ์พิเศษ_(SpecialEquipment)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อุปกรณ์วัดน้ำฝน_(Rain_Gauge_Equipment)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อุปกรณ์วัดระดับน้ำ_(Water_Level_Equipment)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อุปกรณ์แปลงสัญญาณ_(SignalTransducer)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อุปกรณ์แปลงสัญญาณเครื่องวัดระดับน้ำฟองอากาศ_(BubbleGaugeTransducer)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อ่างชะลอน้ำ_(Retarding_Basin)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อ่างน้ำนิ่งแบบน้ำวน_(Roller_Type_Stilling_Basin)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อ่างเก็บน้ำเอนกประสงค์_(Multi-purpose_Reservoir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#อ่างเก็บน้ำใต้ดิน_(Groundwater_Reservoir)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขตทางน้ำโค้งตวัด_(Meander_Belt)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนกักเก็บน้ำ_(Impounding_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนกันคลื่น_(Mole)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนคอนกรีต_(Concrete_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนค้ำยัน_(Buttress_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนชะลอน้ำ_(Detention_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนดิน_(Earth_Dam/Earthfill_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนดินถมบดอัด_(Rolled-earthfill_Dam/Rolled-fill_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนทดน้ำ_(Barrage)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนทดน้ำหรือเขื่อนผันน้ำ_(Diversion_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนวัสดุถม_(Embankment_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนสูบถม_(Hydraulic_Fill_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนหินถม_(Rockfill_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนแรงโน้มถ่วงโค้ง_(Gravity_Arch_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนโค้ง_(Arch_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เขื่อนใต้ดิน_(Underground_Dam)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องกังหัน_(Turbine)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องกังหันน้ำ_(HydraulicTurbine)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องกังหันแรงกระแทก_(ImpulseTurbine)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องขุด_(Excavation)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องขุดคูน้ำ_(Ditcher)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องจักร_(Machinery)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องจัดการตะกอน_(SedimentMachinery)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องดักตะกอน_(SedimentCatcher)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องทำคลื่น_(WaveMakingApparatus)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องบันทึกความสูงคลื่น_(WaveHeightRecorder)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องป้อนตะกอนท้องน้ำ_(BedLoadFeeder)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือตรวจวัดเขื่อน_(DamInstrument)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือวัดการใช้น้ำ_(WaterConsumptionEquipment)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือวัดการไหล_(FlowMeasurementEquipment)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือวัดความชื้น_(Tensiometer)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือวัดความหนืด_(Viscosimeter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือวัดความไหวสะเทือน_(Seismograph)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือวัดคุณสมบัติของสาร_(MaterialPropertyEquipment)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือวัดน้ำ_(WaterMeasurementEquipment)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือวัดพื้นที่_(Planimeter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือวัดระดับ_(LevelingEquipment)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือวัดระยะทาง_(DistanceMeasurementEquipment)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือวัดอากาศ_(WeatherMeasurementEquipment)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องมือวัดแรงดันดิน_(PressureCell)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องวัดกระแสน้ำ_(CurrentMeter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องวัดความกดอากาศ_(Barometer)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องวัดความกดอากาศแบบตลับ_(AneroidBarometer)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องวัดความเร็วกระแสน้ำแบบคลื่นเสียง_(AcousticDopplerVelocimeter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องวัดน้ำฝนแบบอัตโนมัติ_(RainRecordingGauge)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องวัดฝน_(RainGauge)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องวัดระดับน้ำ_(WaterLevelGauge)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องวัดระดับน้ำแบบลูกลอย_(FloatGauge)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องวัดระดับน้ำแบบเข็ม_(PointGauge)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องวัดลม_(Anemometer)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องวัดลมแบบกราฟ_(Anemograph)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องวัดอัตราการไหลแบบข้องอ_(ElbowMeter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องวัดอัตราการไหลแบบออริฟิซ_(OrificeMeter)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องสูบน้ำ_(Pump)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องสูบน้ำชนิดน้ำไหลตามแนวแกน_(AxialFlowPump)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องสูบน้ำตามลักษณะการทำงาน_(OperationBasedPump)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องสูบน้ำตามลักษณะการไหล_(FlowBasedPump)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องสูบน้ำบ่อน้ำลึก_(DeepWellPump)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องสูบน้ำลูกสูบชัก_(ReciprocatingPump)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องสูบน้ำแบบลมดัน_(AirLiftPump)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องสูบน้ำแบบหอยโข่ง_(CentrifugalPump)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องสูบน้ำแบบไหลผสม_(MixedFlowPump)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องสูบน้ำแบบไหลวน_(RadialFlowPump)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องสูบน้ำแรงกระแทก_(ImpulsePump)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องหยั่งความลึกของน้ำด้วยเสียงสะท้อน_(EchoSounder)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เครื่องเก็บตะกอนท้องน้ำ_(BedMaterialSampler)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เสาเข็มดาล_(End_Bearing_Pile)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#เสาเข็มเสียดทาน_(Friction_Pile)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แกนทางน้ำโค้งตวัด_(Meander_Core)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แนวชายฝั่ง_(Coastline)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แผ่นดินไหว_(Seismic_Activity)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แผ่นวัดระดับน้ำ_(StaffGauge)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แอนตี้ไซโคลน_(Anti-Cyclone)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แอ่งน้ำกระแทก_(Impact_Basin)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แอ่งน้ำนิ่ง_(Stilling_Basin)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แอ่งน้ำนิ่งแบบน้ำพุ่งอิสระ_(Free_Jet_Stilling_Basin)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แอ่งน้ำโจน_(Hydraulic_Jump_Basin)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#แอ่งลู่สกี_(Ski_Jump_Bucket)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โครงสร้างกำแพง_(Wall_Structures)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โครงสร้างควบคุม_(Control_Structures)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โครงสร้างทางชลศาสตร์_(Hydraulic_Structure)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โครงสร้างทางธรรมชาติ_(Natural_Structure)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โครงสร้างทางโยธา_(Civil_Structure)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โครงสร้างป้องกัน_(Protection_Structures)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โครงสร้างรองรับ_(Support_Structures)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โครงสร้างสลายพลังงาน_(Energy_Dissipation_Structures)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โครงสร้างส่งน้ำ_(Water_Conveyance_Structures)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โคลนถล่ม_(Mudslide)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โอปีโซมิเตอร์_(Opisometer)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#โอโดกราฟ_(Odograph)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ไฮโดรมิเตอร์_(Hydrometer)"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#ไฮโดรโฟน_(Hydrophone)"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#ความจุ"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#ความสัมพันธ์ด้านการจัดการน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#ความสัมพันธ์ด้านองค์ประกอบ"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#ความสัมพันธ์ด้านอุปกรณ์"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#ความสัมพันธ์เชิงบุคคล"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#ตั้งอยู่ใน"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#ปริมาณน้ำไหลผ่าน"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#มีจำนวน"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#มีผลกระทบต่อ"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#มีพื้นที่จัดการน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดน้ำฝน"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดระดับน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#มีอ่างเก็บน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#มีเขื่อน"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#มีแผนการจัดการ"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#มีโครงการชลประทาน"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#รับผิดชอบโดย"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#ส่งน้ำไปยัง"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#ใช้มาตรการณ์ภัยแล้ง"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#ใช้มาตรการณ์อุทกภัย"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#ใช้เครื่องมือ"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#ใช้เทคโนโลยี"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#belongsTo_(สังกัด)"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#hasDepartment_(มีฝ่าย)"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#hasDeputyDirector_(มีรองผู้อำนวยการ)"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#hasDirector_(มีผู้อำนวยการ)"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#hasProject_(มีโครงการชลประทาน)"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#hasProvince_(มีจังหวัดในความรับผิดชอบ)"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#manages_(จัดการ)"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ขนาดอุปกรณ์"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ความจุ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ความถี่ในการวัด"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ชื่อสำนักงาน"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ที่อยู่"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#บริหารจัดการโดย"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ประเภทมาตรการ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ประเภทอุปกรณ์"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ปีที่ก่อตั้ง"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#พิกัด"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#พิกัดลองจิจูด"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#พิกัดละติจูด"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#พื้นที่การจัดการน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#พื้นที่รับผิดชอบ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#พื้นที่เป้าหมาย"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#พื้นที่เสี่ยงอุทกภัย"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มาตรการณ์"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีการพยากรณ์ฝน"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีความจุรวม"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีจังหวัด"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีจำนวนจุดเสี่ยง"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีจำนวนมาตรการณ์"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีจำนวนอ่าง"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีจำนวนโครงการ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีชื่อพื้นที่"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีช่องทางการติดต่อ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีปริมาณน้ำปัจจุบัน"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีปริมาณน้ำเทียบปีก่อน"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีปริมาณวัชพืช"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีปีดำเนินการ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีพื้นที่"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีพื้นที่ดำเนินการ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีพื้นที่เสี่ยง"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีระบบแจ้งเตือน"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีร้อยละกักเก็บ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีสถานะ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีสถานีตรวจวัด"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีสภาพอากาศ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีสาเหตุน้ำท่วม"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีอุปกรณ์ใหม่"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีเครื่องจักรสนับสนุน"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#มีเครื่องสูบน้ำรวม"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#รหัสสำนักงาน"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ระดับน้ำวิกฤติ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ระบบจัดการน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ระยะเวลาดำเนินการ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#สถานะ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#สถานะการใช้งาน"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#สังกัด"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#สังกัดสำนักงาน"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#สำนักงาน"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#อีเมล"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#อุปกรณ์"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#เบอร์โทรศัพท์"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#เว็บไซต์"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#แผนการจัดการน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#โครงการบำรุงรักษา"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#ใช้เครืองมือ"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#weather.tmd.go.th"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#กว๊านพะเยา"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#การขอความสนับสนุนนอกพื้นที่ชลประทาน"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#การขอความสนับสนุนเครื่องมือเครื่องจักร"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#การเตรียมความพร้อมอาคารชลประทาน"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#การแก้ไขปัญหาวัชพืช"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#ข้อมูลในระบบสารสนเทศกรมชลประทานสูญหาย"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#ดำเนินการปลอดภัยอื่นๆ"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#น้ำท่วมซ้ำซากของจังหวัดเชียงใหม่"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#พะเยา"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#พื้นที่การจัดการน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#อาคารชลประทานชำรุด"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#อ่างเก็บน้ำห้วยบง"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#อ่างเก็บน้ำห้วยหลวง"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#อ่างเก็บน้ำห้วยแม่ป่าข่า"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#อ่างเก็บน้ำห้วยโป่งอ่อน"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#อ่างเก็บน้ำห้วยไคร้"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#อ่างเก็บน้ำแม่ตีบ"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#อ่างเก็บน้ำแม่ธิ"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#อ่างเก็บน้ำแม่สาน"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#อ่างเก็บน้ำแม่เมย"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#อ่างเก็บน้ำโฮ่งฮ่าง"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#เขื่อนแม่กวง"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#เขื่อนแม่งัด"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#เขื่อนแม่พริก"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#เชียงใหม่"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#แม่น้ำน่าน"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#การก่อสร้างแหล่งน้ำ/สถานีสูบน้ำชุมชน"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#มาตรการที่_10:_ติดตามและประเมินผล"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#มาตรการที่_1:_คาดการณ์ชี้เป้าและแจ้งเตือนพื้นที่เสี่ยงน้ำท่วม"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#มาตรการที่_2:_ทบทวนและปรับปรุงเกณฑ์บริหารจัดการน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#มาตรการที่_3:_เตรียมความพร้อมเครื่องจักร_เครื่องมือ_และบุคลากร"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#มาตรการที่_4:_ตรวจสอบความมั่นคงปลอดภัยของคันกั้นน้ำและพนังกั้นน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#มาตรการที่_5:_เพิ่มประสิทธิภาพการระบายน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#มาตรการที่_6:_ซักซ้อมแผนเผชิญเหตุ"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#มาตรการที่_7:_เก็บกักน้ำในช่วงปลายฤดูฝน"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#มาตรการที่_8:_สร้างความเข้มแข็งเครือข่ายภาคประชาชน"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#มาตรการที่_9:_สร้างการรับรู้และประชาสัมพันธ์"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#อ่างเก็บน้ำแม่สะกืด(ม่อนตะแลง)"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#เปิด/ปิด_ประตูน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#เพิ่ม/ลด_การปล่อยน้ำ"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#แนวทาง/มาตรการรับมือพื้นที่น้ำท่วมซ้ำซาก"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#แนวทาง/มาตรการรับมือพื้นที่เสี่ยงน้ำท่วม"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#แนวทาง/มาตรการรับมือพื้นที่เสี่ยงภัยแล้ง"/>
+    </Declaration>
+    <Declaration>
+        <AnnotationProperty IRI="http://purl.org/dc/elements/1.1/creator"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#Facebook"/>
+        <Class IRI="#ช่องทางการสื่อสาร"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#GISDA"/>
+        <Class IRI="#ผู้ที่มีส่วนเกี่ยวข้อง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กรมป้องกันและบรรเทาสาธารณภัย"/>
+        <Class IRI="#ผู้ที่มีส่วนเกี่ยวข้อง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กระบวนการก่อสร้าง"/>
+        <Class IRI="#อาคารและสิ่งก่อสร้าง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กระบวนการจัดการสถานการณ์น้ำ"/>
+        <Class IRI="#การบริหารจัดการ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กระบวนการทางการเกษตร"/>
+        <Class IRI="#การบริหารจัดการ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กระบวนการทางอุทกวิทยา"/>
+        <Class IRI="#การบริหารจัดการ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การขอการสนับสนุน"/>
+        <Class IRI="#ประเภทข้อร้องเรียน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การขอข้อมูล"/>
+        <Class IRI="#ประเภทข้อร้องเรียน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การขอข้อมูล"/>
+        <Class IRI="#ข้อมูล_(Data)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การขอช่วยดำเนินการ"/>
+        <Class IRI="#การขอการสนับสนุน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การควบคุมวัชพืช"/>
+        <Class IRI="#การบริหารจัดการน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการข้อร้องเรียน"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการทรัพยากรน้ำ"/>
+        <Class IRI="#การบริหารจัดการน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการน้ำหลาก"/>
+        <Class IRI="#การบริหารจัดการน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการภัยแล้ง"/>
+        <Class IRI="#การบริหารจัดการน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการภาวะฉุกเฉิน"/>
+        <Class IRI="#การบริหารจัดการ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการอุทกภัย"/>
+        <Class IRI="#การบริหารจัดการน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การติดต่อและติดตาม"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบริหารจัดการ"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบริหารจัดการน้ำ"/>
+        <Class IRI="#ประเภทข้อร้องเรียน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบริหารสถานการณ์น้ำ"/>
+        <Class IRI="#การบริหารจัดการ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบำรุงรักษาอาคารชลประทาน"/>
+        <Class IRI="#ประเภทข้อร้องเรียน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การป้องกันน้ำท่วม"/>
+        <Class IRI="#ประเภทข้อร้องเรียน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การรายงานและแจ้งเหตุ"/>
+        <Class IRI="#ประเภทข้อร้องเรียน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การเสนอความคิดเห็น"/>
+        <Class IRI="#ประเภทข้อร้องเรียน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การแก้ปัญหาภัยแล้ง"/>
+        <Class IRI="#ประเภทข้อร้องเรียน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การไฟฟ้าฝ่ายผลิต"/>
+        <Class IRI="#ผู้ที่มีส่วนเกี่ยวข้อง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ข้อเสนอแนะ"/>
+        <Class IRI="#การเสนอความคิดเห็น"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#จังหวัด"/>
+        <Class IRI="#พื้นที่การปกครอง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ช่องทางการสื่อสาร"/>
+        <Class IRI="#การติดต่อและติดตาม"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ตำบล"/>
+        <Class IRI="#พื้นที่การปกครอง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทรัพยากร"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#น้ำท่วม"/>
+        <Class IRI="#ปรากฏการณ์ทางน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#น้ำหลาก"/>
+        <Class IRI="#ปรากฏการณ์ทางน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บุคคล"/>
+        <Class IRI="#บุคลากร"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บุคลากร"/>
+        <Class IRI="#ทรัพยากร"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประตูน้ำแบบบาน"/>
+        <Class IRI="#ประตูน้ำและลิ้น_(Valve)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประตูน้ำแบบปีกผีเสื้อ"/>
+        <Class IRI="#ประตูน้ำและลิ้น_(Valve)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประเภทข้อร้องเรียน"/>
+        <Class IRI="#การจัดการข้อร้องเรียน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ปรากฏการณ์ทางธรณีวิทยา"/>
+        <Class IRI="#ปรากฏการณ์ธรรมชาติ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ปรากฏการณ์ทางน้ำ"/>
+        <Class IRI="#ปรากฏการณ์ธรรมชาติ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ปรากฏการณ์ทางอากาศ"/>
+        <Class IRI="#ปรากฏการณ์ธรรมชาติ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ปรากฏการณ์ธรรมชาติ"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ผู้ที่มีส่วนเกี่ยวข้อง"/>
+        <Class IRI="#หน่วยงาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝ่าย"/>
+        <Class IRI="#บุคคล"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#พื้นที่การปกครอง"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#พื้นที่ขาดแคลนน้ำ"/>
+        <Class IRI="#พื้นที่เสี่ยงภัย"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#พื้นที่น้ำท่วมซ้ำซาก"/>
+        <Class IRI="#พื้นที่เสี่ยงภัย"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#พื้นที่ริมฝั่งน้ำ"/>
+        <Class IRI="#พื้นที่เสี่ยงภัย"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#พื้นที่เสี่ยงภัย"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#พื้นที่เสี่ยงภัยแล้ง"/>
+        <Class IRI="#พื้นที่เสี่ยงภัย"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#พื้นที่เสี่ยงอุทกภัย"/>
+        <Class IRI="#พื้นที่เสี่ยงภัย"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ภัยแล้ง"/>
+        <Class IRI="#ปรากฏการณ์ทางน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ภาค"/>
+        <Class IRI="#พื้นที่การปกครอง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ภาคกลาง"/>
+        <Class IRI="#ภูมิภาค"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ภาคอีสาน"/>
+        <Class IRI="#ภูมิภาค"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ภาคเหนือ"/>
+        <Class IRI="#ภูมิภาค"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ภาคใต้"/>
+        <Class IRI="#ภูมิภาค"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ภูมิภาค"/>
+        <Class IRI="#พื้นที่การปกครอง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#มาตรการ"/>
+        <Class IRI="#แผนงานการจัดการน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#มาตรการภัยแล้ง"/>
+        <Class IRI="#มาตรการ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#มาตรการอุทุกภัย"/>
+        <Class IRI="#มาตรการ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#มาตราการรับมือฤดูฝน"/>
+        <Class IRI="#มาตรการ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ระบบ_SCADA"/>
+        <Class IRI="#แผนงานการจัดการน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ระบบโทรมาตร"/>
+        <Class IRI="#ทรัพยากร"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ลานีญา"/>
+        <Class IRI="#ปรากฏการณ์ทางอากาศ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สถานะเรื่องร้องเรียน"/>
+        <Class IRI="#การจัดการข้อร้องเรียน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สถานีสูบน้ำ"/>
+        <Class IRI="#ทรัพยากร"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สายด่วน_1460"/>
+        <Class IRI="#ช่องทางการสื่อสาร"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทาน"/>
+        <Class IRI="#หน่วยงาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_1"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_10"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_11"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_12"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_13"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_14"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_15"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_16"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_17"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_2"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_3"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_4"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_5"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_6"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_7"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_8"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#สำนักงานชลประทานที่_9"/>
+        <Class IRI="#สำนักงานชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#หน่วยงาน"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#หมู่บ้าน"/>
+        <Class IRI="#พื้นที่การปกครอง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#องค์กรปกครองส่วนท้องถิ่น"/>
+        <Class IRI="#ผู้ที่มีส่วนเกี่ยวข้อง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารและสิ่งก่อสร้าง"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อำเภอ"/>
+        <Class IRI="#พื้นที่การปกครอง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อุทกภัย"/>
+        <Class IRI="#ปรากฏการณ์ทางน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เกษตรกรในพื้นที่"/>
+        <Class IRI="#ผู้ที่มีส่วนเกี่ยวข้อง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขต"/>
+        <Class IRI="#พื้นที่การปกครอง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เว็บไซต์กรมชลประทาน"/>
+        <Class IRI="#ช่องทางการสื่อสาร"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เอลนีโญ"/>
+        <Class IRI="#ปรากฏการณ์ทางอากาศ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แผนงานการจัดการน้ำ"/>
+        <Class IRI="#การบริหารจัดการ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แผนบริหารจัดการน้ำ"/>
+        <Class IRI="#แผนงานการจัดการน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แม่น้ำ"/>
+        <Class IRI="#แหล่งน้ำธรรมชาติ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แหล่งน้ำ"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แหล่งน้ำธรรมชาติ"/>
+        <Class IRI="#แหล่งน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แหล่งน้ำในชุมชน"/>
+        <Class IRI="#แหล่งน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โครงการกำจัดวัชพืช"/>
+        <Class IRI="#หน่วยงาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โครงการชลประทานจังหวัด"/>
+        <Class IRI="#หน่วยงาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โครงการส่งน้ำและบำรุงรักษา"/>
+        <Class IRI="#หน่วยงาน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#X_(Twitter)"/>
+        <Class IRI="#ช่องทางการสื่อสาร"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กระบวนการซึม_(Infiltration_Process)"/>
+        <Class IRI="#กระบวนการทางอุทกวิทยา"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กระบวนการระเหย_(Evaporation_Process)"/>
+        <Class IRI="#กระบวนการทางอุทกวิทยา"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กระบวนการไหล_(Flow_Process)"/>
+        <Class IRI="#กระบวนการทางอุทกวิทยา"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กลยุทธ์_(Strategy)"/>
+        <Class IRI="#การบริหารจัดการ_(Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กลุ่มเปราะบาง_(Vulnerable_Group)"/>
+        <Class IRI="#การเตือนภัยและการป้องกัน_(Warning_and_Protection)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กล้องระดับดัมปี_(DumpyLevel)"/>
+        <Class IRI="#เครื่องมือวัดระดับ_(LevelingEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กล้องระดับมือถือ_(HandLevel)"/>
+        <Class IRI="#เครื่องมือวัดระดับ_(LevelingEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การกระจายการผลิตพืช_(Crop_Diversification)"/>
+        <Class IRI="#การจัดการพืช_(Crop_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การกร่อน_(Erosion)"/>
+        <Class IRI="#การกัดเซาะ_(Erosion_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การกร่อนแบบร่องธาร_(Gully_Erosion)"/>
+        <Class IRI="#การกัดเซาะ_(Erosion_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การกัดเซาะ_(Erosion_Types)"/>
+        <Class IRI="#ปรากฏการณ์ทางธรณีวิทยา"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การกัดเซาะชายฝั่ง_(Coastal_Erosion)"/>
+        <Class IRI="#การกัดเซาะ_(Erosion_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การกัดเซาะผิวหน้าลักษณะเป็นแผ่น_(Sheet_Erosion)"/>
+        <Class IRI="#การกัดเซาะ_(Erosion_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การควบคุมน้ำ_(Water_Control_Management)"/>
+        <Class IRI="#กระบวนการจัดการสถานการณ์น้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การควบคุมวัชพืช_(Weed_Control)"/>
+        <Class IRI="#การจัดการพืช_(Crop_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การควบคุมโดยท้ายน้ำ_(Downstream_Control)"/>
+        <Class IRI="#การควบคุมน้ำ_(Water_Control_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การควบคุมโดยเหนือน้ำ_(Upstream_Control)"/>
+        <Class IRI="#การควบคุมน้ำ_(Water_Control_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การคายน้ำ_(Transpiration)"/>
+        <Class IRI="#กระบวนการระเหย_(Evaporation_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การคายระเหย_(Evapotranspiration)"/>
+        <Class IRI="#กระบวนการระเหย_(Evaporation_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการชลประทาน_(Irrigation_Management)"/>
+        <Class IRI="#กระบวนการทางการเกษตร"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการทรัพยากรน้ำ_(Water_Resource_Management)"/>
+        <Class IRI="#กระบวนการจัดการสถานการณ์น้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการทรัพยากรน้ำแบบบูรณาการ_(Integrated_Water_Resources_Management)"/>
+        <Class IRI="#การจัดการทรัพยากรน้ำ_(Water_Resource_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการน้ำชลประทานในแปลงนา_(Farm_Water_Management)"/>
+        <Class IRI="#การจัดการชลประทาน_(Irrigation_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการน้ำท่วม_(Flood_Management)"/>
+        <Class IRI="#การจัดการทรัพยากรน้ำ_(Water_Resource_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการพืช_(Crop_Management)"/>
+        <Class IRI="#กระบวนการทางการเกษตร"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการลุ่มน้ำ_(Watershed_Management)"/>
+        <Class IRI="#การจัดการทรัพยากรน้ำ_(Water_Resource_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การจัดการในภาวะฉุกเฉิน_(Emergency_Management)"/>
+        <Class IRI="#การบริหารจัดการ_(Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การชลประทาน_(Irrigation)"/>
+        <Class IRI="#การจัดการชลประทาน_(Irrigation_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การซึม_(Infiltration,_Seepage)"/>
+        <Class IRI="#กระบวนการซึม_(Infiltration_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การซึมผ่านดินอิ่มตัว_(Percolation)"/>
+        <Class IRI="#กระบวนการซึม_(Infiltration_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การซึมลึก_(Deep_Percolation)"/>
+        <Class IRI="#กระบวนการซึม_(Infiltration_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การซ่อมสร้าง_(Reconstruction)"/>
+        <Class IRI="#การบริหารจัดการ_(Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การดาด_(Lining)"/>
+        <Class IRI="#งานคอนกรีต_(Concrete_Works)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การดาดคอนกรีต_(Concrete_Lining)"/>
+        <Class IRI="#งานคอนกรีต_(Concrete_Works)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การตกตะกอน_(Sedimentation)"/>
+        <Class IRI="#ปรากฏการณ์ตะกอน_(Sediment_Related)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การทดสอบการบดอัดมาตรฐาน_(Standard_Compaction_Test)"/>
+        <Class IRI="#งานดิน_(Ground_Works)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การทดสอบการยุบตัว_(Slump_Test)"/>
+        <Class IRI="#งานคอนกรีต_(Concrete_Works)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การทรุดตัวที่ยอมได้_(Settlement_Allowance)"/>
+        <Class IRI="#การเคลื่อนตัวของพื้นดิน_(Ground_Movement)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การทำไร่นาแบบมุ่งเน้น_(Intensive_Farming)"/>
+        <Class IRI="#การจัดการชลประทาน_(Irrigation_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบริหารจัดการ_(Management)"/>
+        <Class IRI="#การจัดการภาวะฉุกเฉิน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบริหารจัดการลุ่มน้ำ_(Catchment_Management)"/>
+        <Class IRI="#การจัดการทรัพยากรน้ำ_(Water_Resource_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบัญชาการ_(Command)"/>
+        <Class IRI="#ระบบบัญชาการ_(Command_System)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบัญชาการร่วม_(Unified_Command)"/>
+        <Class IRI="#ระบบบัญชาการ_(Command_System)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบัญชาการเหตุการณ์_(Incident_Command)"/>
+        <Class IRI="#ระบบบัญชาการ_(Command_System)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบำรุงรักษา_(Maintenance)"/>
+        <Class IRI="#การบำรุงรักษา_(Maintenance_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบำรุงรักษา_(Maintenance_Management)"/>
+        <Class IRI="#กระบวนการจัดการสถานการณ์น้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบำรุงรักษาปกติ_(Regular_Maintenance)"/>
+        <Class IRI="#การบำรุงรักษา_(Maintenance_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบำรุงรักษาเชิงแก้ไข_(Corrective_Maintenance)"/>
+        <Class IRI="#การบำรุงรักษา_(Maintenance_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบำรุงรักษาแบบป้องกัน_(Preventive_Maintenance)"/>
+        <Class IRI="#การบำรุงรักษา_(Maintenance_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การบ่มคอนกรีต_(Concrete_Curing)"/>
+        <Class IRI="#งานคอนกรีต_(Concrete_Works)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การปลูกพืชหมุนเวียน_(Crop_Rotation)"/>
+        <Class IRI="#การจัดการพืช_(Crop_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การปลูกพืชเชิงเดี่ยว_(Monoculture)"/>
+        <Class IRI="#การจัดการพืช_(Crop_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การระเหย_(Evaporation)"/>
+        <Class IRI="#กระบวนการระเหย_(Evaporation_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การระเหยทั้งหมด_(Total_Evaporation)"/>
+        <Class IRI="#กระบวนการระเหย_(Evaporation_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การส่งน้ำแบบตลอดเวลา_(Continuous_Flow_Irrigation)"/>
+        <Class IRI="#การจัดการชลประทาน_(Irrigation_Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การหดจากการแข็งตัว_(Settlement_Shrinkage)"/>
+        <Class IRI="#การเคลื่อนตัวของพื้นดิน_(Ground_Movement)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การอัดฉีด_(Grouting)"/>
+        <Class IRI="#งานอัดฉีด_(Grouting_Works)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การอัดฉีดฉาบผิว_(Slush_Grouting)"/>
+        <Class IRI="#งานอัดฉีด_(Grouting_Works)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การอัดฉีดด้วยเบนทอไนต์_(Bentonite_Grouting)"/>
+        <Class IRI="#งานอัดฉีด_(Grouting_Works)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การอัดฉีดโดยการพ่น_(Jet_Grouting)"/>
+        <Class IRI="#งานอัดฉีด_(Grouting_Works)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การเกิดน้ำท่วม_(Flooding)"/>
+        <Class IRI="#ปรากฏการณ์น้ำท่วม_(Flood_Related)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การเกิดโพรงท่อ_(Piping)"/>
+        <Class IRI="#การเคลื่อนตัวของพื้นดิน_(Ground_Movement)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การเคลื่อนตัวของน้ำท่วม_(Flood_Routing)"/>
+        <Class IRI="#ปรากฏการณ์น้ำท่วม_(Flood_Related)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การเคลื่อนตัวของน้ำหลากผ่านอ่างเก็บน้ำ_(Reservoir_Routing)"/>
+        <Class IRI="#ปรากฏการณ์น้ำท่วม_(Flood_Related)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การเคลื่อนตัวของพื้นดิน_(Ground_Movement)"/>
+        <Class IRI="#ปรากฏการณ์ทางธรณีวิทยา"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การเคลื่อนไหวของเปลือกโลก_(Crustal_Movement)"/>
+        <Class IRI="#การเคลื่อนตัวของพื้นดิน_(Ground_Movement)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การเจาะ_(Drilling)"/>
+        <Class IRI="#งานดิน_(Ground_Works)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การเตรียมความพร้อม_(Preparedness)"/>
+        <Class IRI="#การบริหารจัดการ_(Management)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การเตือนภัยล่วงหน้า_(Early_Warning)"/>
+        <Class IRI="#การเตือนภัยและการป้องกัน_(Warning_and_Protection)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การเตือนภัยและการป้องกัน_(Warning_and_Protection)"/>
+        <Class IRI="#การจัดการภาวะฉุกเฉิน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การไหลของน้ำใต้ดิน_(Groundwater_Flow)"/>
+        <Class IRI="#กระบวนการไหล_(Flow_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การไหลตามฤดูกาล_(Seasonal_Flow)"/>
+        <Class IRI="#กระบวนการไหล_(Flow_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การไหลแบบคงที่_(Steady_Flow)"/>
+        <Class IRI="#กระบวนการไหล_(Flow_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การไหลแบบจม_(Submerged_Flow)"/>
+        <Class IRI="#กระบวนการไหล_(Flow_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การไหลแบบปั่นป่วน_(Turbulent_Flow)"/>
+        <Class IRI="#กระบวนการไหล_(Flow_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การไหลแบบราบเรียบ_(Laminar_Flow)"/>
+        <Class IRI="#กระบวนการไหล_(Flow_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การไหลแบบวิกฤติ_(Critical_Flow)"/>
+        <Class IRI="#กระบวนการไหล_(Flow_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การไหลแบบเนื้อเดียว_(Homogeneous_Flow)"/>
+        <Class IRI="#กระบวนการไหล_(Flow_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#การไหลใต้ดิน_(Subsurface_Flow)"/>
+        <Class IRI="#กระบวนการไหล_(Flow_Process)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กาลักน้ำ_(Siphon)"/>
+        <Class IRI="#โครงสร้างควบคุม_(Control_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กำแพงกันดิน_(Retaining_Wall)"/>
+        <Class IRI="#โครงสร้างกำแพง_(Wall_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กำแพงตีนลาด_(Toe_Wall)"/>
+        <Class IRI="#โครงสร้างกำแพง_(Wall_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กำแพงทึบน้ำ_(Diaphragm_Wall)"/>
+        <Class IRI="#โครงสร้างกำแพง_(Wall_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กำแพงนำน้ำ_(Guide_Wall)"/>
+        <Class IRI="#โครงสร้างกำแพง_(Wall_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กำแพงปีก_(Wing_Wall)"/>
+        <Class IRI="#โครงสร้างกำแพง_(Wall_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กำแพงป้องกันน้ำท่วม_(Flood_Wall)"/>
+        <Class IRI="#โครงสร้างกำแพง_(Wall_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กำแพงล่าง_(Cutoff_Wall)"/>
+        <Class IRI="#โครงสร้างกำแพง_(Wall_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กำแพงสารละลายทึบน้ำ_(Slurry_Wall)"/>
+        <Class IRI="#โครงสร้างกำแพง_(Wall_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#กำแพงใต้ร่องแกน_(Key_Wall)"/>
+        <Class IRI="#โครงสร้างกำแพง_(Wall_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ขั้นบันได_(Terrace)"/>
+        <Class IRI="#โครงสร้างรองรับ_(Support_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ข้อมูล_(Data)"/>
+        <Class IRI="#การบริหารสถานการณ์น้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ข้อมูล_Diagram_(Data_Diagram)"/>
+        <Class IRI="#ข้อมูล_(Data)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ข้อมูลสภาพการก่อสร้าง_(Construction_Status_Data)"/>
+        <Class IRI="#ข้อมูล_(Data)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ข้อมูลอุปกรณ์_(Equipment_Data)"/>
+        <Class IRI="#ข้อมูล_(Data)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลอง_(Canal)"/>
+        <Class IRI="#แหล่งน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลองชลประทาน_(Irrigation_Canal)"/>
+        <Class IRI="#คลอง_(Canal)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลองชักน้ำ_(Feeder_Canal)"/>
+        <Class IRI="#คลอง_(Canal)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลองซอย_(Lateral/Secondary_Canal)"/>
+        <Class IRI="#คลอง_(Canal)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลองดาด_(Lined_Canal)"/>
+        <Class IRI="#คลอง_(Canal)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลองดิน_(Earth_Canal)"/>
+        <Class IRI="#คลอง_(Canal)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลองรับน้ำนอง_(Inundation_Canal)"/>
+        <Class IRI="#คลอง_(Canal)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลองลัด_(Cutoff)"/>
+        <Class IRI="#คลอง_(Canal)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลองส่งน้ำสายใหญ่/สายหลัก_(Main/Primary_Canal)"/>
+        <Class IRI="#คลอง_(Canal)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลองส่งน้ำสายใหญ่ฝั่งขวา_(Right_Main_Canal)"/>
+        <Class IRI="#คลองส่งน้ำสายใหญ่/สายหลัก_(Main/Primary_Canal)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลองส่งน้ำสายใหญ่ฝั่งซ้าย_(Left_Main_Canal)"/>
+        <Class IRI="#คลองส่งน้ำสายใหญ่/สายหลัก_(Main/Primary_Canal)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลองแยก_(Branch_Canal)"/>
+        <Class IRI="#คลอง_(Canal)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลองแยกซอย_(Sub-lateral)"/>
+        <Class IRI="#คลอง_(Canal)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คลื่นน้ำท่วม_(Flood_Wave)"/>
+        <Class IRI="#ปรากฏการณ์น้ำท่วม_(Flood_Related)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#คัน_(Embankment)"/>
+        <Class IRI="#โครงสร้างรองรับ_(Support_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#งานคอนกรีต_(Concrete_Works)"/>
+        <Class IRI="#กระบวนการก่อสร้าง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#งานดิน_(Ground_Works)"/>
+        <Class IRI="#กระบวนการก่อสร้าง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#งานอัดฉีด_(Grouting_Works)"/>
+        <Class IRI="#กระบวนการก่อสร้าง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานขนาดเล็ก_(Tank_Irrigation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานจุลภาค_(Micro_Irrigation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานฉีดฝอย_(Overhead/Spray/Sprinkler_Irrigation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานน้ำขาด_(Sub-irrigation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานน้ำนอง_(Flood_Irrigation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานน้ำหยด_(Drip_Irrigation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานผิวดิน_(Surface_Irrigation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานร่องคู_(Furrow_Irrigation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานลูกฟูก_(Corrugation_Irrigation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานหมุนเวียน_(Irrigation_Rotation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานแบบท่วมขัง_(Border_Irrigation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานแบบปรับระดับดินและท่วมขัง_(Basin/Level_Border_Irrigation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานแบบร่องสลับร่อง_(Alternate_Furrow_Irrigation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชลประทานใต้ผิวดิน_(Subsurface/Sub-irrigation)"/>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ชานพัก_(Berm)"/>
+        <Class IRI="#โครงสร้างรองรับ_(Support_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ช่วงแผ่นดินไหว_(Earthquake_Period)"/>
+        <Class IRI="#แผ่นดินไหว_(Seismic_Activity)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ช่องระบายทราย_(Sand_Sluice)"/>
+        <Class IRI="#โครงสร้างส่งน้ำ_(Water_Conveyance_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ช่องระบายน้ำ_(Bank_Sluice)"/>
+        <Class IRI="#โครงสร้างส่งน้ำ_(Water_Conveyance_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ช่องลัด_(Cutoff)"/>
+        <Class IRI="#ลักษณะทางภูมิประเทศ_(Geological_Features)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ช่องลัดลดน้ำท่วม_(Flood_Bypass)"/>
+        <Class IRI="#ลักษณะทางภูมิประเทศ_(Geological_Features)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ดินดอนสามเหลี่ยม_(Delta)"/>
+        <Class IRI="#ลักษณะทางภูมิประเทศ_(Geological_Features)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ดินไหล_(Earth_Flow)"/>
+        <Class IRI="#การเคลื่อนตัวของพื้นดิน_(Ground_Movement)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ตอม่อ_(Pier)"/>
+        <Class IRI="#โครงสร้างรองรับ_(Support_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ตอม่อริม_(Abutment)"/>
+        <Class IRI="#โครงสร้างรองรับ_(Support_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ตะบันน้ำ_(Hydraulic_Ram)"/>
+        <Class IRI="#โครงสร้างส่งน้ำ_(Water_Conveyance_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ตะพัก_(Terrace)"/>
+        <Class IRI="#ลักษณะทางภูมิประเทศ_(Geological_Features)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ตะพักลุ่มน้ำ_(Alluvial_Terrace)"/>
+        <Class IRI="#ลักษณะทางภูมิประเทศ_(Geological_Features)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ตะแกรงกันสวะ_(Trash_Rack)"/>
+        <Class IRI="#โครงสร้างป้องกัน_(Protection_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ตะแกรงปลา_(Fish_Screen)"/>
+        <Class IRI="#โครงสร้างป้องกัน_(Protection_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ถังวัดการใช้น้ำ_(Lysimeter)"/>
+        <Class IRI="#เครื่องมือวัดการใช้น้ำ_(WaterConsumptionEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ถังวัดการใช้น้ำของข้าว_(RiceLysimeter)"/>
+        <Class IRI="#ถังวัดการใช้น้ำ_(Lysimeter)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ถังวัดการใช้น้ำของพืช_(PlantLysimeter)"/>
+        <Class IRI="#ถังวัดการใช้น้ำ_(Lysimeter)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ถังวัดการใช้น้ำแบบระบายน้ำ_(PercolationTypeLysimeter)"/>
+        <Class IRI="#ถังวัดการใช้น้ำ_(Lysimeter)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ถังวัดการใช้น้ำแบบไฮดรอลิค_(HydraulicWeighingLysimeter)"/>
+        <Class IRI="#ถังวัดการใช้น้ำ_(Lysimeter)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ถาดวัดการระเหย_(EvaporationPan)"/>
+        <Class IRI="#เครื่องมือวัดการใช้น้ำ_(WaterConsumptionEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ถาดวัดการระเหย_ClassA_(ClassAPan)"/>
+        <Class IRI="#ถาดวัดการระเหย_(EvaporationPan)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายตะกอน_(Sluiceway)"/>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+        <Class IRI="#ระบบระบายน้ำ_(Drainage_System)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายน้ำซึมแนวตั้ง_(Chimney_Drain)"/>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายน้ำท่วม_(Floodway)"/>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายน้ำรวม_(Collector_Drain)"/>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายน้ำล้นฉุกเฉิน_(Emergency_Spillway)"/>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายน้ำล้นด้านข้าง_(Lateral_Flow/Side_Channel_Spillway)"/>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายน้ำล้นปากแตร_(Morning_Glory_Spillway)"/>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายน้ำเพื่อลดแรงดัน_(Relief/Seepage_Drain)"/>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายน้ำแนวดิ่ง_(Vertical_Drain)"/>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายน้ำแบบรูตุ่น_(Mole_Drain)"/>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายน้ำแบบสกัดกั้น_(Intercepting_Drain)"/>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายน้ำใต้ดินท้ายเขื่อน_(Toe_Drain)"/>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ทางระบายน้ำใต้เขื่อน_(Trench_Drain)"/>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ที่ราบชายฝั่ง_(Coastal_Plain)"/>
+        <Class IRI="#ลักษณะทางภูมิประเทศ_(Geological_Features)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ที่ราบตะกอนน้ำพา_(Alluvial_Plain)"/>
+        <Class IRI="#ลักษณะทางภูมิประเทศ_(Geological_Features)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ที่ลุ่มน้ำเค็ม_(Salt_Marsh)"/>
+        <Class IRI="#ลักษณะทางภูมิประเทศ_(Geological_Features)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ท่อ_(Pipe)"/>
+        <Class IRI="#ระบบส่งน้ำ_(Water_Conveyance_System)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ท่อกรุ_(Casing)"/>
+        <Class IRI="#ท่อ_(Pipe)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ท่อตั้ง_(Riser_Pipe)"/>
+        <Class IRI="#ท่อ_(Pipe)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ท่อนกั้นน้ำ_(Stoplogs)"/>
+        <Class IRI="#ท่อ_(Pipe)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ท่อนำน้ำเข้าเครื่องกังหันน้ำ_(Penstock)"/>
+        <Class IRI="#ท่อ_(Pipe)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ท่อระบายน้ำดินเผา_(Tile_Drain)"/>
+        <Class IRI="#ท่อ_(Pipe)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ท่อลอด_(Culvert)"/>
+        <Class IRI="#ท่อ_(Pipe)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ท่อส่งน้ำเข้านา_(Farm_Intake/Turnout)"/>
+        <Class IRI="#ท่อ_(Pipe)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ท่อเชื่อมกาลักน้ำ_(Siphon)"/>
+        <Class IRI="#ท่อ_(Pipe)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#น้ำขึ้นลง_(Tide)"/>
+        <Class IRI="#ปรากฏการณ์น้ำขึ้นน้ำลง_(Tidal_Related)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#น้ำขึ้นเต็มที่_(High_Tide)"/>
+        <Class IRI="#ปรากฏการณ์น้ำขึ้นน้ำลง_(Tidal_Related)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#น้ำตาย_(Neap_Tide)"/>
+        <Class IRI="#ปรากฏการณ์น้ำขึ้นน้ำลง_(Tidal_Related)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#น้ำท่วมฉับพลัน_(Flash_Flood)"/>
+        <Class IRI="#ปรากฏการณ์น้ำท่วม_(Flood_Related)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#น้ำท่วมสุดโต่ง_(Extreme_Flood)"/>
+        <Class IRI="#ปรากฏการณ์น้ำท่วม_(Flood_Related)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#น้ำท่า_(Runoff)"/>
+        <Class IRI="#ปรากฏการณ์การไหล_(Flow_Phenomena)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#น้ำเท้อ_(Backwater)"/>
+        <Class IRI="#ปรากฏการณ์การไหล_(Flow_Phenomena)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#น้ำโจน_(Hydraulic_Jump)"/>
+        <Class IRI="#ปรากฏการณ์การไหล_(Flow_Phenomena)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานกั้นน้ำชั่วคราว_(Bulkhead_Gate)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานชนิดกระดก_(Flap_Gate)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานชนิดจุดหมุนคงที่_(Fixed_Hinged_Gates)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานชนิดล้อเลื่อน_(Fixed_Roller/Wheel_Gate)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานตรง_(Slide_Gate)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานทดน้ำ_(Check_Gate)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+        <Class IRI="#อาคารควบคุมน้ำ_(Control_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานบังคับน้ำรับแรงดันสูง_(High_Pressure_Gate)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานบังคับน้ำอัตโนมัติ_(Automatic_Gate)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานประตูเรือสัญจร_(Mitering_Gate)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานปิดซ่อม_(Guard_Gate)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานยกแนวดิ่ง_(Vertical_Lift_Gate)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานระบายตะกอน_(Sluice_Gate)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานหมุน_(Hinged/Swing_Gate)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บานโค้ง_(Radial/Tainter_Gate)"/>
+        <Class IRI="#บานบังคับน้ำ_(Gate)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บ่อ_(Well)"/>
+        <Class IRI="#ระบบระบายน้ำ_(Drainage_System)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บ่อดักทราย_(Sand_Trap/Trap_Box)"/>
+        <Class IRI="#บ่อ_(Well)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บ่อระบายน้ำ_(Drainage_Well)"/>
+        <Class IRI="#บ่อ_(Well)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บ่อลดแรงดัน_(Pressure_Relief/Relief_Well)"/>
+        <Class IRI="#บ่อ_(Well)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บ่อสังเกตการณ์_(Observation_Well)"/>
+        <Class IRI="#บ่อ_(Well)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#บ่อเติมน้ำ_(Diffusion/Inverted/Recharge_Well)"/>
+        <Class IRI="#บ่อ_(Well)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประตูตัดน้ำ/ลิ้นตัดน้ำ_(Isotating/Shut-off_Valve)"/>
+        <Class IRI="#ประตูน้ำและลิ้น_(Valve)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประตูน้ำ_(Valve)"/>
+        <Class IRI="#โครงสร้างควบคุม_(Control_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประตูน้ำวงแหวน_(Hollow_Jet_Valve)"/>
+        <Class IRI="#ประตูน้ำ_(Valve)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประตูน้ำแบบบาน_(Gate_Valve)"/>
+        <Class IRI="#ประตูน้ำ_(Valve)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประตูน้ำแบบปีกผีเสื้อ_(Butterfly_Valve)"/>
+        <Class IRI="#ประตูน้ำ_(Valve)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประตูน้ำและลิ้น_(Valve)"/>
+        <Class IRI="#อาคารชลประทาน_(Irrigation_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประตูระบายตะกอน_(Blowoff_Valve)"/>
+        <Class IRI="#ประตูน้ำ_(Valve)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประตูเรือสัญจร_(Navigation_Lock)"/>
+        <Class IRI="#โครงสร้างควบคุม_(Control_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประเภทของฝน_(Rain_Types)"/>
+        <Class IRI="#ปรากฏการณ์ทางอากาศ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประเภทของพายุ_(Storm_Types)"/>
+        <Class IRI="#ปรากฏการณ์ทางอากาศ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ประเภทหิน_(Rock_Types)"/>
+        <Class IRI="#โครงสร้างทางธรรมชาติ_(Natural_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ปรากฏการณ์การไหล_(Flow_Phenomena)"/>
+        <Class IRI="#ปรากฏการณ์ทางน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ปรากฏการณ์ตะกอน_(Sediment_Related)"/>
+        <Class IRI="#ปรากฏการณ์ทางน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ปรากฏการณ์น้ำขึ้นน้ำลง_(Tidal_Related)"/>
+        <Class IRI="#ปรากฏการณ์ทางน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ปรากฏการณ์น้ำท่วม_(Flood_Related)"/>
+        <Class IRI="#ปรากฏการณ์ทางน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝนคาดการณ์_(Expected_Rainfall)"/>
+        <Class IRI="#ประเภทของฝน_(Rain_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝนที่เกิดจากการพาความร้อน_(Convectional_Rain)"/>
+        <Class IRI="#ประเภทของฝน_(Rain_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝนละออง_(Drizzle)"/>
+        <Class IRI="#ประเภทของฝน_(Rain_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝนเกิดจากพายุหมุน_(Cyclonic_Rain)"/>
+        <Class IRI="#ประเภทของฝน_(Rain_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝนเกิดจากลมปะทะภูเขา_(Orographic_Rain)"/>
+        <Class IRI="#ประเภทของฝน_(Rain_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝนแรก_(Initial_Rainfall)"/>
+        <Class IRI="#ประเภทของฝน_(Rain_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝนใช้การได้_(Effective_Rainfall)"/>
+        <Class IRI="#ประเภทของฝน_(Rain_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝาย_(Weir)"/>
+        <Class IRI="#อาคารชลประทาน_(Irrigation_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายขั้นบันได_(Cascade/Step_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายจม_(Drowned/Submerged_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายชะลอน้ำ_(Check_Dam)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายทแยง_(Diagonal_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายท้ายน้ำ_(Subsidiary_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายบาก_(Notched_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายบานกระดก_(Flash_Board_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายปากเป็ด_(Duckbill_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายพอง_(Inflatable_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายยาง_(Rubber_Dam/Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายวัดน้ำ_(Measuring_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายวัดน้ำรูปสี่เหลี่ยมคางหมู_(Cipolletti_Weir)"/>
+        <Class IRI="#ฝายวัดน้ำ_(Measuring_Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายสันกว้าง_(Broad-crested_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายสันคม_(Sharp-crested_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายสันแข็ง_(Fixed_Crest_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายสามเหลี่ยม_(Triangular/V-notch_Weir)"/>
+        <Class IRI="#ฝายวัดน้ำ_(Measuring_Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายสี่เหลี่ยมผืนผ้า_(Rectangular_Weir)"/>
+        <Class IRI="#ฝายวัดน้ำ_(Measuring_Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายหยัก_(Labyrinth_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายหินก่อ_(Masonry_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายหินถม_(Rockfill_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายเคลื่อนที่ได้_(Movable_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายแบบการไหลอิสระ_(Clear_Overflow/Free_Fall/Free_Overfall_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายแรงโน้มถ่วง_(Gravity_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายโรไมน์_(Romijn_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายโอกี้_(Ogee_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ฝายไม้_(Timber_Weir)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#พนัง_(Dike)"/>
+        <Class IRI="#โครงสร้างรองรับ_(Support_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#พายุดีเปรสชั่น_(Depression)"/>
+        <Class IRI="#ประเภทของพายุ_(Storm_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#พายุฝน_(Rain_Storm)"/>
+        <Class IRI="#ประเภทของพายุ_(Storm_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#พายุฝนออกแบบ_(Design_Storm)"/>
+        <Class IRI="#ประเภทของพายุ_(Storm_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#พายุหมุน_(Cyclone)"/>
+        <Class IRI="#ประเภทของพายุ_(Storm_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#มาตรระยะทาง_(Odometer)"/>
+        <Class IRI="#เครื่องมือวัดระยะทาง_(DistanceMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#มาตรวัดระยะ_(Geodimeter)"/>
+        <Class IRI="#เครื่องมือวัดระยะทาง_(DistanceMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#มาตรเวนจูรี_(VenturiMeter)"/>
+        <Class IRI="#เครื่องมือวัดการไหล_(FlowMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#มาโนมิเตอร์_(Manometer)"/>
+        <Class IRI="#เครื่องมือวัดการไหล_(FlowMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#รถก่อสร้าง_(ConstructionVehicle)"/>
+        <Class IRI="#เครื่องจักร_(Machinery)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#รถขุด_(ExcavatorVehicle)"/>
+        <Class IRI="#รถก่อสร้าง_(ConstructionVehicle)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#รถขุดบุ้งกี๋โยน_(Dragline)"/>
+        <Class IRI="#รถขุด_(ExcavatorVehicle)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#รถดันดิน_(Dozer)"/>
+        <Class IRI="#รถก่อสร้าง_(ConstructionVehicle)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#รถบด_(Roller)"/>
+        <Class IRI="#รถก่อสร้าง_(ConstructionVehicle)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#รถบดแบบสั่นสะเทือน_(VibratingRoller)"/>
+        <Class IRI="#รถบด_(Roller)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#รถบูลโดเซอร์_(Bulldozer)"/>
+        <Class IRI="#รถดันดิน_(Dozer)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#รถแบ๊คโฮ_(Backhoe)"/>
+        <Class IRI="#รถขุด_(ExcavatorVehicle)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ระบบชลประทาน_(Irrigation_System)"/>
+        <Class IRI="#อาคารและสิ่งก่อสร้าง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ระบบบัญชาการ_(Command_System)"/>
+        <Class IRI="#การจัดการภาวะฉุกเฉิน"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ระบบรอยเลื่อน_(Fault_System)"/>
+        <Class IRI="#ระบบรอยเลื่อน_(Fault_System)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ระบบรอยเลื่อน_(Fault_System)"/>
+        <Class IRI="#โครงสร้างทางธรรมชาติ_(Natural_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ระบบระบายน้ำ_(Drainage_System)"/>
+        <Class IRI="#อาคารและสิ่งก่อสร้าง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ระบบส่งน้ำ_(Water_Conveyance_System)"/>
+        <Class IRI="#อาคารชลประทาน_(Irrigation_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ระแหงโคลน_(Mud_Crack)"/>
+        <Class IRI="#การเคลื่อนตัวของพื้นดิน_(Ground_Movement)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ลักษณะทางภูมิประเทศ_(Geological_Features)"/>
+        <Class IRI="#โครงสร้างทางธรรมชาติ_(Natural_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ลักษณะแม่น้ำ_(River_Features)"/>
+        <Class IRI="#โครงสร้างทางธรรมชาติ_(Natural_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#วัสดุกรอง_(Filter)"/>
+        <Class IRI="#วัสดุเฉพาะทาง_(SpecialMaterial)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#วัสดุกันน้ำ_(Waterstop)"/>
+        <Class IRI="#วัสดุเฉพาะทาง_(SpecialMaterial)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#วัสดุกั้นอัดฉีด_(Groutstop)"/>
+        <Class IRI="#วัสดุเฉพาะทาง_(SpecialMaterial)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#วัสดุอัดฉีด_(Grout)"/>
+        <Class IRI="#วัสดุเฉพาะทาง_(SpecialMaterial)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#วัสดุอุด_(Filler)"/>
+        <Class IRI="#วัสดุเฉพาะทาง_(SpecialMaterial)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#วัสดุเฉพาะทาง_(SpecialMaterial)"/>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+        <Class IRI="#ระบบชลประทาน_(Irrigation_System)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ศูนย์กลางแผ่นดินไหว_(Epicenter)"/>
+        <Class IRI="#แผ่นดินไหว_(Seismic_Activity)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ส่วนคอดทางน้ำโค้งตวัด_(Meander_Neck)"/>
+        <Class IRI="#ลักษณะแม่น้ำ_(River_Features)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#หินชนวน_(Slate)"/>
+        <Class IRI="#ประเภทหิน_(Rock_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#หินดินดาน_(Shale)"/>
+        <Class IRI="#ประเภทหิน_(Rock_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#หินทราย_(Sandstone)"/>
+        <Class IRI="#ประเภทหิน_(Rock_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#หินทรายแป้ง_(Siltstone)"/>
+        <Class IRI="#ประเภทหิน_(Rock_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#หินอัคนี_(Igneous_Rock)"/>
+        <Class IRI="#ประเภทหิน_(Rock_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#หินแกรนิต_(Granite)"/>
+        <Class IRI="#ประเภทหิน_(Rock_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ห้องบาน_(Gate_Chamber)"/>
+        <Class IRI="#โครงสร้างควบคุม_(Control_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ห้องอากาศ_(Air_Chamber)"/>
+        <Class IRI="#โครงสร้างควบคุม_(Control_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารกระจายน้ำ_(Distributor)"/>
+        <Class IRI="#อาคารประกอบ_(Appurtenant_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารควบคุม_(Regulating_Structure)"/>
+        <Class IRI="#อาคารประกอบ_(Appurtenant_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารควบคุมน้ำ_(Control_Structure)"/>
+        <Class IRI="#อาคารชลประทาน_(Irrigation_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารจุดหักโค้ง_(Bend_Structure)"/>
+        <Class IRI="#อาคารประกอบ_(Appurtenant_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารจ่ายน้ำแบบความต่างระดับน้ำคงที่_(Constant_Head_Orifice_Turnout)"/>
+        <Class IRI="#อาคารประกอบ_(Appurtenant_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารชลประทาน_(Irrigation_Structure)"/>
+        <Class IRI="#อาคารและสิ่งก่อสร้าง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารทดน้ำ_(Check)"/>
+        <Class IRI="#อาคารประกอบ_(Appurtenant_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารทางเข้า_(Inlet_Structure)"/>
+        <Class IRI="#อาคารประกอบ_(Appurtenant_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารท่อลอดคูส่งน้ำ_(Ditch-drain_Crossing_Structure)"/>
+        <Class IRI="#อาคารประกอบ_(Appurtenant_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารน้ำตก_(Drop/Vertical_Drop)"/>
+        <Class IRI="#อาคารประกอบ_(Appurtenant_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารน้ำตกทดน้ำ_(Check_Drop)"/>
+        <Class IRI="#อาคารน้ำตก_(Drop/Vertical_Drop)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารน้ำตกเอียง_(Inclined_Drop)"/>
+        <Class IRI="#อาคารน้ำตก_(Drop/Vertical_Drop)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารน้ำตกแบบท่อ_(Pipe_Drop)"/>
+        <Class IRI="#อาคารน้ำตก_(Drop/Vertical_Drop)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อาคารประกอบ_(Appurtenant_Structure)"/>
+        <Class IRI="#อาคารและสิ่งก่อสร้าง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อุปกรณ์ตรวจวัดระยะไกล_(RemoteTerminalUnit)"/>
+        <Class IRI="#อุปกรณ์พิเศษ_(SpecialEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อุปกรณ์พิเศษ_(SpecialEquipment)"/>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อุปกรณ์วัดน้ำฝน_(Rain_Gauge_Equipment)"/>
+        <Class IRI="#ข้อมูลอุปกรณ์_(Equipment_Data)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อุปกรณ์วัดระดับน้ำ_(Water_Level_Equipment)"/>
+        <Class IRI="#ข้อมูลอุปกรณ์_(Equipment_Data)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อุปกรณ์แปลงสัญญาณ_(SignalTransducer)"/>
+        <Class IRI="#อุปกรณ์พิเศษ_(SpecialEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อุปกรณ์แปลงสัญญาณเครื่องวัดระดับน้ำฟองอากาศ_(BubbleGaugeTransducer)"/>
+        <Class IRI="#อุปกรณ์แปลงสัญญาณ_(SignalTransducer)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อ่างชะลอน้ำ_(Retarding_Basin)"/>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อ่างน้ำนิ่งแบบน้ำวน_(Roller_Type_Stilling_Basin)"/>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+        <Class IRI="#แหล่งน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อ่างเก็บน้ำเอนกประสงค์_(Multi-purpose_Reservoir)"/>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#อ่างเก็บน้ำใต้ดิน_(Groundwater_Reservoir)"/>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขตทางน้ำโค้งตวัด_(Meander_Belt)"/>
+        <Class IRI="#ลักษณะแม่น้ำ_(River_Features)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อน_(Dam)"/>
+        <Class IRI="#แหล่งน้ำ"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนกักเก็บน้ำ_(Impounding_Dam)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนกันคลื่น_(Mole)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนคอนกรีต_(Concrete_Dam)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนค้ำยัน_(Buttress_Dam)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนชะลอน้ำ_(Detention_Dam)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนดิน_(Earth_Dam/Earthfill_Dam)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนดินถมบดอัด_(Rolled-earthfill_Dam/Rolled-fill_Dam)"/>
+        <Class IRI="#เขื่อนดิน_(Earth_Dam/Earthfill_Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนทดน้ำ_(Barrage)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนทดน้ำหรือเขื่อนผันน้ำ_(Diversion_Dam)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนวัสดุถม_(Embankment_Dam)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนสูบถม_(Hydraulic_Fill_Dam)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนหินถม_(Rockfill_Dam)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนแรงโน้มถ่วงโค้ง_(Gravity_Arch_Dam)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนโค้ง_(Arch_Dam)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เขื่อนใต้ดิน_(Underground_Dam)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องกังหัน_(Turbine)"/>
+        <Class IRI="#เครื่องจักร_(Machinery)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องกังหันน้ำ_(HydraulicTurbine)"/>
+        <Class IRI="#เครื่องกังหัน_(Turbine)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องกังหันแรงกระแทก_(ImpulseTurbine)"/>
+        <Class IRI="#เครื่องกังหัน_(Turbine)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องขุด_(Excavation)"/>
+        <Class IRI="#เครื่องจักร_(Machinery)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องขุดคูน้ำ_(Ditcher)"/>
+        <Class IRI="#เครื่องขุด_(Excavation)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องจักร_(Machinery)"/>
+        <Class IRI="#ทรัพยากร"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องจัดการตะกอน_(SedimentMachinery)"/>
+        <Class IRI="#เครื่องจักร_(Machinery)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องดักตะกอน_(SedimentCatcher)"/>
+        <Class IRI="#เครื่องจัดการตะกอน_(SedimentMachinery)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องทำคลื่น_(WaveMakingApparatus)"/>
+        <Class IRI="#เครื่องจักร_(Machinery)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องบันทึกความสูงคลื่น_(WaveHeightRecorder)"/>
+        <Class IRI="#เครื่องมือวัดน้ำ_(WaterMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องป้อนตะกอนท้องน้ำ_(BedLoadFeeder)"/>
+        <Class IRI="#เครื่องจัดการตะกอน_(SedimentMachinery)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+        <Class IRI="#ทรัพยากร"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือตรวจวัดเขื่อน_(DamInstrument)"/>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือวัดการใช้น้ำ_(WaterConsumptionEquipment)"/>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือวัดการไหล_(FlowMeasurementEquipment)"/>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือวัดความชื้น_(Tensiometer)"/>
+        <Class IRI="#เครื่องมือวัดคุณสมบัติของสาร_(MaterialPropertyEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือวัดความหนืด_(Viscosimeter)"/>
+        <Class IRI="#เครื่องมือวัดคุณสมบัติของสาร_(MaterialPropertyEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือวัดความไหวสะเทือน_(Seismograph)"/>
+        <Class IRI="#เครื่องมือตรวจวัดเขื่อน_(DamInstrument)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือวัดคุณสมบัติของสาร_(MaterialPropertyEquipment)"/>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือวัดน้ำ_(WaterMeasurementEquipment)"/>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือวัดพื้นที่_(Planimeter)"/>
+        <Class IRI="#เครื่องมือวัดคุณสมบัติของสาร_(MaterialPropertyEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือวัดระดับ_(LevelingEquipment)"/>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือวัดระยะทาง_(DistanceMeasurementEquipment)"/>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือวัดอากาศ_(WeatherMeasurementEquipment)"/>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องมือวัดแรงดันดิน_(PressureCell)"/>
+        <Class IRI="#เครื่องมือตรวจวัดเขื่อน_(DamInstrument)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องวัดกระแสน้ำ_(CurrentMeter)"/>
+        <Class IRI="#เครื่องมือวัดน้ำ_(WaterMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องวัดความกดอากาศ_(Barometer)"/>
+        <Class IRI="#เครื่องมือวัดอากาศ_(WeatherMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องวัดความกดอากาศแบบตลับ_(AneroidBarometer)"/>
+        <Class IRI="#เครื่องวัดความกดอากาศ_(Barometer)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องวัดความเร็วกระแสน้ำแบบคลื่นเสียง_(AcousticDopplerVelocimeter)"/>
+        <Class IRI="#เครื่องมือวัดน้ำ_(WaterMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องวัดน้ำฝนแบบอัตโนมัติ_(RainRecordingGauge)"/>
+        <Class IRI="#เครื่องวัดฝน_(RainGauge)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องวัดฝน_(RainGauge)"/>
+        <Class IRI="#เครื่องมือวัดอากาศ_(WeatherMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องวัดระดับน้ำ_(WaterLevelGauge)"/>
+        <Class IRI="#เครื่องมือวัดน้ำ_(WaterMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องวัดระดับน้ำแบบลูกลอย_(FloatGauge)"/>
+        <Class IRI="#เครื่องวัดระดับน้ำ_(WaterLevelGauge)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องวัดระดับน้ำแบบเข็ม_(PointGauge)"/>
+        <Class IRI="#เครื่องวัดระดับน้ำ_(WaterLevelGauge)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องวัดลม_(Anemometer)"/>
+        <Class IRI="#เครื่องมือวัดอากาศ_(WeatherMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องวัดลมแบบกราฟ_(Anemograph)"/>
+        <Class IRI="#เครื่องวัดลม_(Anemometer)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องวัดอัตราการไหลแบบข้องอ_(ElbowMeter)"/>
+        <Class IRI="#เครื่องมือวัดการไหล_(FlowMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องวัดอัตราการไหลแบบออริฟิซ_(OrificeMeter)"/>
+        <Class IRI="#เครื่องมือวัดการไหล_(FlowMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องสูบน้ำ_(Pump)"/>
+        <Class IRI="#เครื่องจักร_(Machinery)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องสูบน้ำชนิดน้ำไหลตามแนวแกน_(AxialFlowPump)"/>
+        <Class IRI="#เครื่องสูบน้ำตามลักษณะการไหล_(FlowBasedPump)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องสูบน้ำตามลักษณะการทำงาน_(OperationBasedPump)"/>
+        <Class IRI="#เครื่องสูบน้ำ_(Pump)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องสูบน้ำตามลักษณะการไหล_(FlowBasedPump)"/>
+        <Class IRI="#เครื่องสูบน้ำ_(Pump)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องสูบน้ำบ่อน้ำลึก_(DeepWellPump)"/>
+        <Class IRI="#เครื่องสูบน้ำ_(Pump)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องสูบน้ำลูกสูบชัก_(ReciprocatingPump)"/>
+        <Class IRI="#เครื่องสูบน้ำตามลักษณะการทำงาน_(OperationBasedPump)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องสูบน้ำแบบลมดัน_(AirLiftPump)"/>
+        <Class IRI="#เครื่องสูบน้ำตามลักษณะการทำงาน_(OperationBasedPump)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องสูบน้ำแบบหอยโข่ง_(CentrifugalPump)"/>
+        <Class IRI="#เครื่องสูบน้ำตามลักษณะการทำงาน_(OperationBasedPump)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องสูบน้ำแบบไหลผสม_(MixedFlowPump)"/>
+        <Class IRI="#เครื่องสูบน้ำตามลักษณะการไหล_(FlowBasedPump)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องสูบน้ำแบบไหลวน_(RadialFlowPump)"/>
+        <Class IRI="#เครื่องสูบน้ำตามลักษณะการไหล_(FlowBasedPump)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องสูบน้ำแรงกระแทก_(ImpulsePump)"/>
+        <Class IRI="#เครื่องสูบน้ำตามลักษณะการทำงาน_(OperationBasedPump)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องหยั่งความลึกของน้ำด้วยเสียงสะท้อน_(EchoSounder)"/>
+        <Class IRI="#เครื่องมือวัดน้ำ_(WaterMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เครื่องเก็บตะกอนท้องน้ำ_(BedMaterialSampler)"/>
+        <Class IRI="#เครื่องจัดการตะกอน_(SedimentMachinery)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เสาเข็มดาล_(End_Bearing_Pile)"/>
+        <Class IRI="#โครงสร้างรองรับ_(Support_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#เสาเข็มเสียดทาน_(Friction_Pile)"/>
+        <Class IRI="#โครงสร้างรองรับ_(Support_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แกนทางน้ำโค้งตวัด_(Meander_Core)"/>
+        <Class IRI="#ลักษณะแม่น้ำ_(River_Features)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แนวชายฝั่ง_(Coastline)"/>
+        <Class IRI="#ลักษณะแม่น้ำ_(River_Features)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แผ่นดินไหว_(Seismic_Activity)"/>
+        <Class IRI="#ปรากฏการณ์ทางธรณีวิทยา"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แผ่นวัดระดับน้ำ_(StaffGauge)"/>
+        <Class IRI="#เครื่องวัดระดับน้ำ_(WaterLevelGauge)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แอนตี้ไซโคลน_(Anti-Cyclone)"/>
+        <Class IRI="#ประเภทของพายุ_(Storm_Types)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แอ่งน้ำกระแทก_(Impact_Basin)"/>
+        <Class IRI="#โครงสร้างสลายพลังงาน_(Energy_Dissipation_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แอ่งน้ำนิ่ง_(Stilling_Basin)"/>
+        <Class IRI="#โครงสร้างสลายพลังงาน_(Energy_Dissipation_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แอ่งน้ำนิ่งแบบน้ำพุ่งอิสระ_(Free_Jet_Stilling_Basin)"/>
+        <Class IRI="#โครงสร้างสลายพลังงาน_(Energy_Dissipation_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แอ่งน้ำโจน_(Hydraulic_Jump_Basin)"/>
+        <Class IRI="#โครงสร้างสลายพลังงาน_(Energy_Dissipation_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#แอ่งลู่สกี_(Ski_Jump_Bucket)"/>
+        <Class IRI="#โครงสร้างสลายพลังงาน_(Energy_Dissipation_Structures)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โครงสร้างกำแพง_(Wall_Structures)"/>
+        <Class IRI="#โครงสร้างทางโยธา_(Civil_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โครงสร้างควบคุม_(Control_Structures)"/>
+        <Class IRI="#โครงสร้างทางชลศาสตร์_(Hydraulic_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โครงสร้างทางชลศาสตร์_(Hydraulic_Structure)"/>
+        <Class IRI="#อาคารและสิ่งก่อสร้าง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โครงสร้างทางธรรมชาติ_(Natural_Structure)"/>
+        <Class IRI="#อาคารและสิ่งก่อสร้าง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โครงสร้างทางโยธา_(Civil_Structure)"/>
+        <Class IRI="#อาคารและสิ่งก่อสร้าง"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โครงสร้างป้องกัน_(Protection_Structures)"/>
+        <Class IRI="#โครงสร้างทางชลศาสตร์_(Hydraulic_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โครงสร้างรองรับ_(Support_Structures)"/>
+        <Class IRI="#โครงสร้างทางโยธา_(Civil_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โครงสร้างสลายพลังงาน_(Energy_Dissipation_Structures)"/>
+        <Class IRI="#โครงสร้างทางชลศาสตร์_(Hydraulic_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โครงสร้างส่งน้ำ_(Water_Conveyance_Structures)"/>
+        <Class IRI="#โครงสร้างทางชลศาสตร์_(Hydraulic_Structure)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โคลนถล่ม_(Mudslide)"/>
+        <Class IRI="#การเคลื่อนตัวของพื้นดิน_(Ground_Movement)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โอปีโซมิเตอร์_(Opisometer)"/>
+        <Class IRI="#เครื่องมือวัดระยะทาง_(DistanceMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#โอโดกราฟ_(Odograph)"/>
+        <Class IRI="#เครื่องมือวัดระยะทาง_(DistanceMeasurementEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ไฮโดรมิเตอร์_(Hydrometer)"/>
+        <Class IRI="#เครื่องมือวัดคุณสมบัติของสาร_(MaterialPropertyEquipment)"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#ไฮโดรโฟน_(Hydrophone)"/>
+        <Class IRI="#อุปกรณ์พิเศษ_(SpecialEquipment)"/>
+    </SubClassOf>
+    <DisjointClasses>
+        <Class IRI="#กระบวนการก่อสร้าง"/>
+        <Class IRI="#กระบวนการจัดการสถานการณ์น้ำ"/>
+        <Class IRI="#กระบวนการทางการเกษตร"/>
+        <Class IRI="#กระบวนการทางอุทกวิทยา"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#กระบวนการก่อสร้าง"/>
+        <Class IRI="#กระบวนการจัดการสถานการณ์น้ำ"/>
+        <Class IRI="#กระบวนการทางการเกษตร"/>
+        <Class IRI="#กระบวนการทางอุทกวิทยา"/>
+        <Class IRI="#การจัดการภาวะฉุกเฉิน"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การไฟฟ้าฝ่ายผลิต"/>
+        <Class IRI="#องค์กรปกครองส่วนท้องถิ่น"/>
+        <Class IRI="#เกษตรกรในพื้นที่"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#น้ำท่วม"/>
+        <Class IRI="#น้ำหลาก"/>
+        <Class IRI="#ภัยแล้ง"/>
+        <Class IRI="#อุทกภัย"/>
+        <Class IRI="#ปรากฏการณ์การไหล_(Flow_Phenomena)"/>
+        <Class IRI="#ปรากฏการณ์ตะกอน_(Sediment_Related)"/>
+        <Class IRI="#ปรากฏการณ์น้ำขึ้นน้ำลง_(Tidal_Related)"/>
+        <Class IRI="#ปรากฏการณ์น้ำท่วม_(Flood_Related)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ปรากฏการณ์ทางธรณีวิทยา"/>
+        <Class IRI="#ปรากฏการณ์ทางน้ำ"/>
+        <Class IRI="#ปรากฏการณ์ทางอากาศ"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#พื้นที่ขาดแคลนน้ำ"/>
+        <Class IRI="#พื้นที่น้ำท่วมซ้ำซาก"/>
+        <Class IRI="#พื้นที่ริมฝั่งน้ำ"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#มาตรการภัยแล้ง"/>
+        <Class IRI="#มาตรการอุทุกภัย"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#กระบวนการซึม_(Infiltration_Process)"/>
+        <Class IRI="#กระบวนการระเหย_(Evaporation_Process)"/>
+        <Class IRI="#กระบวนการไหล_(Flow_Process)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#กลยุทธ์_(Strategy)"/>
+        <Class IRI="#การจัดการในภาวะฉุกเฉิน_(Emergency_Management)"/>
+        <Class IRI="#การซ่อมสร้าง_(Reconstruction)"/>
+        <Class IRI="#การเตรียมความพร้อม_(Preparedness)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#กลุ่มเปราะบาง_(Vulnerable_Group)"/>
+        <Class IRI="#การเตือนภัยล่วงหน้า_(Early_Warning)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การกระจายการผลิตพืช_(Crop_Diversification)"/>
+        <Class IRI="#การควบคุมวัชพืช_(Weed_Control)"/>
+        <Class IRI="#การปลูกพืชหมุนเวียน_(Crop_Rotation)"/>
+        <Class IRI="#การปลูกพืชเชิงเดี่ยว_(Monoculture)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การกร่อน_(Erosion)"/>
+        <Class IRI="#การกร่อนแบบร่องธาร_(Gully_Erosion)"/>
+        <Class IRI="#การกัดเซาะชายฝั่ง_(Coastal_Erosion)"/>
+        <Class IRI="#การกัดเซาะผิวหน้าลักษณะเป็นแผ่น_(Sheet_Erosion)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การกัดเซาะ_(Erosion_Types)"/>
+        <Class IRI="#การเคลื่อนตัวของพื้นดิน_(Ground_Movement)"/>
+        <Class IRI="#แผ่นดินไหว_(Seismic_Activity)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การควบคุมน้ำ_(Water_Control_Management)"/>
+        <Class IRI="#การจัดการทรัพยากรน้ำ_(Water_Resource_Management)"/>
+        <Class IRI="#การบำรุงรักษา_(Maintenance_Management)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การควบคุมโดยท้ายน้ำ_(Downstream_Control)"/>
+        <Class IRI="#การควบคุมโดยเหนือน้ำ_(Upstream_Control)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การคายน้ำ_(Transpiration)"/>
+        <Class IRI="#การคายระเหย_(Evapotranspiration)"/>
+        <Class IRI="#การระเหย_(Evaporation)"/>
+        <Class IRI="#การระเหยทั้งหมด_(Total_Evaporation)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การจัดการชลประทาน_(Irrigation_Management)"/>
+        <Class IRI="#การจัดการพืช_(Crop_Management)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การจัดการทรัพยากรน้ำแบบบูรณาการ_(Integrated_Water_Resources_Management)"/>
+        <Class IRI="#การจัดการน้ำท่วม_(Flood_Management)"/>
+        <Class IRI="#การจัดการลุ่มน้ำ_(Watershed_Management)"/>
+        <Class IRI="#การบริหารจัดการลุ่มน้ำ_(Catchment_Management)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การจัดการน้ำชลประทานในแปลงนา_(Farm_Water_Management)"/>
+        <Class IRI="#การชลประทาน_(Irrigation)"/>
+        <Class IRI="#การทำไร่นาแบบมุ่งเน้น_(Intensive_Farming)"/>
+        <Class IRI="#การส่งน้ำแบบตลอดเวลา_(Continuous_Flow_Irrigation)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การซึม_(Infiltration,_Seepage)"/>
+        <Class IRI="#การซึมผ่านดินอิ่มตัว_(Percolation)"/>
+        <Class IRI="#การซึมลึก_(Deep_Percolation)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การดาด_(Lining)"/>
+        <Class IRI="#การดาดคอนกรีต_(Concrete_Lining)"/>
+        <Class IRI="#การทดสอบการยุบตัว_(Slump_Test)"/>
+        <Class IRI="#การบ่มคอนกรีต_(Concrete_Curing)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การทดสอบการบดอัดมาตรฐาน_(Standard_Compaction_Test)"/>
+        <Class IRI="#การเจาะ_(Drilling)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การทรุดตัวที่ยอมได้_(Settlement_Allowance)"/>
+        <Class IRI="#การหดจากการแข็งตัว_(Settlement_Shrinkage)"/>
+        <Class IRI="#การเกิดโพรงท่อ_(Piping)"/>
+        <Class IRI="#การเคลื่อนไหวของเปลือกโลก_(Crustal_Movement)"/>
+        <Class IRI="#ดินไหล_(Earth_Flow)"/>
+        <Class IRI="#ระแหงโคลน_(Mud_Crack)"/>
+        <Class IRI="#โคลนถล่ม_(Mudslide)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การบริหารจัดการ_(Management)"/>
+        <Class IRI="#การเตือนภัยและการป้องกัน_(Warning_and_Protection)"/>
+        <Class IRI="#ระบบบัญชาการ_(Command_System)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การบัญชาการ_(Command)"/>
+        <Class IRI="#การบัญชาการร่วม_(Unified_Command)"/>
+        <Class IRI="#การบัญชาการเหตุการณ์_(Incident_Command)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การบำรุงรักษา_(Maintenance)"/>
+        <Class IRI="#การบำรุงรักษาปกติ_(Regular_Maintenance)"/>
+        <Class IRI="#การบำรุงรักษาเชิงแก้ไข_(Corrective_Maintenance)"/>
+        <Class IRI="#การบำรุงรักษาแบบป้องกัน_(Preventive_Maintenance)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การอัดฉีด_(Grouting)"/>
+        <Class IRI="#การอัดฉีดฉาบผิว_(Slush_Grouting)"/>
+        <Class IRI="#การอัดฉีดด้วยเบนทอไนต์_(Bentonite_Grouting)"/>
+        <Class IRI="#การอัดฉีดโดยการพ่น_(Jet_Grouting)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การเกิดน้ำท่วม_(Flooding)"/>
+        <Class IRI="#การเคลื่อนตัวของน้ำท่วม_(Flood_Routing)"/>
+        <Class IRI="#การเคลื่อนตัวของน้ำหลากผ่านอ่างเก็บน้ำ_(Reservoir_Routing)"/>
+        <Class IRI="#คลื่นน้ำท่วม_(Flood_Wave)"/>
+        <Class IRI="#น้ำท่วมฉับพลัน_(Flash_Flood)"/>
+        <Class IRI="#น้ำท่วมสุดโต่ง_(Extreme_Flood)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#การไหลของน้ำใต้ดิน_(Groundwater_Flow)"/>
+        <Class IRI="#การไหลตามฤดูกาล_(Seasonal_Flow)"/>
+        <Class IRI="#การไหลแบบคงที่_(Steady_Flow)"/>
+        <Class IRI="#การไหลแบบจม_(Submerged_Flow)"/>
+        <Class IRI="#การไหลแบบปั่นป่วน_(Turbulent_Flow)"/>
+        <Class IRI="#การไหลแบบราบเรียบ_(Laminar_Flow)"/>
+        <Class IRI="#การไหลแบบวิกฤติ_(Critical_Flow)"/>
+        <Class IRI="#การไหลแบบเนื้อเดียว_(Homogeneous_Flow)"/>
+        <Class IRI="#การไหลใต้ดิน_(Subsurface_Flow)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#กาลักน้ำ_(Siphon)"/>
+        <Class IRI="#ประตูน้ำ_(Valve)"/>
+        <Class IRI="#ประตูเรือสัญจร_(Navigation_Lock)"/>
+        <Class IRI="#ห้องบาน_(Gate_Chamber)"/>
+        <Class IRI="#ห้องอากาศ_(Air_Chamber)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#กำแพงกันดิน_(Retaining_Wall)"/>
+        <Class IRI="#กำแพงตีนลาด_(Toe_Wall)"/>
+        <Class IRI="#กำแพงทึบน้ำ_(Diaphragm_Wall)"/>
+        <Class IRI="#กำแพงนำน้ำ_(Guide_Wall)"/>
+        <Class IRI="#กำแพงปีก_(Wing_Wall)"/>
+        <Class IRI="#กำแพงป้องกันน้ำท่วม_(Flood_Wall)"/>
+        <Class IRI="#กำแพงล่าง_(Cutoff_Wall)"/>
+        <Class IRI="#กำแพงสารละลายทึบน้ำ_(Slurry_Wall)"/>
+        <Class IRI="#กำแพงใต้ร่องแกน_(Key_Wall)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ขั้นบันได_(Terrace)"/>
+        <Class IRI="#คัน_(Embankment)"/>
+        <Class IRI="#ชานพัก_(Berm)"/>
+        <Class IRI="#ตอม่อ_(Pier)"/>
+        <Class IRI="#ตอม่อริม_(Abutment)"/>
+        <Class IRI="#พนัง_(Dike)"/>
+        <Class IRI="#เสาเข็มดาล_(End_Bearing_Pile)"/>
+        <Class IRI="#เสาเข็มเสียดทาน_(Friction_Pile)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ข้อมูล_Diagram_(Data_Diagram)"/>
+        <Class IRI="#ข้อมูลสภาพการก่อสร้าง_(Construction_Status_Data)"/>
+        <Class IRI="#ข้อมูลอุปกรณ์_(Equipment_Data)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#คลอง_(Canal)"/>
+        <Class IRI="#ท่อ_(Pipe)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#คลองชลประทาน_(Irrigation_Canal)"/>
+        <Class IRI="#คลองชักน้ำ_(Feeder_Canal)"/>
+        <Class IRI="#คลองซอย_(Lateral/Secondary_Canal)"/>
+        <Class IRI="#คลองดาด_(Lined_Canal)"/>
+        <Class IRI="#คลองดิน_(Earth_Canal)"/>
+        <Class IRI="#คลองรับน้ำนอง_(Inundation_Canal)"/>
+        <Class IRI="#คลองลัด_(Cutoff)"/>
+        <Class IRI="#คลองส่งน้ำสายใหญ่/สายหลัก_(Main/Primary_Canal)"/>
+        <Class IRI="#คลองแยก_(Branch_Canal)"/>
+        <Class IRI="#คลองแยกซอย_(Sub-lateral)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#คลองส่งน้ำสายใหญ่ฝั่งขวา_(Right_Main_Canal)"/>
+        <Class IRI="#คลองส่งน้ำสายใหญ่ฝั่งซ้าย_(Left_Main_Canal)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#งานคอนกรีต_(Concrete_Works)"/>
+        <Class IRI="#งานดิน_(Ground_Works)"/>
+        <Class IRI="#งานอัดฉีด_(Grouting_Works)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ชลประทานขนาดเล็ก_(Tank_Irrigation)"/>
+        <Class IRI="#ชลประทานจุลภาค_(Micro_Irrigation)"/>
+        <Class IRI="#ชลประทานฉีดฝอย_(Overhead/Spray/Sprinkler_Irrigation)"/>
+        <Class IRI="#ชลประทานน้ำขาด_(Sub-irrigation)"/>
+        <Class IRI="#ชลประทานน้ำนอง_(Flood_Irrigation)"/>
+        <Class IRI="#ชลประทานน้ำหยด_(Drip_Irrigation)"/>
+        <Class IRI="#ชลประทานผิวดิน_(Surface_Irrigation)"/>
+        <Class IRI="#ชลประทานร่องคู_(Furrow_Irrigation)"/>
+        <Class IRI="#ชลประทานลูกฟูก_(Corrugation_Irrigation)"/>
+        <Class IRI="#ชลประทานหมุนเวียน_(Irrigation_Rotation)"/>
+        <Class IRI="#ชลประทานแบบท่วมขัง_(Border_Irrigation)"/>
+        <Class IRI="#ชลประทานแบบปรับระดับดินและท่วมขัง_(Basin/Level_Border_Irrigation)"/>
+        <Class IRI="#ชลประทานแบบร่องสลับร่อง_(Alternate_Furrow_Irrigation)"/>
+        <Class IRI="#ชลประทานใต้ผิวดิน_(Subsurface/Sub-irrigation)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ช่วงแผ่นดินไหว_(Earthquake_Period)"/>
+        <Class IRI="#ศูนย์กลางแผ่นดินไหว_(Epicenter)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ช่องระบายทราย_(Sand_Sluice)"/>
+        <Class IRI="#ช่องระบายน้ำ_(Bank_Sluice)"/>
+        <Class IRI="#ตะบันน้ำ_(Hydraulic_Ram)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ช่องลัด_(Cutoff)"/>
+        <Class IRI="#ช่องลัดลดน้ำท่วม_(Flood_Bypass)"/>
+        <Class IRI="#ดินดอนสามเหลี่ยม_(Delta)"/>
+        <Class IRI="#ตะพัก_(Terrace)"/>
+        <Class IRI="#ตะพักลุ่มน้ำ_(Alluvial_Terrace)"/>
+        <Class IRI="#ที่ราบชายฝั่ง_(Coastal_Plain)"/>
+        <Class IRI="#ที่ราบตะกอนน้ำพา_(Alluvial_Plain)"/>
+        <Class IRI="#ที่ลุ่มน้ำเค็ม_(Salt_Marsh)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ตะแกรงกันสวะ_(Trash_Rack)"/>
+        <Class IRI="#ตะแกรงปลา_(Fish_Screen)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ทางระบายตะกอน_(Sluiceway)"/>
+        <Class IRI="#ทางระบายน้ำซึมแนวตั้ง_(Chimney_Drain)"/>
+        <Class IRI="#ทางระบายน้ำท่วม_(Floodway)"/>
+        <Class IRI="#ทางระบายน้ำรวม_(Collector_Drain)"/>
+        <Class IRI="#ทางระบายน้ำล้นฉุกเฉิน_(Emergency_Spillway)"/>
+        <Class IRI="#ทางระบายน้ำล้นด้านข้าง_(Lateral_Flow/Side_Channel_Spillway)"/>
+        <Class IRI="#ทางระบายน้ำล้นปากแตร_(Morning_Glory_Spillway)"/>
+        <Class IRI="#ทางระบายน้ำเพื่อลดแรงดัน_(Relief/Seepage_Drain)"/>
+        <Class IRI="#ทางระบายน้ำแนวดิ่ง_(Vertical_Drain)"/>
+        <Class IRI="#ทางระบายน้ำแบบรูตุ่น_(Mole_Drain)"/>
+        <Class IRI="#ทางระบายน้ำแบบสกัดกั้น_(Intercepting_Drain)"/>
+        <Class IRI="#ทางระบายน้ำใต้ดินท้ายเขื่อน_(Toe_Drain)"/>
+        <Class IRI="#ทางระบายน้ำใต้เขื่อน_(Trench_Drain)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ทางระบายน้ำ_(Drainage_Channel)"/>
+        <Class IRI="#บ่อ_(Well)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ท่อกรุ_(Casing)"/>
+        <Class IRI="#ท่อตั้ง_(Riser_Pipe)"/>
+        <Class IRI="#ท่อนกั้นน้ำ_(Stoplogs)"/>
+        <Class IRI="#ท่อนำน้ำเข้าเครื่องกังหันน้ำ_(Penstock)"/>
+        <Class IRI="#ท่อระบายน้ำดินเผา_(Tile_Drain)"/>
+        <Class IRI="#ท่อลอด_(Culvert)"/>
+        <Class IRI="#ท่อส่งน้ำเข้านา_(Farm_Intake/Turnout)"/>
+        <Class IRI="#ท่อเชื่อมกาลักน้ำ_(Siphon)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#น้ำขึ้นลง_(Tide)"/>
+        <Class IRI="#น้ำขึ้นเต็มที่_(High_Tide)"/>
+        <Class IRI="#น้ำตาย_(Neap_Tide)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#น้ำท่า_(Runoff)"/>
+        <Class IRI="#น้ำเท้อ_(Backwater)"/>
+        <Class IRI="#น้ำโจน_(Hydraulic_Jump)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#บานกั้นน้ำชั่วคราว_(Bulkhead_Gate)"/>
+        <Class IRI="#บานชนิดกระดก_(Flap_Gate)"/>
+        <Class IRI="#บานชนิดจุดหมุนคงที่_(Fixed_Hinged_Gates)"/>
+        <Class IRI="#บานชนิดล้อเลื่อน_(Fixed_Roller/Wheel_Gate)"/>
+        <Class IRI="#บานตรง_(Slide_Gate)"/>
+        <Class IRI="#บานทดน้ำ_(Check_Gate)"/>
+        <Class IRI="#บานบังคับน้ำรับแรงดันสูง_(High_Pressure_Gate)"/>
+        <Class IRI="#บานบังคับน้ำอัตโนมัติ_(Automatic_Gate)"/>
+        <Class IRI="#บานประตูเรือสัญจร_(Mitering_Gate)"/>
+        <Class IRI="#บานปิดซ่อม_(Guard_Gate)"/>
+        <Class IRI="#บานยกแนวดิ่ง_(Vertical_Lift_Gate)"/>
+        <Class IRI="#บานระบายตะกอน_(Sluice_Gate)"/>
+        <Class IRI="#บานหมุน_(Hinged/Swing_Gate)"/>
+        <Class IRI="#บานโค้ง_(Radial/Tainter_Gate)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#บ่อดักทราย_(Sand_Trap/Trap_Box)"/>
+        <Class IRI="#บ่อระบายน้ำ_(Drainage_Well)"/>
+        <Class IRI="#บ่อลดแรงดัน_(Pressure_Relief/Relief_Well)"/>
+        <Class IRI="#บ่อสังเกตการณ์_(Observation_Well)"/>
+        <Class IRI="#บ่อเติมน้ำ_(Diffusion/Inverted/Recharge_Well)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ประตูน้ำวงแหวน_(Hollow_Jet_Valve)"/>
+        <Class IRI="#ประตูน้ำแบบบาน_(Gate_Valve)"/>
+        <Class IRI="#ประตูน้ำแบบปีกผีเสื้อ_(Butterfly_Valve)"/>
+        <Class IRI="#ประตูระบายตะกอน_(Blowoff_Valve)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ประตูน้ำและลิ้น_(Valve)"/>
+        <Class IRI="#ฝาย_(Weir)"/>
+        <Class IRI="#ระบบส่งน้ำ_(Water_Conveyance_System)"/>
+        <Class IRI="#อาคารควบคุมน้ำ_(Control_Structure)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ประเภทของฝน_(Rain_Types)"/>
+        <Class IRI="#ประเภทของพายุ_(Storm_Types)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ประเภทหิน_(Rock_Types)"/>
+        <Class IRI="#ระบบรอยเลื่อน_(Fault_System)"/>
+        <Class IRI="#ลักษณะทางภูมิประเทศ_(Geological_Features)"/>
+        <Class IRI="#ลักษณะแม่น้ำ_(River_Features)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ปรากฏการณ์การไหล_(Flow_Phenomena)"/>
+        <Class IRI="#ปรากฏการณ์ตะกอน_(Sediment_Related)"/>
+        <Class IRI="#ปรากฏการณ์น้ำขึ้นน้ำลง_(Tidal_Related)"/>
+        <Class IRI="#ปรากฏการณ์น้ำท่วม_(Flood_Related)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ฝนคาดการณ์_(Expected_Rainfall)"/>
+        <Class IRI="#ฝนที่เกิดจากการพาความร้อน_(Convectional_Rain)"/>
+        <Class IRI="#ฝนละออง_(Drizzle)"/>
+        <Class IRI="#ฝนเกิดจากพายุหมุน_(Cyclonic_Rain)"/>
+        <Class IRI="#ฝนเกิดจากลมปะทะภูเขา_(Orographic_Rain)"/>
+        <Class IRI="#ฝนแรก_(Initial_Rainfall)"/>
+        <Class IRI="#ฝนใช้การได้_(Effective_Rainfall)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ฝาย_(Weir)"/>
+        <Class IRI="#อาคารควบคุมน้ำ_(Control_Structure)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ฝาย_(Weir)"/>
+        <Class IRI="#เขื่อน_(Dam)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ฝายขั้นบันได_(Cascade/Step_Weir)"/>
+        <Class IRI="#ฝายจม_(Drowned/Submerged_Weir)"/>
+        <Class IRI="#ฝายชะลอน้ำ_(Check_Dam)"/>
+        <Class IRI="#ฝายทแยง_(Diagonal_Weir)"/>
+        <Class IRI="#ฝายท้ายน้ำ_(Subsidiary_Weir)"/>
+        <Class IRI="#ฝายบาก_(Notched_Weir)"/>
+        <Class IRI="#ฝายบานกระดก_(Flash_Board_Weir)"/>
+        <Class IRI="#ฝายปากเป็ด_(Duckbill_Weir)"/>
+        <Class IRI="#ฝายพอง_(Inflatable_Weir)"/>
+        <Class IRI="#ฝายยาง_(Rubber_Dam/Weir)"/>
+        <Class IRI="#ฝายวัดน้ำ_(Measuring_Weir)"/>
+        <Class IRI="#ฝายสันกว้าง_(Broad-crested_Weir)"/>
+        <Class IRI="#ฝายสันคม_(Sharp-crested_Weir)"/>
+        <Class IRI="#ฝายสันแข็ง_(Fixed_Crest_Weir)"/>
+        <Class IRI="#ฝายหยัก_(Labyrinth_Weir)"/>
+        <Class IRI="#ฝายหินก่อ_(Masonry_Weir)"/>
+        <Class IRI="#ฝายหินถม_(Rockfill_Weir)"/>
+        <Class IRI="#ฝายเคลื่อนที่ได้_(Movable_Weir)"/>
+        <Class IRI="#ฝายแบบการไหลอิสระ_(Clear_Overflow/Free_Fall/Free_Overfall_Weir)"/>
+        <Class IRI="#ฝายแรงโน้มถ่วง_(Gravity_Weir)"/>
+        <Class IRI="#ฝายโรไมน์_(Romijn_Weir)"/>
+        <Class IRI="#ฝายโอกี้_(Ogee_Weir)"/>
+        <Class IRI="#ฝายไม้_(Timber_Weir)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ฝายวัดน้ำรูปสี่เหลี่ยมคางหมู_(Cipolletti_Weir)"/>
+        <Class IRI="#ฝายสามเหลี่ยม_(Triangular/V-notch_Weir)"/>
+        <Class IRI="#ฝายสี่เหลี่ยมผืนผ้า_(Rectangular_Weir)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#พายุดีเปรสชั่น_(Depression)"/>
+        <Class IRI="#พายุฝน_(Rain_Storm)"/>
+        <Class IRI="#พายุฝนออกแบบ_(Design_Storm)"/>
+        <Class IRI="#พายุหมุน_(Cyclone)"/>
+        <Class IRI="#แอนตี้ไซโคลน_(Anti-Cyclone)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ระบบชลประทาน_(Irrigation_System)"/>
+        <Class IRI="#ระบบระบายน้ำ_(Drainage_System)"/>
+        <Class IRI="#อาคารชลประทาน_(Irrigation_Structure)"/>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ระบบชลประทาน_(Irrigation_System)"/>
+        <Class IRI="#ระบบระบายน้ำ_(Drainage_System)"/>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#วิธีการให้น้ำ_(Irrigation_Methods)"/>
+        <Class IRI="#อาคารประกอบ_(Appurtenant_Structure)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#ส่วนคอดทางน้ำโค้งตวัด_(Meander_Neck)"/>
+        <Class IRI="#เขตทางน้ำโค้งตวัด_(Meander_Belt)"/>
+        <Class IRI="#แกนทางน้ำโค้งตวัด_(Meander_Core)"/>
+        <Class IRI="#แนวชายฝั่ง_(Coastline)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#หินชนวน_(Slate)"/>
+        <Class IRI="#หินดินดาน_(Shale)"/>
+        <Class IRI="#หินทราย_(Sandstone)"/>
+        <Class IRI="#หินทรายแป้ง_(Siltstone)"/>
+        <Class IRI="#หินอัคนี_(Igneous_Rock)"/>
+        <Class IRI="#หินแกรนิต_(Granite)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#อาคารกระจายน้ำ_(Distributor)"/>
+        <Class IRI="#อาคารควบคุม_(Regulating_Structure)"/>
+        <Class IRI="#อาคารจุดหักโค้ง_(Bend_Structure)"/>
+        <Class IRI="#อาคารจ่ายน้ำแบบความต่างระดับน้ำคงที่_(Constant_Head_Orifice_Turnout)"/>
+        <Class IRI="#อาคารทดน้ำ_(Check)"/>
+        <Class IRI="#อาคารทางเข้า_(Inlet_Structure)"/>
+        <Class IRI="#อาคารท่อลอดคูส่งน้ำ_(Ditch-drain_Crossing_Structure)"/>
+        <Class IRI="#อาคารน้ำตก_(Drop/Vertical_Drop)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#อาคารน้ำตกทดน้ำ_(Check_Drop)"/>
+        <Class IRI="#อาคารน้ำตกเอียง_(Inclined_Drop)"/>
+        <Class IRI="#อาคารน้ำตกแบบท่อ_(Pipe_Drop)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#อุปกรณ์วัดน้ำฝน_(Rain_Gauge_Equipment)"/>
+        <Class IRI="#อุปกรณ์วัดระดับน้ำ_(Water_Level_Equipment)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#อ่างชะลอน้ำ_(Retarding_Basin)"/>
+        <Class IRI="#อ่างน้ำนิ่งแบบน้ำวน_(Roller_Type_Stilling_Basin)"/>
+        <Class IRI="#อ่างเก็บน้ำเอนกประสงค์_(Multi-purpose_Reservoir)"/>
+        <Class IRI="#อ่างเก็บน้ำใต้ดิน_(Groundwater_Reservoir)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#เขื่อนกักเก็บน้ำ_(Impounding_Dam)"/>
+        <Class IRI="#เขื่อนกันคลื่น_(Mole)"/>
+        <Class IRI="#เขื่อนคอนกรีต_(Concrete_Dam)"/>
+        <Class IRI="#เขื่อนค้ำยัน_(Buttress_Dam)"/>
+        <Class IRI="#เขื่อนชะลอน้ำ_(Detention_Dam)"/>
+        <Class IRI="#เขื่อนดิน_(Earth_Dam/Earthfill_Dam)"/>
+        <Class IRI="#เขื่อนทดน้ำ_(Barrage)"/>
+        <Class IRI="#เขื่อนทดน้ำหรือเขื่อนผันน้ำ_(Diversion_Dam)"/>
+        <Class IRI="#เขื่อนวัสดุถม_(Embankment_Dam)"/>
+        <Class IRI="#เขื่อนสูบถม_(Hydraulic_Fill_Dam)"/>
+        <Class IRI="#เขื่อนหินถม_(Rockfill_Dam)"/>
+        <Class IRI="#เขื่อนแรงโน้มถ่วงโค้ง_(Gravity_Arch_Dam)"/>
+        <Class IRI="#เขื่อนโค้ง_(Arch_Dam)"/>
+        <Class IRI="#เขื่อนใต้ดิน_(Underground_Dam)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#แอ่งน้ำกระแทก_(Impact_Basin)"/>
+        <Class IRI="#แอ่งน้ำนิ่ง_(Stilling_Basin)"/>
+        <Class IRI="#แอ่งน้ำนิ่งแบบน้ำพุ่งอิสระ_(Free_Jet_Stilling_Basin)"/>
+        <Class IRI="#แอ่งน้ำโจน_(Hydraulic_Jump_Basin)"/>
+        <Class IRI="#แอ่งลู่สกี_(Ski_Jump_Bucket)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#โครงสร้างกำแพง_(Wall_Structures)"/>
+        <Class IRI="#โครงสร้างรองรับ_(Support_Structures)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#โครงสร้างควบคุม_(Control_Structures)"/>
+        <Class IRI="#โครงสร้างป้องกัน_(Protection_Structures)"/>
+        <Class IRI="#โครงสร้างสลายพลังงาน_(Energy_Dissipation_Structures)"/>
+        <Class IRI="#โครงสร้างส่งน้ำ_(Water_Conveyance_Structures)"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#โครงสร้างทางชลศาสตร์_(Hydraulic_Structure)"/>
+        <Class IRI="#โครงสร้างทางธรรมชาติ_(Natural_Structure)"/>
+        <Class IRI="#โครงสร้างทางโยธา_(Civil_Structure)"/>
+    </DisjointClasses>
+    <ClassAssertion>
+        <Class IRI="#เว็บไซต์กรมชลประทาน"/>
+        <NamedIndividual IRI="#weather.tmd.go.th"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#สำนักงานชลประทานที่_1"/>
+        <NamedIndividual IRI="#กว๊านพะเยา"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#เขื่อน_(Dam)"/>
+        <NamedIndividual IRI="#กว๊านพะเยา"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#การขอช่วยดำเนินการ"/>
+        <NamedIndividual IRI="#การขอความสนับสนุนนอกพื้นที่ชลประทาน"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#การขอช่วยดำเนินการ"/>
+        <NamedIndividual IRI="#การขอความสนับสนุนเครื่องมือเครื่องจักร"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#การขอช่วยดำเนินการ"/>
+        <NamedIndividual IRI="#การเตรียมความพร้อมอาคารชลประทาน"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#การขอช่วยดำเนินการ"/>
+        <NamedIndividual IRI="#ข้อมูลในระบบสารสนเทศกรมชลประทานสูญหาย"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#การรายงานและแจ้งเหตุ"/>
+        <NamedIndividual IRI="#ดำเนินการปลอดภัยอื่นๆ"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#พื้นที่น้ำท่วมซ้ำซาก"/>
+        <NamedIndividual IRI="#น้ำท่วมซ้ำซากของจังหวัดเชียงใหม่"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#จังหวัด"/>
+        <NamedIndividual IRI="#พะเยา"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#การรายงานและแจ้งเหตุ"/>
+        <NamedIndividual IRI="#อาคารชลประทานชำรุด"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+        <NamedIndividual IRI="#อ่างเก็บน้ำห้วยบง"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+        <NamedIndividual IRI="#อ่างเก็บน้ำห้วยหลวง"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+        <NamedIndividual IRI="#อ่างเก็บน้ำห้วยแม่ป่าข่า"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+        <NamedIndividual IRI="#อ่างเก็บน้ำห้วยโป่งอ่อน"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+        <NamedIndividual IRI="#อ่างเก็บน้ำห้วยไคร้"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+        <NamedIndividual IRI="#อ่างเก็บน้ำแม่ตีบ"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+        <NamedIndividual IRI="#อ่างเก็บน้ำแม่ธิ"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+        <NamedIndividual IRI="#อ่างเก็บน้ำแม่สาน"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+        <NamedIndividual IRI="#อ่างเก็บน้ำแม่เมย"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+        <NamedIndividual IRI="#อ่างเก็บน้ำโฮ่งฮ่าง"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#เขื่อน_(Dam)"/>
+        <NamedIndividual IRI="#เขื่อนแม่กวง"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#เขื่อน_(Dam)"/>
+        <NamedIndividual IRI="#เขื่อนแม่งัด"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#เขื่อน_(Dam)"/>
+        <NamedIndividual IRI="#เขื่อนแม่พริก"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#จังหวัด"/>
+        <NamedIndividual IRI="#เชียงใหม่"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#อุทกภัย"/>
+        <NamedIndividual IRI="#เชียงใหม่"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#แม่น้ำ"/>
+        <NamedIndividual IRI="#แม่น้ำน่าน"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#การขอช่วยดำเนินการ"/>
+        <NamedIndividual IRI="#การก่อสร้างแหล่งน้ำ/สถานีสูบน้ำชุมชน"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#มาตราการรับมือฤดูฝน"/>
+        <NamedIndividual IRI="#มาตรการที่_10:_ติดตามและประเมินผล"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#มาตราการรับมือฤดูฝน"/>
+        <NamedIndividual IRI="#มาตรการที่_1:_คาดการณ์ชี้เป้าและแจ้งเตือนพื้นที่เสี่ยงน้ำท่วม"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#มาตราการรับมือฤดูฝน"/>
+        <NamedIndividual IRI="#มาตรการที่_2:_ทบทวนและปรับปรุงเกณฑ์บริหารจัดการน้ำ"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#ทรัพยากร"/>
+        <NamedIndividual IRI="#มาตรการที่_3:_เตรียมความพร้อมเครื่องจักร_เครื่องมือ_และบุคลากร"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#บุคลากร"/>
+        <NamedIndividual IRI="#มาตรการที่_3:_เตรียมความพร้อมเครื่องจักร_เครื่องมือ_และบุคลากร"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#มาตราการรับมือฤดูฝน"/>
+        <NamedIndividual IRI="#มาตรการที่_3:_เตรียมความพร้อมเครื่องจักร_เครื่องมือ_และบุคลากร"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+        <NamedIndividual IRI="#มาตรการที่_3:_เตรียมความพร้อมเครื่องจักร_เครื่องมือ_และบุคลากร"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#มาตราการรับมือฤดูฝน"/>
+        <NamedIndividual IRI="#มาตรการที่_4:_ตรวจสอบความมั่นคงปลอดภัยของคันกั้นน้ำและพนังกั้นน้ำ"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#มาตราการรับมือฤดูฝน"/>
+        <NamedIndividual IRI="#มาตรการที่_5:_เพิ่มประสิทธิภาพการระบายน้ำ"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#มาตราการรับมือฤดูฝน"/>
+        <NamedIndividual IRI="#มาตรการที่_6:_ซักซ้อมแผนเผชิญเหตุ"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#มาตราการรับมือฤดูฝน"/>
+        <NamedIndividual IRI="#มาตรการที่_7:_เก็บกักน้ำในช่วงปลายฤดูฝน"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#มาตราการรับมือฤดูฝน"/>
+        <NamedIndividual IRI="#มาตรการที่_8:_สร้างความเข้มแข็งเครือข่ายภาคประชาชน"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#มาตราการรับมือฤดูฝน"/>
+        <NamedIndividual IRI="#มาตรการที่_9:_สร้างการรับรู้และประชาสัมพันธ์"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+        <NamedIndividual IRI="#อ่างเก็บน้ำแม่สะกืด(ม่อนตะแลง)"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#การขอช่วยดำเนินการ"/>
+        <NamedIndividual IRI="#เปิด/ปิด_ประตูน้ำ"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#การขอช่วยดำเนินการ"/>
+        <NamedIndividual IRI="#เพิ่ม/ลด_การปล่อยน้ำ"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#การขอช่วยดำเนินการ"/>
+        <NamedIndividual IRI="#แนวทาง/มาตรการรับมือพื้นที่น้ำท่วมซ้ำซาก"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#การขอช่วยดำเนินการ"/>
+        <NamedIndividual IRI="#แนวทาง/มาตรการรับมือพื้นที่เสี่ยงน้ำท่วม"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#การขอช่วยดำเนินการ"/>
+        <NamedIndividual IRI="#แนวทาง/มาตรการรับมือพื้นที่เสี่ยงภัยแล้ง"/>
+    </ClassAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="#ตั้งอยู่ใน"/>
+        <NamedIndividual IRI="#กว๊านพะเยา"/>
+        <NamedIndividual IRI="#พะเยา"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="#มีพื้นที่จัดการน้ำ"/>
+        <NamedIndividual IRI="#น้ำท่วมซ้ำซากของจังหวัดเชียงใหม่"/>
+        <NamedIndividual IRI="#เชียงใหม่"/>
+    </ObjectPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#ความจุ"/>
+        <NamedIndividual IRI="#กว๊านพะเยา"/>
+        <Literal>40 ล้านลูกบาศก์เมตร</Literal>
+    </DataPropertyAssertion>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#ความจุ"/>
+        <ObjectProperty IRI="#ความสัมพันธ์ด้านการจัดการน้ำ"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#มีพื้นที่จัดการน้ำ"/>
+        <ObjectProperty IRI="#ความสัมพันธ์ด้านการจัดการน้ำ"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดน้ำฝน"/>
+        <ObjectProperty IRI="#ความสัมพันธ์ด้านอุปกรณ์"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดระดับน้ำ"/>
+        <ObjectProperty IRI="#ความสัมพันธ์ด้านอุปกรณ์"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#มีอ่างเก็บน้ำ"/>
+        <ObjectProperty IRI="#ความสัมพันธ์ด้านองค์ประกอบ"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#มีเขื่อน"/>
+        <ObjectProperty IRI="#ความสัมพันธ์ด้านองค์ประกอบ"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#มีแผนการจัดการ"/>
+        <ObjectProperty IRI="#ความสัมพันธ์ด้านการจัดการน้ำ"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#มีโครงการชลประทาน"/>
+        <ObjectProperty IRI="#ความสัมพันธ์ด้านองค์ประกอบ"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#รับผิดชอบโดย"/>
+        <ObjectProperty IRI="#ความสัมพันธ์เชิงบุคคล"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#รับผิดชอบโดย"/>
+        <ObjectProperty IRI="#รับผิดชอบโดย"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#ใช้มาตรการณ์ภัยแล้ง"/>
+        <ObjectProperty IRI="#มีแผนการจัดการ"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#ใช้มาตรการณ์อุทกภัย"/>
+        <ObjectProperty IRI="#มีแผนการจัดการ"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#ใช้เครื่องมือ"/>
+        <ObjectProperty IRI="#ความสัมพันธ์ด้านอุปกรณ์"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#belongsTo_(สังกัด)"/>
+        <ObjectProperty IRI="#ความสัมพันธ์เชิงบุคคล"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#hasDepartment_(มีฝ่าย)"/>
+        <ObjectProperty IRI="#ความสัมพันธ์เชิงบุคคล"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#hasDeputyDirector_(มีรองผู้อำนวยการ)"/>
+        <ObjectProperty IRI="#ความสัมพันธ์เชิงบุคคล"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#hasDirector_(มีผู้อำนวยการ)"/>
+        <ObjectProperty IRI="#ความสัมพันธ์เชิงบุคคล"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#hasProject_(มีโครงการชลประทาน)"/>
+        <ObjectProperty IRI="#ความสัมพันธ์เชิงบุคคล"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#hasProvince_(มีจังหวัดในความรับผิดชอบ)"/>
+        <ObjectProperty IRI="#ความสัมพันธ์เชิงบุคคล"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#manages_(จัดการ)"/>
+        <ObjectProperty IRI="#ความสัมพันธ์เชิงบุคคล"/>
+    </SubObjectPropertyOf>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#มีพื้นที่จัดการน้ำ"/>
+    </FunctionalObjectProperty>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดระดับน้ำ"/>
+    </FunctionalObjectProperty>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#ใช้มาตรการณ์ภัยแล้ง"/>
+    </FunctionalObjectProperty>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#hasDeputyDirector_(มีรองผู้อำนวยการ)"/>
+    </FunctionalObjectProperty>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#hasDirector_(มีผู้อำนวยการ)"/>
+    </FunctionalObjectProperty>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#ความสัมพันธ์เชิงบุคคล"/>
+        <Class IRI="#การบริหารจัดการ"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#ตั้งอยู่ใน"/>
+        <Class IRI="#แหล่งน้ำ"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#มีจำนวน"/>
+        <Class IRI="#สำนักงานชลประทานที่_5"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#มีผลกระทบต่อ"/>
+        <Class IRI="#เอลนีโญ"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#มีพื้นที่จัดการน้ำ"/>
+        <Class IRI="#การบริหารสถานการณ์น้ำ"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดน้ำฝน"/>
+        <Class IRI="#การบริหารสถานการณ์น้ำ"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดน้ำฝน"/>
+        <Class IRI="#แผนงานการจัดการน้ำ"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดระดับน้ำ"/>
+        <Class IRI="#การบริหารจัดการ"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดระดับน้ำ"/>
+        <Class IRI="#แผนงานการจัดการน้ำ"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#มีอ่างเก็บน้ำ"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#มีเขื่อน"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#มีโครงการชลประทาน"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#รับผิดชอบโดย"/>
+        <Class IRI="#การบริหารจัดการ"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#ใช้มาตรการณ์ภัยแล้ง"/>
+        <Class IRI="#การบริหารสถานการณ์น้ำ"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#ใช้มาตรการณ์อุทกภัย"/>
+        <Class IRI="#การบริหารสถานการณ์น้ำ"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#ใช้เทคโนโลยี"/>
+        <Class IRI="#การบริหารจัดการ"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#hasProject_(มีโครงการชลประทาน)"/>
+        <Class IRI="#บุคลากร"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#ความสัมพันธ์เชิงบุคคล"/>
+        <Class IRI="#หน่วยงาน"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#ตั้งอยู่ใน"/>
+        <Class IRI="#พื้นที่การปกครอง"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#มีจำนวน"/>
+        <Class IRI="#อ่างเก็บน้ำ_(Reservoir)"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#มีผลกระทบต่อ"/>
+        <Class IRI="#ภาคเหนือ"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#มีพื้นที่จัดการน้ำ"/>
+        <Class IRI="#การบริหารจัดการ"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดน้ำฝน"/>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดระดับน้ำ"/>
+        <Class IRI="#เครื่องมือตรวจวัดเขื่อน_(DamInstrument)"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดระดับน้ำ"/>
+        <Class IRI="#เครื่องมือวัดการใช้น้ำ_(WaterConsumptionEquipment)"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดระดับน้ำ"/>
+        <Class IRI="#เครื่องมือวัดน้ำ_(WaterMeasurementEquipment)"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#มีอุปกรณ์วัดระดับน้ำ"/>
+        <Class IRI="#เครื่องมือวัดระดับ_(LevelingEquipment)"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#มีโครงการชลประทาน"/>
+        <Class IRI="#โครงการชลประทานจังหวัด"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#รับผิดชอบโดย"/>
+        <Class IRI="#หน่วยงาน"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#ใช้มาตรการณ์ภัยแล้ง"/>
+        <Class IRI="#มาตรการภัยแล้ง"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#ใช้มาตรการณ์อุทกภัย"/>
+        <Class IRI="#มาตรการอุทุกภัย"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#ใช้เทคโนโลยี"/>
+        <Class IRI="#ระบบ_SCADA"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#belongsTo_(สังกัด)"/>
+        <Class IRI="#กรมชลประทาน"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#hasDepartment_(มีฝ่าย)"/>
+        <Class IRI="#ฝ่าย"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#hasDeputyDirector_(มีรองผู้อำนวยการ)"/>
+        <Class IRI="#บุคคล"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#hasDirector_(มีผู้อำนวยการ)"/>
+        <Class IRI="#บุคคล"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#hasProject_(มีโครงการชลประทาน)"/>
+        <Class IRI="#โครงการชลประทานจังหวัด"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#hasProvince_(มีจังหวัดในความรับผิดชอบ)"/>
+        <Class IRI="#จังหวัด"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#manages_(จัดการ)"/>
+        <Class IRI="#การบริหารจัดการ"/>
+    </ObjectPropertyRange>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#ขนาดอุปกรณ์"/>
+        <DataProperty IRI="#อุปกรณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#ความถี่ในการวัด"/>
+        <DataProperty IRI="#อุปกรณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#ชื่อสำนักงาน"/>
+        <DataProperty IRI="#สำนักงาน"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#ที่อยู่"/>
+        <DataProperty IRI="#สำนักงาน"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#ประเภทมาตรการ"/>
+        <DataProperty IRI="#มาตรการณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#ประเภทอุปกรณ์"/>
+        <DataProperty IRI="#อุปกรณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#ปีที่ก่อตั้ง"/>
+        <DataProperty IRI="#สำนักงาน"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#พิกัด"/>
+        <DataProperty IRI="#อุปกรณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#พิกัดลองจิจูด"/>
+        <DataProperty IRI="#สำนักงาน"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#พิกัดละติจูด"/>
+        <DataProperty IRI="#สำนักงาน"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#พื้นที่รับผิดชอบ"/>
+        <DataProperty IRI="#สำนักงาน"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#พื้นที่เป้าหมาย"/>
+        <DataProperty IRI="#มาตรการณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มาตรการณ์"/>
+        <DataProperty IRI="#แผนการจัดการน้ำ"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีการพยากรณ์ฝน"/>
+        <DataProperty IRI="#พื้นที่เสี่ยงอุทกภัย"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีความจุรวม"/>
+        <DataProperty IRI="#ระบบจัดการน้ำ"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีจังหวัด"/>
+        <DataProperty IRI="#พื้นที่เสี่ยงอุทกภัย"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีจำนวนจุดเสี่ยง"/>
+        <DataProperty IRI="#พื้นที่เสี่ยงอุทกภัย"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีจำนวนมาตรการณ์"/>
+        <DataProperty IRI="#มาตรการณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีจำนวนอ่าง"/>
+        <DataProperty IRI="#ระบบจัดการน้ำ"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีจำนวนโครงการ"/>
+        <DataProperty IRI="#โครงการบำรุงรักษา"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีชื่อพื้นที่"/>
+        <DataProperty IRI="#พื้นที่เสี่ยงอุทกภัย"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีปริมาณน้ำปัจจุบัน"/>
+        <DataProperty IRI="#ระบบจัดการน้ำ"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีปริมาณน้ำเทียบปีก่อน"/>
+        <DataProperty IRI="#ระบบจัดการน้ำ"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีปริมาณวัชพืช"/>
+        <DataProperty IRI="#โครงการบำรุงรักษา"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีปีดำเนินการ"/>
+        <DataProperty IRI="#มาตรการณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีพื้นที่ดำเนินการ"/>
+        <DataProperty IRI="#โครงการบำรุงรักษา"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีพื้นที่เสี่ยง"/>
+        <DataProperty IRI="#พื้นที่เสี่ยงอุทกภัย"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีระบบแจ้งเตือน"/>
+        <DataProperty IRI="#พื้นที่เสี่ยงอุทกภัย"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีร้อยละกักเก็บ"/>
+        <DataProperty IRI="#ระบบจัดการน้ำ"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีสถานะ"/>
+        <DataProperty IRI="#ระบบจัดการน้ำ"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีสถานีตรวจวัด"/>
+        <DataProperty IRI="#พื้นที่เสี่ยงอุทกภัย"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีสภาพอากาศ"/>
+        <DataProperty IRI="#พื้นที่เสี่ยงอุทกภัย"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีสาเหตุน้ำท่วม"/>
+        <DataProperty IRI="#พื้นที่เสี่ยงอุทกภัย"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีอุปกรณ์ใหม่"/>
+        <DataProperty IRI="#อุปกรณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีเครื่องจักรสนับสนุน"/>
+        <DataProperty IRI="#อุปกรณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#มีเครื่องสูบน้ำรวม"/>
+        <DataProperty IRI="#อุปกรณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#รหัสสำนักงาน"/>
+        <DataProperty IRI="#สำนักงาน"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#ระดับน้ำวิกฤติ"/>
+        <DataProperty IRI="#แผนการจัดการน้ำ"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#ระบบจัดการน้ำ"/>
+        <DataProperty IRI="#พื้นที่การจัดการน้ำ"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#ระยะเวลาดำเนินการ"/>
+        <DataProperty IRI="#แผนการจัดการน้ำ"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#สถานะ"/>
+        <DataProperty IRI="#มาตรการณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#สถานะการใช้งาน"/>
+        <DataProperty IRI="#อุปกรณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#สังกัด"/>
+        <DataProperty IRI="#อุปกรณ์"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#สังกัดสำนักงาน"/>
+        <DataProperty IRI="#พื้นที่การจัดการน้ำ"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#อีเมล"/>
+        <DataProperty IRI="#สำนักงาน"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#เบอร์โทรศัพท์"/>
+        <DataProperty IRI="#สำนักงาน"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#เว็บไซต์"/>
+        <DataProperty IRI="#สำนักงาน"/>
+    </SubDataPropertyOf>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#ชื่อสำนักงาน"/>
+    </FunctionalDataProperty>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#รหัสสำนักงาน"/>
+    </FunctionalDataProperty>
+    <DataPropertyDomain>
+        <DataProperty IRI="#ขนาดอุปกรณ์"/>
+        <Class IRI="#เครื่องจักร_(Machinery)"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#ขนาดอุปกรณ์"/>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#ที่อยู่"/>
+        <Class IRI="#โครงการชลประทานจังหวัด"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#ประเภทอุปกรณ์"/>
+        <Class IRI="#เครื่องจักร_(Machinery)"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#ประเภทอุปกรณ์"/>
+        <Class IRI="#เครื่องมือ_(Equipment)"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#ปีที่ก่อตั้ง"/>
+        <Class IRI="#โครงการชลประทานจังหวัด"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#พิกัดละติจูด"/>
+        <Class IRI="#โครงการชลประทานจังหวัด"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#พื้นที่รับผิดชอบ"/>
+        <Class IRI="#โครงการชลประทานจังหวัด"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#มีพื้นที่"/>
+        <Class IRI="#พื้นที่การปกครอง"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#ระยะเวลาดำเนินการ"/>
+        <Class IRI="#มาตรการ"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#สำนักงาน"/>
+        <Class IRI="#โครงการชลประทานจังหวัด"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#อีเมล"/>
+        <Class IRI="#โครงการชลประทานจังหวัด"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#เบอร์โทรศัพท์"/>
+        <Class IRI="#โครงการชลประทานจังหวัด"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#เว็บไซต์"/>
+        <Class IRI="#โครงการชลประทานจังหวัด"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty abbreviatedIRI="owl:topDataProperty"/>
+        <Class IRI="#สำนักงานชลประทานที่_5"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#ขนาดอุปกรณ์"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#ชื่อสำนักงาน"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#ที่อยู่"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#ประเภทอุปกรณ์"/>
+        <Datatype abbreviatedIRI="rdfs:Literal"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#ประเภทอุปกรณ์"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#ปีที่ก่อตั้ง"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#พิกัดละติจูด"/>
+        <Datatype abbreviatedIRI="xsd:float"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#พื้นที่รับผิดชอบ"/>
+        <Datatype abbreviatedIRI="xsd:float"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#รหัสสำนักงาน"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#ระยะเวลาดำเนินการ"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#สำนักงาน"/>
+        <Datatype abbreviatedIRI="xsd:float"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#อีเมล"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#เบอร์โทรศัพท์"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#เว็บไซต์"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty abbreviatedIRI="owl:topDataProperty"/>
+        <Datatype abbreviatedIRI="xsd:float"/>
+    </DataPropertyRange>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#กรมชลประทาน</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#การบริหารจัดการ</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#ชื่อสำนักงาน</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#ที่อยู่</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#น้ำท่วมซ้ำซากของจังหวัดเชียงใหม่</IRI>
+        <Literal xml:lang="th">1.พื้นที่ลุ่มต่ำตามตลิ่งลำน้ำปิง ทั้ง 2 ฝั่ง เกิดจากปริมาณน้ำปิงมีมาก และเอ่อล้นตลิ่งเข้าท่วมช่วง
+พื้นที่เช่นในปี 2565
+2.พื้นที่ฝั่งตะวันตกของเมืองเชียงใหม่ ที่ได้รับผลกระทบจากน้ำที่มาจากดอยสุเทพ
+3.พื้นที่ฝั่งตะวันออกของเมืองเชียงใหม่ บริเวณอำเภอสันกำแพง ที่ได้รับผลกระทบจากน้ำที่มาจาก
+น้ำแม่ออน น้ำแม่โฮม น้ำแม่ปูคา
+4.พื้นที่อื่น ๆ ที่รับน้ำหลาก ตามลุ่มน้ำย่อย เช่น ลุ่มน้ำขาน ลุ่มน้ำกลาง ลุ่มน้ำฝาง ลุ่มน้ำแม่แจ่ม
+เป็นต้น และสำหรับในพื้นที่ภาพรวม สำนักงานชลประทานที่ 1 ได้ จัดทำแผนที่พื้นที่เสี่ยงน้ำท่วมไว้
+แล้ว 27 แห่ง (เชียงใหม่ 14 แห่ง, ลำพูน 8 แห่ง, แม่ฮ่องสอน 5 แห่ง) พร้อมวางแผนการป้องกัน/
+รับมือเหตุการณ์แล้ว</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#บุคคล</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#ปรากฏการณ์ธรรมชาติ</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#ปีที่ก่อตั้ง</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#พิกัดละติจูด</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#พื้นที่รับผิดชอบ</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#มีพื้นที่จัดการน้ำ</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#มีอุปกรณ์วัดน้ำฝน</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#มีอุปกรณ์วัดระดับน้ำ</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#มีแผนการจัดการ</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#ระยะเวลาดำเนินการ</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#สำนักงาน</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#อุปกรณ์</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#เขื่อนแม่กวง</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#เขื่อนแม่งัด</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#เชียงใหม่</IRI>
+        <Literal xml:lang="th">รูปแบบการเกิดอุทกภัยของ จ.เชียงใหม่ เป็น 4 รูปแบบ และมีแนว
+ทางการรับมือดังนี้
+1. พื้นที่ลุ่มต่ำ 2 ฝั่งลำน้ำปิง สชป.1 จะติดตามสภาพภูมิอากาศ และสภาพน้ำท่าในพื้นที่ตอนบน
+ของตัวเมืองเชียงใหม่ โดยเมื่อปริมาณน้ำในแม่น้ำปิง และน้ำแม่แตงมีมาก ก็จะผันน้ำเข้าคลองส่ง
+น้ำของฝายแม่แฝก และฝายแม่แตง เพื่อเลี่ยงเมืองเชียงใหม่ นอกจากนี้ยังเฝ้าระวังปริมาณน้ำที่สถานี
+วัดน้ำ P.67 อ.สันทราย และสถานี P.1 อ.เมือง โดยเมื่อสถานี P.67 ถึงระดับวิกฤติ อีก 6 - 8 ชั่วโมง
+ที่สถานี P.1 จะถึงระดับวิกฤติเช่นเดียวกัน ซึ่งเราก็จะแจ้งเตือน โดยปกติ สชป.1 จะแจ้งประชาสัมพันธ์
+ปริมาณน้ำเป็นปกติทุกวันตามช่องทางต่าง ๆ แต่ถ้าช่วงวิกฤติ ก็จะเพิ่มความถี่การประชาสัมพันธ์เป็น
+ทุก ๆ ชั่วโมง ตลอด 24 ชั่วโมง นอกจากนี้ สชป.1 ได้จัดทำแผนที่ Onemap บูรณาการป้องกันและ
+แก้ไขปัญหาอุทกภัยร่วมกับหน่วยงานต่าง ๆ ซึ่งได้กำหนดจุดเฝ้าระวัง โดยเฉพาะจุดเสี่ยงต่าง ๆ
+ตามแนวลำน้ำปิงและจุดติดตั้งเครื่องสูบน้ำ และเครื่องจักร/เครื่องมือ อื่นๆ ที่เกี่ยวข้องหากเกิดอุทกภัย
+เมื่อวิกฤติคลี่คลาย สชป.1 ก็จะจัดส่งเจ้าหน้าและเครื่องจักร/เครื่องมือ เข้าช่วยทำความสะอาดพื้นที่
+บ้านเรือนของผู้ประสบภัย 2.พื้นที่ฝั่งตะวันตกของเมืองเชียงใหม่ ซึ่งเกิดจากฝนตกหนักบริเวณดอยสุเทพ -ปุยทำให้เกิดน้ำ
+หลากเมื่อได้รับรายงานสภาพอากาศและฝนตกหนักบริเวณดอยสุเทพ จะทำให้เกิดน้ำไหลหลาก
+ในบริเวณดังกล่าว ทาง สชป.1 เตรียมความพร้อม โดยปัจจุบันเราได้พร่องน้ำในคลองแม่แตงสายใหญ่
+ไว้แล้ว เพื่อใช้สำหรับรับน้ำจากเทือกเขาดอยสุเทพ-ปุย เข้าสู่คลองส่งน้ำไม่ให้ไหลเข้าสู่ตัวเมือง
+พร้อมทั้งมี Onemap ซึ่งกำหนดจุดเฝ้าระวัง โดยเฉพาะจุดเสี่ยงต่าง ๆ ที่รับน้ำจากห้วยสาขา เช่น ห้วยช่างเคียน
+ห้วยแก้ว ห้วยแม่ตาช้าง พร้อมเตรียมเครื่องสูบน้ำ เครื่องจักรเครื่องมืออื่นๆ ที่เกี่ยวข้องไว้พร้อมแล้ว
+3.พื้นที่ฝั่งตะวันออกของเมืองเชียงใหม่ ซึ่งเกิดจากน้ำหลากในลำน้ำแม่ออน แม่โฮม แม่ปูคา เข้า
+ท่วม อ.สันกำแพงเมื่อปริมาณน้ำในลำน้ำแม่ออนมีมาก สชป.1 จะผันน้ำในลำน้ำแม่ออนลงสู่คลองสาย
+ใหญ่ฝั่งซ้ายโครงการแม่กวงฯ และผันน้ำแม่ออนเข้าสู่ลำเหมืองลึก ลงลำน้ำแม่กวง เพื่อลดปริมาณน้ำ
+หลากที่จะไหลเข้าสู่ อ.สันกำแพง และยังได้เตรียมเครื่องสูบน้ำ และเครื่องจักรเครื่องมืออื่น ๆ
+ที่เกี่ยวข้องไว้พร้อมแล้ว
+4.ลุ่มน้ำย่อย อื่นๆ สชป.1 ได้วางแนวทางการระบายน้ำหลากให้ไม่กระทบพื้นที่ชุมชน พร้อม
+เตรียมเครื่องสูบน้ำ และเครื่องจักรเครื่องมืออื่นๆ ที่เกี่ยวข้องไว้แล้ว</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#เว็บไซต์</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#แผนการจัดการน้ำ</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#ใช้มาตรการณ์ภัยแล้ง</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#ใช้มาตรการณ์อุทกภัย</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#belongsTo_(สังกัด)</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#hasDepartment_(มีฝ่าย)</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#hasDeputyDirector_(มีรองผู้อำนวยการ)</IRI>
+        <Literal xml:lang="th">มีรองผู้อำนวยการ</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#hasDirector_(มีผู้อำนวยการ)</IRI>
+        <Literal xml:lang="th">ความสัมพันธ์ระหว่างสำนักงานกับผู้อำนวยการ</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#hasDirector_(มีผู้อำนวยการ)</IRI>
+        <Literal xml:lang="th">มีผู้อำนวยการ</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#hasProject_(มีโครงการชลประทาน)</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#hasProvince_(มีจังหวัดในความรับผิดชอบ)</IRI>
+        <Literal xml:lang="th">มีจังหวัดในความรับผิดชอบ</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+        <IRI>#manages_(จัดการ)</IRI>
+        <Literal xml:lang="th"></Literal>
+    </AnnotationAssertion>
+</Ontology>
+
+
+
+<!-- Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi -->
+
