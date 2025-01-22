@@ -170,7 +170,22 @@ export class ProcessedPostService {
     try {
       logger.info('Executing query to fetch recent posts');
       const result = await this.executeQuery<ProcessedPost>(
-        `SELECT processed_post_id, text FROM public.processed_posts LIMIT 1`,
+        `SELECT 
+          processed_post_id,
+          text,
+          category_name,
+          sub1_category_name,
+          profile_name,
+          post_date,
+          post_url,
+          latitude,
+          longitude,
+          tumbon,
+          amphure,
+          province
+        FROM public.processed_posts 
+        ORDER BY post_date DESC 
+        LIMIT 20`,
         []
       );
 

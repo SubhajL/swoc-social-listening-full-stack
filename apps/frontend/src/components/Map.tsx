@@ -2,11 +2,12 @@ import { useEffect, useState, useRef } from 'react';
 import { apiClient } from '@/lib/api-client';
 import { useRealTime } from '@/contexts/RealTimeContext';
 import type { ProcessedPost } from '@/types/processed-post';
+import { CategoryName } from '@/types/processed-post';
 import mapboxgl from 'mapbox-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useNavigate } from "react-router-dom";
 import MapError from "./map/MapError";
-import { clusterConfig, mapStyle } from './map/styles';
+import { clusterConfig, mapStyle, categoryColors, categoryShapeMap } from './map/styles';
 import { getClusterColor, getClusterSize } from './map/utils';
 
 interface MapProps {
@@ -14,6 +15,15 @@ interface MapProps {
   selectedCategories: string[];
   selectedProvince: string | null;
   selectedOffice: string | null;
+}
+
+interface MapFeatureProperties {
+  id: string;
+  category: string;
+  text: string;
+  created_at: string;
+  province: string;
+  sub_category: string;
 }
 
 export function Map({ token, selectedCategories, selectedProvince, selectedOffice }: MapProps) {
@@ -144,6 +154,61 @@ export function Map({ token, selectedCategories, selectedProvince, selectedOffic
             'text-color': '#ffffff'
           }
         });
+
+        // Add unclustered point layer
+        map.addLayer({
+          id: 'unclustered-point',
+          type: 'circle',
+          source: 'posts',
+          filter: ['!', ['has', 'point_count']],
+          paint: {
+            'circle-color': [
+              'match',
+              ['get', 'category'],
+              CategoryName.REPORT_INCIDENT, categoryColors[CategoryName.REPORT_INCIDENT],
+              CategoryName.REQUEST_SUPPORT, categoryColors[CategoryName.REQUEST_SUPPORT],
+              CategoryName.REQUEST_INFO, categoryColors[CategoryName.REQUEST_INFO],
+              CategoryName.SUGGESTION, categoryColors[CategoryName.SUGGESTION],
+              '#ccc' // Default color
+            ],
+            'circle-radius': 8,
+            'circle-stroke-width': 1,
+            'circle-stroke-color': '#fff'
+          }
+        });
+
+        // Add click handler for individual points
+        map.on('click', 'unclustered-point', (e) => {
+          const feature = e.features?.[0];
+          if (!feature || !feature.geometry || feature.geometry.type !== 'Point') return;
+          
+          const coordinates = feature.geometry.coordinates.slice() as [number, number];
+          const properties = feature.properties as MapFeatureProperties | null;
+          if (!properties) return;
+          
+          // Create popup content
+          const popupContent = `
+            <div class="p-2">
+              <p class="font-bold">${properties.category}</p>
+              <p class="text-sm">${properties.text}</p>
+              <p class="text-xs mt-1">${new Date(properties.created_at).toLocaleString()}</p>
+            </div>
+          `;
+
+          new mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setHTML(popupContent)
+            .addTo(map);
+        });
+
+        // Change cursor on hover
+        map.on('mouseenter', 'unclustered-point', () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+        
+        map.on('mouseleave', 'unclustered-point', () => {
+          map.getCanvas().style.cursor = '';
+        });
       });
 
       // Handle cluster click
@@ -192,9 +257,9 @@ export function Map({ token, selectedCategories, selectedProvince, selectedOffic
     if (!source || !('setData' in source)) return;
 
     const filteredPosts = apiPosts.filter(post => {
-      const categoryMatch = selectedCategories.includes(post.category_name);
-      const provinceMatch = !selectedProvince || post.province === selectedProvince;
-      const officeMatch = !selectedOffice; // Office filtering removed as it's not in the schema
+      const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(post.category_name);
+      const provinceMatch = !selectedProvince || (post.province && post.province.includes(selectedProvince));
+      const officeMatch = !selectedOffice;
       return categoryMatch && provinceMatch && officeMatch;
     });
 
