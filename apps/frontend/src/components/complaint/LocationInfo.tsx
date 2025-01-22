@@ -6,30 +6,44 @@ export const LocationInfo = () => {
   const location = useLocation();
   const data = location.state;
 
-  console.log('LocationInfo data:', data);
-
   return (
     <div className="grid grid-cols-2 gap-4 mb-6">
       <div>
-        <Label>พิกัด</Label>
+        <Label>พิกัด (ละติจูด)</Label>
         <Input 
-          value={data?.coordinates?.lat ?? ''}
+          value={data?.latitude ?? ''}
           placeholder="ยังไม่มีข้อมูล"
           readOnly
         />
       </div>
       <div>
-        <Label>ตำแหน่ง</Label>
+        <Label>พิกัด (ลองจิจูด)</Label>
         <Input 
-          value={data?.coordinates?.lng ?? ''}
+          value={data?.longitude ?? ''}
+          placeholder="ยังไม่มีข้อมูล"
+          readOnly
+        />
+      </div>
+      <div>
+        <Label>ตำบล</Label>
+        <Input 
+          value={data?.tumbon ?? ''}
+          placeholder="ยังไม่มีข้อมูล"
+          readOnly
+        />
+      </div>
+      <div>
+        <Label>อำเภอ</Label>
+        <Input 
+          value={data?.amphure ?? ''}
           placeholder="ยังไม่มีข้อมูล"
           readOnly
         />
       </div>
       <div className="col-span-2">
-        <Label>ที่อยู่</Label>
+        <Label>จังหวัด</Label>
         <Input 
-          value={data?.location ?? ''}
+          value={data?.province ?? ''}
           placeholder="ยังไม่มีข้อมูล"
           readOnly
         />
@@ -37,3 +51,5 @@ export const LocationInfo = () => {
     </div>
   );
 };
+
+export default LocationInfo;

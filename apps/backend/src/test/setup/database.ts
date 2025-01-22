@@ -36,12 +36,17 @@ export async function setupTestDatabase() {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS processed_posts (
         processed_post_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        category_name VARCHAR(255) NOT NULL,
-        sub1_category_name VARCHAR(255) NOT NULL,
-        location JSONB NOT NULL,
-        status VARCHAR(50) NOT NULL,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        text TEXT,
+        category_name VARCHAR(255),
+        sub1_category_name VARCHAR(255),
+        profile_name TEXT,
+        post_date TIMESTAMP WITH TIME ZONE,
+        post_url TEXT,
+        latitude DOUBLE PRECISION,
+        longitude DOUBLE PRECISION,
+        tumbon TEXT[],
+        amphure TEXT[],
+        province TEXT[]
       );
     `);
 

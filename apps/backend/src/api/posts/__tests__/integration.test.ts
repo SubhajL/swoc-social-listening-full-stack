@@ -32,14 +32,17 @@ describe('Posts API Integration', () => {
   it('should create and fetch a post', async () => {
     // First create a post
     const post = {
+      text: 'Test complaint text',
       category_name: 'Test Category',
       sub1_category_name: 'Test Sub Category',
-      location: {
-        latitude: 13.7563,
-        longitude: 100.5018,
-        source: 'coordinates' as const
-      },
-      status: 'unprocessed' as const
+      profile_name: 'Test User',
+      post_date: new Date().toISOString(),
+      post_url: 'https://example.com/post',
+      latitude: 13.7563,
+      longitude: 100.5018,
+      tumbon: ['Test Tumbon'],
+      amphure: ['Test Amphure'],
+      province: ['Test Province']
     };
 
     const createResponse = await request(app)

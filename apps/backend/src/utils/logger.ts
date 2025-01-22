@@ -1,25 +1,13 @@
-type LogLevel = 'info' | 'error' | 'warn' | 'debug';
+import pino from 'pino';
 
-class Logger {
-  private log(level: LogLevel, message: string, ...args: any[]) {
-    console[level](message, ...args);
+export const logger = pino({
+  level: 'debug',
+  transport: {
+    target: 'pino-pretty',
+    options: {
+      colorize: true,
+      ignore: 'pid,hostname',
+      translateTime: 'SYS:standard'
+    }
   }
-
-  info(message: string, ...args: any[]) {
-    this.log('info', message, ...args);
-  }
-
-  error(message: string, ...args: any[]) {
-    this.log('error', message, ...args);
-  }
-
-  warn(message: string, ...args: any[]) {
-    this.log('warn', message, ...args);
-  }
-
-  debug(message: string, ...args: any[]) {
-    this.log('debug', message, ...args);
-  }
-}
-
-export const logger = new Logger(); 
+}); 

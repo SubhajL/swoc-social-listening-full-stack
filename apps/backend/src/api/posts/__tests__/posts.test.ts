@@ -103,22 +103,23 @@ describe('Posts API Routes', () => {
 
   describe('POST /api/posts', () => {
     it('should create a new post', async () => {
-      const newPost: Omit<ProcessedPostDTO, 'processed_post_id' | 'created_at' | 'updated_at'> = {
+      const newPost = {
+        text: 'Test complaint text',
         category_name: 'Test Category',
         sub1_category_name: 'Test Sub Category',
-        location: {
-          latitude: 13.7563,
-          longitude: 100.5018,
-          source: 'coordinates' as const
-        },
-        status: 'unprocessed' as const
+        profile_name: 'Test User',
+        post_date: new Date().toISOString(),
+        post_url: 'https://example.com/post',
+        latitude: 13.7563,
+        longitude: 100.5018,
+        tumbon: ['Test Tumbon'],
+        amphure: ['Test Amphure'],
+        province: ['Test Province']
       };
 
       mockProcessedPostService.createPost.mockImplementationOnce(async (data: typeof newPost) => ({
         ...data,
-        processed_post_id: mockPost.processed_post_id,
-        created_at: mockPost.created_at,
-        updated_at: mockPost.updated_at
+        processed_post_id: mockPost.processed_post_id
       }));
 
       const response = await request(app)
@@ -132,15 +133,18 @@ describe('Posts API Routes', () => {
     });
 
     it('should handle creation errors', async () => {
-      const newPost: Omit<ProcessedPostDTO, 'processed_post_id' | 'created_at' | 'updated_at'> = {
+      const newPost = {
+        text: 'Test complaint text',
         category_name: 'Test Category',
         sub1_category_name: 'Test Sub Category',
-        location: {
-          latitude: 13.7563,
-          longitude: 100.5018,
-          source: 'coordinates' as const
-        },
-        status: 'unprocessed' as const
+        profile_name: 'Test User',
+        post_date: new Date().toISOString(),
+        post_url: 'https://example.com/post',
+        latitude: 13.7563,
+        longitude: 100.5018,
+        tumbon: ['Test Tumbon'],
+        amphure: ['Test Amphure'],
+        province: ['Test Province']
       };
 
       mockProcessedPostService.createPost.mockRejectedValueOnce(new Error('Database error'));

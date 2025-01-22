@@ -2,25 +2,26 @@ import { ProcessedPostDTO } from '../../types/processed-post.dto.js';
 
 // Mock post data
 export const mockPost: ProcessedPostDTO = {
-  processed_post_id: '123e4567-e89b-12d3-a456-426614174000',
+  processed_post_id: 123,
+  text: 'Test complaint text',
   category_name: 'Test Category',
   sub1_category_name: 'Test Sub Category',
-  location: {
-    latitude: 13.7563,
-    longitude: 100.5018,
-    source: 'coordinates' as const
-  },
-  status: 'unprocessed' as const,
-  created_at: new Date('2024-01-19T00:00:00.000Z').toISOString(),
-  updated_at: new Date('2024-01-19T00:00:00.000Z').toISOString()
+  profile_name: 'Test User',
+  post_date: new Date('2024-01-19T00:00:00.000Z').toISOString(),
+  post_url: 'https://example.com/post',
+  latitude: 13.7563,
+  longitude: 100.5018,
+  tumbon: ['Test Tumbon'],
+  amphure: ['Test Amphure'],
+  province: ['Test Province']
 };
 
 // Mock service implementation
 export const mockProcessedPostService = {
-  getUnprocessedPosts: jest.fn(),
-  getPostById: jest.fn(),
-  getPostsByLocation: jest.fn(),
-  createPost: jest.fn(),
+  getUnprocessedPosts: jest.fn().mockResolvedValue([mockPost]),
+  getPostById: jest.fn().mockResolvedValue(mockPost),
+  getPostsByLocation: jest.fn().mockResolvedValue([mockPost]),
+  createPost: jest.fn().mockResolvedValue(mockPost),
   updateBatchProgress: jest.fn(),
   startBatch: jest.fn(),
   completeBatch: jest.fn()

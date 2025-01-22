@@ -12,14 +12,18 @@ export const LocationSchema = z.object({
 });
 
 export const ProcessedPostSchema = z.object({
-  processed_post_id: z.string(),
+  processed_post_id: z.number(),
+  text: z.string(),
   category_name: z.nativeEnum(CategoryName),
   sub1_category_name: z.string(),
-  location: LocationSchema,
-  status: z.enum(['unprocessed', 'processing', 'resolved']),
-  created_at: z.date(),
-  updated_at: z.date(),
-  nearest_sensor_id: z.string().optional(),
+  profile_name: z.string(),
+  post_date: z.date(),
+  post_url: z.string(),
+  latitude: z.number(),
+  longitude: z.number(),
+  tumbon: z.string(),
+  amphure: z.string(),
+  province: z.string()
 });
 
 export type ProcessedPostDTO = z.infer<typeof ProcessedPostSchema>; 

@@ -1,52 +1,84 @@
 import mapboxgl from "mapbox-gl";
-import { getCategoryColor } from "./utils";
+import { getCategoryIcon, getShapeStyle } from "./utils";
+import { CategoryName } from "@/types/processed-post";
 
 interface MapMarkerProps {
   post: {
     id: number;
-    category: string;
+    category: CategoryName;
     province: string;
-    location: {
-      latitude: number;
-      longitude: number;
-    };
+    latitude: number;
+    longitude: number;
   };
   map: mapboxgl.Map;
   onClick: () => void;
 }
 
+// Shape styles for different marker types
+const shapeStyles = {
+  circle: { borderRadius: '50%' },
+  triangle: { 
+    clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
+    borderRadius: '0'
+  },
+  square: { borderRadius: '0' },
+  hexa: {
+    clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
+    borderRadius: '0'
+  }
+} as const;
+
+type ShapeStyleKey = keyof typeof shapeStyles;
+
+// Map category names to shapes
+const categoryShapeMap: Record<CategoryName, keyof typeof shapeStyles> = {
+  [CategoryName.REPORT_INCIDENT]: 'circle',
+  [CategoryName.REQUEST_SUPPORT]: 'triangle',
+  [CategoryName.REQUEST_INFO]: 'square',
+  [CategoryName.SUGGESTION]: 'hexa'
+};
+
 const MapMarker = ({ post, map, onClick }: MapMarkerProps) => {
   // Create marker element
   const el = document.createElement('div');
   el.className = 'marker';
-  el.style.width = '24px';
-  el.style.height = '24px';
-  el.style.borderRadius = '50%';
-  el.style.backgroundColor = getCategoryColor(post.category);
-  el.style.display = 'flex';
-  el.style.alignItems = 'center';
-  el.style.justifyContent = 'center';
-  el.style.color = 'white';
-  el.style.cursor = 'pointer';
+  
+  // Get icon configuration based on category and current zoom
+  const iconConfig = getCategoryIcon(post.category, map.getZoom());
+  
+  // Apply styles
+  Object.assign(el.style, {
+    width: `${iconConfig.width}px`,
+    height: `${iconConfig.height}px`,
+    backgroundColor: iconConfig.color,
+    cursor: 'pointer',
+    border: '2px solid white',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+    transition: 'all 0.3s ease',
+    ...getShapeStyle(iconConfig.shape)
+  });
+
+  // Add hover effect
+  el.addEventListener('mouseenter', () => {
+    el.style.transform = 'scale(1.1)';
+    el.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
+  });
+
+  el.addEventListener('mouseleave', () => {
+    el.style.transform = 'scale(1)';
+    el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+  });
 
   // Add click handler
-  if (onClick) {
-    el.addEventListener('click', onClick);
-  }
+  el.addEventListener('click', (e) => {
+    e.stopPropagation();
+    onClick();
+  });
 
-  // Convert location to LngLatLike format [longitude, latitude]
-  const coordinates: [number, number] = [post.location.longitude, post.location.latitude];
-
-  // Add marker to map
-  const marker = new mapboxgl.Marker(el)
-    .setLngLat(coordinates)
-    .setPopup(
-      new mapboxgl.Popup({ offset: 25 })
-        .setHTML(`<h3>${post.category}</h3><p>${post.province}</p>`)
-    )
+  // Create and return the marker
+  return new mapboxgl.Marker(el)
+    .setLngLat([post.longitude, post.latitude])
     .addTo(map);
-
-  return marker;
 };
 
 export default MapMarker;

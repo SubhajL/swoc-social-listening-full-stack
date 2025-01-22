@@ -6,23 +6,18 @@ export enum CategoryName {
 }
 
 export interface ProcessedPost {
-  processed_post_id: string;
-  category_name: CategoryName;
+  processed_post_id: number;
+  text: string;
+  category_name: string;
   sub1_category_name: string;
-  location: {
-    latitude: number;
-    longitude: number;
-    source: 'coordinates' | 'address' | 'both';
-    address?: string;
-    tumbon?: string;
-    amphure?: string;
-    province?: string;
-    irrigation_office?: string;
-  };
-  status: 'unprocessed' | 'processing' | 'resolved';
-  created_at: string;
-  updated_at: string;
-  nearest_sensor_id?: string;
+  profile_name: string;
+  post_date: Date;
+  post_url: string;
+  latitude: number;
+  longitude: number;
+  tumbon: string[];
+  amphure: string[];
+  province: string[];
 }
 
 export const CategoryIconMap = {

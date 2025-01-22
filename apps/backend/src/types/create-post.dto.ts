@@ -9,5 +9,4 @@ export interface CreatePostDTO {
     amphure?: string;
     province?: string;
   };
-  status: 'unprocessed' | 'processed';
 } 

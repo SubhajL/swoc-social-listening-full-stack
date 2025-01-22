@@ -1,14 +1,49 @@
-export const getCategoryColor = (category: string) => {
-  switch (category) {
-    case "ข้อร้องเรียน":
-      return "#ea384c"; // red
-    case "การสนับสนุน":
-      return "#22c55e"; // green
-    case "การขอข้อมูล":
-      return "#0EA5E9"; // blue
-    default:
-      return "#6b7280"; // gray
-  }
+import { CategoryName } from "@/types/processed-post";
+import {
+  categoryColors,
+  categoryShapeMap,
+  clusterConfig,
+  getMarkerSize,
+  shapeStyles
+} from "./styles";
+
+export const getCategoryColor = (category: CategoryName) => {
+  return categoryColors[category] || '#6b7280'; // Gray fallback
+};
+
+// Category icons mapping for different zoom levels
+export const getCategoryIcon = (category: CategoryName, zoomLevel: number) => {
+  const size = getMarkerSize(zoomLevel);
+  const shape = categoryShapeMap[category] || 'circle';
+  
+  return {
+    width: size,
+    height: size,
+    shape,
+    color: getCategoryColor(category)
+  };
+};
+
+// Zoom level breakpoints for clustering
+export const CLUSTER_MAX_ZOOM = 14;
+export const CLUSTER_RADIUS = 50;
+
+// Cluster colors based on point count
+export const getClusterColor = (pointCount: number) => {
+  if (pointCount >= 100) return clusterConfig.colors.large;
+  if (pointCount >= 50) return clusterConfig.colors.medium;
+  return clusterConfig.colors.small;
+};
+
+// Cluster size based on point count
+export const getClusterSize = (pointCount: number) => {
+  if (pointCount >= 100) return clusterConfig.sizes.large;
+  if (pointCount >= 50) return clusterConfig.sizes.medium;
+  return clusterConfig.sizes.small;
+};
+
+export const getShapeStyle = (shape: keyof typeof shapeStyles) => {
+  return shapeStyles[shape];
 };
 
 export const socialPosts = [
