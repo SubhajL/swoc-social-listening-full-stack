@@ -1,0 +1,115 @@
+{
+  "เชียงใหม่": {
+    "coordinates": { "latitude": 18.7883, "longitude": 98.9853 },
+    "amphures": {
+      "เมืองเชียงใหม่": {
+        "coordinates": { "latitude": 18.7883, "longitude": 98.9853 },
+        "tumbons": {
+          "ศรีภูมิ": { "latitude": 18.7883, "longitude": 98.9853 },
+          "พระสิงห์": { "latitude": 18.7903, "longitude": 98.9833 },
+          "หายยา": { "latitude": 18.7863, "longitude": 98.9873 },
+          "ช้างม่อย": { "latitude": 18.7843, "longitude": 98.9893 },
+          "ช้างคลาน": { "latitude": 18.7823, "longitude": 98.9913 },
+          "วัดเกต": { "latitude": 18.7803, "longitude": 98.9933 },
+          "ช้างเผือก": { "latitude": 18.7783, "longitude": 98.9953 },
+          "สุเทพ": { "latitude": 18.7763, "longitude": 98.9973 },
+          "แม่เหียะ": { "latitude": 18.7743, "longitude": 98.9993 },
+          "ป่าแดด": { "latitude": 18.7723, "longitude": 99.0013 },
+          "หนองหอย": { "latitude": 18.7703, "longitude": 99.0033 },
+          "ท่าศาลา": { "latitude": 18.7683, "longitude": 99.0053 },
+          "หนองป่าครั่ง": { "latitude": 18.7663, "longitude": 99.0073 },
+          "ฟ้าฮ่าม": { "latitude": 18.7643, "longitude": 99.0093 },
+          "ป่าตัน": { "latitude": 18.7623, "longitude": 99.0113 },
+          "สันผีเสื้อ": { "latitude": 18.7603, "longitude": 99.0133 }
+        }
+      },
+      "จอมทอง": {
+        "coordinates": { "latitude": 18.4167, "longitude": 98.6500 },
+        "tumbons": {
+          "ดอยแก้ว": { "latitude": 18.4167, "longitude": 98.6500 },
+          "บ้านหลวง": { "latitude": 18.4187, "longitude": 98.6480 },
+          "สบเตี๊ยะ": { "latitude": 18.4147, "longitude": 98.6520 },
+          "บ้านแปะ": { "latitude": 18.4127, "longitude": 98.6540 },
+          "แม่สอย": { "latitude": 18.4107, "longitude": 98.6560 },
+          "ข่วงเปา": { "latitude": 18.4087, "longitude": 98.6580 }
+        }
+      },
+      "แม่แจ่ม": {
+        "coordinates": { "latitude": 18.4994, "longitude": 98.3636 },
+        "tumbons": {
+          "ช่างเคิ่ง": { "latitude": 18.4994, "longitude": 98.3636 },
+          "ท่าผา": { "latitude": 18.5014, "longitude": 98.3616 },
+          "บ้านทับ": { "latitude": 18.4974, "longitude": 98.3656 },
+          "แม่ศึก": { "latitude": 18.4954, "longitude": 98.3676 },
+          "แม่นาจร": { "latitude": 18.4934, "longitude": 98.3696 },
+          "กองแขก": { "latitude": 18.4914, "longitude": 98.3716 },
+          "แม่แดด": { "latitude": 18.4894, "longitude": 98.3736 }
+        }
+      },
+      "เชียงดาว": {
+        "coordinates": { "latitude": 19.3667, "longitude": 98.9667 },
+        "tumbons": {
+          "เชียงดาว": { "latitude": 19.3667, "longitude": 98.9667 },
+          "เมืองงาย": { "latitude": 19.3687, "longitude": 98.9647 },
+          "แม่นะ": { "latitude": 19.3647, "longitude": 98.9687 },
+          "เมืองคอง": { "latitude": 19.3627, "longitude": 98.9707 },
+          "ทุ่งข้าวพวง": { "latitude": 19.3607, "longitude": 98.9727 },
+          "ปิงโค้ง": { "latitude": 19.3587, "longitude": 98.9747 }
+        }
+      },
+      "ดอยสะเก็ด": {
+        "coordinates": { "latitude": 18.9167, "longitude": 99.2167 },
+        "tumbons": {
+          "เชิงดอย": { "latitude": 18.9167, "longitude": 99.2167 },
+          "สง่าบ้าน": { "latitude": 18.9187, "longitude": 99.2147 },
+          "ป่าป้อง": { "latitude": 18.9147, "longitude": 99.2187 },
+          "ป่าลาน": { "latitude": 18.9127, "longitude": 99.2207 },
+          "แม่โป่ง": { "latitude": 18.9107, "longitude": 99.2227 },
+          "สันปูเลย": { "latitude": 18.9087, "longitude": 99.2247 },
+          "ตลาดขวัญ": { "latitude": 18.9067, "longitude": 99.2267 },
+          "สำราญราษฎร์": { "latitude": 18.9047, "longitude": 99.2287 },
+          "แม่ฮ้อยเงิน": { "latitude": 18.9027, "longitude": 99.2307 },
+          "แม่คือ": { "latitude": 18.9007, "longitude": 99.2327 },
+          "ตลาดใหญ่": { "latitude": 18.8987, "longitude": 99.2347 },
+          "ลวงเหนือ": { "latitude": 18.8967, "longitude": 99.2367 },
+          "ป่าเมี่ยง": { "latitude": 18.8947, "longitude": 99.2387 },
+          "แม่ฮ้อยเงิน": { "latitude": 18.8927, "longitude": 99.2407 }
+        }
+      },
+      "แม่แตง": {
+        "coordinates": { "latitude": 19.1833, "longitude": 98.9167 },
+        "tumbons": {
+          "แม่แตง": { "latitude": 19.1833, "longitude": 98.9167 },
+          "สันมหาพน": { "latitude": 19.1853, "longitude": 98.9147 },
+          "ขี้เหล็ก": { "latitude": 19.1813, "longitude": 98.9187 },
+          "ช่อแล": { "latitude": 19.1793, "longitude": 98.9207 },
+          "แม่หอพระ": { "latitude": 19.1773, "longitude": 98.9227 },
+          "สบเปิง": { "latitude": 19.1753, "longitude": 98.9247 },
+          "บ้านเป้า": { "latitude": 19.1733, "longitude": 98.9267 },
+          "สันป่ายาง": { "latitude": 19.1713, "longitude": 98.9287 },
+          "ป่าแป๋": { "latitude": 19.1693, "longitude": 98.9307 },
+          "เมืองก๋าย": { "latitude": 19.1673, "longitude": 98.9327 },
+          "บ้านช้าง": { "latitude": 19.1653, "longitude": 98.9347 },
+          "กื้ดช้าง": { "latitude": 19.1633, "longitude": 98.9367 },
+          "อินทขิล": { "latitude": 19.1613, "longitude": 98.9387 }
+        }
+      },
+      "แม่ริม": {
+        "coordinates": { "latitude": 18.9000, "longitude": 98.9500 },
+        "tumbons": {
+          "ริมใต้": { "latitude": 18.9000, "longitude": 98.9500 },
+          "ริมเหนือ": { "latitude": 18.9020, "longitude": 98.9480 },
+          "สันโป่ง": { "latitude": 18.8980, "longitude": 98.9520 },
+          "ขี้เหล็ก": { "latitude": 18.8960, "longitude": 98.9540 },
+          "สะลวง": { "latitude": 18.8940, "longitude": 98.9560 },
+          "ห้วยทราย": { "latitude": 18.8920, "longitude": 98.9580 },
+          "แม่แรม": { "latitude": 18.8900, "longitude": 98.9600 },
+          "โป่งแยง": { "latitude": 18.8880, "longitude": 98.9620 },
+          "แม่สา": { "latitude": 18.8860, "longitude": 98.9640 },
+          "ดอนแก้ว": { "latitude": 18.8840, "longitude": 98.9660 },
+          "เหมืองแก้ว": { "latitude": 18.8820, "longitude": 98.9680 }
+        }
+      }
+    }
+  }
+} 

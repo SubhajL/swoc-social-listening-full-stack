@@ -1,0 +1,95 @@
+{
+  "ประจวบคีรีขันธ์": {
+    "coordinates": { "latitude": 11.8124, "longitude": 99.7988 },
+    "amphures": {
+      "เมืองประจวบคีรีขันธ์": {
+        "coordinates": { "latitude": 11.8124, "longitude": 99.7988 },
+        "tumbons": {
+          "ประจวบคีรีขันธ์": { "latitude": 11.8124, "longitude": 99.7988 },
+          "เกาะหลัก": { "latitude": 11.8170, "longitude": 99.7940 },
+          "คลองวาฬ": { "latitude": 11.8070, "longitude": 99.8040 },
+          "ห้วยทราย": { "latitude": 11.8220, "longitude": 99.7890 },
+          "อ่าวน้อย": { "latitude": 11.8020, "longitude": 99.8090 },
+          "บ่อนอก": { "latitude": 11.8270, "longitude": 99.7840 },
+          "หาดขาม": { "latitude": 11.7970, "longitude": 99.8140 }
+        }
+      },
+      "กุยบุรี": {
+        "coordinates": { "latitude": 11.6833, "longitude": 99.6500 },
+        "tumbons": {
+          "กุยบุรี": { "latitude": 11.6833, "longitude": 99.6500 },
+          "กุยเหนือ": { "latitude": 11.6880, "longitude": 99.6450 },
+          "เขาแดง": { "latitude": 11.6780, "longitude": 99.6550 },
+          "ดอนยายหนู": { "latitude": 11.6930, "longitude": 99.6400 },
+          "สามกระทาย": { "latitude": 11.6730, "longitude": 99.6600 },
+          "หาดขาม": { "latitude": 11.6980, "longitude": 99.6350 }
+        }
+      },
+      "ทับสะแก": {
+        "coordinates": { "latitude": 11.5167, "longitude": 99.6167 },
+        "tumbons": {
+          "ทับสะแก": { "latitude": 11.5167, "longitude": 99.6167 },
+          "อ่างทอง": { "latitude": 11.5220, "longitude": 99.6120 },
+          "นาหูกวาง": { "latitude": 11.5110, "longitude": 99.6220 },
+          "เขาล้าน": { "latitude": 11.5270, "longitude": 99.6070 },
+          "ห้วยยาง": { "latitude": 11.5060, "longitude": 99.6270 },
+          "แสงอรุณ": { "latitude": 11.5320, "longitude": 99.6020 }
+        }
+      },
+      "บางสะพาน": {
+        "coordinates": { "latitude": 11.2167, "longitude": 99.4000 },
+        "tumbons": {
+          "กำเนิดนพคุณ": { "latitude": 11.2167, "longitude": 99.4000 },
+          "พงศ์ประศาสน์": { "latitude": 11.2220, "longitude": 99.3950 },
+          "ร่อนทอง": { "latitude": 11.2110, "longitude": 99.4050 },
+          "ธงชัย": { "latitude": 11.2270, "longitude": 99.3900 },
+          "แม่รำพึง": { "latitude": 11.2060, "longitude": 99.4100 },
+          "ทองมงคล": { "latitude": 11.2320, "longitude": 99.3850 },
+          "ชัยเกษม": { "latitude": 11.2010, "longitude": 99.4150 }
+        }
+      },
+      "บางสะพานน้อย": {
+        "coordinates": { "latitude": 11.1000, "longitude": 99.3500 },
+        "tumbons": {
+          "บางสะพาน": { "latitude": 11.1000, "longitude": 99.3500 },
+          "ปากแพรก": { "latitude": 11.1050, "longitude": 99.3450 },
+          "ทรายทอง": { "latitude": 11.0950, "longitude": 99.3550 },
+          "ช้างแรก": { "latitude": 11.1100, "longitude": 99.3400 }
+        }
+      },
+      "ปราณบุรี": {
+        "coordinates": { "latitude": 12.3833, "longitude": 99.9000 },
+        "tumbons": {
+          "เขาน้อย": { "latitude": 12.3833, "longitude": 99.9000 },
+          "ปราณบุรี": { "latitude": 12.3880, "longitude": 99.8950 },
+          "วังก์พง": { "latitude": 12.3780, "longitude": 99.9050 },
+          "หนองตาแต้ม": { "latitude": 12.3930, "longitude": 99.8900 },
+          "ปากน้ำปราณ": { "latitude": 12.3730, "longitude": 99.9100 },
+          "เขาจ้าว": { "latitude": 12.3980, "longitude": 99.8850 }
+        }
+      },
+      "หัวหิน": {
+        "coordinates": { "latitude": 12.5667, "longitude": 99.9500 },
+        "tumbons": {
+          "หัวหิน": { "latitude": 12.5667, "longitude": 99.9500 },
+          "หนองแก": { "latitude": 12.5720, "longitude": 99.9450 },
+          "หินเหล็กไฟ": { "latitude": 12.5610, "longitude": 99.9550 },
+          "หนองพลับ": { "latitude": 12.5770, "longitude": 99.9400 },
+          "ทับใต้": { "latitude": 12.5560, "longitude": 99.9600 },
+          "ห้วยสัตว์ใหญ่": { "latitude": 12.5820, "longitude": 99.9350 },
+          "บึงนคร": { "latitude": 12.5510, "longitude": 99.9650 }
+        }
+      },
+      "สามร้อยยอด": {
+        "coordinates": { "latitude": 12.2667, "longitude": 99.8833 },
+        "tumbons": {
+          "ศาลาลัย": { "latitude": 12.2667, "longitude": 99.8833 },
+          "ไร่เก่า": { "latitude": 12.2720, "longitude": 99.8780 },
+          "ศิลาลอย": { "latitude": 12.2610, "longitude": 99.8880 },
+          "สามร้อยยอด": { "latitude": 12.2770, "longitude": 99.8730 },
+          "ไร่ใหม่": { "latitude": 12.2560, "longitude": 99.8930 }
+        }
+      }
+    }
+  }
+} 

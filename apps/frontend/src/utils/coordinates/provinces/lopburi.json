@@ -1,0 +1,57 @@
+{
+  "ลพบุรี": {
+    "coordinates": { "latitude": 14.7995, "longitude": 100.6533 },
+    "amphures": {
+      "เมืองลพบุรี": {
+        "coordinates": { "latitude": 14.7995, "longitude": 100.6533 },
+        "tumbons": {
+          "ทะเลชุบศร": { "latitude": 14.7995, "longitude": 100.6533 },
+          "ท่าหิน": { "latitude": 14.8050, "longitude": 100.6480 },
+          "กกโก": { "latitude": 14.7940, "longitude": 100.6580 },
+          "ป่าตาล": { "latitude": 14.8100, "longitude": 100.6430 },
+          "ท้ายตลาด": { "latitude": 14.7890, "longitude": 100.6630 }
+        }
+      },
+      "พัฒนานิคม": {
+        "coordinates": { "latitude": 14.8942, "longitude": 100.9192 },
+        "tumbons": {
+          "พัฒนานิคม": { "latitude": 14.8942, "longitude": 100.9192 },
+          "ช่องสาริกา": { "latitude": 14.8990, "longitude": 100.9140 },
+          "มะนาวหวาน": { "latitude": 14.8890, "longitude": 100.9240 },
+          "ดีลัง": { "latitude": 14.9040, "longitude": 100.9090 },
+          "โคกสลุง": { "latitude": 14.8840, "longitude": 100.9290 }
+        }
+      },
+      "โคกสำโรง": {
+        "coordinates": { "latitude": 15.0786, "longitude": 100.7019 },
+        "tumbons": {
+          "โคกสำโรง": { "latitude": 15.0786, "longitude": 100.7019 },
+          "เพนียด": { "latitude": 15.0840, "longitude": 100.6970 },
+          "วังเพลิง": { "latitude": 15.0730, "longitude": 100.7070 },
+          "ถลุงเหล็ก": { "latitude": 15.0890, "longitude": 100.6920 },
+          "หนองแขม": { "latitude": 15.0680, "longitude": 100.7120 }
+        }
+      },
+      "ชัยบาดาล": {
+        "coordinates": { "latitude": 15.2036, "longitude": 101.0572 },
+        "tumbons": {
+          "ลำนารายณ์": { "latitude": 15.2036, "longitude": 101.0572 },
+          "ชัยนารายณ์": { "latitude": 15.2090, "longitude": 101.0520 },
+          "ศิลาราม": { "latitude": 15.1980, "longitude": 101.0620 },
+          "ม่วงค่อม": { "latitude": 15.2140, "longitude": 101.0470 },
+          "นิคมลำนารายณ์": { "latitude": 15.1930, "longitude": 101.0670 }
+        }
+      },
+      "ท่าวุ้ง": {
+        "coordinates": { "latitude": 14.8158, "longitude": 100.5075 },
+        "tumbons": {
+          "ท่าวุ้ง": { "latitude": 14.8158, "longitude": 100.5075 },
+          "บางคู้": { "latitude": 14.8210, "longitude": 100.5020 },
+          "โพตลาดแก้ว": { "latitude": 14.8100, "longitude": 100.5120 },
+          "บางลี่": { "latitude": 14.8260, "longitude": 100.4970 },
+          "เขาสมอคอน": { "latitude": 14.8050, "longitude": 100.5170 }
+        }
+      }
+    }
+  }
+} 

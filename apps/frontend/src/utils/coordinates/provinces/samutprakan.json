@@ -1,0 +1,85 @@
+{
+  "สมุทรปราการ": {
+    "coordinates": { "latitude": 13.5990, "longitude": 100.5998 },
+    "amphures": {
+      "เมืองสมุทรปราการ": {
+        "coordinates": { "latitude": 13.5990, "longitude": 100.5998 },
+        "tumbons": {
+          "ปากน้ำ": { "latitude": 13.5990, "longitude": 100.5998 },
+          "สำโรงเหนือ": { "latitude": 13.6040, "longitude": 100.5950 },
+          "บางเมือง": { "latitude": 13.5940, "longitude": 100.6050 },
+          "ท้ายบ้าน": { "latitude": 13.6090, "longitude": 100.5900 },
+          "บางปูใหม่": { "latitude": 13.5890, "longitude": 100.6100 },
+          "บางปู": { "latitude": 13.6140, "longitude": 100.5850 },
+          "แพรกษา": { "latitude": 13.5840, "longitude": 100.6150 },
+          "บางด้วน": { "latitude": 13.6190, "longitude": 100.5800 },
+          "บางเมืองใหม่": { "latitude": 13.5790, "longitude": 100.6200 },
+          "เทพารักษ์": { "latitude": 13.6240, "longitude": 100.5750 },
+          "ท้ายบ้านใหม่": { "latitude": 13.5740, "longitude": 100.6250 },
+          "แพรกษาใหม่": { "latitude": 13.6290, "longitude": 100.5700 },
+          "บางปูเก่า": { "latitude": 13.5690, "longitude": 100.6300 }
+        }
+      },
+      "พระประแดง": {
+        "coordinates": { "latitude": 13.6583, "longitude": 100.5417 },
+        "tumbons": {
+          "ตลาด": { "latitude": 13.6583, "longitude": 100.5417 },
+          "บางจาก": { "latitude": 13.6630, "longitude": 100.5370 },
+          "ทรงคนอง": { "latitude": 13.6530, "longitude": 100.5470 },
+          "บางครุ": { "latitude": 13.6680, "longitude": 100.5320 },
+          "บางหญ้าแพรก": { "latitude": 13.6480, "longitude": 100.5520 },
+          "บางหัวเสือ": { "latitude": 13.6730, "longitude": 100.5270 },
+          "สำโรงใต้": { "latitude": 13.6430, "longitude": 100.5570 },
+          "บางยอ": { "latitude": 13.6780, "longitude": 100.5220 },
+          "บางกระสอบ": { "latitude": 13.6380, "longitude": 100.5620 },
+          "บางน้ำผึ้ง": { "latitude": 13.6830, "longitude": 100.5170 },
+          "บางกะเจ้า": { "latitude": 13.6330, "longitude": 100.5670 },
+          "บางกอบัว": { "latitude": 13.6880, "longitude": 100.5120 },
+          "ทรงคะนอง": { "latitude": 13.6280, "longitude": 100.5720 }
+        }
+      },
+      "บางพลี": {
+        "coordinates": { "latitude": 13.6167, "longitude": 100.7333 },
+        "tumbons": {
+          "บางพลีใหญ่": { "latitude": 13.6167, "longitude": 100.7333 },
+          "บางแก้ว": { "latitude": 13.6220, "longitude": 100.7280 },
+          "บางปลา": { "latitude": 13.6110, "longitude": 100.7380 },
+          "บางโฉลง": { "latitude": 13.6270, "longitude": 100.7230 },
+          "ราชาเทวะ": { "latitude": 13.6060, "longitude": 100.7430 },
+          "หนองปรือ": { "latitude": 13.6320, "longitude": 100.7180 }
+        }
+      },
+      "บางบ่อ": {
+        "coordinates": { "latitude": 13.5833, "longitude": 100.8333 },
+        "tumbons": {
+          "บางบ่อ": { "latitude": 13.5833, "longitude": 100.8333 },
+          "บ้านระกาศ": { "latitude": 13.5880, "longitude": 100.8280 },
+          "บางพลีน้อย": { "latitude": 13.5780, "longitude": 100.8380 },
+          "บางเพรียง": { "latitude": 13.5930, "longitude": 100.8230 },
+          "คลองด่าน": { "latitude": 13.5730, "longitude": 100.8430 },
+          "คลองสวน": { "latitude": 13.5980, "longitude": 100.8180 },
+          "เปร็ง": { "latitude": 13.5680, "longitude": 100.8480 },
+          "คลองนิยมยาตรา": { "latitude": 13.6030, "longitude": 100.8130 }
+        }
+      },
+      "พระสมุทรเจดีย์": {
+        "coordinates": { "latitude": 13.6000, "longitude": 100.4833 },
+        "tumbons": {
+          "นาเกลือ": { "latitude": 13.6000, "longitude": 100.4833 },
+          "บ้านคลองสวน": { "latitude": 13.6050, "longitude": 100.4780 },
+          "แหลมฟ้าผ่า": { "latitude": 13.5950, "longitude": 100.4880 },
+          "ปากคลองบางปลากด": { "latitude": 13.6100, "longitude": 100.4730 },
+          "ในคลองบางปลากด": { "latitude": 13.5900, "longitude": 100.4930 }
+        }
+      },
+      "บางเสาธง": {
+        "coordinates": { "latitude": 13.5917, "longitude": 100.8167 },
+        "tumbons": {
+          "บางเสาธง": { "latitude": 13.5917, "longitude": 100.8167 },
+          "ศีรษะจรเข้น้อย": { "latitude": 13.5970, "longitude": 100.8120 },
+          "ศีรษะจรเข้ใหญ่": { "latitude": 13.5860, "longitude": 100.8220 }
+        }
+      }
+    }
+  }
+} 

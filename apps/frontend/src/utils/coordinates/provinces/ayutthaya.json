@@ -1,0 +1,73 @@
+{
+  "พระนครศรีอยุธยา": {
+    "coordinates": { "latitude": 14.3692, "longitude": 100.5876 },
+    "amphures": {
+      "พระนครศรีอยุธยา": {
+        "coordinates": { "latitude": 14.3692, "longitude": 100.5876 },
+        "tumbons": {
+          "ประตูชัย": { "latitude": 14.3692, "longitude": 100.5876 },
+          "กะมัง": { "latitude": 14.3712, "longitude": 100.5856 },
+          "หอรัตนไชย": { "latitude": 14.3672, "longitude": 100.5896 },
+          "หัวรอ": { "latitude": 14.3652, "longitude": 100.5916 },
+          "ท่าวาสุกรี": { "latitude": 14.3732, "longitude": 100.5836 },
+          "ไผ่ลิง": { "latitude": 14.3632, "longitude": 100.5936 },
+          "ปากกราน": { "latitude": 14.3612, "longitude": 100.5956 },
+          "ภูเขาทอง": { "latitude": 14.3592, "longitude": 100.5976 },
+          "สำเภาล่ม": { "latitude": 14.3572, "longitude": 100.5996 },
+          "สวนพริก": { "latitude": 14.3552, "longitude": 100.6016 },
+          "คลองสระบัว": { "latitude": 14.3532, "longitude": 100.6036 },
+          "วัดตูม": { "latitude": 14.3512, "longitude": 100.6056 },
+          "หันตรา": { "latitude": 14.3492, "longitude": 100.6076 },
+          "ลุมพลี": { "latitude": 14.3472, "longitude": 100.6096 },
+          "บ้านใหม่": { "latitude": 14.3452, "longitude": 100.6116 },
+          "บ้านเกาะ": { "latitude": 14.3432, "longitude": 100.6136 },
+          "คลองสวนพลู": { "latitude": 14.3412, "longitude": 100.6156 },
+          "คลองตะเคียน": { "latitude": 14.3392, "longitude": 100.6176 },
+          "วัดตูม": { "latitude": 14.3372, "longitude": 100.6196 },
+          "บ้านป้อม": { "latitude": 14.3352, "longitude": 100.6216 },
+          "บ้านรุน": { "latitude": 14.3332, "longitude": 100.6236 }
+        }
+      },
+      "ท่าเรือ": {
+        "coordinates": { "latitude": 14.5500, "longitude": 100.7500 },
+        "tumbons": {
+          "ท่าเรือ": { "latitude": 14.5500, "longitude": 100.7500 },
+          "จำปา": { "latitude": 14.5520, "longitude": 100.7480 },
+          "ท่าหลวง": { "latitude": 14.5480, "longitude": 100.7520 },
+          "บ้านร่อม": { "latitude": 14.5460, "longitude": 100.7540 },
+          "ศาลาลอย": { "latitude": 14.5440, "longitude": 100.7560 },
+          "วังแดง": { "latitude": 14.5420, "longitude": 100.7580 },
+          "โพธิ์เอน": { "latitude": 14.5400, "longitude": 100.7600 },
+          "ปากท่า": { "latitude": 14.5380, "longitude": 100.7620 },
+          "หนองขนาก": { "latitude": 14.5360, "longitude": 100.7640 }
+        }
+      },
+      "นครหลวง": {
+        "coordinates": { "latitude": 14.4700, "longitude": 100.6200 },
+        "tumbons": {
+          "นครหลวง": { "latitude": 14.4700, "longitude": 100.6200 },
+          "ท่าช้าง": { "latitude": 14.4720, "longitude": 100.6180 },
+          "บ่อโพง": { "latitude": 14.4680, "longitude": 100.6220 },
+          "บ้านชุ้ง": { "latitude": 14.4660, "longitude": 100.6240 },
+          "ปากจั่น": { "latitude": 14.4640, "longitude": 100.6260 },
+          "แม่ลา": { "latitude": 14.4620, "longitude": 100.6280 },
+          "หนองปลิง": { "latitude": 14.4600, "longitude": 100.6300 },
+          "คลองสะแก": { "latitude": 14.4580, "longitude": 100.6320 }
+        }
+      },
+      "บางไทร": {
+        "coordinates": { "latitude": 14.2000, "longitude": 100.4800 },
+        "tumbons": {
+          "บางไทร": { "latitude": 14.2000, "longitude": 100.4800 },
+          "บางพลี": { "latitude": 14.2020, "longitude": 100.4780 },
+          "บ้านแป้ง": { "latitude": 14.1980, "longitude": 100.4820 },
+          "บ้านม้า": { "latitude": 14.1960, "longitude": 100.4840 },
+          "บ้านกลึง": { "latitude": 14.1940, "longitude": 100.4860 },
+          "ช้างใหญ่": { "latitude": 14.1920, "longitude": 100.4880 },
+          "ราชคราม": { "latitude": 14.1900, "longitude": 100.4900 },
+          "ห่อหมก": { "latitude": 14.1880, "longitude": 100.4920 }
+        }
+      }
+    }
+  }
+} 

@@ -1,0 +1,55 @@
+{
+  "สิงห์บุรี": {
+    "coordinates": { "latitude": 14.8936, "longitude": 100.3964 },
+    "amphures": {
+      "เมืองสิงห์บุรี": {
+        "coordinates": { "latitude": 14.8936, "longitude": 100.3964 },
+        "tumbons": {
+          "บางพุทรา": { "latitude": 14.8936, "longitude": 100.3964 },
+          "ม่วงหมู่": { "latitude": 14.8990, "longitude": 100.3910 },
+          "บางกระบือ": { "latitude": 14.8880, "longitude": 100.4010 },
+          "ต้นโพธิ์": { "latitude": 14.9040, "longitude": 100.3860 },
+          "บางมัญ": { "latitude": 14.8830, "longitude": 100.4060 }
+        }
+      },
+      "อินทร์บุรี": {
+        "coordinates": { "latitude": 15.0289, "longitude": 100.3233 },
+        "tumbons": {
+          "อินทร์บุรี": { "latitude": 15.0289, "longitude": 100.3233 },
+          "ประศุก": { "latitude": 15.0340, "longitude": 100.3180 },
+          "ทับยา": { "latitude": 15.0240, "longitude": 100.3280 },
+          "งิ้วราย": { "latitude": 15.0390, "longitude": 100.3130 },
+          "ชีน้ำร้าย": { "latitude": 15.0190, "longitude": 100.3330 }
+        }
+      },
+      "บางระจัน": {
+        "coordinates": { "latitude": 14.9542, "longitude": 100.2744 },
+        "tumbons": {
+          "สิงห์": { "latitude": 14.9542, "longitude": 100.2744 },
+          "บ้านจ่า": { "latitude": 14.9590, "longitude": 100.2690 },
+          "พักทัน": { "latitude": 14.9490, "longitude": 100.2790 },
+          "โพชนไก่": { "latitude": 14.9640, "longitude": 100.2640 },
+          "แม่ลา": { "latitude": 14.9440, "longitude": 100.2840 }
+        }
+      },
+      "ค่ายบางระจัน": {
+        "coordinates": { "latitude": 14.7842, "longitude": 100.2789 },
+        "tumbons": {
+          "ค่ายบางระจัน": { "latitude": 14.7842, "longitude": 100.2789 },
+          "โพสังโฆ": { "latitude": 14.7890, "longitude": 100.2740 },
+          "ท่าข้าม": { "latitude": 14.7790, "longitude": 100.2840 },
+          "หนองกระทุ่ม": { "latitude": 14.7940, "longitude": 100.2690 }
+        }
+      },
+      "พรหมบุรี": {
+        "coordinates": { "latitude": 14.7964, "longitude": 100.4397 },
+        "tumbons": {
+          "พรหมบุรี": { "latitude": 14.7964, "longitude": 100.4397 },
+          "บางน้ำเชี่ยว": { "latitude": 14.8010, "longitude": 100.4350 },
+          "บ้านหม้อ": { "latitude": 14.7910, "longitude": 100.4440 },
+          "บ้านแป้ง": { "latitude": 14.8060, "longitude": 100.4300 }
+        }
+      }
+    }
+  }
+} 

@@ -1,0 +1,130 @@
+{
+  "เพชรบุรี": {
+    "coordinates": { "latitude": 13.1133, "longitude": 99.9433 },
+    "amphures": {
+      "เมืองเพชรบุรี": {
+        "coordinates": { "latitude": 13.1133, "longitude": 99.9433 },
+        "tumbons": {
+          "ท่าราบ": { "latitude": 13.1133, "longitude": 99.9433 },
+          "คลองกระแชง": { "latitude": 13.1180, "longitude": 99.9380 },
+          "บ้านกุ่ม": { "latitude": 13.1080, "longitude": 99.9480 },
+          "ธงชัย": { "latitude": 13.1230, "longitude": 99.9330 },
+          "นาพันสาม": { "latitude": 13.1030, "longitude": 99.9530 },
+          "หนองโสน": { "latitude": 13.1280, "longitude": 99.9280 },
+          "ไร่ส้ม": { "latitude": 13.0980, "longitude": 99.9580 },
+          "โพไร่หวาน": { "latitude": 13.1330, "longitude": 99.9230 },
+          "บ้านหม้อ": { "latitude": 13.0930, "longitude": 99.9630 },
+          "ต้นมะม่วง": { "latitude": 13.1380, "longitude": 99.9180 },
+          "ช่องสะแก": { "latitude": 13.0880, "longitude": 99.9680 },
+          "นาวุ้ง": { "latitude": 13.1430, "longitude": 99.9130 },
+          "บางจาน": { "latitude": 13.0830, "longitude": 99.9730 },
+          "วังตะโก": { "latitude": 13.1480, "longitude": 99.9080 },
+          "โพพระ": { "latitude": 13.0780, "longitude": 99.9780 },
+          "หนองขนาน": { "latitude": 13.1530, "longitude": 99.9030 },
+          "ดอนยาง": { "latitude": 13.0730, "longitude": 99.9830 },
+          "หาดเจ้าสำราญ": { "latitude": 13.1580, "longitude": 99.8980 }
+        }
+      },
+      "เขาย้อย": {
+        "coordinates": { "latitude": 13.2333, "longitude": 99.8167 },
+        "tumbons": {
+          "เขาย้อย": { "latitude": 13.2333, "longitude": 99.8167 },
+          "สระพัง": { "latitude": 13.2380, "longitude": 99.8120 },
+          "บางเค็ม": { "latitude": 13.2280, "longitude": 99.8220 },
+          "ทับคาง": { "latitude": 13.2430, "longitude": 99.8070 },
+          "หนองปลาไหล": { "latitude": 13.2230, "longitude": 99.8270 },
+          "หนองปรง": { "latitude": 13.2480, "longitude": 99.8020 },
+          "หนองชุมพล": { "latitude": 13.2180, "longitude": 99.8320 },
+          "ห้วยโรง": { "latitude": 13.2530, "longitude": 99.7970 },
+          "ห้วยท่าช้าง": { "latitude": 13.2130, "longitude": 99.8370 },
+          "หนองชุมพลเหนือ": { "latitude": 13.2580, "longitude": 99.7920 }
+        }
+      },
+      "หนองหญ้าปล้อง": {
+        "coordinates": { "latitude": 13.2833, "longitude": 99.6500 },
+        "tumbons": {
+          "หนองหญ้าปล้อง": { "latitude": 13.2833, "longitude": 99.6500 },
+          "ยางน้ำกลัดใต้": { "latitude": 13.2880, "longitude": 99.6450 },
+          "ยางน้ำกลัดเหนือ": { "latitude": 13.2780, "longitude": 99.6550 },
+          "ท่าตะคร้อ": { "latitude": 13.2930, "longitude": 99.6400 }
+        }
+      },
+      "ชะอำ": {
+        "coordinates": { "latitude": 12.8000, "longitude": 99.9833 },
+        "tumbons": {
+          "ชะอำ": { "latitude": 12.8000, "longitude": 99.9833 },
+          "บางเก่า": { "latitude": 12.8050, "longitude": 99.9780 },
+          "นายาง": { "latitude": 12.7950, "longitude": 99.9880 },
+          "เขาใหญ่": { "latitude": 12.8100, "longitude": 99.9730 },
+          "หนองศาลา": { "latitude": 12.7900, "longitude": 99.9930 },
+          "ห้วยทรายเหนือ": { "latitude": 12.8150, "longitude": 99.9680 },
+          "ไร่ใหม่พัฒนา": { "latitude": 12.7850, "longitude": 99.9980 },
+          "สามพระยา": { "latitude": 12.8200, "longitude": 99.9630 },
+          "ดอนขุนห้วย": { "latitude": 12.7800, "longitude": 100.0030 }
+        }
+      },
+      "ท่ายาง": {
+        "coordinates": { "latitude": 13.1500, "longitude": 99.8833 },
+        "tumbons": {
+          "ท่ายาง": { "latitude": 13.1500, "longitude": 99.8833 },
+          "ท่าคอย": { "latitude": 13.1550, "longitude": 99.8780 },
+          "ยางหย่อง": { "latitude": 13.1450, "longitude": 99.8880 },
+          "หนองจอก": { "latitude": 13.1600, "longitude": 99.8730 },
+          "มาบปลาเค้า": { "latitude": 13.1400, "longitude": 99.8930 },
+          "ท่าไม้รวก": { "latitude": 13.1650, "longitude": 99.8680 },
+          "วังไคร้": { "latitude": 13.1350, "longitude": 99.8980 },
+          "กลัดหลวง": { "latitude": 13.1700, "longitude": 99.8630 },
+          "ปึกเตียน": { "latitude": 13.1300, "longitude": 99.9030 },
+          "เขากระปุก": { "latitude": 13.1750, "longitude": 99.8580 },
+          "ท่าแลง": { "latitude": 13.1250, "longitude": 99.9080 }
+        }
+      },
+      "บ้านลาด": {
+        "coordinates": { "latitude": 13.0500, "longitude": 99.9167 },
+        "tumbons": {
+          "บ้านลาด": { "latitude": 13.0500, "longitude": 99.9167 },
+          "ท่าเสน": { "latitude": 13.0550, "longitude": 99.9120 },
+          "บ้านหาด": { "latitude": 13.0450, "longitude": 99.9220 },
+          "บ้านทาน": { "latitude": 13.0600, "longitude": 99.9070 },
+          "ตำหรุ": { "latitude": 13.0400, "longitude": 99.9270 },
+          "สมอพลือ": { "latitude": 13.0650, "longitude": 99.9020 },
+          "ไร่มะขาม": { "latitude": 13.0350, "longitude": 99.9320 },
+          "ท่าช้าง": { "latitude": 13.0700, "longitude": 99.8970 },
+          "ไร่โคก": { "latitude": 13.0300, "longitude": 99.9370 },
+          "โรงเข้": { "latitude": 13.0750, "longitude": 99.8920 },
+          "ไร่สะท้อน": { "latitude": 13.0250, "longitude": 99.9420 },
+          "หนองกระเจ็ด": { "latitude": 13.0800, "longitude": 99.8870 },
+          "หนองกะปุ": { "latitude": 13.0200, "longitude": 99.9470 },
+          "ลาดโพธิ์": { "latitude": 13.0850, "longitude": 99.8820 },
+          "ถ้ำรงค์": { "latitude": 13.0150, "longitude": 99.9520 }
+        }
+      },
+      "บ้านแหลม": {
+        "coordinates": { "latitude": 13.1667, "longitude": 100.1000 },
+        "tumbons": {
+          "บ้านแหลม": { "latitude": 13.1667, "longitude": 100.1000 },
+          "บางขุนไทร": { "latitude": 13.1720, "longitude": 100.0950 },
+          "ปากทะเล": { "latitude": 13.1610, "longitude": 100.1050 },
+          "บางแก้ว": { "latitude": 13.1770, "longitude": 100.0900 },
+          "แหลมผักเบี้ย": { "latitude": 13.1560, "longitude": 100.1100 },
+          "บางตะบูน": { "latitude": 13.1820, "longitude": 100.0850 },
+          "บางตะบูนออก": { "latitude": 13.1510, "longitude": 100.1150 },
+          "บางครก": { "latitude": 13.1870, "longitude": 100.0800 },
+          "ท่าแร้ง": { "latitude": 13.1460, "longitude": 100.1200 },
+          "ท่าแร้งออก": { "latitude": 13.1920, "longitude": 100.0750 }
+        }
+      },
+      "แก่งกระจาน": {
+        "coordinates": { "latitude": 12.9667, "longitude": 99.6167 },
+        "tumbons": {
+          "แก่งกระจาน": { "latitude": 12.9667, "longitude": 99.6167 },
+          "สองพี่น้อง": { "latitude": 12.9720, "longitude": 99.6120 },
+          "วังจันทร์": { "latitude": 12.9610, "longitude": 99.6220 },
+          "ป่าเด็ง": { "latitude": 12.9770, "longitude": 99.6070 },
+          "พุสวรรค์": { "latitude": 12.9560, "longitude": 99.6270 },
+          "ห้วยแม่เพรียง": { "latitude": 12.9820, "longitude": 99.6020 }
+        }
+      }
+    }
+  }
+} 

@@ -1,0 +1,61 @@
+{
+  "สมุทรสาคร": {
+    "coordinates": { "latitude": 13.5472, "longitude": 100.2739 },
+    "amphures": {
+      "เมืองสมุทรสาคร": {
+        "coordinates": { "latitude": 13.5472, "longitude": 100.2739 },
+        "tumbons": {
+          "มหาชัย": { "latitude": 13.5472, "longitude": 100.2739 },
+          "ท่าฉลอม": { "latitude": 13.5520, "longitude": 100.2690 },
+          "โกรกกราก": { "latitude": 13.5420, "longitude": 100.2790 },
+          "บางหญ้าแพรก": { "latitude": 13.5570, "longitude": 100.2640 },
+          "ท่าทราย": { "latitude": 13.5370, "longitude": 100.2840 },
+          "คอกกระบือ": { "latitude": 13.5620, "longitude": 100.2590 },
+          "บ้านบ่อ": { "latitude": 13.5320, "longitude": 100.2890 },
+          "บางโทรัด": { "latitude": 13.5670, "longitude": 100.2540 },
+          "กาหลง": { "latitude": 13.5270, "longitude": 100.2940 },
+          "นาโคก": { "latitude": 13.5720, "longitude": 100.2490 },
+          "บางกระเจ้า": { "latitude": 13.5220, "longitude": 100.2990 },
+          "พันท้ายนรสิงห์": { "latitude": 13.5770, "longitude": 100.2440 },
+          "โคกขาม": { "latitude": 13.5170, "longitude": 100.3040 },
+          "บ้านเกาะ": { "latitude": 13.5820, "longitude": 100.2390 },
+          "นาดี": { "latitude": 13.5120, "longitude": 100.3090 },
+          "ชัยมงคล": { "latitude": 13.5870, "longitude": 100.2340 },
+          "ท่าจีน": { "latitude": 13.5070, "longitude": 100.3140 }
+        }
+      },
+      "กระทุ่มแบน": {
+        "coordinates": { "latitude": 13.6500, "longitude": 100.2667 },
+        "tumbons": {
+          "ตลาดกระทุ่มแบน": { "latitude": 13.6500, "longitude": 100.2667 },
+          "อ้อมน้อย": { "latitude": 13.6550, "longitude": 100.2620 },
+          "ท่าไม้": { "latitude": 13.6450, "longitude": 100.2720 },
+          "สวนหลวง": { "latitude": 13.6600, "longitude": 100.2570 },
+          "บางยาง": { "latitude": 13.6400, "longitude": 100.2770 },
+          "คลองมะเดื่อ": { "latitude": 13.6650, "longitude": 100.2520 },
+          "แคราย": { "latitude": 13.6350, "longitude": 100.2820 },
+          "ดอนไก่ดี": { "latitude": 13.6700, "longitude": 100.2470 },
+          "ท่าเสา": { "latitude": 13.6300, "longitude": 100.2870 },
+          "หนองนกไข่": { "latitude": 13.6750, "longitude": 100.2420 }
+        }
+      },
+      "บ้านแพ้ว": {
+        "coordinates": { "latitude": 13.5833, "longitude": 100.1000 },
+        "tumbons": {
+          "บ้านแพ้ว": { "latitude": 13.5833, "longitude": 100.1000 },
+          "หลักสาม": { "latitude": 13.5880, "longitude": 100.0950 },
+          "ยกกระบัตร": { "latitude": 13.5780, "longitude": 100.1050 },
+          "โรงเข้": { "latitude": 13.5930, "longitude": 100.0900 },
+          "หนองสองห้อง": { "latitude": 13.5730, "longitude": 100.1100 },
+          "หลักสอง": { "latitude": 13.5980, "longitude": 100.0850 },
+          "เจ็ดริ้ว": { "latitude": 13.5680, "longitude": 100.1150 },
+          "คลองตัน": { "latitude": 13.6030, "longitude": 100.0800 },
+          "อำแพง": { "latitude": 13.5630, "longitude": 100.1200 },
+          "สวนส้ม": { "latitude": 13.6080, "longitude": 100.0750 },
+          "หนองบัว": { "latitude": 13.5580, "longitude": 100.1250 },
+          "หลักสามพัน": { "latitude": 13.6130, "longitude": 100.0700 }
+        }
+      }
+    }
+  }
+} 

@@ -1,0 +1,57 @@
+{
+  "สมุทรสงคราม": {
+    "coordinates": { "latitude": 13.4125, "longitude": 100.0017 },
+    "amphures": {
+      "เมืองสมุทรสงคราม": {
+        "coordinates": { "latitude": 13.4125, "longitude": 100.0017 },
+        "tumbons": {
+          "แม่กลอง": { "latitude": 13.4125, "longitude": 100.0017 },
+          "บางขันแตก": { "latitude": 13.4180, "longitude": 99.9970 },
+          "ลาดใหญ่": { "latitude": 13.4070, "longitude": 100.0070 },
+          "บ้านปรก": { "latitude": 13.4230, "longitude": 99.9920 },
+          "บางแก้ว": { "latitude": 13.4020, "longitude": 100.0120 },
+          "ท้ายหาด": { "latitude": 13.4280, "longitude": 99.9870 },
+          "แหลมใหญ่": { "latitude": 13.3970, "longitude": 100.0170 },
+          "คลองเขิน": { "latitude": 13.4330, "longitude": 99.9820 },
+          "คลองโคน": { "latitude": 13.3920, "longitude": 100.0220 },
+          "บางจะเกร็ง": { "latitude": 13.4380, "longitude": 99.9770 },
+          "นางตะเคียน": { "latitude": 13.3870, "longitude": 100.0270 }
+        }
+      },
+      "บางคนที": {
+        "coordinates": { "latitude": 13.4667, "longitude": 99.9667 },
+        "tumbons": {
+          "กระดังงา": { "latitude": 13.4667, "longitude": 99.9667 },
+          "บางสะแก": { "latitude": 13.4720, "longitude": 99.9620 },
+          "บางยี่รงค์": { "latitude": 13.4610, "longitude": 99.9720 },
+          "โรงหีบ": { "latitude": 13.4770, "longitude": 99.9570 },
+          "บางคนที": { "latitude": 13.4560, "longitude": 99.9770 },
+          "ดอนมะโนรา": { "latitude": 13.4820, "longitude": 99.9520 },
+          "บางพรม": { "latitude": 13.4510, "longitude": 99.9820 },
+          "บางกุ้ง": { "latitude": 13.4870, "longitude": 99.9470 },
+          "จอมปลวก": { "latitude": 13.4460, "longitude": 99.9870 },
+          "บางนกแขวก": { "latitude": 13.4920, "longitude": 99.9420 },
+          "ยายแพง": { "latitude": 13.4410, "longitude": 99.9920 },
+          "บางกระบือ": { "latitude": 13.4970, "longitude": 99.9370 }
+        }
+      },
+      "อัมพวา": {
+        "coordinates": { "latitude": 13.4242, "longitude": 99.9558 },
+        "tumbons": {
+          "อัมพวา": { "latitude": 13.4242, "longitude": 99.9558 },
+          "สวนหลวง": { "latitude": 13.4290, "longitude": 99.9510 },
+          "ท่าคา": { "latitude": 13.4190, "longitude": 99.9610 },
+          "วัดประดู่": { "latitude": 13.4340, "longitude": 99.9460 },
+          "เหมืองใหม่": { "latitude": 13.4140, "longitude": 99.9660 },
+          "บางช้าง": { "latitude": 13.4390, "longitude": 99.9410 },
+          "แควอ้อม": { "latitude": 13.4090, "longitude": 99.9710 },
+          "ปลายโพงพาง": { "latitude": 13.4440, "longitude": 99.9360 },
+          "บางแค": { "latitude": 13.4040, "longitude": 99.9760 },
+          "แพรกหนามแดง": { "latitude": 13.4490, "longitude": 99.9310 },
+          "ยี่สาร": { "latitude": 13.3990, "longitude": 99.9810 },
+          "บางนางลี่": { "latitude": 13.4540, "longitude": 99.9260 }
+        }
+      }
+    }
+  }
+} 

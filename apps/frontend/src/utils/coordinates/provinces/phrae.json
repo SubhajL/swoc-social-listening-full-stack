@@ -1,0 +1,118 @@
+{
+  "แพร่": {
+    "coordinates": { "latitude": 18.1445, "longitude": 100.1405 },
+    "amphures": {
+      "เมืองแพร่": {
+        "coordinates": { "latitude": 18.1445, "longitude": 100.1405 },
+        "tumbons": {
+          "ในเวียง": { "latitude": 18.1445, "longitude": 100.1405 },
+          "นาจักร": { "latitude": 18.1465, "longitude": 100.1385 },
+          "น้ำชำ": { "latitude": 18.1425, "longitude": 100.1425 },
+          "ป่าแมต": { "latitude": 18.1405, "longitude": 100.1445 },
+          "ทุ่งกวาว": { "latitude": 18.1385, "longitude": 100.1465 },
+          "ท่าข้าม": { "latitude": 18.1365, "longitude": 100.1485 },
+          "แม่หล่าย": { "latitude": 18.1345, "longitude": 100.1505 },
+          "วังธง": { "latitude": 18.1325, "longitude": 100.1525 },
+          "แม่คำมี": { "latitude": 18.1305, "longitude": 100.1545 },
+          "สวนเขื่อน": { "latitude": 18.1285, "longitude": 100.1565 },
+          "ป่าแดง": { "latitude": 18.1265, "longitude": 100.1585 },
+          "ห้วยม้า": { "latitude": 18.1245, "longitude": 100.1605 },
+          "เหมืองหม้อ": { "latitude": 18.1225, "longitude": 100.1625 },
+          "วังหงส์": { "latitude": 18.1205, "longitude": 100.1645 },
+          "แม่ยม": { "latitude": 18.1185, "longitude": 100.1665 }
+        }
+      },
+      "ร้องกวาง": {
+        "coordinates": { "latitude": 18.3500, "longitude": 100.3333 },
+        "tumbons": {
+          "ร้องกวาง": { "latitude": 18.3500, "longitude": 100.3333 },
+          "ร้องเข็ม": { "latitude": 18.3520, "longitude": 100.3313 },
+          "น้ำเลา": { "latitude": 18.3480, "longitude": 100.3353 },
+          "บ้านเวียง": { "latitude": 18.3460, "longitude": 100.3373 },
+          "แม่ยางตาล": { "latitude": 18.3440, "longitude": 100.3393 },
+          "แม่ยางฮ่อ": { "latitude": 18.3420, "longitude": 100.3413 },
+          "ไผ่โทน": { "latitude": 18.3400, "longitude": 100.3433 },
+          "ทุ่งศรี": { "latitude": 18.3380, "longitude": 100.3453 },
+          "แม่ทราย": { "latitude": 18.3360, "longitude": 100.3473 }
+        }
+      },
+      "ลอง": {
+        "coordinates": { "latitude": 18.0833, "longitude": 99.7833 },
+        "tumbons": {
+          "ห้วยอ้อ": { "latitude": 18.0833, "longitude": 99.7833 },
+          "ต้าผามอก": { "latitude": 18.0853, "longitude": 99.7813 },
+          "บ้านปิน": { "latitude": 18.0813, "longitude": 99.7853 },
+          "เวียงต้า": { "latitude": 18.0793, "longitude": 99.7873 },
+          "แม่ปาน": { "latitude": 18.0773, "longitude": 99.7893 },
+          "บ่อเหล็กลอง": { "latitude": 18.0753, "longitude": 99.7913 },
+          "ทุ่งแล้ง": { "latitude": 18.0733, "longitude": 99.7933 },
+          "ปากกาง": { "latitude": 18.0713, "longitude": 99.7953 },
+          "หัวทุ่ง": { "latitude": 18.0693, "longitude": 99.7973 }
+        }
+      },
+      "สูงเม่น": {
+        "coordinates": { "latitude": 18.0333, "longitude": 100.1167 },
+        "tumbons": {
+          "สูงเม่น": { "latitude": 18.0333, "longitude": 100.1167 },
+          "น้ำชำ": { "latitude": 18.0353, "longitude": 100.1147 },
+          "ดอนมูล": { "latitude": 18.0313, "longitude": 100.1187 },
+          "บ้านเหล่า": { "latitude": 18.0293, "longitude": 100.1207 },
+          "บ้านกวาง": { "latitude": 18.0273, "longitude": 100.1227 },
+          "บ้านปง": { "latitude": 18.0253, "longitude": 100.1247 },
+          "บ้านกาศ": { "latitude": 18.0233, "longitude": 100.1267 },
+          "ร่องกาศ": { "latitude": 18.0213, "longitude": 100.1287 },
+          "สบสาย": { "latitude": 18.0193, "longitude": 100.1307 },
+          "เวียงทอง": { "latitude": 18.0173, "longitude": 100.1327 },
+          "พระหลวง": { "latitude": 18.0153, "longitude": 100.1347 },
+          "หัวฝาย": { "latitude": 18.0133, "longitude": 100.1367 }
+        }
+      },
+      "เด่นชัย": {
+        "coordinates": { "latitude": 17.9333, "longitude": 100.0500 },
+        "tumbons": {
+          "เด่นชัย": { "latitude": 17.9333, "longitude": 100.0500 },
+          "แม่จั๊วะ": { "latitude": 17.9353, "longitude": 100.0480 },
+          "ไทรย้อย": { "latitude": 17.9313, "longitude": 100.0520 },
+          "ห้วยไร่": { "latitude": 17.9293, "longitude": 100.0540 },
+          "ปงป่าหวาย": { "latitude": 17.9273, "longitude": 100.0560 }
+        }
+      },
+      "สอง": {
+        "coordinates": { "latitude": 18.2667, "longitude": 99.5500 },
+        "tumbons": {
+          "บ้านหนุน": { "latitude": 18.2667, "longitude": 99.5500 },
+          "บ้านกลาง": { "latitude": 18.2687, "longitude": 99.5480 },
+          "เตาปูน": { "latitude": 18.2647, "longitude": 99.5520 },
+          "หัวเมือง": { "latitude": 18.2627, "longitude": 99.5540 },
+          "สะเอียบ": { "latitude": 18.2607, "longitude": 99.5560 },
+          "แดนชุมพล": { "latitude": 18.2587, "longitude": 99.5580 },
+          "ทุ่งน้าว": { "latitude": 18.2567, "longitude": 99.5600 },
+          "บ้านกาศ": { "latitude": 18.2547, "longitude": 99.5620 }
+        }
+      },
+      "วังชิ้น": {
+        "coordinates": { "latitude": 17.8667, "longitude": 99.6167 },
+        "tumbons": {
+          "วังชิ้น": { "latitude": 17.8667, "longitude": 99.6167 },
+          "แม่ป้าก": { "latitude": 17.8687, "longitude": 99.6147 },
+          "นาพูน": { "latitude": 17.8647, "longitude": 99.6187 },
+          "แม่พุง": { "latitude": 17.8627, "longitude": 99.6207 },
+          "สรอย": { "latitude": 17.8607, "longitude": 99.6227 },
+          "แม่เกิ๋ง": { "latitude": 17.8587, "longitude": 99.6247 },
+          "ป่าสัก": { "latitude": 17.8567, "longitude": 99.6267 }
+        }
+      },
+      "หนองม่วงไข่": {
+        "coordinates": { "latitude": 18.2667, "longitude": 100.1833 },
+        "tumbons": {
+          "หนองม่วงไข่": { "latitude": 18.2667, "longitude": 100.1833 },
+          "น้ำรัด": { "latitude": 18.2687, "longitude": 100.1813 },
+          "แม่คำมี": { "latitude": 18.2647, "longitude": 100.1853 },
+          "ตำหนักธรรม": { "latitude": 18.2627, "longitude": 100.1873 },
+          "ทุ่งแค้ว": { "latitude": 18.2607, "longitude": 100.1893 },
+          "วังหลวง": { "latitude": 18.2587, "longitude": 100.1913 }
+        }
+      }
+    }
+  }
+} 

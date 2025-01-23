@@ -1,0 +1,87 @@
+{
+  "นนทบุรี": {
+    "coordinates": { "latitude": 13.8622, "longitude": 100.5142 },
+    "amphures": {
+      "เมืองนนทบุรี": {
+        "coordinates": { "latitude": 13.8622, "longitude": 100.5142 },
+        "tumbons": {
+          "สวนใหญ่": { "latitude": 13.8622, "longitude": 100.5142 },
+          "ตลาดขวัญ": { "latitude": 13.8642, "longitude": 100.5122 },
+          "บางเขน": { "latitude": 13.8602, "longitude": 100.5162 },
+          "บางกระสอ": { "latitude": 13.8582, "longitude": 100.5182 },
+          "ท่าทราย": { "latitude": 13.8662, "longitude": 100.5102 },
+          "บางไผ่": { "latitude": 13.8562, "longitude": 100.5202 },
+          "บางศรีเมือง": { "latitude": 13.8542, "longitude": 100.5222 },
+          "บางกร่าง": { "latitude": 13.8522, "longitude": 100.5242 }
+        }
+      },
+      "บางกรวย": {
+        "coordinates": { "latitude": 13.8050, "longitude": 100.4700 },
+        "tumbons": {
+          "วัดชลอ": { "latitude": 13.8050, "longitude": 100.4700 },
+          "บางกรวย": { "latitude": 13.8070, "longitude": 100.4680 },
+          "บางสีทอง": { "latitude": 13.8030, "longitude": 100.4720 },
+          "บางขนุน": { "latitude": 13.8010, "longitude": 100.4740 },
+          "บางขุนกอง": { "latitude": 13.7990, "longitude": 100.4760 },
+          "บางคูเวียง": { "latitude": 13.7970, "longitude": 100.4780 },
+          "มหาสวัสดิ์": { "latitude": 13.7950, "longitude": 100.4800 },
+          "ศาลากลาง": { "latitude": 13.7930, "longitude": 100.4820 },
+          "ปลายบาง": { "latitude": 13.7910, "longitude": 100.4840 }
+        }
+      },
+      "บางใหญ่": {
+        "coordinates": { "latitude": 13.8400, "longitude": 100.4000 },
+        "tumbons": {
+          "บางใหญ่": { "latitude": 13.8400, "longitude": 100.4000 },
+          "บางม่วง": { "latitude": 13.8420, "longitude": 100.3980 },
+          "บางเลน": { "latitude": 13.8380, "longitude": 100.4020 },
+          "เสาธงหิน": { "latitude": 13.8360, "longitude": 100.4040 },
+          "บางแม่นาง": { "latitude": 13.8340, "longitude": 100.4060 },
+          "บางใหญ่": { "latitude": 13.8320, "longitude": 100.4080 }
+        }
+      },
+      "บางบัวทอง": {
+        "coordinates": { "latitude": 13.9700, "longitude": 100.4000 },
+        "tumbons": {
+          "โสนลอย": { "latitude": 13.9700, "longitude": 100.4000 },
+          "บางบัวทอง": { "latitude": 13.9720, "longitude": 100.3980 },
+          "บางรักใหญ่": { "latitude": 13.9680, "longitude": 100.4020 },
+          "บางคูรัด": { "latitude": 13.9660, "longitude": 100.4040 },
+          "ละหาร": { "latitude": 13.9640, "longitude": 100.4060 },
+          "ลำโพ": { "latitude": 13.9620, "longitude": 100.4080 },
+          "พิมลราช": { "latitude": 13.9600, "longitude": 100.4100 },
+          "บางรักพัฒนา": { "latitude": 13.9580, "longitude": 100.4120 }
+        }
+      },
+      "ไทรน้อย": {
+        "coordinates": { "latitude": 14.0200, "longitude": 100.3000 },
+        "tumbons": {
+          "ไทรน้อย": { "latitude": 14.0200, "longitude": 100.3000 },
+          "ราษฎร์นิยม": { "latitude": 14.0220, "longitude": 100.2980 },
+          "หนองเพรางาย": { "latitude": 14.0180, "longitude": 100.3020 },
+          "ไทรใหญ่": { "latitude": 14.0160, "longitude": 100.3040 },
+          "ขุนศรี": { "latitude": 14.0140, "longitude": 100.3060 },
+          "คลองขวาง": { "latitude": 14.0120, "longitude": 100.3080 },
+          "ทวีวัฒนา": { "latitude": 14.0100, "longitude": 100.3100 }
+        }
+      },
+      "ปากเกร็ด": {
+        "coordinates": { "latitude": 13.9100, "longitude": 100.5000 },
+        "tumbons": {
+          "ปากเกร็ด": { "latitude": 13.9100, "longitude": 100.5000 },
+          "บางพูด": { "latitude": 13.9120, "longitude": 100.4980 },
+          "บางตลาด": { "latitude": 13.9080, "longitude": 100.5020 },
+          "คลองเกลือ": { "latitude": 13.9060, "longitude": 100.5040 },
+          "บ้านใหม่": { "latitude": 13.9040, "longitude": 100.5060 },
+          "บางพลับ": { "latitude": 13.9020, "longitude": 100.5080 },
+          "คลองพระอุดม": { "latitude": 13.9000, "longitude": 100.5100 },
+          "ท่าอิฐ": { "latitude": 13.8980, "longitude": 100.5120 },
+          "เกาะเกร็ด": { "latitude": 13.8960, "longitude": 100.5140 },
+          "อ้อมเกร็ด": { "latitude": 13.8940, "longitude": 100.5160 },
+          "คลองข่อย": { "latitude": 13.8920, "longitude": 100.5180 },
+          "บางตะไนย์": { "latitude": 13.8900, "longitude": 100.5200 }
+        }
+      }
+    }
+  }
+} 

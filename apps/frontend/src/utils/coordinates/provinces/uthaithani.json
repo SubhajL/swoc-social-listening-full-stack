@@ -1,0 +1,99 @@
+{
+  "อุทัยธานี": {
+    "coordinates": { "latitude": 15.3833, "longitude": 100.0250 },
+    "amphures": {
+      "เมืองอุทัยธานี": {
+        "coordinates": { "latitude": 15.3833, "longitude": 100.0250 },
+        "tumbons": {
+          "อุทัยใหม่": { "latitude": 15.3833, "longitude": 100.0250 },
+          "น้ำซึม": { "latitude": 15.3880, "longitude": 100.0200 },
+          "สะแกกรัง": { "latitude": 15.3780, "longitude": 100.0300 },
+          "ดอนขวาง": { "latitude": 15.3930, "longitude": 100.0150 },
+          "หาดทนง": { "latitude": 15.3730, "longitude": 100.0350 },
+          "เกาะเทโพ": { "latitude": 15.3980, "longitude": 100.0100 },
+          "ท่าซุง": { "latitude": 15.3680, "longitude": 100.0400 },
+          "หนองแก": { "latitude": 15.4030, "longitude": 100.0050 },
+          "โนนเหล็ก": { "latitude": 15.3630, "longitude": 100.0450 },
+          "หนองเต่า": { "latitude": 15.4080, "longitude": 100.0000 },
+          "หนองไผ่แบน": { "latitude": 15.3580, "longitude": 100.0500 },
+          "หนองพังค่า": { "latitude": 15.4130, "longitude": 99.9950 },
+          "ทุ่งใหญ่": { "latitude": 15.3530, "longitude": 100.0550 },
+          "เนินแจง": { "latitude": 15.4180, "longitude": 99.9900 }
+        }
+      },
+      "ทัพทัน": {
+        "coordinates": { "latitude": 15.4500, "longitude": 99.8833 },
+        "tumbons": {
+          "ทัพทัน": { "latitude": 15.4500, "longitude": 99.8833 },
+          "ทุ่งนาไทย": { "latitude": 15.4550, "longitude": 99.8780 },
+          "หนองยายดา": { "latitude": 15.4450, "longitude": 99.8880 },
+          "หนองกระทุ่ม": { "latitude": 15.4600, "longitude": 99.8730 },
+          "หนองสระ": { "latitude": 15.4400, "longitude": 99.8930 },
+          "โคกหม้อ": { "latitude": 15.4650, "longitude": 99.8680 },
+          "หนองหญ้าปล้อง": { "latitude": 15.4350, "longitude": 99.8980 }
+        }
+      },
+      "สว่างอารมณ์": {
+        "coordinates": { "latitude": 15.6333, "longitude": 100.1000 },
+        "tumbons": {
+          "สว่างอารมณ์": { "latitude": 15.6333, "longitude": 100.1000 },
+          "ไผ่เขียว": { "latitude": 15.6380, "longitude": 100.0950 },
+          "พลวงสองนาง": { "latitude": 15.6280, "longitude": 100.1050 },
+          "บ่อยาง": { "latitude": 15.6430, "longitude": 100.0900 },
+          "หนองหลวง": { "latitude": 15.6230, "longitude": 100.1100 }
+        }
+      },
+      "หนองฉาง": {
+        "coordinates": { "latitude": 15.3833, "longitude": 99.8667 },
+        "tumbons": {
+          "หนองฉาง": { "latitude": 15.3833, "longitude": 99.8667 },
+          "หนองยาง": { "latitude": 15.3880, "longitude": 99.8620 },
+          "หนองนางนวล": { "latitude": 15.3780, "longitude": 99.8720 },
+          "หนองสรวง": { "latitude": 15.3930, "longitude": 99.8570 },
+          "ทุ่งโพ": { "latitude": 15.3730, "longitude": 99.8770 },
+          "เขาบางแกรก": { "latitude": 15.3980, "longitude": 99.8520 }
+        }
+      },
+      "หนองขาหย่าง": {
+        "coordinates": { "latitude": 15.3167, "longitude": 99.9333 },
+        "tumbons": {
+          "หนองขาหย่าง": { "latitude": 15.3167, "longitude": 99.9333 },
+          "หนองไผ่": { "latitude": 15.3220, "longitude": 99.9280 },
+          "ดอนกลอย": { "latitude": 15.3110, "longitude": 99.9380 },
+          "ห้วยรอบ": { "latitude": 15.3270, "longitude": 99.9230 },
+          "ทุ่งพึ่ง": { "latitude": 15.3060, "longitude": 99.9430 }
+        }
+      },
+      "บ้านไร่": {
+        "coordinates": { "latitude": 15.0833, "longitude": 99.5167 },
+        "tumbons": {
+          "บ้านไร่": { "latitude": 15.0833, "longitude": 99.5167 },
+          "ทัพหลวง": { "latitude": 15.0880, "longitude": 99.5120 },
+          "ห้วยแห้ง": { "latitude": 15.0780, "longitude": 99.5220 },
+          "คอกควาย": { "latitude": 15.0930, "longitude": 99.5070 },
+          "วังหิน": { "latitude": 15.0730, "longitude": 99.5270 },
+          "เมืองการุ้ง": { "latitude": 15.0980, "longitude": 99.5020 },
+          "แก่นมะกรูด": { "latitude": 15.0680, "longitude": 99.5320 }
+        }
+      },
+      "ลานสัก": {
+        "coordinates": { "latitude": 15.4500, "longitude": 99.5833 },
+        "tumbons": {
+          "ลานสัก": { "latitude": 15.4500, "longitude": 99.5833 },
+          "ประดู่ยืน": { "latitude": 15.4550, "longitude": 99.5780 },
+          "ป่าอ้อ": { "latitude": 15.4450, "longitude": 99.5880 },
+          "ระบำ": { "latitude": 15.4600, "longitude": 99.5730 },
+          "น้ำรอบ": { "latitude": 15.4400, "longitude": 99.5930 }
+        }
+      },
+      "ห้วยคต": {
+        "coordinates": { "latitude": 15.1667, "longitude": 99.4167 },
+        "tumbons": {
+          "ห้วยคต": { "latitude": 15.1667, "longitude": 99.4167 },
+          "สุขฤทัย": { "latitude": 15.1720, "longitude": 99.4120 },
+          "ทองหลาง": { "latitude": 15.1610, "longitude": 99.4220 }
+        }
+      }
+    }
+  }
+} 

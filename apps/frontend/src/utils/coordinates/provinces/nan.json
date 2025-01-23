@@ -1,0 +1,173 @@
+{
+  "น่าน": {
+    "coordinates": { "latitude": 18.7756, "longitude": 100.7727 },
+    "amphures": {
+      "เมืองน่าน": {
+        "coordinates": { "latitude": 18.7756, "longitude": 100.7727 },
+        "tumbons": {
+          "ในเวียง": { "latitude": 18.7756, "longitude": 100.7727 },
+          "บ่อ": { "latitude": 18.7776, "longitude": 100.7707 },
+          "ผาสิงห์": { "latitude": 18.7736, "longitude": 100.7747 },
+          "ไชยสถาน": { "latitude": 18.7716, "longitude": 100.7767 },
+          "ถืมตอง": { "latitude": 18.7696, "longitude": 100.7787 },
+          "เรือง": { "latitude": 18.7676, "longitude": 100.7807 },
+          "นาซาว": { "latitude": 18.7656, "longitude": 100.7827 },
+          "ดู่ใต้": { "latitude": 18.7636, "longitude": 100.7847 },
+          "กองควาย": { "latitude": 18.7616, "longitude": 100.7867 },
+          "บ่อสวก": { "latitude": 18.7596, "longitude": 100.7887 },
+          "สะเนียน": { "latitude": 18.7576, "longitude": 100.7907 }
+        }
+      },
+      "แม่จริม": {
+        "coordinates": { "latitude": 18.7333, "longitude": 101.1000 },
+        "tumbons": {
+          "หนองแดง": { "latitude": 18.7333, "longitude": 101.1000 },
+          "หมอเมือง": { "latitude": 18.7353, "longitude": 101.0980 },
+          "น้ำพาง": { "latitude": 18.7313, "longitude": 101.1020 },
+          "น้ำปาย": { "latitude": 18.7293, "longitude": 101.1040 },
+          "แม่จริม": { "latitude": 18.7273, "longitude": 101.1060 }
+        }
+      },
+      "บ้านหลวง": {
+        "coordinates": { "latitude": 18.8667, "longitude": 100.4833 },
+        "tumbons": {
+          "บ้านหลวง": { "latitude": 18.8667, "longitude": 100.4833 },
+          "ป่าคาหลวง": { "latitude": 18.8687, "longitude": 100.4813 },
+          "สวด": { "latitude": 18.8647, "longitude": 100.4853 },
+          "บ้านพี้": { "latitude": 18.8627, "longitude": 100.4873 }
+        }
+      },
+      "นาน้อย": {
+        "coordinates": { "latitude": 18.3083, "longitude": 100.7417 },
+        "tumbons": {
+          "นาน้อย": { "latitude": 18.3083, "longitude": 100.7417 },
+          "เชียงของ": { "latitude": 18.3103, "longitude": 100.7397 },
+          "ศรีษะเกษ": { "latitude": 18.3063, "longitude": 100.7437 },
+          "สถาน": { "latitude": 18.3043, "longitude": 100.7457 },
+          "สันทะ": { "latitude": 18.3023, "longitude": 100.7477 },
+          "บัวใหญ่": { "latitude": 18.3003, "longitude": 100.7497 },
+          "น้ำตก": { "latitude": 18.2983, "longitude": 100.7517 }
+        }
+      },
+      "ปัว": {
+        "coordinates": { "latitude": 19.1750, "longitude": 100.9000 },
+        "tumbons": {
+          "ปัว": { "latitude": 19.1750, "longitude": 100.9000 },
+          "แงง": { "latitude": 19.1770, "longitude": 100.8980 },
+          "สถาน": { "latitude": 19.1730, "longitude": 100.9020 },
+          "ศิลาแลง": { "latitude": 19.1710, "longitude": 100.9040 },
+          "ศิลาเพชร": { "latitude": 19.1690, "longitude": 100.9060 },
+          "อวน": { "latitude": 19.1670, "longitude": 100.9080 },
+          "ไชยวัฒนา": { "latitude": 19.1650, "longitude": 100.9100 },
+          "เจดีย์ชัย": { "latitude": 19.1630, "longitude": 100.9120 },
+          "ภูคา": { "latitude": 19.1610, "longitude": 100.9140 },
+          "สกาด": { "latitude": 19.1590, "longitude": 100.9160 },
+          "ป่ากลาง": { "latitude": 19.1570, "longitude": 100.9180 },
+          "วรนคร": { "latitude": 19.1550, "longitude": 100.9200 }
+        }
+      },
+      "ท่าวังผา": {
+        "coordinates": { "latitude": 19.1167, "longitude": 100.8000 },
+        "tumbons": {
+          "ท่าวังผา": { "latitude": 19.1167, "longitude": 100.8000 },
+          "ผาตอ": { "latitude": 19.1187, "longitude": 100.7980 },
+          "ศรีภูมิ": { "latitude": 19.1147, "longitude": 100.8020 },
+          "ยม": { "latitude": 19.1127, "longitude": 100.8040 },
+          "ตาลชุม": { "latitude": 19.1107, "longitude": 100.8060 },
+          "ริม": { "latitude": 19.1087, "longitude": 100.8080 },
+          "ป่าคา": { "latitude": 19.1067, "longitude": 100.8100 },
+          "แสนทอง": { "latitude": 19.1047, "longitude": 100.8120 },
+          "จอมพระ": { "latitude": 19.1027, "longitude": 100.8140 },
+          "แสนทอง": { "latitude": 19.1007, "longitude": 100.8160 }
+        }
+      },
+      "เวียงสา": {
+        "coordinates": { "latitude": 18.5833, "longitude": 100.7500 },
+        "tumbons": {
+          "กลางเวียง": { "latitude": 18.5833, "longitude": 100.7500 },
+          "ขึ่ง": { "latitude": 18.5853, "longitude": 100.7480 },
+          "ไหล่น่าน": { "latitude": 18.5813, "longitude": 100.7520 },
+          "ตาลชุม": { "latitude": 18.5793, "longitude": 100.7540 },
+          "นาเหลือง": { "latitude": 18.5773, "longitude": 100.7560 },
+          "ส้าน": { "latitude": 18.5753, "longitude": 100.7580 },
+          "น้ำปั้ว": { "latitude": 18.5733, "longitude": 100.7600 },
+          "น้ำมวบ": { "latitude": 18.5713, "longitude": 100.7620 },
+          "ยาบหัวนา": { "latitude": 18.5693, "longitude": 100.7640 },
+          "ปงสนุก": { "latitude": 18.5673, "longitude": 100.7660 },
+          "อ่ายนาไลย": { "latitude": 18.5653, "longitude": 100.7680 },
+          "ส้านนาหนองใหม่": { "latitude": 18.5633, "longitude": 100.7700 },
+          "แม่สา": { "latitude": 18.5613, "longitude": 100.7720 },
+          "แม่สาคร": { "latitude": 18.5593, "longitude": 100.7740 },
+          "จอมจันทร์": { "latitude": 18.5573, "longitude": 100.7760 },
+          "แม่ขะนิง": { "latitude": 18.5553, "longitude": 100.7780 },
+          "ทุ่งศรีทอง": { "latitude": 18.5533, "longitude": 100.7800 }
+        }
+      },
+      "ทุ่งช้าง": {
+        "coordinates": { "latitude": 19.4000, "longitude": 100.8833 },
+        "tumbons": {
+          "ทุ่งช้าง": { "latitude": 19.4000, "longitude": 100.8833 },
+          "ปอน": { "latitude": 19.4020, "longitude": 100.8813 },
+          "งอบ": { "latitude": 19.3980, "longitude": 100.8853 },
+          "และ": { "latitude": 19.3960, "longitude": 100.8873 }
+        }
+      },
+      "เชียงกลาง": {
+        "coordinates": { "latitude": 19.2833, "longitude": 100.8667 },
+        "tumbons": {
+          "เชียงกลาง": { "latitude": 19.2833, "longitude": 100.8667 },
+          "เปือ": { "latitude": 19.2853, "longitude": 100.8647 },
+          "เชียงคาน": { "latitude": 19.2813, "longitude": 100.8687 },
+          "พระธาตุ": { "latitude": 19.2793, "longitude": 100.8707 },
+          "พญาแก้ว": { "latitude": 19.2773, "longitude": 100.8727 },
+          "พระพุทธบาท": { "latitude": 19.2753, "longitude": 100.8747 }
+        }
+      },
+      "นาหมื่น": {
+        "coordinates": { "latitude": 18.2333, "longitude": 100.6667 },
+        "tumbons": {
+          "บ่อแก้ว": { "latitude": 18.2333, "longitude": 100.6667 },
+          "เมืองลี": { "latitude": 18.2353, "longitude": 100.6647 },
+          "ปิงหลวง": { "latitude": 18.2313, "longitude": 100.6687 },
+          "นาทะนุง": { "latitude": 18.2293, "longitude": 100.6707 }
+        }
+      },
+      "สันติสุข": {
+        "coordinates": { "latitude": 19.2000, "longitude": 100.9000 },
+        "tumbons": {
+          "ดู่พงษ์": { "latitude": 19.2000, "longitude": 100.9000 },
+          "ป่าแลวหลวง": { "latitude": 19.2020, "longitude": 100.8980 },
+          "พงษ์": { "latitude": 19.1980, "longitude": 100.9020 }
+        }
+      },
+      "บ่อเกลือ": {
+        "coordinates": { "latitude": 19.1500, "longitude": 101.2500 },
+        "tumbons": {
+          "บ่อเกลือใต้": { "latitude": 19.1500, "longitude": 101.2500 },
+          "บ่อเกลือเหนือ": { "latitude": 19.1520, "longitude": 101.2480 },
+          "ภูฟ้า": { "latitude": 19.1480, "longitude": 101.2520 },
+          "ดงพญา": { "latitude": 19.1460, "longitude": 101.2540 }
+        }
+      },
+      "เฉลิมพระเกียรติ": {
+        "coordinates": { "latitude": 19.3000, "longitude": 101.1000 },
+        "tumbons": {
+          "ขุนน่าน": { "latitude": 19.3000, "longitude": 101.1000 },
+          "ห้วยโก๋น": { "latitude": 19.3020, "longitude": 101.0980 }
+        }
+      },
+      "ภูเพียง": {
+        "coordinates": { "latitude": 18.7500, "longitude": 100.7333 },
+        "tumbons": {
+          "ฝายแก้ว": { "latitude": 18.7500, "longitude": 100.7333 },
+          "ม่วงตึ๊ด": { "latitude": 18.7520, "longitude": 100.7313 },
+          "น้ำแก่น": { "latitude": 18.7480, "longitude": 100.7353 },
+          "เมืองจัง": { "latitude": 18.7460, "longitude": 100.7373 },
+          "ท่าน้าว": { "latitude": 18.7440, "longitude": 100.7393 },
+          "น้ำเกี๋ยน": { "latitude": 18.7420, "longitude": 100.7413 },
+          "นาปัง": { "latitude": 18.7400, "longitude": 100.7433 }
+        }
+      }
+    }
+  }
+} 

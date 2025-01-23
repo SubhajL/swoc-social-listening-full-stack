@@ -1,0 +1,165 @@
+{
+  "ลำปาง": {
+    "coordinates": { "latitude": 18.2783, "longitude": 99.4877 },
+    "amphures": {
+      "เมืองลำปาง": {
+        "coordinates": { "latitude": 18.2783, "longitude": 99.4877 },
+        "tumbons": {
+          "เวียงเหนือ": { "latitude": 18.2783, "longitude": 99.4877 },
+          "หัวเวียง": { "latitude": 18.2803, "longitude": 99.4857 },
+          "สวนดอก": { "latitude": 18.2763, "longitude": 99.4897 },
+          "สบตุ๋ย": { "latitude": 18.2743, "longitude": 99.4917 },
+          "พระบาท": { "latitude": 18.2723, "longitude": 99.4937 },
+          "ชมพู": { "latitude": 18.2703, "longitude": 99.4957 },
+          "กล้วยแพะ": { "latitude": 18.2683, "longitude": 99.4977 },
+          "ปงแสนทอง": { "latitude": 18.2663, "longitude": 99.4997 },
+          "บ้านเสด็จ": { "latitude": 18.2643, "longitude": 99.5017 },
+          "พิชัย": { "latitude": 18.2623, "longitude": 99.5037 },
+          "ทุ่งฝาย": { "latitude": 18.2603, "longitude": 99.5057 },
+          "บ้านเอื้อม": { "latitude": 18.2583, "longitude": 99.5077 },
+          "บ้านแลง": { "latitude": 18.2563, "longitude": 99.5097 },
+          "บ้านค่า": { "latitude": 18.2543, "longitude": 99.5117 },
+          "บ่อแฮ้ว": { "latitude": 18.2523, "longitude": 99.5137 }
+        }
+      },
+      "แม่เมาะ": {
+        "coordinates": { "latitude": 18.2500, "longitude": 99.7500 },
+        "tumbons": {
+          "แม่เมาะ": { "latitude": 18.2500, "longitude": 99.7500 },
+          "สบป้าด": { "latitude": 18.2520, "longitude": 99.7480 },
+          "บ้านดง": { "latitude": 18.2480, "longitude": 99.7520 },
+          "จางเหนือ": { "latitude": 18.2460, "longitude": 99.7540 },
+          "นาสัก": { "latitude": 18.2440, "longitude": 99.7560 }
+        }
+      },
+      "เกาะคา": {
+        "coordinates": { "latitude": 18.1833, "longitude": 99.3333 },
+        "tumbons": {
+          "ลำปางหลวง": { "latitude": 18.1833, "longitude": 99.3333 },
+          "นาแก้ว": { "latitude": 18.1853, "longitude": 99.3313 },
+          "ไหล่หิน": { "latitude": 18.1813, "longitude": 99.3353 },
+          "วังพร้าว": { "latitude": 18.1793, "longitude": 99.3373 },
+          "ศาลา": { "latitude": 18.1773, "longitude": 99.3393 },
+          "เกาะคา": { "latitude": 18.1753, "longitude": 99.3413 },
+          "นาแส่ง": { "latitude": 18.1733, "longitude": 99.3433 },
+          "ท่าผา": { "latitude": 18.1713, "longitude": 99.3453 },
+          "ใหม่พัฒนา": { "latitude": 18.1693, "longitude": 99.3473 }
+        }
+      },
+      "เสริมงาม": {
+        "coordinates": { "latitude": 18.0333, "longitude": 99.2000 },
+        "tumbons": {
+          "ทุ่งงาม": { "latitude": 18.0333, "longitude": 99.2000 },
+          "เสริมซ้าย": { "latitude": 18.0353, "longitude": 99.1980 },
+          "เสริมขวา": { "latitude": 18.0313, "longitude": 99.2020 },
+          "เสริมกลาง": { "latitude": 18.0293, "longitude": 99.2040 }
+        }
+      },
+      "งาว": {
+        "coordinates": { "latitude": 18.7667, "longitude": 99.9500 },
+        "tumbons": {
+          "หลวงเหนือ": { "latitude": 18.7667, "longitude": 99.9500 },
+          "หลวงใต้": { "latitude": 18.7687, "longitude": 99.9480 },
+          "บ้านร้อง": { "latitude": 18.7647, "longitude": 99.9520 },
+          "บ้านแหง": { "latitude": 18.7627, "longitude": 99.9540 },
+          "บ้านอ้อน": { "latitude": 18.7607, "longitude": 99.9560 },
+          "ปงเตา": { "latitude": 18.7587, "longitude": 99.9580 },
+          "นาแก": { "latitude": 18.7567, "longitude": 99.9600 }
+        }
+      },
+      "แจ้ห่ม": {
+        "coordinates": { "latitude": 18.7167, "longitude": 99.6000 },
+        "tumbons": {
+          "แจ้ห่ม": { "latitude": 18.7167, "longitude": 99.6000 },
+          "บ้านสา": { "latitude": 18.7187, "longitude": 99.5980 },
+          "ปงดอน": { "latitude": 18.7147, "longitude": 99.6020 },
+          "แม่สุก": { "latitude": 18.7127, "longitude": 99.6040 },
+          "เมืองมาย": { "latitude": 18.7107, "longitude": 99.6060 },
+          "ทุ่งผึ้ง": { "latitude": 18.7087, "longitude": 99.6080 },
+          "วิเชตนคร": { "latitude": 18.7067, "longitude": 99.6100 }
+        }
+      },
+      "วังเหนือ": {
+        "coordinates": { "latitude": 19.1167, "longitude": 99.7667 },
+        "tumbons": {
+          "วังเหนือ": { "latitude": 19.1167, "longitude": 99.7667 },
+          "วังใต้": { "latitude": 19.1187, "longitude": 99.7647 },
+          "ร่องเคาะ": { "latitude": 19.1147, "longitude": 99.7687 },
+          "วังทอง": { "latitude": 19.1127, "longitude": 99.7707 },
+          "วังซ้าย": { "latitude": 19.1107, "longitude": 99.7727 },
+          "วังแก้ว": { "latitude": 19.1087, "longitude": 99.7747 },
+          "วังทรายคำ": { "latitude": 19.1067, "longitude": 99.7767 },
+          "ทุ่งฮั้ว": { "latitude": 19.1047, "longitude": 99.7787 }
+        }
+      },
+      "เถิน": {
+        "coordinates": { "latitude": 17.6333, "longitude": 99.2333 },
+        "tumbons": {
+          "ล้อมแรด": { "latitude": 17.6333, "longitude": 99.2333 },
+          "แม่ปะ": { "latitude": 17.6353, "longitude": 99.2313 },
+          "แม่มอก": { "latitude": 17.6313, "longitude": 99.2353 },
+          "เวียงมอก": { "latitude": 17.6293, "longitude": 99.2373 },
+          "นาโป่ง": { "latitude": 17.6273, "longitude": 99.2393 },
+          "แม่ถอด": { "latitude": 17.6253, "longitude": 99.2413 },
+          "เถินบุรี": { "latitude": 17.6233, "longitude": 99.2433 },
+          "แม่วะ": { "latitude": 17.6213, "longitude": 99.2453 }
+        }
+      },
+      "แม่พริก": {
+        "coordinates": { "latitude": 17.4833, "longitude": 99.1667 },
+        "tumbons": {
+          "แม่พริก": { "latitude": 17.4833, "longitude": 99.1667 },
+          "ผาปัง": { "latitude": 17.4853, "longitude": 99.1647 },
+          "แม่ปุ": { "latitude": 17.4813, "longitude": 99.1687 },
+          "พระบาทวังตวง": { "latitude": 17.4793, "longitude": 99.1707 }
+        }
+      },
+      "แม่ทะ": {
+        "coordinates": { "latitude": 18.1167, "longitude": 99.6167 },
+        "tumbons": {
+          "แม่ทะ": { "latitude": 18.1167, "longitude": 99.6167 },
+          "นาครัว": { "latitude": 18.1187, "longitude": 99.6147 },
+          "ป่าตัน": { "latitude": 18.1147, "longitude": 99.6187 },
+          "บ้านกิ่ว": { "latitude": 18.1127, "longitude": 99.6207 },
+          "บ้านบอม": { "latitude": 18.1107, "longitude": 99.6227 },
+          "น้ำโจ้": { "latitude": 18.1087, "longitude": 99.6247 },
+          "ดอนไฟ": { "latitude": 18.1067, "longitude": 99.6267 },
+          "หัวเสือ": { "latitude": 18.1047, "longitude": 99.6287 },
+          "วังเงิน": { "latitude": 18.1027, "longitude": 99.6307 },
+          "สันดอนแก้ว": { "latitude": 18.1007, "longitude": 99.6327 }
+        }
+      },
+      "สบปราบ": {
+        "coordinates": { "latitude": 17.9167, "longitude": 99.3500 },
+        "tumbons": {
+          "สบปราบ": { "latitude": 17.9167, "longitude": 99.3500 },
+          "สมัย": { "latitude": 17.9187, "longitude": 99.3480 },
+          "แม่กัวะ": { "latitude": 17.9147, "longitude": 99.3520 },
+          "นายาง": { "latitude": 17.9127, "longitude": 99.3540 }
+        }
+      },
+      "ห้างฉัตร": {
+        "coordinates": { "latitude": 18.2833, "longitude": 99.2833 },
+        "tumbons": {
+          "ห้างฉัตร": { "latitude": 18.2833, "longitude": 99.2833 },
+          "หนองหล่ม": { "latitude": 18.2853, "longitude": 99.2813 },
+          "เมืองยาว": { "latitude": 18.2813, "longitude": 99.2853 },
+          "ปงยางคก": { "latitude": 18.2793, "longitude": 99.2873 },
+          "เวียงตาล": { "latitude": 18.2773, "longitude": 99.2893 },
+          "แม่สัน": { "latitude": 18.2753, "longitude": 99.2913 },
+          "วอแก้ว": { "latitude": 18.2733, "longitude": 99.2933 }
+        }
+      },
+      "เมืองปาน": {
+        "coordinates": { "latitude": 18.8167, "longitude": 99.4833 },
+        "tumbons": {
+          "เมืองปาน": { "latitude": 18.8167, "longitude": 99.4833 },
+          "บ้านขอ": { "latitude": 18.8187, "longitude": 99.4813 },
+          "ทุ่งกว๋าว": { "latitude": 18.8147, "longitude": 99.4853 },
+          "แจ้ซ้อน": { "latitude": 18.8127, "longitude": 99.4873 },
+          "หัวเมือง": { "latitude": 18.8107, "longitude": 99.4893 }
+        }
+      }
+    }
+  }
+} 

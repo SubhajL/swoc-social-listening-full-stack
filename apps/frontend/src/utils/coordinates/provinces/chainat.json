@@ -1,0 +1,63 @@
+{
+  "ชัยนาท": {
+    "coordinates": { "latitude": 15.1851, "longitude": 100.1251 },
+    "amphures": {
+      "เมืองชัยนาท": {
+        "coordinates": { "latitude": 15.1851, "longitude": 100.1251 },
+        "tumbons": {
+          "ในเมือง": { "latitude": 15.1851, "longitude": 100.1251 },
+          "บ้านกล้วย": { "latitude": 15.1900, "longitude": 100.1200 },
+          "ท่าชัย": { "latitude": 15.1800, "longitude": 100.1300 },
+          "ชัยนาท": { "latitude": 15.1950, "longitude": 100.1150 },
+          "เขาท่าพระ": { "latitude": 15.1750, "longitude": 100.1350 }
+        }
+      },
+      "มโนรมย์": {
+        "coordinates": { "latitude": 15.3189, "longitude": 100.1383 },
+        "tumbons": {
+          "คุ้งสำเภา": { "latitude": 15.3189, "longitude": 100.1383 },
+          "วัดโคก": { "latitude": 15.3240, "longitude": 100.1330 },
+          "ศิลาดาน": { "latitude": 15.3140, "longitude": 100.1430 },
+          "ท่าฉนวน": { "latitude": 15.3290, "longitude": 100.1280 },
+          "หางน้ำสาคร": { "latitude": 15.3090, "longitude": 100.1480 }
+        }
+      },
+      "วัดสิงห์": {
+        "coordinates": { "latitude": 15.2556, "longitude": 100.0097 },
+        "tumbons": {
+          "วัดสิงห์": { "latitude": 15.2556, "longitude": 100.0097 },
+          "มะขามเฒ่า": { "latitude": 15.2610, "longitude": 100.0050 },
+          "หนองบัว": { "latitude": 15.2500, "longitude": 100.0140 },
+          "หนองขุ่น": { "latitude": 15.2660, "longitude": 100.0000 }
+        }
+      },
+      "สรรพยา": {
+        "coordinates": { "latitude": 15.1847, "longitude": 100.1989 },
+        "tumbons": {
+          "สรรพยา": { "latitude": 15.1847, "longitude": 100.1989 },
+          "ตลุก": { "latitude": 15.1900, "longitude": 100.1940 },
+          "เขาแก้ว": { "latitude": 15.1790, "longitude": 100.2040 },
+          "โพนางดำตก": { "latitude": 15.1950, "longitude": 100.1890 }
+        }
+      },
+      "สรรคบุรี": {
+        "coordinates": { "latitude": 15.0189, "longitude": 100.1347 },
+        "tumbons": {
+          "แพรกศรีราชา": { "latitude": 15.0189, "longitude": 100.1347 },
+          "เที่ยงแท้": { "latitude": 15.0240, "longitude": 100.1300 },
+          "ห้วยกรด": { "latitude": 15.0140, "longitude": 100.1390 },
+          "โพงาม": { "latitude": 15.0290, "longitude": 100.1250 }
+        }
+      },
+      "หันคา": {
+        "coordinates": { "latitude": 15.0089, "longitude": 99.9889 },
+        "tumbons": {
+          "หันคา": { "latitude": 15.0089, "longitude": 99.9889 },
+          "บ้านเชี่ยน": { "latitude": 15.0140, "longitude": 99.9840 },
+          "ไพรนกยูง": { "latitude": 15.0040, "longitude": 99.9940 },
+          "วังไก่เถื่อน": { "latitude": 15.0190, "longitude": 99.9790 }
+        }
+      }
+    }
+  }
+} 

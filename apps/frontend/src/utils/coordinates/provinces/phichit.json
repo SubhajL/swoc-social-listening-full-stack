@@ -1,0 +1,119 @@
+{
+  "พิจิตร": {
+    "coordinates": { "latitude": 16.4429, "longitude": 100.3487 },
+    "amphures": {
+      "เมืองพิจิตร": {
+        "coordinates": { "latitude": 16.4429, "longitude": 100.3487 },
+        "tumbons": {
+          "ในเมือง": { "latitude": 16.4429, "longitude": 100.3487 },
+          "คลองคะเชนทร์": { "latitude": 16.4480, "longitude": 100.3440 },
+          "ท่าหลวง": { "latitude": 16.4380, "longitude": 100.3530 },
+          "บ้านบุ่ง": { "latitude": 16.4520, "longitude": 100.3400 },
+          "ฆะมัง": { "latitude": 16.4330, "longitude": 100.3570 },
+          "ดงป่าคำ": { "latitude": 16.4570, "longitude": 100.3350 },
+          "ป่ามะคาบ": { "latitude": 16.4280, "longitude": 100.3620 },
+          "สายคำโห้": { "latitude": 16.4620, "longitude": 100.3300 },
+          "ย่านยาว": { "latitude": 16.4230, "longitude": 100.3670 }
+        }
+      },
+      "วังทรายพูน": {
+        "coordinates": { "latitude": 16.3458, "longitude": 100.6069 },
+        "tumbons": {
+          "วังทรายพูน": { "latitude": 16.3458, "longitude": 100.6069 },
+          "หนองปลาไหล": { "latitude": 16.3510, "longitude": 100.6020 },
+          "หนองพระ": { "latitude": 16.3400, "longitude": 100.6120 },
+          "วังทรายพูน": { "latitude": 16.3560, "longitude": 100.5970 },
+          "หนองปล้อง": { "latitude": 16.3350, "longitude": 100.6170 }
+        }
+      },
+      "โพธิ์ประทับช้าง": {
+        "coordinates": { "latitude": 16.2833, "longitude": 100.2667 },
+        "tumbons": {
+          "โพธิ์ประทับช้าง": { "latitude": 16.2833, "longitude": 100.2667 },
+          "ไผ่ท่าโพ": { "latitude": 16.2880, "longitude": 100.2620 },
+          "ดงเสือเหลือง": { "latitude": 16.2780, "longitude": 100.2720 },
+          "เนินสว่าง": { "latitude": 16.2930, "longitude": 100.2570 },
+          "ทุ่งใหญ่": { "latitude": 16.2730, "longitude": 100.2770 }
+        }
+      },
+      "ตะพานหิน": {
+        "coordinates": { "latitude": 16.2167, "longitude": 100.4167 },
+        "tumbons": {
+          "ตะพานหิน": { "latitude": 16.2167, "longitude": 100.4167 },
+          "งิ้วราย": { "latitude": 16.2220, "longitude": 100.4120 },
+          "ห้วยเกตุ": { "latitude": 16.2110, "longitude": 100.4220 },
+          "ไผ่หลวง": { "latitude": 16.2270, "longitude": 100.4070 },
+          "คลองคูณ": { "latitude": 16.2060, "longitude": 100.4270 }
+        }
+      },
+      "บางมูลนาก": {
+        "coordinates": { "latitude": 16.0333, "longitude": 100.3667 },
+        "tumbons": {
+          "บางมูลนาก": { "latitude": 16.0333, "longitude": 100.3667 },
+          "เนินมะกอก": { "latitude": 16.0380, "longitude": 100.3620 },
+          "วังสำโรง": { "latitude": 16.0280, "longitude": 100.3720 },
+          "ภูมิ": { "latitude": 16.0430, "longitude": 100.3570 },
+          "วังกรด": { "latitude": 16.0230, "longitude": 100.3770 }
+        }
+      },
+      "โพทะเล": {
+        "coordinates": { "latitude": 16.0000, "longitude": 100.2500 },
+        "tumbons": {
+          "โพทะเล": { "latitude": 16.0000, "longitude": 100.2500 },
+          "ท่าบัว": { "latitude": 16.0050, "longitude": 100.2450 },
+          "ทะนง": { "latitude": 15.9950, "longitude": 100.2550 },
+          "ท่าขมิ้น": { "latitude": 16.0100, "longitude": 100.2400 },
+          "ท่านั่ง": { "latitude": 15.9900, "longitude": 100.2600 }
+        }
+      },
+      "สามง่าม": {
+        "coordinates": { "latitude": 16.0667, "longitude": 100.1333 },
+        "tumbons": {
+          "สามง่าม": { "latitude": 16.0667, "longitude": 100.1333 },
+          "กำแพงดิน": { "latitude": 16.0720, "longitude": 100.1280 },
+          "รังนก": { "latitude": 16.0610, "longitude": 100.1380 },
+          "เนินปอ": { "latitude": 16.0770, "longitude": 100.1230 }
+        }
+      },
+      "ทับคล้อ": {
+        "coordinates": { "latitude": 16.2333, "longitude": 100.6000 },
+        "tumbons": {
+          "ทับคล้อ": { "latitude": 16.2333, "longitude": 100.6000 },
+          "เขาทราย": { "latitude": 16.2380, "longitude": 100.5950 },
+          "เขาเจ็ดลูก": { "latitude": 16.2280, "longitude": 100.6050 },
+          "ท้ายทุ่ง": { "latitude": 16.2430, "longitude": 100.5900 }
+        }
+      },
+      "สากเหล็ก": {
+        "coordinates": { "latitude": 16.5000, "longitude": 100.5000 },
+        "tumbons": {
+          "สากเหล็ก": { "latitude": 16.5000, "longitude": 100.5000 },
+          "ท่าเยี่ยม": { "latitude": 16.5050, "longitude": 100.4950 },
+          "คลองทราย": { "latitude": 16.4950, "longitude": 100.5050 },
+          "หนองหญ้าไทร": { "latitude": 16.5100, "longitude": 100.4900 },
+          "วังทับไทร": { "latitude": 16.4900, "longitude": 100.5100 }
+        }
+      },
+      "บึงนาราง": {
+        "coordinates": { "latitude": 16.1833, "longitude": 100.1167 },
+        "tumbons": {
+          "บึงนาราง": { "latitude": 16.1833, "longitude": 100.1167 },
+          "โพธิ์ไทรงาม": { "latitude": 16.1880, "longitude": 100.1120 },
+          "ห้วยแก้ว": { "latitude": 16.1780, "longitude": 100.1220 },
+          "บางลาย": { "latitude": 16.1930, "longitude": 100.1070 },
+          "แหลมรัง": { "latitude": 16.1730, "longitude": 100.1270 }
+        }
+      },
+      "ดงเจริญ": {
+        "coordinates": { "latitude": 16.0500, "longitude": 100.6167 },
+        "tumbons": {
+          "วังงิ้ว": { "latitude": 16.0500, "longitude": 100.6167 },
+          "ห้วยพุก": { "latitude": 16.0550, "longitude": 100.6120 },
+          "วังงิ้วใต้": { "latitude": 16.0450, "longitude": 100.6220 },
+          "ห้วยร่วม": { "latitude": 16.0600, "longitude": 100.6070 },
+          "สำนักขุนเณร": { "latitude": 16.0400, "longitude": 100.6270 }
+        }
+      }
+    }
+  }
+} 
