@@ -5,8 +5,6 @@ import central from './provinces/central.json';
 interface CoordinateData {
   latitude: number;
   longitude: number;
-  verified?: boolean;  // Flag to mark if coordinates are verified
-  source?: string;     // Source of the coordinates (e.g., 'Google Maps', 'OpenStreetMap', etc.)
 }
 
 interface TumbonData {
@@ -39,7 +37,7 @@ export function findCoordinates(
   province: string,
   amphure?: string,
   tumbon?: string
-): (AdministrativeRegionCoordinates & { verified?: boolean; source?: string }) | null {
+): AdministrativeRegionCoordinates | null {
   try {
     // Search through all regions
     for (const region of regions) {

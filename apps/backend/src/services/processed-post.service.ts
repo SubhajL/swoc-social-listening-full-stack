@@ -16,10 +16,13 @@ import { randomUUID } from 'crypto';
 import { BatchProgressManager } from '../utils/batch-progress-manager.js';
 import { BatchOperation, BatchProgress } from '../models/batch-progress.js';
 import { Server } from 'socket.io';
-import { readPool } from '../lib/db.js';
 
-// Comment out write operation interfaces since we don't need them now
-/* interface BatchUpdateLocation {
+interface BatchUpdateStatus {
+  id: string;
+  status: ProcessedPost['status'];
+}
+
+interface BatchUpdateLocation {
   id: string;
   tumbon?: string;
   amphure?: string;
@@ -29,7 +32,7 @@ import { readPool } from '../lib/db.js';
 interface BatchUpdateSensor {
   id: string;
   sensorId: string;
-} */
+}
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
@@ -39,8 +42,11 @@ export class ProcessedPostService {
   private batchProgressManager: BatchProgressManager;
   private io: Server;
 
-  constructor(io: Server) {
-    this.transactionManager = new TransactionManager(readPool);
+  constructor(
+    private readonly pool: PoolType,
+    io: Server
+  ) {
+    this.transactionManager = new TransactionManager(pool);
     this.batchProgressManager = new BatchProgressManager();
     this.io = io;
   }
@@ -48,173 +54,42 @@ export class ProcessedPostService {
   private async executeQuery<T extends QueryResultRow>(
     query: string,
     params: any[],
-    client: PoolType | TransactionClient = readPool
+    client: PoolType | TransactionClient = this.pool
   ): Promise<T[]> {
     try {
-      logger.debug('Executing SQL query:', {
-        query,
-        params,
-        queryLength: query.length,
-        paramCount: params.length
-      });
-
-      // Log each parameter with its position
-      params.forEach((param, index) => {
-        logger.debug(`Parameter ${index + 1}:`, {
-          value: param,
-          type: typeof param
-        });
-      });
-
       const result = await client.query<T>(query, params);
-      logger.debug('Query result:', {
-        rowCount: result.rowCount,
-        fields: result.fields.map(f => f.name)
-      });
       return result.rows;
     } catch (error) {
-      const pgError = error as any;
-      logger.error('SQL Error:', {
-        error: error instanceof Error ? {
-          message: error.message,
-          name: error.name,
-          code: pgError.code,
-          detail: pgError.detail,
-          hint: pgError.hint,
-          position: pgError.position,
-          internalQuery: pgError.internalQuery,
-          where: pgError.where,
-          schema: pgError.schema,
-          table: pgError.table,
-          column: pgError.column,
-          dataType: pgError.dataType,
-          constraint: pgError.constraint,
-          file: pgError.file,
-          line: pgError.line,
-          routine: pgError.routine
-        } : error,
-        query,
-        params,
-        queryLength: query.length
-      });
-
-      // Handle specific PostgreSQL error codes
-      switch (pgError.code) {
-        case '42501': // Permission denied
-          throw new DatabaseError(
-            'Permission denied for database operation. Please contact your administrator.',
-            error
-          );
-        case '42P01': // Undefined table
-          throw new DatabaseError(
-            `Table "${pgError.table}" does not exist`,
-            error
-          );
-        case '42703': // Undefined column
-          throw new DatabaseError(
-            `Column "${pgError.column}" does not exist`,
-            error
-          );
-        case '28000': // Invalid authorization
-          throw new DatabaseError(
-            'Invalid database credentials',
-            error
-          );
-        case '3D000': // Invalid database
-          throw new DatabaseError(
-            'Database does not exist',
-            error
-          );
-        case '08006': // Connection failure
-          throw new DatabaseError(
-            'Failed to connect to database. Please try again later.',
-            error
-          );
-        case '23505': // Unique violation
-          throw new DatabaseError(
-            'Duplicate key value violates unique constraint',
-            error
-          );
-        case '23503': // Foreign key violation
-          throw new DatabaseError(
-            'Foreign key violation',
-            error
-          );
-        default:
-          throw new DatabaseError(
-            'An unexpected database error occurred',
-            error
-          );
-      }
+      throw new DatabaseError('Query execution failed', error);
     }
   }
 
   private toDTO(post: ProcessedPost): ProcessedPostDTO {
     return {
-      processed_post_id: post.processed_post_id,
-      text: post.text,
-      category_name: post.category_name,
-      sub1_category_name: post.sub1_category_name,
-      profile_name: post.profile_name,
-      post_date: post.post_date?.toISOString(),
-      post_url: post.post_url,
-      latitude: post.latitude,
-      longitude: post.longitude,
-      tumbon: post.tumbon,
-      amphure: post.amphure,
-      province: post.province
+      ...post,
+      created_at: post.created_at.toISOString(),
+      updated_at: post.updated_at.toISOString()
     };
   }
 
   async getUnprocessedPosts(): Promise<ProcessedPostDTO[]> {
     try {
-      logger.info('Executing query to fetch recent posts');
-      const result = await this.executeQuery<ProcessedPost>(
-        `SELECT 
-          processed_post_id,
-          text,
-          category_name,
-          sub1_category_name,
-          profile_name,
-          post_date,
-          post_url,
-          latitude,
-          longitude,
-          tumbon,
-          amphure,
-          province
-        FROM public.processed_posts 
-        ORDER BY post_date DESC 
-        LIMIT 20`,
-        []
+      const posts = await this.executeQuery<ProcessedPost>(
+        'SELECT * FROM processed_posts WHERE status = $1',
+        ['unprocessed']
       );
 
-      logger.info(`Found ${result.length} posts`);
-      return result.map(this.toDTO);
+      return posts.map(this.toDTO);
     } catch (error) {
-      logger.error('Error in getUnprocessedPosts:', { error });
+      logger.error('Error fetching unprocessed posts:', error);
       throw error;
     }
   }
 
-  async getPostById(id: string, client: PoolType | TransactionClient = readPool): Promise<ProcessedPostDTO> {
+  async getPostById(id: string, client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO> {
     try {
       const result = await this.executeQuery<ProcessedPost>(
-        `SELECT 
-          processed_post_id,
-          text,
-          category_name,
-          sub1_category_name,
-          profile_name,
-          post_date,
-          post_url,
-          latitude,
-          longitude,
-          tumbon,
-          amphure,
-          province
-        FROM processed_posts 
-        WHERE processed_post_id = $1`,
+        'SELECT * FROM processed_posts WHERE processed_post_id = $1',
         [id],
         client
       );
@@ -223,7 +98,8 @@ export class ProcessedPostService {
         throw new PostNotFoundError(id);
       }
 
-      return this.toDTO(result[0]);
+      const post = result[0];
+      return this.toDTO(post);
     } catch (error) {
       if (error instanceof PostNotFoundError) {
         throw error;
@@ -238,52 +114,108 @@ export class ProcessedPostService {
     longitude: number,
     radiusKm: number
   ): Promise<ProcessedPostDTO[]> {
-    const result = await this.executeQuery<ProcessedPost>(
-      `SELECT 
-        processed_post_id,
-        text,
-        category_name,
-        sub1_category_name,
-        profile_name,
-        post_date,
-        post_url,
-        latitude,
-        longitude,
-        tumbon,
-        amphure,
-        province
-      FROM processed_posts
-      WHERE ST_DWithin(
-        ST_MakePoint(longitude, latitude)::geography,
-        ST_MakePoint($1, $2)::geography,
-        $3 * 1000
-      )`,
+    const result = await this.pool.query(
+      `SELECT * FROM processed_posts
+       WHERE ST_DWithin(
+         ST_MakePoint(location->>'longitude', location->>'latitude')::geography,
+         ST_MakePoint($1, $2)::geography,
+         $3 * 1000
+       )`,
       [longitude, latitude, radiusKm]
     );
     
-    return result.map(this.toDTO);
+    return result.rows;
   }
 
-  async getRecentPosts(minutes: number = 5): Promise<ProcessedPostDTO[]> {
+  async updatePostStatus(id: string, status: ProcessedPost['status'], client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO | null> {
     try {
       const result = await this.executeQuery<ProcessedPost>(
-        `SELECT 
-          processed_post_id,
-          text,
-          category_name,
-          sub1_category_name,
-          profile_name,
-          post_date,
-          post_url,
-          latitude,
-          longitude,
-          tumbon,
-          amphure,
-          province
-        FROM processed_posts 
-        WHERE post_date >= NOW() - INTERVAL '$1 minutes'
-        ORDER BY post_date DESC`,
-        [minutes]
+        'UPDATE processed_posts SET status = $1, updated_at = NOW() WHERE processed_post_id = $2 RETURNING *',
+        [status, id],
+        client
+      );
+
+      if (result.length === 0) {
+        return null;
+      }
+
+      const post = result[0];
+      this.io.to('posts').emit('post:update', post);
+      return this.toDTO(post);
+    } catch (error) {
+      logger.error(`Error updating post status for id ${id}:`, error);
+      throw new Error('Failed to update post status');
+    }
+  }
+
+  async updateLocationDetails(
+    id: string,
+    tumbon?: string,
+    amphure?: string,
+    province?: string,
+    client: PoolType | TransactionClient = this.pool
+  ): Promise<ProcessedPostDTO | null> {
+    try {
+      const result = await this.executeQuery<ProcessedPost>(
+        `UPDATE processed_posts 
+         SET location = jsonb_set(
+           jsonb_set(
+             jsonb_set(
+               location::jsonb,
+               '{tumbon}',
+               $2::jsonb
+             ),
+             '{amphure}',
+             $3::jsonb
+           ),
+           '{province}',
+           $4::jsonb
+         ),
+         updated_at = NOW()
+         WHERE processed_post_id = $1
+         RETURNING *`,
+        [id, JSON.stringify(tumbon), JSON.stringify(amphure), JSON.stringify(province)],
+        client
+      );
+
+      if (result.length === 0) {
+        return null;
+      }
+
+      const post = result[0];
+      return this.toDTO(post);
+    } catch (error) {
+      logger.error(`Error updating location details for post ${id}:`, error);
+      throw new Error('Failed to update location details');
+    }
+  }
+
+  async updateNearestSensor(id: string, sensorId: string, client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO | null> {
+    try {
+      const result = await this.executeQuery<ProcessedPost>(
+        'UPDATE processed_posts SET nearest_sensor_id = $1, updated_at = NOW() WHERE processed_post_id = $2 RETURNING *',
+        [sensorId, id],
+        client
+      );
+
+      if (result.length === 0) {
+        return null;
+      }
+
+      const post = result[0];
+      return this.toDTO(post);
+    } catch (error) {
+      logger.error(`Error updating nearest sensor for post ${id}:`, error);
+      throw new Error('Failed to update nearest sensor');
+    }
+  }
+
+  async getRecentPosts(minutes: number = 5, client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO[]> {
+    try {
+      const result = await this.executeQuery<ProcessedPost>(
+        'SELECT * FROM processed_posts WHERE created_at >= NOW() - INTERVAL \'$1 minutes\' ORDER BY created_at DESC',
+        [minutes],
+        client
       );
 
       return result.map(this.toDTO);
@@ -293,12 +225,244 @@ export class ProcessedPostService {
     }
   }
 
-  // Comment out all write operations since we don't need them now
-  /* async updateLocationDetails(...) {...}
-  async updateNearestSensor(...) {...}
-  async updatePostWithTransaction(...) {...}
-  async batchUpdateLocation(...) {...}
-  async batchUpdateSensors(...) {...}
-  async batchUpdatePostsWithProgress(...) {...}
-  async createPost(...) {...} */
+  async updatePostWithTransaction(
+    id: string,
+    updates: {
+      status?: ProcessedPost['status'];
+      location?: {
+        tumbon?: string;
+        amphure?: string;
+        province?: string;
+      };
+      nearest_sensor_id?: string;
+    },
+    client: PoolType | TransactionClient = this.pool
+  ): Promise<ProcessedPostDTO> {
+    return this.transactionManager.withTransaction(async (client) => {
+      // First verify the post exists
+      const post = await this.getPostById(id, client);
+      
+      if (updates.status) {
+        await this.updatePostStatus(id, updates.status, client);
+      }
+
+      if (updates.location) {
+        await this.updateLocationDetails(
+          id,
+          updates.location.tumbon,
+          updates.location.amphure,
+          updates.location.province,
+          client
+        );
+      }
+
+      if (updates.nearest_sensor_id) {
+        await this.updateNearestSensor(id, updates.nearest_sensor_id, client);
+      }
+
+      // Get the final updated post
+      return this.getPostById(id, client);
+    });
+  }
+
+  async batchUpdateStatus(updates: BatchUpdateStatus[]): Promise<ProcessedPostDTO[]> {
+    return this.transactionManager.withTransaction(async (client) => {
+      try {
+        const result = await this.executeQuery<ProcessedPost>(`
+          UPDATE processed_posts 
+          SET 
+            status = u.status,
+            updated_at = NOW()
+          FROM (
+            SELECT UNNEST($1::uuid[]) as id, 
+                   UNNEST($2::text[]) as status
+          ) u 
+          WHERE processed_post_id = u.id
+          RETURNING *
+        `, [
+          updates.map(u => u.id),
+          updates.map(u => u.status)
+        ], client);
+
+        return result.map(this.toDTO);
+      } catch (error) {
+        logger.error('Batch status update failed:', error);
+        throw new DatabaseError('Failed to update post statuses', error);
+      }
+    });
+  }
+
+  async batchUpdateLocation(updates: BatchUpdateLocation[]): Promise<ProcessedPostDTO[]> {
+    return this.transactionManager.withTransaction(async (client) => {
+      try {
+        const result = await this.executeQuery<ProcessedPost>(`
+          UPDATE processed_posts 
+          SET 
+            location = jsonb_set(
+              jsonb_set(
+                jsonb_set(
+                  location::jsonb,
+                  '{tumbon}',
+                  COALESCE(u.tumbon::jsonb, location->'tumbon')
+                ),
+                '{amphure}',
+                COALESCE(u.amphure::jsonb, location->'amphure')
+              ),
+              '{province}',
+              COALESCE(u.province::jsonb, location->'province')
+            ),
+            updated_at = NOW()
+          FROM (
+            SELECT 
+              UNNEST($1::uuid[]) as id,
+              UNNEST($2::text[]) as tumbon,
+              UNNEST($3::text[]) as amphure,
+              UNNEST($4::text[]) as province
+          ) u 
+          WHERE processed_post_id = u.id
+          RETURNING *
+        `, [
+          updates.map(u => u.id),
+          updates.map(u => u.tumbon),
+          updates.map(u => u.amphure),
+          updates.map(u => u.province)
+        ], client);
+
+        return result.map(this.toDTO);
+      } catch (error) {
+        logger.error('Batch location update failed:', error);
+        throw new DatabaseError('Failed to update post locations', error);
+      }
+    });
+  }
+
+  async batchUpdateSensors(updates: BatchUpdateSensor[]): Promise<ProcessedPostDTO[]> {
+    return this.transactionManager.withTransaction(async (client) => {
+      try {
+        const result = await this.executeQuery<ProcessedPost>(`
+          UPDATE processed_posts 
+          SET 
+            nearest_sensor_id = u.sensor_id,
+            updated_at = NOW()
+          FROM (
+            SELECT UNNEST($1::uuid[]) as id, 
+                   UNNEST($2::text[]) as sensor_id
+          ) u 
+          WHERE processed_post_id = u.id
+          RETURNING *
+        `, [
+          updates.map(u => u.id),
+          updates.map(u => u.sensorId)
+        ], client);
+
+        return result.map(this.toDTO);
+      } catch (error) {
+        logger.error('Batch sensor update failed:', error);
+        throw new DatabaseError('Failed to update post sensors', error);
+      }
+    });
+  }
+
+  private async withRetry<T>(
+    operation: () => Promise<T>,
+    retries: number = MAX_RETRIES,
+    delay: number = RETRY_DELAY
+  ): Promise<T> {
+    try {
+      return await operation();
+    } catch (error) {
+      if (retries > 0) {
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return this.withRetry(operation, retries - 1, delay * 2);
+      }
+      throw error;
+    }
+  }
+
+  async batchUpdatePostsWithProgress(
+    updates: Array<{
+      id: string;
+      status?: ProcessedPost['status'];
+      location?: {
+        tumbon?: string;
+        amphure?: string;
+        province?: string;
+      };
+      nearest_sensor_id?: string;
+    }>
+  ): Promise<BatchOperation> {
+    const batchId = randomUUID();
+    const batch = this.batchProgressManager.createBatch(batchId, updates.length);
+
+    // Process in chunks to avoid overwhelming the database
+    const chunkSize = 50;
+    const chunks = [];
+    for (let i = 0; i < updates.length; i += chunkSize) {
+      chunks.push(updates.slice(i, i + chunkSize));
+    }
+
+    // Process each chunk
+    for (const chunk of chunks) {
+      await this.transactionManager.withTransaction(async (client) => {
+        const promises = chunk.map(async (update) => {
+          try {
+            batch.progress.inProgress++;
+            
+            await this.withRetry(async () => {
+              if (update.status) {
+                await this.updatePostStatus(update.id, update.status, client);
+              }
+              if (update.location) {
+                await this.updateLocationDetails(
+                  update.id,
+                  update.location.tumbon,
+                  update.location.amphure,
+                  update.location.province,
+                  client
+                );
+              }
+              if (update.nearest_sensor_id) {
+                await this.updateNearestSensor(update.id, update.nearest_sensor_id, client);
+              }
+            });
+
+            this.batchProgressManager.markCompleted(batchId, update.id);
+          } catch (error: unknown) {
+            const errorMessage = error instanceof Error 
+              ? error.message 
+              : 'Unknown error occurred';
+            this.batchProgressManager.addError(batchId, update.id, errorMessage);
+          }
+        });
+
+        await Promise.all(promises);
+      });
+    }
+
+    // Schedule cleanup after 1 hour
+    setTimeout(() => {
+      this.batchProgressManager.cleanupBatch(batchId);
+    }, 60 * 60 * 1000);
+
+    this.io.to('posts').emit('batch:progress', batch.progress);
+    return batch;
+  }
+
+  getBatchProgress(batchId: string): BatchProgress | undefined {
+    return this.batchProgressManager.getBatchProgress(batchId);
+  }
+
+  async createPost(data: CreatePostDTO): Promise<ProcessedPostDTO> {
+    const { category_name, sub1_category_name, location, status } = data;
+    
+    const result = await this.pool.query(
+      `INSERT INTO processed_posts 
+       (category_name, sub1_category_name, location, status)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [category_name, sub1_category_name, location, status]
+    );
+    
+    return result.rows[0];
+  }
 } 
