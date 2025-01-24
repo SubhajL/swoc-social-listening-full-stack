@@ -16,9 +16,11 @@
     "add-location-indexes": "tsx src/scripts/add_location_indexes.ts",
     "verify-location-data": "tsx src/scripts/verify_location_data.ts",
     "install-postgis": "tsx src/scripts/install_postgis.ts",
-    "check-location-data": "tsx src/scripts/check_location_data.ts"
+    "check-location-data": "tsx src/scripts/check_location_data.ts",
+    "update-location-data": "tsx src/scripts/update_location_data.ts"
   },
   "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.4.0",
     "@mapbox/mapbox-sdk": "^0.15.3",
     "@types/axios": "^0.9.36",
     "@types/csv-parse": "^1.1.12",
