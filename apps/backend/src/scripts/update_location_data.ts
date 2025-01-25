@@ -1,8 +1,7 @@
-import { Client } from '@googlemaps/google-maps-services-js';
+import { Client, GeocodeResponse, Status } from '@googlemaps/google-maps-services-js';
 import { config } from 'dotenv';
 import { logger } from '../utils/logger';
 import pg from 'pg';
-import axios from 'axios';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -28,57 +27,66 @@ const pool = new Pool({
   }
 });
 
+interface Coordinates {
+  lat: number;
+  lng: number;
+}
+
 interface GoogleMapsResponse {
   status: string;
   results: Array<{
     geometry: {
-      location: {
-        lat: number;
-        lng: number;
-      };
+      location: Coordinates;
     };
   }>;
   error_message?: string;
 }
 
+interface GoogleMapsError extends Error {
+  response?: {
+    status: number;
+    statusText: string;
+    data: any;
+  };
+}
+
 // Helper function to normalize Thai text
-const normalizeThaiText = (text: string): string => {
-  return text
-    .normalize('NFKC') // Normalize to composed form
-    .replace(/[\u0E47-\u0E4E]/g, '') // Remove Thai tone marks
-    .trim();
-};
+export function normalizeThaiText(text: string): string {
+  // Remove any existing UTF-8 BOM
+  text = text.replace(/^\uFEFF/, '');
+  
+  // Handle abbreviated province format
+  text = text.replace(/จ\.\s*/g, 'จังหวัด');
+  
+  // Ensure consistent Unicode normalization
+  return text.normalize('NFC');
+}
 
 // Helper function to construct search query
-const constructSearchQuery = (params: {
+export function constructSearchQuery(input: { 
   type: 'province' | 'amphure';
   nameTh: string;
-  nameEn: string;
+  nameEn?: string;
   provinceTh?: string;
-  isBangkok: boolean;
-}): string => {
-  const { type, nameTh, nameEn, provinceTh, isBangkok } = params;
+  isBangkok?: boolean;
+}): string {
+  const normalizedNameTh = normalizeThaiText(input.nameTh);
   
-  // Normalize Thai text
-  const normalizedNameTh = normalizeThaiText(nameTh);
-  const normalizedProvinceTh = provinceTh ? normalizeThaiText(provinceTh) : '';
-  
-  if (type === 'province') {
-    if (isBangkok) {
-      return `ศาลาว่าการกรุงเทพมหานคร Bangkok City Hall Thailand`;
+  if (input.type === 'province') {
+    if (input.isBangkok) {
+      return 'ศาลาว่าการกรุงเทพมหานคร';
     }
-    // Try both Thai and English names for better results
-    return `ศาลากลางจังหวัด${normalizedNameTh} ${nameEn} Provincial Hall Thailand`;
+    return `ศาลากลางจังหวัด${normalizedNameTh}`;
   } else {
-    if (isBangkok) {
-      return `สำนักงานเขต${normalizedNameTh} ${nameEn} District Office Bangkok Thailand`;
+    if (input.isBangkok) {
+      return `สำนักงานเขต${normalizedNameTh}`;
     }
-    return `ที่ว่าการอำเภอ${normalizedNameTh} อำเภอ${normalizedNameTh} ${normalizedProvinceTh} Thailand`;
+    return `ที่ว่าการอำเภอ${normalizedNameTh}`;
   }
-};
+}
 
 // Helper function to validate coordinates
-const validateCoordinates = (coordinates: { lat: number; lng: number } | null): boolean => {
+export const validateCoordinates = (coordinates: { lat: number; lng: number } | null): boolean => {
   if (!coordinates) return false;
   
   // Thailand's approximate bounding box
@@ -98,95 +106,82 @@ const validateCoordinates = (coordinates: { lat: number; lng: number } | null): 
 };
 
 // Helper function to fetch coordinates with retries
-const fetchCoordinatesWithRetry = async (searchQuery: string): Promise<{ lat: number; lng: number } | null> => {
-  const maxRetries = 3;
-  let retryCount = 0;
+export async function fetchCoordinatesWithRetry(query: string, maxRetries = 3): Promise<Coordinates | null> {
+  let attempt = 1;
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-  while (retryCount < maxRetries) {
+  if (!apiKey) {
+    logger.error('Google Maps API key is not set');
+    throw new Error('Google Maps API key is not set');
+  }
+
+  const client = new Client({});
+
+  while (attempt <= maxRetries) {
     try {
-      logger.info(`Attempt ${retryCount + 1} of ${maxRetries} to fetch coordinates for: ${searchQuery}`);
+      logger.info(`Attempt ${attempt} of ${maxRetries} to fetch coordinates for: ${query}`);
       
-      const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-      if (!apiKey) {
-        logger.error('Google Maps API key is not set');
-        throw new Error('Google Maps API key is not set');
-      }
-
-      // Ensure proper encoding of Thai characters
-      const encodedQuery = encodeURIComponent(searchQuery);
-      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedQuery}&key=${apiKey}&language=th&region=th`;
-      
-      logger.info('Making request to Google Maps API...');
-      const response = await axios.get<GoogleMapsResponse>(url, {
-        headers: {
-          'Accept-Charset': 'UTF-8',
-          'Content-Type': 'application/json; charset=utf-8'
+      const response = await client.geocode({
+        params: {
+          address: query,
+          key: apiKey,
+          language: 'th',
+          region: 'TH'
         }
       });
 
-      if (response.data.status === 'OK' && response.data.results.length > 0) {
+      // Log full response for debugging
+      logger.info('Google Maps API Response:', {
+        status: response.data.status,
+        errorMessage: response.data.error_message,
+        resultCount: response.data.results?.length || 0
+      });
+
+      if (response.data.status === Status.OK && response.data.results && response.data.results.length > 0) {
         const location = response.data.results[0].geometry.location;
-        
-        // Validate coordinates
-        if (validateCoordinates(location)) {
-          logger.info('Successfully found valid coordinates:', location);
-          return location;
-        } else {
-          logger.warn('Found coordinates outside Thailand:', location);
-          return null;
-        }
-      } else {
-        logger.warn('No results found in Google Maps response:', {
-          status: response.data.status,
-          errorMessage: response.data.error_message,
-          query: searchQuery
-        });
+        logger.info('Successfully retrieved coordinates:', location);
+        return {
+          lat: location.lat,
+          lng: location.lng
+        };
+      }
+
+      logger.warn('No results found:', {
+        status: response.data.status,
+        error: response.data.error_message
+      });
+
+      if (response.data.status === 'REQUEST_DENIED') {
+        logger.error('API key is invalid or request was denied');
+        throw new Error('Google Maps API request denied - check API key and enabled services');
+      }
+
+      if (response.data.status === 'ZERO_RESULTS') {
+        logger.warn('No locations found for query');
         return null;
       }
-    } catch (error) {
-      logger.error(`Error fetching coordinates (attempt ${retryCount + 1}):`, {
-        error,
-        query: searchQuery,
-        errorType: typeof error,
-        errorKeys: Object.keys(error as object),
-        errorString: String(error)
-      });
+
+      // Add delay before retry
+      const delay = Math.pow(2, attempt) * 1000;
+      logger.info(`Waiting ${delay}ms before retry...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
       
+    } catch (error) {
+      logger.error(`Error in attempt ${attempt}:`, error);
       if (error instanceof Error) {
-        logger.error('Fetch error details:', {
+        logger.error('Error details:', {
           name: error.name,
           message: error.message,
           stack: error.stack
         });
       }
-      
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { 
-          response?: { 
-            data: unknown; 
-            status: number; 
-            headers: unknown; 
-          } 
-        };
-        logger.error('Axios error details:', {
-          response: axiosError.response?.data,
-          status: axiosError.response?.status,
-          headers: axiosError.response?.headers
-        });
-      }
-      
-      retryCount++;
-      if (retryCount < maxRetries) {
-        const delay = Math.pow(2, retryCount) * 1000;
-        logger.info(`Waiting ${delay}ms before retry...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-      }
     }
+    attempt++;
   }
 
-  logger.error(`Failed to fetch coordinates after ${maxRetries} attempts for query: ${searchQuery}`);
+  logger.error(`Failed to fetch coordinates after ${maxRetries} attempts for query: ${query}`);
   return null;
-};
+}
 
 // Update province coordinates
 const updateProvinceCoordinates = async (client: pg.PoolClient) => {

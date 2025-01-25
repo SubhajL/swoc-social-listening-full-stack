@@ -3,7 +3,13 @@ import { logger } from '../utils/logger';
 import pg from 'pg';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { normalizeThaiText, constructSearchQuery, validateCoordinates, fetchCoordinatesWithRetry } from './update_location_data';
+import { normalizeThaiText, constructSearchQuery, validateCoordinates } from './update_location_data';
+import { Client, Status, GeocodeResponse } from '@googlemaps/google-maps-services-js';
+
+interface Coordinates {
+  lat: number;
+  lng: number;
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -90,85 +96,170 @@ async function testGeocoding() {
   let failureCount = 0;
   const results = [];
 
-  // Test province geocoding
-  logger.info('\n=== Testing Province Geocoding ===');
-  for (const province of TEST_PROVINCES) {
-    const query = constructSearchQuery({
-      type: 'province',
-      nameTh: province.name_th,
-      nameEn: province.name_en,
-      isBangkok: province.name_en === 'Bangkok'
-    });
-    
-    logger.info(`\nTesting geocoding for province: ${province.name_en}`);
-    logger.info(`Query: ${query}`);
-    const coordinates = await fetchCoordinatesWithRetry(query);
-    
-    if (coordinates && validateCoordinates(coordinates)) {
-      successCount++;
-      results.push({
-        type: 'province',
-        name: province.name_en,
-        query,
-        coordinates,
-        status: 'SUCCESS'
-      });
-      logger.info(`✅ Found valid coordinates for ${province.name_en}:`, coordinates);
-    } else {
-      failureCount++;
-      results.push({
-        type: 'province',
-        name: province.name_en,
-        query,
-        coordinates: coordinates || null,
-        status: 'FAILED'
-      });
-      logger.error(`❌ Failed to get valid coordinates for ${province.name_en}`);
-    }
+  const client = new Client({});
 
-    // Add delay between requests
+  // Test very simple queries first
+  logger.info('\n=== Testing Basic Queries ===');
+  const basicQueries = [
+    'Bangkok',
+    'Bangkok Thailand',
+    'กรุงเทพมหานคร',
+    'กรุงเทพมหานคร ประเทศไทย'
+  ];
+
+  for (const query of basicQueries) {
+    logger.info(`\nTesting basic query: ${query}`);
+    try {
+      const coords = await fetchCoordinatesWithRetry(query);
+      if (coords && validateCoordinates(coords)) {
+        logger.info(`✅ Found coordinates for ${query}:`, coords);
+        successCount++;
+        results.push({ type: 'Basic', name: query, coordinates: coords });
+      } else {
+        logger.error(`❌ No valid coordinates found for ${query}`);
+        failureCount++;
+        results.push({ type: 'Basic', name: query });
+      }
+    } catch (error: any) {
+      logger.error(`🚨 Error testing ${query}:`, {
+        name: error.name,
+        message: error.message,
+        response: error.response?.data
+      });
+      failureCount++;
+      results.push({ type: 'Basic', name: query });
+    }
     await new Promise(resolve => setTimeout(resolve, 2000));
   }
 
-  // Test amphure geocoding
-  logger.info('\n=== Testing Amphure Geocoding ===');
-  for (const amphure of TEST_AMPHURES) {
-    const query = constructSearchQuery({
-      type: 'amphure',
-      nameTh: amphure.name_th,
-      nameEn: amphure.name_en,
-      provinceTh: amphure.province_name_th,
-      isBangkok: amphure.province_name_en === 'Bangkok'
-    });
-    
-    logger.info(`\nTesting geocoding for amphure: ${amphure.name_en}`);
-    logger.info(`Query: ${query}`);
-    const coordinates = await fetchCoordinatesWithRetry(query);
-    
-    if (coordinates && validateCoordinates(coordinates)) {
-      successCount++;
-      results.push({
-        type: 'amphure',
-        name: amphure.name_en,
-        query,
-        coordinates,
-        status: 'SUCCESS'
-      });
-      logger.info(`✅ Found valid coordinates for ${amphure.name_en}:`, coordinates);
-    } else {
-      failureCount++;
-      results.push({
-        type: 'amphure',
-        name: amphure.name_en,
-        query,
-        coordinates: coordinates || null,
-        status: 'FAILED'
-      });
-      logger.error(`❌ Failed to get valid coordinates for ${amphure.name_en}`);
-    }
+  // Test province geocoding
+  logger.info('\n=== Testing Province Geocoding ===');
+  
+  for (const province of TEST_PROVINCES) {
+    const queries = [
+      constructSearchQuery({
+        type: 'province',
+        nameTh: province.name_th,
+        nameEn: province.name_en,
+        isBangkok: province.name_en === 'Bangkok'
+      }),
+      `${province.name_th} ประเทศไทย`,
+      `${province.name_en} Thailand`
+    ];
 
-    // Add delay between requests
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    for (const query of queries) {
+      logger.info(`\nTesting query for ${province.name_en}: ${query}`);
+      try {
+        logger.info(`🔍 Sending request to Google Maps API...`);
+        const response = await client.geocode({
+          params: {
+            address: query,
+            key: process.env.GOOGLE_MAPS_API_KEY || ''
+          }
+        });
+
+        logger.info(`📡 API Response:`, {
+          status: response.data.status,
+          results_count: response.data.results?.length || 0,
+          error_message: response.data.error_message,
+          first_result: response.data.results?.[0] ? {
+            formatted_address: response.data.results[0].formatted_address,
+            location: response.data.results[0].geometry.location,
+            place_id: response.data.results[0].place_id,
+            types: response.data.results[0].types
+          } : null
+        });
+
+        if (response.data.status === 'OK' && response.data.results?.length > 0) {
+          const location = response.data.results[0].geometry.location;
+          if (validateCoordinates(location)) {
+            successCount++;
+            results.push({
+              type: 'province',
+              name: province.name_en,
+              query,
+              coordinates: location,
+              status: 'SUCCESS',
+              details: {
+                formatted_address: response.data.results[0].formatted_address,
+                place_id: response.data.results[0].place_id
+              }
+            });
+            logger.info(`✅ Found valid coordinates for ${province.name_en}`);
+          } else {
+            failureCount++;
+            results.push({
+              type: 'province',
+              name: province.name_en,
+              query,
+              coordinates: location,
+              status: 'FAILED',
+              reason: 'Coordinates outside Thailand'
+            });
+            logger.warn(`⚠ Coordinates for ${province.name_en} are outside Thailand`);
+          }
+        } else {
+          failureCount++;
+          results.push({
+            type: 'province',
+            name: province.name_en,
+            query,
+            coordinates: null,
+            status: 'FAILED',
+            reason: `API Status: ${response.data.status}`,
+            error: response.data.error_message
+          });
+          logger.error(`❌ No results for ${province.name_en}. Status: ${response.data.status}`);
+        }
+      } catch (error: any) {
+        logger.error(`❌ Failed to get valid coordinates for ${province.name_en} with query "${query}"`);
+        if (error.response) {
+          logger.error('API Error Response:', {
+            status: error.response.status,
+            statusText: error.response.statusText,
+            data: error.response.data
+          });
+        } else if (error.request) {
+          logger.error('No response received from API:', error.message);
+        } else {
+          logger.error('Error setting up request:', error.message);
+        }
+        results.push({ type: 'Province', name: query });
+      }
+    }
+  }
+
+  // Test amphure queries
+  logger.info('\n=== Testing Amphure Geocoding ===');
+  
+  for (const amphure of TEST_AMPHURES) {
+    logger.info(`\nTesting geocoding for amphure: ${amphure.name_en}`);
+    const query = constructSearchQuery({ amphure: amphure.name_th, type: 'amphure' });
+    logger.info(`Query: ${query}`);
+    
+    try {
+      const coords = await fetchCoordinatesWithRetry(query);
+      if (coords) {
+        logger.info(`✅ Found coordinates for ${amphure.name_en}`);
+        logger.info(`Coordinates: ${JSON.stringify(coords)}`);
+      } else {
+        logger.error(`❌ Failed to get valid coordinates for ${amphure.name_en}`);
+      }
+    } catch (error: any) {
+      logger.error(`❌ Failed to get valid coordinates for ${amphure.name_en}`);
+      if (error.response) {
+        logger.error('API Error Response:');
+        logger.error(`Status: ${error.response.status}`);
+        logger.error(`Status Text: ${error.response.statusText}`);
+        logger.error(`Error Message: ${JSON.stringify(error.response.data)}`);
+      } else if (error.request) {
+        logger.error('No response received from API');
+        logger.error(error.message);
+      } else {
+        logger.error('Error setting up request:');
+        logger.error(error.message);
+      }
+    }
   }
 
   // Log summary
@@ -253,4 +344,88 @@ async function runTests() {
 runTests().catch(error => {
   logger.error('Unhandled error:', error);
   process.exit(1);
-}); 
+});
+
+// Helper function to fetch coordinates with retries
+async function fetchCoordinatesWithRetry(query: string, maxRetries = 3): Promise<Coordinates | null> {
+  let attempt = 1;
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+
+  if (!apiKey) {
+    logger.error('Google Maps API key is not set');
+    throw new Error('Google Maps API key is not set');
+  }
+
+  const client = new Client({});
+
+  while (attempt <= maxRetries) {
+    try {
+      logger.info('\n=== REQUEST DETAILS ===');
+      logger.info(`Attempt ${attempt} of ${maxRetries}`);
+      
+      // Log request parameters (without API key)
+      const encodedQuery = encodeURIComponent(query);
+      const requestUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedQuery}&language=th&region=TH`;
+      logger.info('Request URL:', requestUrl + '&key=[REDACTED]');
+      logger.info('Query:', query);
+
+      const response = await client.geocode({
+        params: {
+          address: query,
+          key: apiKey,
+          language: 'th',
+          region: 'TH'
+        }
+      });
+
+      logger.info('\n=== RESPONSE DETAILS ===');
+      logger.info('Status:', response.data.status);
+      logger.info('Error Message:', response.data.error_message || 'None');
+      logger.info('Results Count:', response.data.results?.length || 0);
+
+      if (response.data.results?.[0]) {
+        const result = response.data.results[0];
+        logger.info('\nFirst Result:');
+        logger.info('Formatted Address:', result.formatted_address);
+        logger.info('Place ID:', result.place_id);
+        logger.info('Types:', result.types);
+        logger.info('Location:', result.geometry?.location);
+        
+        logger.info('\nAddress Components:');
+        result.address_components?.forEach(comp => {
+          logger.info('-', {
+            long_name: comp.long_name,
+            short_name: comp.short_name,
+            types: comp.types
+          });
+        });
+      }
+
+      if (response.data.status === Status.OK && response.data.results?.[0]?.geometry?.location) {
+        const location = response.data.results[0].geometry.location;
+        const isValid = validateCoordinates(location);
+        logger.info('\nCoordinates Valid:', isValid ? 'Yes' : 'No');
+        
+        if (isValid) {
+          return location;
+        } else {
+          logger.warn('Coordinates outside Thailand bounds:', location);
+        }
+      } else if (response.data.status === 'REQUEST_DENIED') {
+        throw new Error(`API request denied: ${response.data.error_message}`);
+      }
+
+      const delay = Math.pow(2, attempt) * 1000;
+      logger.info(`\nWaiting ${delay}ms before retry...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+
+    } catch (error) {
+      logger.error('API Error:');
+      logger.error(JSON.stringify(error, null, 2));
+    }
+    attempt++;
+  }
+
+  logger.error(`Failed after ${maxRetries} attempts:`, { query });
+  return null;
+} 
