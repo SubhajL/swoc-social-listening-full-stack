@@ -86,8 +86,12 @@ async function testQueryConstruction() {
 
 async function testGeocoding() {
   logger.info('Testing geocoding...');
+  let successCount = 0;
+  let failureCount = 0;
+  const results = [];
 
   // Test province geocoding
+  logger.info('\n=== Testing Province Geocoding ===');
   for (const province of TEST_PROVINCES) {
     const query = constructSearchQuery({
       type: 'province',
@@ -96,15 +100,30 @@ async function testGeocoding() {
       isBangkok: province.name_en === 'Bangkok'
     });
     
-    logger.info(`Testing geocoding for province: ${province.name_en}`);
+    logger.info(`\nTesting geocoding for province: ${province.name_en}`);
+    logger.info(`Query: ${query}`);
     const coordinates = await fetchCoordinatesWithRetry(query);
     
-    if (coordinates) {
-      logger.info(`Found coordinates for ${province.name_en}:`, coordinates);
-      const isValid = validateCoordinates(coordinates);
-      logger.info(`Coordinates ${isValid ? 'are' : 'are not'} within Thailand`);
+    if (coordinates && validateCoordinates(coordinates)) {
+      successCount++;
+      results.push({
+        type: 'province',
+        name: province.name_en,
+        query,
+        coordinates,
+        status: 'SUCCESS'
+      });
+      logger.info(`✅ Found valid coordinates for ${province.name_en}:`, coordinates);
     } else {
-      logger.error(`Failed to get coordinates for ${province.name_en}`);
+      failureCount++;
+      results.push({
+        type: 'province',
+        name: province.name_en,
+        query,
+        coordinates: coordinates || null,
+        status: 'FAILED'
+      });
+      logger.error(`❌ Failed to get valid coordinates for ${province.name_en}`);
     }
 
     // Add delay between requests
@@ -112,6 +131,7 @@ async function testGeocoding() {
   }
 
   // Test amphure geocoding
+  logger.info('\n=== Testing Amphure Geocoding ===');
   for (const amphure of TEST_AMPHURES) {
     const query = constructSearchQuery({
       type: 'amphure',
@@ -121,20 +141,53 @@ async function testGeocoding() {
       isBangkok: amphure.province_name_en === 'Bangkok'
     });
     
-    logger.info(`Testing geocoding for amphure: ${amphure.name_en}`);
+    logger.info(`\nTesting geocoding for amphure: ${amphure.name_en}`);
+    logger.info(`Query: ${query}`);
     const coordinates = await fetchCoordinatesWithRetry(query);
     
-    if (coordinates) {
-      logger.info(`Found coordinates for ${amphure.name_en}:`, coordinates);
-      const isValid = validateCoordinates(coordinates);
-      logger.info(`Coordinates ${isValid ? 'are' : 'are not'} within Thailand`);
+    if (coordinates && validateCoordinates(coordinates)) {
+      successCount++;
+      results.push({
+        type: 'amphure',
+        name: amphure.name_en,
+        query,
+        coordinates,
+        status: 'SUCCESS'
+      });
+      logger.info(`✅ Found valid coordinates for ${amphure.name_en}:`, coordinates);
     } else {
-      logger.error(`Failed to get coordinates for ${amphure.name_en}`);
+      failureCount++;
+      results.push({
+        type: 'amphure',
+        name: amphure.name_en,
+        query,
+        coordinates: coordinates || null,
+        status: 'FAILED'
+      });
+      logger.error(`❌ Failed to get valid coordinates for ${amphure.name_en}`);
     }
 
     // Add delay between requests
     await new Promise(resolve => setTimeout(resolve, 2000));
   }
+
+  // Log summary
+  logger.info('\n=== Geocoding Test Summary ===');
+  logger.info(`Total Tests: ${TEST_PROVINCES.length + TEST_AMPHURES.length}`);
+  logger.info(`Successful: ${successCount}`);
+  logger.info(`Failed: ${failureCount}`);
+  logger.info('\nDetailed Results:');
+  results.forEach(result => {
+    const status = result.status === 'SUCCESS' ? '✅' : '❌';
+    logger.info(`${status} ${result.type.padEnd(8)} | ${result.name.padEnd(15)} | ${result.coordinates ? `(${result.coordinates.lat}, ${result.coordinates.lng})` : 'No coordinates'}`);
+  });
+
+  return {
+    total: TEST_PROVINCES.length + TEST_AMPHURES.length,
+    success: successCount,
+    failure: failureCount,
+    results
+  };
 }
 
 async function testCoordinateValidation() {
@@ -163,20 +216,28 @@ async function runTests() {
     logger.info('Starting location update tests...');
 
     // Test Thai text normalization
+    logger.info('\n=== Testing Thai Text Normalization ===');
     await testNormalizeThaiText();
 
     // Test query construction
+    logger.info('\n=== Testing Query Construction ===');
     await testQueryConstruction();
 
     // Test coordinate validation
+    logger.info('\n=== Testing Coordinate Validation ===');
     await testCoordinateValidation();
 
     // Test geocoding
-    await testGeocoding();
+    const geocodingResults = await testGeocoding();
 
-    logger.info('All tests completed successfully');
+    if (geocodingResults.failure > 0) {
+      logger.error('\n⚠️ Some geocoding tests failed!');
+      process.exit(1);
+    }
+
+    logger.info('\n✅ All tests completed successfully');
   } catch (error) {
-    logger.error('Error in tests:', error);
+    logger.error('\n❌ Error in tests:', error);
     if (error instanceof Error) {
       logger.error('Error details:', {
         name: error.name,
