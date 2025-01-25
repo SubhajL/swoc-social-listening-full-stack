@@ -17,7 +17,9 @@
     "verify-location-data": "tsx src/scripts/verify_location_data.ts",
     "install-postgis": "tsx src/scripts/install_postgis.ts",
     "check-location-data": "tsx src/scripts/check_location_data.ts",
-    "update-location-data": "tsx src/scripts/update_location_data.ts"
+    "update-location-data": "tsx src/scripts/update_location_data.ts",
+    "test-db-connection": "tsx src/scripts/test_db_connection.ts",
+    "test:location": "tsx src/scripts/test_update_location.ts"
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.4.0",
