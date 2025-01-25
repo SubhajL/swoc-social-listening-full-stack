@@ -1,266 +1,354 @@
 import { Client } from '@googlemaps/google-maps-services-js';
 import { config } from 'dotenv';
-import { Pool } from 'pg';
 import { logger } from '../utils/logger';
+import pg from 'pg';
+import axios from 'axios';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load environment variables
-config();
+config({ path: path.resolve(__dirname, '../../.env') });
 
-// Initialize Google Maps client
-const googleMapsClient = new Client({});
+if (!process.env.GOOGLE_MAPS_API_KEY) {
+  throw new Error('GOOGLE_MAPS_API_KEY environment variable is not set');
+}
 
-// Initialize PostgreSQL pool
+const { Pool } = pg;
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  user: process.env.DB_WRITE_USER,
+  password: process.env.DB_WRITE_PASSWORD,
+  host: process.env.DB_WRITE_HOST,
+  port: parseInt(process.env.DB_WRITE_PORT || '5432'),
+  database: process.env.DB_WRITE_DATABASE,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
-interface LocationUpdate {
-  id: string;
-  name_th: string;
-  name_en: string;
-  latitude: number;
-  longitude: number;
-}
-
-async function getCoordinates(searchQuery: string): Promise<{ lat: number; lng: number } | null> {
-  try {
-    const response = await googleMapsClient.geocode({
-      params: {
-        address: searchQuery,
-        components: { country: 'TH' },
-        key: process.env.GOOGLE_MAPS_API_KEY || '',
-      },
-    });
-
-    if (response.data.results.length > 0) {
-      const location = response.data.results[0].geometry.location;
-      return { lat: location.lat, lng: location.lng };
-    }
-    return null;
-  } catch (error) {
-    logger.error('Error fetching coordinates:', error);
-    return null;
-  }
-}
-
-async function updateProvinceCoordinates(): Promise<void> {
-  const client = await pool.connect();
-  try {
-    // Start transaction
-    await client.query('BEGIN');
-
-    // Get all provinces
-    const { rows: provinces } = await client.query(
-      'SELECT id, name_th, name_en, latitude, longitude FROM provinces'
-    );
-
-    // Create backup table if it doesn't exist
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS provinces_coordinates_backup (
-        id VARCHAR(255) PRIMARY KEY,
-        original_latitude NUMERIC,
-        original_longitude NUMERIC,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    for (const province of provinces) {
-      let searchQuery = '';
-      if (province.name_en === 'Bangkok') {
-        searchQuery = 'ศาลาว่าการกรุงเทพมหานคร Bangkok City Hall';
-      } else {
-        searchQuery = `ศาลากลางจังหวัด${province.name_th}`;
-      }
-
-      const coordinates = await getCoordinates(searchQuery);
-      if (coordinates) {
-        // Backup original coordinates
-        await client.query(
-          'INSERT INTO provinces_coordinates_backup (id, original_latitude, original_longitude) VALUES ($1, $2, $3) ON CONFLICT (id) DO NOTHING',
-          [province.id, province.latitude, province.longitude]
-        );
-
-        // Update coordinates
-        await client.query(
-          'UPDATE provinces SET latitude = $1, longitude = $2 WHERE id = $3',
-          [coordinates.lat, coordinates.lng, province.id]
-        );
-
-        logger.info(`Updated coordinates for province: ${province.name_en}`);
-      } else {
-        logger.warn(`Could not find coordinates for province: ${province.name_en}`);
-      }
-
-      // Add delay to respect API rate limits
-      await new Promise(resolve => setTimeout(resolve, 200));
-    }
-
-    // Commit transaction
-    await client.query('COMMIT');
-    logger.info('Successfully updated province coordinates');
-  } catch (error) {
-    await client.query('ROLLBACK');
-    logger.error('Error updating province coordinates:', error);
-    throw error;
-  } finally {
-    client.release();
-  }
-}
-
-async function updateAmphureCoordinates(): Promise<void> {
-  const client = await pool.connect();
-  try {
-    // Start transaction
-    await client.query('BEGIN');
-
-    // Get all amphures with their province names
-    const { rows: amphures } = await client.query(`
-      SELECT 
-        a.id, 
-        a.name_th as amphure_name_th, 
-        a.name_en as amphure_name_en,
-        p.name_th as province_name_th,
-        p.name_en as province_name_en,
-        a.latitude,
-        a.longitude
-      FROM amphures a
-      JOIN provinces p ON a.province_id = p.id
-    `);
-
-    // Create backup table if it doesn't exist
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS amphures_coordinates_backup (
-        id VARCHAR(255) PRIMARY KEY,
-        original_latitude NUMERIC,
-        original_longitude NUMERIC,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    for (const amphure of amphures) {
-      let searchQuery = '';
-      if (amphure.province_name_en === 'Bangkok') {
-        searchQuery = `สำนักงานเขต${amphure.amphure_name_th} ${amphure.amphure_name_en} District Office Bangkok`;
-      } else {
-        searchQuery = `ที่ว่าการอำเภอ${amphure.amphure_name_th} ${amphure.province_name_th}`;
-      }
-
-      const coordinates = await getCoordinates(searchQuery);
-      if (coordinates) {
-        // Backup original coordinates
-        await client.query(
-          'INSERT INTO amphures_coordinates_backup (id, original_latitude, original_longitude) VALUES ($1, $2, $3) ON CONFLICT (id) DO NOTHING',
-          [amphure.id, amphure.latitude, amphure.longitude]
-        );
-
-        // Update coordinates
-        await client.query(
-          'UPDATE amphures SET latitude = $1, longitude = $2 WHERE id = $3',
-          [coordinates.lat, coordinates.lng, amphure.id]
-        );
-
-        logger.info(`Updated coordinates for amphure: ${amphure.amphure_name_en}`);
-      } else {
-        logger.warn(`Could not find coordinates for amphure: ${amphure.amphure_name_en}`);
-      }
-
-      // Add delay to respect API rate limits
-      await new Promise(resolve => setTimeout(resolve, 200));
-    }
-
-    // Commit transaction
-    await client.query('COMMIT');
-    logger.info('Successfully updated amphure coordinates');
-  } catch (error) {
-    await client.query('ROLLBACK');
-    logger.error('Error updating amphure coordinates:', error);
-    throw error;
-  } finally {
-    client.release();
-  }
-}
-
-async function verifyCoordinates(): Promise<void> {
-  const client = await pool.connect();
-  try {
-    // Thailand's bounding box
-    const THAILAND_BOUNDS = {
-      north: 20.4178496,
-      south: 5.6130800,
-      east: 105.6366039,
-      west: 97.3438072,
+interface GoogleMapsResponse {
+  status: string;
+  results: Array<{
+    geometry: {
+      location: {
+        lat: number;
+        lng: number;
+      };
     };
-
-    // Check provinces
-    const { rows: provinces } = await client.query(
-      'SELECT id, name_en, latitude, longitude FROM provinces'
-    );
-
-    for (const province of provinces) {
-      if (
-        province.latitude < THAILAND_BOUNDS.south ||
-        province.latitude > THAILAND_BOUNDS.north ||
-        province.longitude < THAILAND_BOUNDS.west ||
-        province.longitude > THAILAND_BOUNDS.east
-      ) {
-        logger.warn(
-          `Province ${province.name_en} coordinates (${province.latitude}, ${province.longitude}) are outside Thailand's bounds`
-        );
-      }
-    }
-
-    // Check amphures
-    const { rows: amphures } = await client.query(
-      'SELECT id, name_en, latitude, longitude FROM amphures'
-    );
-
-    for (const amphure of amphures) {
-      if (
-        amphure.latitude < THAILAND_BOUNDS.south ||
-        amphure.latitude > THAILAND_BOUNDS.north ||
-        amphure.longitude < THAILAND_BOUNDS.west ||
-        amphure.longitude > THAILAND_BOUNDS.east
-      ) {
-        logger.warn(
-          `Amphure ${amphure.name_en} coordinates (${amphure.latitude}, ${amphure.longitude}) are outside Thailand's bounds`
-        );
-      }
-    }
-
-    logger.info('Coordinate verification completed');
-  } catch (error) {
-    logger.error('Error verifying coordinates:', error);
-    throw error;
-  } finally {
-    client.release();
-  }
+  }>;
+  error_message?: string;
 }
 
-async function main() {
+// Helper function to fetch coordinates with retries
+const fetchCoordinatesWithRetry = async (searchQuery: string): Promise<{ lat: number; lng: number } | null> => {
+  const maxRetries = 3;
+  let retryCount = 0;
+
+  while (retryCount < maxRetries) {
+    try {
+      logger.info(`Attempt ${retryCount + 1} of ${maxRetries} to fetch coordinates for: ${searchQuery}`);
+      
+      const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+      if (!apiKey) {
+        logger.error('Google Maps API key is not set');
+        throw new Error('Google Maps API key is not set');
+      }
+      logger.info('API Key is set');
+
+      const encodedQuery = encodeURIComponent(searchQuery);
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedQuery}&key=${apiKey}`;
+      logger.info('Making request to Google Maps API...');
+      
+      const response = await axios.get<GoogleMapsResponse>(url);
+      logger.info('Received response from Google Maps API:', {
+        status: response.status,
+        statusText: response.statusText,
+        data: response.data
+      });
+
+      if (response.data.status === 'OK' && response.data.results.length > 0) {
+        const location = response.data.results[0].geometry.location;
+        logger.info('Successfully found coordinates:', location);
+        return location;
+      } else {
+        logger.warn('No results found in Google Maps response:', {
+          status: response.data.status,
+          errorMessage: response.data.error_message
+        });
+        return null;
+      }
+    } catch (error) {
+      logger.error(`Error fetching coordinates (attempt ${retryCount + 1}):`, {
+        error,
+        errorType: typeof error,
+        errorKeys: Object.keys(error as object),
+        errorString: String(error)
+      });
+      if (error instanceof Error) {
+        logger.error('Fetch error details:', {
+          name: error.name,
+          message: error.message,
+          stack: error.stack
+        });
+      }
+      // Handle Axios error without type
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { 
+          response?: { 
+            data: unknown; 
+            status: number; 
+            headers: unknown; 
+          } 
+        };
+        logger.error('Axios error details:', {
+          response: axiosError.response?.data,
+          status: axiosError.response?.status,
+          headers: axiosError.response?.headers
+        });
+      }
+      retryCount++;
+      if (retryCount < maxRetries) {
+        const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff
+        logger.info(`Waiting ${delay}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  logger.error(`Failed to fetch coordinates after ${maxRetries} attempts`);
+  return null;
+};
+
+// Update province coordinates
+const updateProvinceCoordinates = async (client: pg.PoolClient) => {
   try {
-    if (!process.env.GOOGLE_MAPS_API_KEY) {
-      throw new Error('GOOGLE_MAPS_API_KEY environment variable is not set');
+    logger.info('Querying provinces...');
+    const query = 'SELECT id, name_th, name_en FROM provinces';
+    logger.info('Executing query:', query);
+    
+    const provinces = await client.query(query);
+    logger.info('Query executed successfully');
+    logger.info(`Found ${provinces.rows.length} provinces to update`);
+    
+    if (provinces.rows.length === 0) {
+      logger.warn('No provinces found in the database');
+      return;
     }
 
+    logger.info('Sample province:', JSON.stringify(provinces.rows[0], null, 2));
+    
+    for (const province of provinces.rows) {
+      try {
+        logger.info('Processing province:', {
+          id: province.id,
+          nameTh: province.name_th,
+          nameEn: province.name_en
+        });
+
+        const searchQuery = province.name_en === 'Bangkok' 
+          ? 'ศาลาว่าการกรุงเทพมหานคร Bangkok City Hall'
+          : `ศาลากลางจังหวัด${province.name_th} ${province.name_en} Provincial Hall Thailand`;
+        
+        logger.info('Search query:', searchQuery);
+        
+        const coordinates = await fetchCoordinatesWithRetry(searchQuery);
+        logger.info('Coordinates response:', coordinates);
+        
+        if (coordinates) {
+          logger.info(`Updating coordinates for ${province.name_en} to:`, coordinates);
+          const updateQuery = 'UPDATE provinces SET latitude = $1, longitude = $2 WHERE id = $3 RETURNING id, name_en, latitude, longitude';
+          logger.info('Executing update query:', {
+            query: updateQuery,
+            params: [coordinates.lat, coordinates.lng, province.id]
+          });
+          
+          const updateResult = await client.query(
+            updateQuery,
+            [coordinates.lat, coordinates.lng, province.id]
+          );
+          
+          if (updateResult.rowCount === 0) {
+            logger.error(`No province found with ID ${province.id}`);
+          } else {
+            logger.info(`Updated coordinates for ${province.name_en}:`, updateResult.rows[0]);
+          }
+        } else {
+          logger.warn(`Could not find coordinates for province: ${province.name_en}`);
+        }
+        
+        // Add delay between requests
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      } catch (provinceError) {
+        logger.error(`Error processing province ${province.name_en}:`, {
+          error: provinceError,
+          errorType: typeof provinceError,
+          errorKeys: Object.keys(provinceError as object),
+          errorString: String(provinceError)
+        });
+        if (provinceError instanceof Error) {
+          logger.error('Province error details:', {
+            name: provinceError.name,
+            message: provinceError.message,
+            stack: provinceError.stack
+          });
+        }
+        throw provinceError;
+      }
+    }
+  } catch (error) {
+    logger.error('Error in updateProvinceCoordinates:', {
+      error,
+      errorType: typeof error,
+      errorKeys: Object.keys(error as object),
+      errorString: String(error)
+    });
+    if (error instanceof Error) {
+      logger.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+    }
+    throw error;
+  }
+};
+
+// Update amphure coordinates
+const updateAmphureCoordinates = async (client: pg.PoolClient) => {
+  const amphures = await client.query(`
+    SELECT a.id, a.name_th, a.name_en, p.name_th as province_name_th, p.name_en as province_name_en 
+    FROM amphures a 
+    JOIN provinces p ON a.province_id = p.id
+  `);
+  logger.info(`Found ${amphures.rows.length} amphures to update`);
+  
+  for (const amphure of amphures.rows) {
+    const searchQuery = amphure.province_name_en === 'Bangkok'
+      ? `สำนักงานเขต${amphure.name_th} ${amphure.name_en} District Office Bangkok`
+      : `ที่ว่าการอำเภอ${amphure.name_th} ${amphure.province_name_th} Thailand`;
+    
+    logger.info(`Processing amphure: ${amphure.name_en} (${amphure.name_th})`);
+    const coordinates = await fetchCoordinatesWithRetry(searchQuery);
+    
+    if (coordinates) {
+      await client.query(
+        'UPDATE amphures SET latitude = $1, longitude = $2 WHERE id = $3',
+        [coordinates.lat, coordinates.lng, amphure.id]
+      );
+      logger.info(`Updated coordinates for ${amphure.name_en}`);
+    }
+    
+    // Add delay between requests
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+};
+
+// Main function
+async function main() {
+  let client;
+  try {
     logger.info('Starting location data update...');
+    logger.info('Connecting to database...');
+    client = await pool.connect();
+    logger.info('Connected to database');
+
+    // Start transaction
+    logger.info('Starting transaction...');
+    await client.query('BEGIN');
+    logger.info('Transaction started');
     
-    // Update province coordinates
-    await updateProvinceCoordinates();
+    // Update provinces first
+    logger.info('Updating province coordinates...');
+    try {
+      await updateProvinceCoordinates(client);
+      logger.info('Province coordinates updated successfully');
+    } catch (error) {
+      logger.error('Error updating province coordinates:', error);
+      if (error instanceof Error) {
+        logger.error('Province error message:', error.message);
+        logger.error('Province error stack:', error.stack);
+      }
+      throw error;
+    }
     
-    // Update amphure coordinates
-    await updateAmphureCoordinates();
+    // Then update amphures
+    logger.info('Updating amphure coordinates...');
+    try {
+      await updateAmphureCoordinates(client);
+      logger.info('Amphure coordinates updated successfully');
+    } catch (error) {
+      logger.error('Error updating amphure coordinates:', error);
+      if (error instanceof Error) {
+        logger.error('Amphure error message:', error.message);
+        logger.error('Amphure error stack:', error.stack);
+      }
+      throw error;
+    }
     
-    // Verify all coordinates
-    await verifyCoordinates();
+    // Commit transaction
+    logger.info('Committing transaction...');
+    await client.query('COMMIT');
+    logger.info('Transaction committed');
     
-    logger.info('Location data update completed successfully');
+    logger.info('Updates completed successfully');
   } catch (error) {
     logger.error('Error in main execution:', error);
+    if (error instanceof Error) {
+      logger.error('Error message:', error.message);
+      logger.error('Error stack:', error.stack);
+    }
+    if (client) {
+      try {
+        logger.info('Rolling back transaction...');
+        await client.query('ROLLBACK');
+        logger.info('Transaction rolled back');
+      } catch (rollbackError) {
+        logger.error('Error rolling back transaction:', rollbackError);
+        if (rollbackError instanceof Error) {
+          logger.error('Rollback error message:', rollbackError.message);
+          logger.error('Rollback error stack:', rollbackError.stack);
+        }
+      }
+    }
     process.exit(1);
   } finally {
-    await pool.end();
+    if (client) {
+      try {
+        logger.info('Releasing client...');
+        client.release();
+        logger.info('Client released');
+      } catch (releaseError) {
+        logger.error('Error releasing client:', releaseError);
+        if (releaseError instanceof Error) {
+          logger.error('Release error message:', releaseError.message);
+          logger.error('Release error stack:', releaseError.stack);
+        }
+      }
+    }
+    try {
+      logger.info('Closing pool...');
+      await pool.end();
+      logger.info('Pool closed');
+    } catch (poolError) {
+      logger.error('Error closing pool:', poolError);
+      if (poolError instanceof Error) {
+        logger.error('Pool error message:', poolError.message);
+        logger.error('Pool error stack:', poolError.stack);
+      }
+    }
   }
 }
 
 // Run the script
-main(); 
+main().catch(error => {
+  logger.error('Unhandled error:', error);
+  if (error instanceof Error) {
+    logger.error('Final error message:', error.message);
+    logger.error('Final error stack:', error.stack);
+  } else {
+    logger.error('Final non-Error object thrown:', error);
+  }
+  process.exit(1);
+});
