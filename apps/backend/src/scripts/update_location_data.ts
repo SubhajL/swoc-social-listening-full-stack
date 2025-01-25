@@ -41,6 +41,62 @@ interface GoogleMapsResponse {
   error_message?: string;
 }
 
+// Helper function to normalize Thai text
+const normalizeThaiText = (text: string): string => {
+  return text
+    .normalize('NFKC') // Normalize to composed form
+    .replace(/[\u0E47-\u0E4E]/g, '') // Remove Thai tone marks
+    .trim();
+};
+
+// Helper function to construct search query
+const constructSearchQuery = (params: {
+  type: 'province' | 'amphure';
+  nameTh: string;
+  nameEn: string;
+  provinceTh?: string;
+  isBangkok: boolean;
+}): string => {
+  const { type, nameTh, nameEn, provinceTh, isBangkok } = params;
+  
+  // Normalize Thai text
+  const normalizedNameTh = normalizeThaiText(nameTh);
+  const normalizedProvinceTh = provinceTh ? normalizeThaiText(provinceTh) : '';
+  
+  if (type === 'province') {
+    if (isBangkok) {
+      return `ศาลาว่าการกรุงเทพมหานคร Bangkok City Hall Thailand`;
+    }
+    // Try both Thai and English names for better results
+    return `ศาลากลางจังหวัด${normalizedNameTh} ${nameEn} Provincial Hall Thailand`;
+  } else {
+    if (isBangkok) {
+      return `สำนักงานเขต${normalizedNameTh} ${nameEn} District Office Bangkok Thailand`;
+    }
+    return `ที่ว่าการอำเภอ${normalizedNameTh} อำเภอ${normalizedNameTh} ${normalizedProvinceTh} Thailand`;
+  }
+};
+
+// Helper function to validate coordinates
+const validateCoordinates = (coordinates: { lat: number; lng: number } | null): boolean => {
+  if (!coordinates) return false;
+  
+  // Thailand's approximate bounding box
+  const THAILAND_BOUNDS = {
+    north: 20.4178496,
+    south: 5.6130800,
+    east: 105.6366793,
+    west: 97.3438072
+  };
+  
+  return (
+    coordinates.lat >= THAILAND_BOUNDS.south &&
+    coordinates.lat <= THAILAND_BOUNDS.north &&
+    coordinates.lng >= THAILAND_BOUNDS.west &&
+    coordinates.lng <= THAILAND_BOUNDS.east
+  );
+};
+
 // Helper function to fetch coordinates with retries
 const fetchCoordinatesWithRetry = async (searchQuery: string): Promise<{ lat: number; lng: number } | null> => {
   const maxRetries = 3;
@@ -55,37 +111,47 @@ const fetchCoordinatesWithRetry = async (searchQuery: string): Promise<{ lat: nu
         logger.error('Google Maps API key is not set');
         throw new Error('Google Maps API key is not set');
       }
-      logger.info('API Key is set');
 
+      // Ensure proper encoding of Thai characters
       const encodedQuery = encodeURIComponent(searchQuery);
-      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedQuery}&key=${apiKey}`;
-      logger.info('Making request to Google Maps API...');
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedQuery}&key=${apiKey}&language=th&region=th`;
       
-      const response = await axios.get<GoogleMapsResponse>(url);
-      logger.info('Received response from Google Maps API:', {
-        status: response.status,
-        statusText: response.statusText,
-        data: response.data
+      logger.info('Making request to Google Maps API...');
+      const response = await axios.get<GoogleMapsResponse>(url, {
+        headers: {
+          'Accept-Charset': 'UTF-8',
+          'Content-Type': 'application/json; charset=utf-8'
+        }
       });
 
       if (response.data.status === 'OK' && response.data.results.length > 0) {
         const location = response.data.results[0].geometry.location;
-        logger.info('Successfully found coordinates:', location);
-        return location;
+        
+        // Validate coordinates
+        if (validateCoordinates(location)) {
+          logger.info('Successfully found valid coordinates:', location);
+          return location;
+        } else {
+          logger.warn('Found coordinates outside Thailand:', location);
+          return null;
+        }
       } else {
         logger.warn('No results found in Google Maps response:', {
           status: response.data.status,
-          errorMessage: response.data.error_message
+          errorMessage: response.data.error_message,
+          query: searchQuery
         });
         return null;
       }
     } catch (error) {
       logger.error(`Error fetching coordinates (attempt ${retryCount + 1}):`, {
         error,
+        query: searchQuery,
         errorType: typeof error,
         errorKeys: Object.keys(error as object),
         errorString: String(error)
       });
+      
       if (error instanceof Error) {
         logger.error('Fetch error details:', {
           name: error.name,
@@ -93,7 +159,7 @@ const fetchCoordinatesWithRetry = async (searchQuery: string): Promise<{ lat: nu
           stack: error.stack
         });
       }
-      // Handle Axios error without type
+      
       if (error && typeof error === 'object' && 'response' in error) {
         const axiosError = error as { 
           response?: { 
@@ -108,16 +174,17 @@ const fetchCoordinatesWithRetry = async (searchQuery: string): Promise<{ lat: nu
           headers: axiosError.response?.headers
         });
       }
+      
       retryCount++;
       if (retryCount < maxRetries) {
-        const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff
+        const delay = Math.pow(2, retryCount) * 1000;
         logger.info(`Waiting ${delay}ms before retry...`);
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
   }
 
-  logger.error(`Failed to fetch coordinates after ${maxRetries} attempts`);
+  logger.error(`Failed to fetch coordinates after ${maxRetries} attempts for query: ${searchQuery}`);
   return null;
 };
 
@@ -126,18 +193,13 @@ const updateProvinceCoordinates = async (client: pg.PoolClient) => {
   try {
     logger.info('Querying provinces...');
     const query = 'SELECT id, name_th, name_en FROM provinces';
-    logger.info('Executing query:', query);
-    
     const provinces = await client.query(query);
-    logger.info('Query executed successfully');
     logger.info(`Found ${provinces.rows.length} provinces to update`);
     
     if (provinces.rows.length === 0) {
       logger.warn('No provinces found in the database');
       return;
     }
-
-    logger.info('Sample province:', JSON.stringify(provinces.rows[0], null, 2));
     
     for (const province of provinces.rows) {
       try {
@@ -147,23 +209,18 @@ const updateProvinceCoordinates = async (client: pg.PoolClient) => {
           nameEn: province.name_en
         });
 
-        const searchQuery = province.name_en === 'Bangkok' 
-          ? 'ศาลาว่าการกรุงเทพมหานคร Bangkok City Hall'
-          : `ศาลากลางจังหวัด${province.name_th} ${province.name_en} Provincial Hall Thailand`;
+        const searchQuery = constructSearchQuery({
+          type: 'province',
+          nameTh: province.name_th,
+          nameEn: province.name_en,
+          isBangkok: province.name_en === 'Bangkok'
+        });
         
         logger.info('Search query:', searchQuery);
-        
         const coordinates = await fetchCoordinatesWithRetry(searchQuery);
-        logger.info('Coordinates response:', coordinates);
         
         if (coordinates) {
-          logger.info(`Updating coordinates for ${province.name_en} to:`, coordinates);
           const updateQuery = 'UPDATE provinces SET latitude = $1, longitude = $2 WHERE id = $3 RETURNING id, name_en, latitude, longitude';
-          logger.info('Executing update query:', {
-            query: updateQuery,
-            params: [coordinates.lat, coordinates.lng, province.id]
-          });
-          
           const updateResult = await client.query(
             updateQuery,
             [coordinates.lat, coordinates.lng, province.id]
@@ -175,73 +232,70 @@ const updateProvinceCoordinates = async (client: pg.PoolClient) => {
             logger.info(`Updated coordinates for ${province.name_en}:`, updateResult.rows[0]);
           }
         } else {
-          logger.warn(`Could not find coordinates for province: ${province.name_en}`);
+          logger.warn(`Could not find valid coordinates for province: ${province.name_en}`);
         }
         
-        // Add delay between requests
         await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (provinceError) {
-        logger.error(`Error processing province ${province.name_en}:`, {
-          error: provinceError,
-          errorType: typeof provinceError,
-          errorKeys: Object.keys(provinceError as object),
-          errorString: String(provinceError)
-        });
-        if (provinceError instanceof Error) {
-          logger.error('Province error details:', {
-            name: provinceError.name,
-            message: provinceError.message,
-            stack: provinceError.stack
-          });
-        }
+        logger.error(`Error processing province ${province.name_en}:`, provinceError);
         throw provinceError;
       }
     }
   } catch (error) {
-    logger.error('Error in updateProvinceCoordinates:', {
-      error,
-      errorType: typeof error,
-      errorKeys: Object.keys(error as object),
-      errorString: String(error)
-    });
-    if (error instanceof Error) {
-      logger.error('Error details:', {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      });
-    }
+    logger.error('Error in updateProvinceCoordinates:', error);
     throw error;
   }
 };
 
 // Update amphure coordinates
 const updateAmphureCoordinates = async (client: pg.PoolClient) => {
-  const amphures = await client.query(`
-    SELECT a.id, a.name_th, a.name_en, p.name_th as province_name_th, p.name_en as province_name_en 
-    FROM amphures a 
-    JOIN provinces p ON a.province_id = p.id
-  `);
-  logger.info(`Found ${amphures.rows.length} amphures to update`);
-  
-  for (const amphure of amphures.rows) {
-    const searchQuery = amphure.province_name_en === 'Bangkok'
-      ? `สำนักงานเขต${amphure.name_th} ${amphure.name_en} District Office Bangkok`
-      : `ที่ว่าการอำเภอ${amphure.name_th} ${amphure.province_name_th} Thailand`;
+  try {
+    const amphures = await client.query(`
+      SELECT 
+        a.id, 
+        a.name_th, 
+        a.name_en, 
+        p.name_th as province_name_th, 
+        p.name_en as province_name_en 
+      FROM amphures a 
+      JOIN provinces p ON a.province_id = p.id
+    `);
+    logger.info(`Found ${amphures.rows.length} amphures to update`);
     
-    logger.info(`Processing amphure: ${amphure.name_en} (${amphure.name_th})`);
-    const coordinates = await fetchCoordinatesWithRetry(searchQuery);
-    
-    if (coordinates) {
-      await client.query(
-        'UPDATE amphures SET latitude = $1, longitude = $2 WHERE id = $3',
-        [coordinates.lat, coordinates.lng, amphure.id]
-      );
-      logger.info(`Updated coordinates for ${amphure.name_en}`);
+    for (const amphure of amphures.rows) {
+      try {
+        logger.info(`Processing amphure: ${amphure.name_en} (${amphure.name_th})`);
+        
+        const searchQuery = constructSearchQuery({
+          type: 'amphure',
+          nameTh: amphure.name_th,
+          nameEn: amphure.name_en,
+          provinceTh: amphure.province_name_th,
+          isBangkok: amphure.province_name_en === 'Bangkok'
+        });
+        
+        logger.info('Search query:', searchQuery);
+        const coordinates = await fetchCoordinatesWithRetry(searchQuery);
+        
+        if (coordinates) {
+          await client.query(
+            'UPDATE amphures SET latitude = $1, longitude = $2 WHERE id = $3',
+            [coordinates.lat, coordinates.lng, amphure.id]
+          );
+          logger.info(`Updated coordinates for ${amphure.name_en}`);
+        } else {
+          logger.warn(`Could not find valid coordinates for amphure: ${amphure.name_en}`);
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      } catch (amphureError) {
+        logger.error(`Error processing amphure ${amphure.name_en}:`, amphureError);
+        throw amphureError;
+      }
     }
-    
-    // Add delay between requests
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  } catch (error) {
+    logger.error('Error in updateAmphureCoordinates:', error);
+    throw error;
   }
 };
 
