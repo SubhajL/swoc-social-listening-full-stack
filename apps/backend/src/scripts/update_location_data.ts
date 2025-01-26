@@ -55,11 +55,10 @@ export function normalizeThaiText(text: string): string {
   // Remove any existing UTF-8 BOM
   text = text.replace(/^\uFEFF/, '');
   
-  // Handle abbreviated province format
-  text = text.replace(/จ\.\s*/g, 'จังหวัด');
+  // Replace abbreviated province format with full word
+  text = text.replace(/จ\./g, 'จังหวัด');
   
-  // Ensure consistent Unicode normalization
-  return text.normalize('NFC');
+  return text;
 }
 
 // Helper function to construct search query

@@ -19,7 +19,10 @@
     "check-location-data": "tsx src/scripts/check_location_data.ts",
     "update-location-data": "tsx src/scripts/update_location_data.ts",
     "test-db-connection": "tsx src/scripts/test_db_connection.ts",
-    "test:location": "tsx src/scripts/test_update_location.ts"
+    "test:location": "tsx src/scripts/test_update_location.ts",
+    "check-amphures": "tsx src/scripts/check_and_complete_amphures.ts",
+    "check-provinces-encoding": "tsx src/scripts/check_provinces_encoding.ts",
+    "check-amphures-encoding": "tsx src/scripts/check_amphures_encoding.ts"
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.4.0",

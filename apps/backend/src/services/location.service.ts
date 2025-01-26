@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 import { logger } from '../utils/logger.js';
 import { LocationResolutionError } from '../errors/index.js';
 import { TransactionManager, TransactionClient } from '../utils/transaction-manager.js';
-import { geocodingClient } from '../config/mapbox.js';
+import axios from 'axios';
 
 interface Coordinates {
   latitude: number;
@@ -20,11 +20,37 @@ interface LocationDetails extends ThaiAddress {
   source: 'coordinates' | 'address' | 'both';
 }
 
+interface GoogleMapsResponse {
+  status: string;
+  results: Array<{
+    geometry: {
+      location: {
+        lat: number;
+        lng: number;
+      }
+    },
+    formatted_address: string;
+    place_id: string;
+    types: string[];
+    address_components: Array<{
+      long_name: string;
+      short_name: string;
+      types: string[];
+    }>
+  }>;
+  error_message?: string;
+}
+
 export class LocationService {
   private transactionManager: TransactionManager;
+  private googleMapsApiKey: string;
 
   constructor(private readonly pool: Pool) {
     this.transactionManager = new TransactionManager(pool);
+    this.googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY || '';
+    if (!this.googleMapsApiKey) {
+      logger.error('Google Maps API key is not set');
+    }
   }
 
   async resolveLocation(
@@ -33,17 +59,17 @@ export class LocationService {
   ): Promise<LocationDetails> {
     try {
       if ('latitude' in input && 'longitude' in input) {
-        // Try Mapbox first
+        // Try Google Maps first
         try {
-          const mapboxResult = await this.reverseGeocodeWithMapbox(input);
+          const address = await this.reverseGeocodeWithGoogleMaps(input);
           return {
-            ...mapboxResult,
+            ...address,
             coordinates: input,
             source: 'coordinates'
           };
         } catch (error) {
           // Fallback to PostGIS
-          logger.warn('Mapbox reverse geocoding failed, falling back to PostGIS:', error);
+          logger.warn('Google Maps reverse geocoding failed, falling back to PostGIS:', error);
           const address = await this.reverseGeocode(input);
           return {
             ...address,
@@ -52,9 +78,15 @@ export class LocationService {
           };
         }
       } else {
-        // Try Mapbox first
+        // Try Google Maps first
         try {
-          const coordinates = await this.geocodeWithMapbox(input);
+          const query = [
+            input.tumbon,
+            input.amphure,
+            input.province,
+            'Thailand'
+          ].filter(Boolean).join(', ');
+          const coordinates = await this.geocodeWithGoogleMaps(query);
           return {
             ...input,
             coordinates,
@@ -62,7 +94,7 @@ export class LocationService {
           };
         } catch (error) {
           // Fallback to PostGIS
-          logger.warn('Mapbox geocoding failed, falling back to PostGIS:', error);
+          logger.warn('Google Maps geocoding failed, falling back to PostGIS:', error);
           const coordinates = await this.geocode(input);
           return {
             ...input,
@@ -77,61 +109,165 @@ export class LocationService {
     }
   }
 
-  private async reverseGeocodeWithMapbox(coordinates: Coordinates): Promise<ThaiAddress> {
-    const response = await geocodingClient
-      .reverseGeocode({
-        query: [coordinates.longitude, coordinates.latitude],
-        countries: ['th'],
-        types: ['region', 'district', 'locality'],
-        limit: 1
-      })
-      .send();
+  private async reverseGeocodeWithGoogleMaps(coordinates: Coordinates): Promise<ThaiAddress> {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.latitude},${coordinates.longitude}&key=${this.googleMapsApiKey}&language=th&region=TH`;
+    
+    logger.info('Making Google Maps reverse geocoding request:', { url: url.replace(this.googleMapsApiKey, '[REDACTED]') });
+    
+    try {
+      const response = await axios.get<GoogleMapsResponse>(url);
+      
+      logger.info('Google Maps API Response:', {
+        status: response.data.status,
+        resultCount: response.data.results?.length,
+        errorMessage: response.data.error_message
+      });
+      
+      if (response.data.status !== 'OK' || !response.data.results.length) {
+        throw new LocationResolutionError(`Location not found in Thailand. Status: ${response.data.status}, Error: ${response.data.error_message || 'No error message'}`);
+      }
 
-    if (!response.body.features.length) {
-      throw new LocationResolutionError('Location not found in Thailand');
+      // Parse Google Maps response into Thai administrative units
+      const address: ThaiAddress = {};
+      const result = response.data.results[0];
+      const addressComponents = result.address_components || [];
+
+      logger.info('Processing address components:', { components: addressComponents });
+
+      addressComponents.forEach(component => {
+        if (component.types.includes('administrative_area_level_3')) {
+          address.tumbon = component.long_name;
+        }
+        if (component.types.includes('administrative_area_level_2')) {
+          address.amphure = component.long_name;
+        }
+        if (component.types.includes('administrative_area_level_1')) {
+          address.province = component.long_name;
+        }
+      });
+
+      logger.info('Parsed Thai address:', address);
+      return address;
+    } catch (error) {
+      if (error instanceof Error) {
+        const axiosError = error as { 
+          response?: { 
+            status: number; 
+            statusText: string; 
+            data: any;
+            headers: any;
+          };
+          config?: {
+            url?: string;
+            method?: string;
+            headers?: any;
+          };
+        };
+        logger.error('Google Maps API Error:', {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+          response: axiosError.response ? {
+            status: axiosError.response.status,
+            statusText: axiosError.response.statusText,
+            data: axiosError.response.data,
+            headers: axiosError.response.headers
+          } : 'No response data',
+          config: axiosError.config ? {
+            url: axiosError.config.url?.replace(this.googleMapsApiKey, '[REDACTED]'),
+            method: axiosError.config.method,
+            headers: axiosError.config.headers
+          } : 'No config data'
+        });
+      } else {
+        logger.error('Non-Error object thrown:', error);
+      }
+      throw error;
     }
-
-    const feature = response.body.features[0];
-    const context = feature.context || [];
-
-    // Parse Mapbox response into Thai administrative units
-    const address: ThaiAddress = {};
-    context.forEach(item => {
-      if (item.id.startsWith('locality')) address.tumbon = item.text;
-      if (item.id.startsWith('district')) address.amphure = item.text;
-      if (item.id.startsWith('region')) address.province = item.text;
-    });
-
-    return address;
   }
 
-  private async geocodeWithMapbox(address: ThaiAddress): Promise<Coordinates> {
-    const query = [
-      address.tumbon,
-      address.amphure,
-      address.province,
-      'Thailand'
-    ].filter(Boolean).join(', ');
+  private async geocodeWithGoogleMaps(query: string): Promise<Coordinates> {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${this.googleMapsApiKey}&language=th&region=TH`;
+    
+    logger.info('Making Google Maps geocoding request:', { 
+      url: url.replace(this.googleMapsApiKey, '[REDACTED]'),
+      query 
+    });
+    
+    try {
+      const response = await axios.get<GoogleMapsResponse>(url);
+      
+      logger.info('Google Maps API Response:', {
+        status: response.data.status,
+        resultCount: response.data.results?.length,
+        errorMessage: response.data.error_message,
+        results: response.data.results?.map(result => ({
+          formattedAddress: result.formatted_address,
+          location: result.geometry?.location,
+          placeId: result.place_id,
+          types: result.types,
+          addressComponents: result.address_components?.map(comp => ({
+            longName: comp.long_name,
+            shortName: comp.short_name,
+            types: comp.types
+          }))
+        }))
+      });
+      
+      if (response.data.status !== 'OK' || !response.data.results.length) {
+        throw new LocationResolutionError(`Address not found. Status: ${response.data.status}, Error: ${response.data.error_message || 'No error message'}`);
+      }
 
-    const response = await geocodingClient
-      .forwardGeocode({
-        query,
-        countries: ['th'],
-        limit: 1
-      })
-      .send();
+      const result = response.data.results[0];
+      const location = result.geometry.location;
 
-    if (!response.body.features.length) {
-      throw new LocationResolutionError('Address not found');
+      logger.info('Found coordinates:', {
+        latitude: location.lat,
+        longitude: location.lng,
+        formattedAddress: result.formatted_address,
+        placeId: result.place_id
+      });
+
+      return {
+        latitude: location.lat,
+        longitude: location.lng
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        const axiosError = error as { 
+          response?: { 
+            status: number; 
+            statusText: string; 
+            data: any;
+            headers: any;
+          };
+          config?: {
+            url?: string;
+            method?: string;
+            headers?: any;
+          };
+        };
+        logger.error('Google Maps API Error:', {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+          response: axiosError.response ? {
+            status: axiosError.response.status,
+            statusText: axiosError.response.statusText,
+            data: axiosError.response.data,
+            headers: axiosError.response.headers
+          } : 'No response data',
+          config: axiosError.config ? {
+            url: axiosError.config.url?.replace(this.googleMapsApiKey, '[REDACTED]'),
+            method: axiosError.config.method,
+            headers: axiosError.config.headers
+          } : 'No config data'
+        });
+      } else {
+        logger.error('Non-Error object thrown:', error);
+      }
+      throw error;
     }
-
-    const feature = response.body.features[0];
-    if (!feature.center) {
-      throw new LocationResolutionError('No coordinates found for address');
-    }
-
-    const [longitude, latitude] = feature.center;
-    return { latitude, longitude };
   }
 
   private async reverseGeocode(coordinates: Coordinates): Promise<ThaiAddress> {
