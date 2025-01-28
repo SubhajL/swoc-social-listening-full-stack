@@ -8,6 +8,7 @@
 - [x] Add proper indexes for performance
 - [x] Verify data integrity and relationships
 - [x] Handle Thai character encoding
+- [x] Update coordinate column names to match across tables
 - [ ] Fix amphure coordinates (currently using tumbon coordinates)
 
 ### Indexing
@@ -51,12 +52,15 @@
 1. **Provinces** (77 records)
    - ✅ All provinces have unique IDs
    - ✅ All have Thai and English names
-   - ✅ All have valid coordinates
+   - ✅ All have valid coordinates (latitude/longitude)
+   - ✅ All have numeric coordinates (latitude_n/longitude_n)
    - ✅ Matches expected count
 
 2. **Amphures** (928 records)
    - ✅ All amphures have unique IDs
    - ✅ All have Thai and English names
+   - ✅ All have valid coordinates (latitude/longitude)
+   - ✅ All have numeric coordinates (latitude_n/longitude_n)
    - ❌ Coordinate accuracy needs improvement
    - ✅ Proper province relationships
 
@@ -84,6 +88,7 @@
 4. `verify_location_data.ts` - Detailed data validation
 5. `install_postgis.ts` - PostGIS installation (needs superuser)
 6. `admin_install_postgis.sql` - For database administrator
+7. `update_location_data.ts` - Updates coordinate data
 
 ## Next Actions Required
 1. Contact database administrator for PostGIS installation
