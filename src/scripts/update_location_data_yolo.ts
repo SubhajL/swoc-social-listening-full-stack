@@ -212,19 +212,18 @@ async function fetchCoordinatesWithRetry(searchQueries: string[]): Promise<{ lat
 // Update province coordinates
 async function updateProvinceCoordinates(client: pg.PoolClient): Promise<void> {
   try {
-    logger.info('Starting province coordinate update...');
+    console.log('\n=== Starting Province Updates ===');
     const provinces = await client.query('SELECT id, name_th, name_en FROM provinces');
-    logger.info(`Found ${provinces.rows.length} provinces to update`);
+    console.log(`Found ${provinces.rows.length} provinces to update`);
 
-    for (const province of provinces.rows) {
+    for (let i = 0; i < provinces.rows.length; i++) {
+      const province = provinces.rows[i];
+      console.log(`\n[Province ${i + 1}/${provinces.rows.length}] Processing: ${province.name_en} (${province.name_th})`);
+
       try {
-        logger.info('Processing province:', {
-          id: province.id,
-          nameTh: province.name_th,
-          nameEn: province.name_en
-        });
-
         const searchQueries = createSearchQueries('province', province);
+        console.log('Searching with queries:', searchQueries.join(' | '));
+        
         const coordinates = await fetchCoordinatesWithRetry(searchQueries);
 
         if (coordinates) {
@@ -233,25 +232,22 @@ async function updateProvinceCoordinates(client: pg.PoolClient): Promise<void> {
             [coordinates.lat, coordinates.lng, province.id]
           );
 
-          logger.info('Updated province coordinates:', {
-            province: province.name_en,
-            coordinates: updateResult.rows[0]
+          console.log(`✅ Updated coordinates for ${province.name_en}:`, {
+            lat: coordinates.lat.toFixed(6),
+            lng: coordinates.lng.toFixed(6)
           });
         } else {
-          logger.error('Failed to find coordinates for province:', province.name_en);
+          console.log(`❌ Failed to find coordinates for ${province.name_en}`);
         }
 
         // Add delay between requests
         await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (error) {
-        logger.error('Error processing province:', {
-          province: province.name_en,
-          error: error instanceof Error ? error.message : String(error)
-        });
+        console.error(`❌ Error processing ${province.name_en}:`, error instanceof Error ? error.message : String(error));
       }
     }
   } catch (error) {
-    logger.error('Error in updateProvinceCoordinates:', error);
+    console.error('Error in updateProvinceCoordinates:', error);
     throw error;
   }
 }
@@ -259,24 +255,22 @@ async function updateProvinceCoordinates(client: pg.PoolClient): Promise<void> {
 // Update amphure coordinates
 async function updateAmphureCoordinates(client: pg.PoolClient): Promise<void> {
   try {
-    logger.info('Starting amphure coordinate update...');
+    console.log('\n=== Starting Amphure Updates ===');
     const amphures = await client.query(`
       SELECT a.id, a.name_th, a.name_en, p.name_th as province_name_th, p.name_en as province_name_en 
       FROM amphures a 
       JOIN provinces p ON a.province_id = p.id
     `);
-    logger.info(`Found ${amphures.rows.length} amphures to update`);
+    console.log(`Found ${amphures.rows.length} amphures to update`);
 
-    for (const amphure of amphures.rows) {
+    for (let i = 0; i < amphures.rows.length; i++) {
+      const amphure = amphures.rows[i];
+      console.log(`\n[Amphure ${i + 1}/${amphures.rows.length}] Processing: ${amphure.name_en} (${amphure.name_th}) in ${amphure.province_name_en}`);
+
       try {
-        logger.info('Processing amphure:', {
-          id: amphure.id,
-          nameTh: amphure.name_th,
-          nameEn: amphure.name_en,
-          province: amphure.province_name_en
-        });
-
         const searchQueries = createSearchQueries('amphure', amphure);
+        console.log('Searching with queries:', searchQueries.join(' | '));
+        
         const coordinates = await fetchCoordinatesWithRetry(searchQueries);
 
         if (coordinates) {
@@ -284,64 +278,55 @@ async function updateAmphureCoordinates(client: pg.PoolClient): Promise<void> {
             'UPDATE amphures SET latitude = $1, longitude = $2 WHERE id = $3',
             [coordinates.lat, coordinates.lng, amphure.id]
           );
-          logger.info('Updated amphure coordinates:', {
-            amphure: amphure.name_en,
-            coordinates
+          console.log(`✅ Updated coordinates:`, {
+            lat: coordinates.lat.toFixed(6),
+            lng: coordinates.lng.toFixed(6)
           });
         } else {
-          logger.error('Failed to find coordinates for amphure:', {
-            amphure: amphure.name_en,
-            province: amphure.province_name_en
-          });
+          console.log(`❌ Failed to find coordinates`);
         }
 
         // Add delay between requests
         await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (error) {
-        logger.error('Error processing amphure:', {
-          amphure: amphure.name_en,
-          error: error instanceof Error ? error.message : String(error)
-        });
+        console.error(`❌ Error processing amphure:`, error instanceof Error ? error.message : String(error));
       }
     }
   } catch (error) {
-    logger.error('Error in updateAmphureCoordinates:', error);
+    console.error('Error in updateAmphureCoordinates:', error);
     throw error;
   }
 }
 
 // Main function
 async function main(): Promise<void> {
-  console.log('Starting script...');
   let client;
   try {
-    console.log('Connecting to database...');
+    console.log('\n=== Starting Location Update Process ===');
     client = await pool.connect();
-    console.log('Connected to database');
+    console.log('✅ Connected to database');
 
     // Start transaction
     await client.query('BEGIN');
-    console.log('Started transaction');
+    console.log('✅ Started transaction');
 
     // Update provinces first
-    console.log('Starting province updates...');
     await updateProvinceCoordinates(client);
-    console.log('Completed province updates');
+    console.log('\n✅ Completed all province updates');
 
     // Then update amphures
-    console.log('Starting amphure updates...');
     await updateAmphureCoordinates(client);
-    console.log('Completed amphure updates');
+    console.log('\n✅ Completed all amphure updates');
 
     // Commit transaction
     await client.query('COMMIT');
-    console.log('Successfully committed all updates');
+    console.log('\n✅ Successfully committed all updates');
 
   } catch (error) {
-    console.error('Error in main function:', error);
+    console.error('\n❌ Error in main function:', error);
     if (client) {
       await client.query('ROLLBACK');
-      console.error('Transaction rolled back due to error');
+      console.error('❌ Transaction rolled back due to error');
     }
     throw error;
   } finally {
@@ -349,7 +334,7 @@ async function main(): Promise<void> {
       client.release();
     }
     await pool.end();
-    console.log('Script completed');
+    console.log('\n=== Location Update Process Completed ===\n');
   }
 }
 

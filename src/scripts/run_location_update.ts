@@ -8,7 +8,7 @@ main()
     logger.info('Location data update completed successfully');
     process.exit(0);
   })
-  .catch(error => {
-    logger.error('Location data update failed:', error);
+  .catch((error: Error | unknown) => {
+    logger.error('Location data update failed:', error instanceof Error ? error.message : String(error));
     process.exit(1);
   }); 

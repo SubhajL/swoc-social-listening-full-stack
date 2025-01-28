@@ -59,13 +59,12 @@ interface GoogleMapsResponse {
 export function normalizeThaiText(text: string): string {
   return text
     .normalize('NFKC') // Normalize to composed form
-    .replace(/[\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]+/g, '') // Remove tone marks and vowels above/below
     .replace(/[\u200B-\u200D\uFEFF]/g, '') // Remove zero-width spaces
     .replace(/\s+/g, ' ') // Normalize spaces
     .trim(); // Remove leading/trailing spaces
 }
 
-// Helper function to create search queries with variations
+// Helper function to create search queries
 export function createSearchQueries(type: 'province' | 'amphure', data: { 
   name_th: string; 
   name_en: string; 
@@ -74,37 +73,17 @@ export function createSearchQueries(type: 'province' | 'amphure', data: {
 }): string[] {
   const { name_th, name_en, province_name_th, province_name_en } = data;
   const normalizedNameTh = normalizeThaiText(name_th);
-  const normalizedProvinceNameTh = province_name_th ? normalizeThaiText(province_name_th) : '';
 
   if (type === 'province') {
     if (name_en === 'Bangkok') {
-      return [
-        'ศาลาว่าการกรุงเทพมหานคร',
-        'Bangkok City Hall Thailand',
-        'กรุงเทพมหานคร ประเทศไทย'
-      ];
+      return ['ศาลาว่าการกรุงเทพมหานคร'];
     }
-    return [
-      `ศาลากลางจังหวัด${normalizedNameTh}`,
-      `${name_en} Provincial Hall Thailand`,
-      `${normalizedNameTh} จังหวัด ประเทศไทย`,
-      `${name_en} Province Thailand`,
-      `จังหวัด${normalizedNameTh}`
-    ];
+    return [`ศาลากลางจังหวัด${normalizedNameTh}`];
   } else {
     if (province_name_en === 'Bangkok') {
-      return [
-        `สำนักงานเขต${normalizedNameTh}`,
-        `${name_en} District Office Bangkok`,
-        `เขต${normalizedNameTh} กรุงเทพมหานคร`
-      ];
+      return [`สำนักงานเขต${normalizedNameTh}`];
     }
-    return [
-      `ที่ว่าการอำเภอ${normalizedNameTh}`,
-      `${name_en} District ${province_name_en} Thailand`,
-      `อำเภอ${normalizedNameTh} ${normalizedProvinceNameTh}`,
-      `${normalizedNameTh} ${normalizedProvinceNameTh} Thailand`
-    ];
+    return [`ที่ว่าการอำเภอ${normalizedNameTh}`];
   }
 }
 

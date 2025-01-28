@@ -1,14 +1,9 @@
 const { config } = require('dotenv');
 const pg = require('pg');
 const path = require('path');
-const iconv = require('iconv-lite');
 
 // Load environment variables from backend .env
 config({ path: path.resolve(__dirname, '../../apps/backend/.env') });
-
-// Configure Node.js and PostgreSQL for UTF-8
-process.env.PGCLIENTENCODING = 'UTF8';
-process.stdout.setEncoding('utf8');
 
 const { Pool } = pg;
 const pool = new Pool({
@@ -25,14 +20,27 @@ const pool = new Pool({
 async function main() {
   const client = await pool.connect();
   try {
-    // Set connection encoding
-    await client.query(`
-      SET client_encoding TO 'UTF8';
-      SET NAMES 'UTF8';
+    // Check for missing coordinates
+    const missingCoords = await client.query(`
+      SELECT COUNT(*) as count
+      FROM tumbons
+      WHERE latitude IS NULL OR longitude IS NULL;
     `);
     
-    // Get three random tumbons with coordinates
-    const result = await client.query(`
+    console.log('\nChecking for missing coordinates:');
+    console.log(`Tumbons missing coordinates: ${missingCoords.rows[0].count}`);
+
+    // Get total count
+    const totalCount = await client.query(`
+      SELECT COUNT(*) as count FROM tumbons;
+    `);
+    
+    console.log(`Total tumbons: ${totalCount.rows[0].count}`);
+    console.log(`Percentage complete: ${((totalCount.rows[0].count - missingCoords.rows[0].count) / totalCount.rows[0].count * 100).toFixed(2)}%`);
+
+    // Get sample of coordinates for manual verification
+    console.log('\nSample of 100 tumbon coordinates for verification:');
+    const sample = await client.query(`
       SELECT 
         t.id,
         t.name_th,
@@ -46,16 +54,16 @@ async function main() {
       JOIN provinces_new p ON a.province_id = p.id
       WHERE t.latitude IS NOT NULL AND t.longitude IS NOT NULL
       ORDER BY RANDOM()
-      LIMIT 3;
+      LIMIT 100;
     `);
-    
-    console.log('\nRandom Tumbon Examples:');
-    result.rows.forEach(row => {
+
+    sample.rows.forEach(row => {
       console.log(`\nID: ${row.id}`);
-      console.log(`Name: ${iconv.decode(Buffer.from(row.name_th, 'binary'), 'tis-620')} (${row.name_en || 'no English name'})`);
-      console.log(`Location: ${iconv.decode(Buffer.from(row.amphur_name, 'binary'), 'tis-620')}, ${iconv.decode(Buffer.from(row.province_name, 'binary'), 'tis-620')}`);
+      console.log(`Name: ${row.name_th} (${row.name_en || 'no English name'})`);
+      console.log(`Location: ${row.amphur_name}, ${row.province_name}`);
       console.log(`Coordinates: ${row.latitude}, ${row.longitude}`);
     });
+
   } finally {
     client.release();
     await pool.end();
