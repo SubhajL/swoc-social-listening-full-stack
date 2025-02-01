@@ -11,7 +11,13 @@ const queryClient = new QueryClient();
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename="/">
+      <BrowserRouter 
+        basename="/" 
+        future={{ 
+          v7_startTransition: true,
+          v7_relativeSplatPath: true
+        }}
+      >
         <TooltipProvider>
           <Routes>
             <Route path="/" element={<Index />} />

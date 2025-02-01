@@ -43,11 +43,13 @@ export interface FilterSectionProps {
 }
 
 export interface MapSectionProps {
-  complaints?: Complaint[];
+  complaints: any[]; // TODO: Define proper type
   isLoading: boolean;
   selectedCategories: string[];
   selectedProvince: string | null;
-  selectedOffice: string | null;
+  selectedAmphure?: string | null;
+  selectedTumbon?: string | null;
+  selectedOffice?: string | null;
 }
 
 // Validation type

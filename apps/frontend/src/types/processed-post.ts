@@ -18,6 +18,8 @@ export interface ProcessedPost {
   tumbon: string[];
   amphure: string[];
   province: string[];
+  created_at: string;
+  status?: string;
 }
 
 export const CategoryIconMap = {

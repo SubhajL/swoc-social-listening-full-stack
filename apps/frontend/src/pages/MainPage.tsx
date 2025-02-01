@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { Map } from "@/components/Map";
 import { FilterPanel } from "../components/filters/FilterPanel";
 import { CategoryName, SubCategories } from "@/types/processed-post";
+import { getMapboxToken } from "@/utils/mapbox";
 
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+// Get Mapbox token from utility
+const MAPBOX_TOKEN = getMapboxToken();
 
 // This would typically come from an API
 const PROVINCES = [
@@ -27,11 +29,12 @@ const getAllSubCategories = () => {
 };
 
 export function MainPage() {
-  // Initialize states
-  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>(getAllSubCategories());
-  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ start: '', end: '' });
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
+  const [selectedAmphure, setSelectedAmphure] = useState<string | null>(null);
+  const [selectedTumbon, setSelectedTumbon] = useState<string | null>(null);
   const [selectedOffice, setSelectedOffice] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ start: '', end: '' });
   const [isLoading, setIsLoading] = useState(false);
 
   // Effect to handle filter changes
@@ -41,9 +44,11 @@ export function MainPage() {
       try {
         // Here you would typically call your API with the filter values
         console.log('Applying filters:', {
-          selectedSubCategories,
+          selectedCategories,
           dateRange,
           selectedProvince,
+          selectedAmphure,
+          selectedTumbon,
           selectedOffice
         });
         // Simulate API call
@@ -56,15 +61,15 @@ export function MainPage() {
     };
 
     applyFilters();
-  }, [selectedSubCategories, dateRange, selectedProvince, selectedOffice]);
+  }, [selectedCategories, dateRange, selectedProvince, selectedAmphure, selectedTumbon, selectedOffice]);
 
   // Log initial state for debugging
   useEffect(() => {
-    console.log('Initial subcategories:', selectedSubCategories);
+    console.log('Initial categories:', selectedCategories);
   }, []);
 
   const handleSubCategoryChange = (subCategory: string, checked: boolean) => {
-    setSelectedSubCategories(prev => {
+    setSelectedCategories(prev => {
       const newState = checked 
         ? [...prev, subCategory]
         : prev.filter(sc => sc !== subCategory);
@@ -84,8 +89,10 @@ export function MainPage() {
       <div className="flex-1">
         <Map
           token={MAPBOX_TOKEN}
-          selectedCategories={selectedSubCategories}
+          selectedCategories={selectedCategories}
           selectedProvince={selectedProvince}
+          selectedAmphure={selectedAmphure}
+          selectedTumbon={selectedTumbon}
           selectedOffice={selectedOffice}
         />
       </div>
@@ -94,12 +101,12 @@ export function MainPage() {
       <div className="w-80 border-l border-gray-200 bg-gray-50 flex flex-col h-full">
         <div className="flex-1 overflow-y-auto">
           <FilterPanel
-            selectedSubCategories={selectedSubCategories}
-            onSubCategoryChange={handleSubCategoryChange}
+            selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
             selectedProvince={selectedProvince}
-            onProvinceChange={setSelectedProvince}
+            setSelectedProvince={setSelectedProvince}
             selectedOffice={selectedOffice}
-            onOfficeChange={setSelectedOffice}
+            setSelectedOffice={setSelectedOffice}
             provinces={PROVINCES}
             onDateRangeChange={(range) => {
               setDateRange(range);
