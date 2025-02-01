@@ -1,4 +1,5 @@
 import { CategoryName } from "@/types/processed-post";
+import type { CirclePaint } from 'mapbox-gl';
 
 // Category-specific colors that match the ontology semantics
 export const categoryColors = {
@@ -50,7 +51,27 @@ export const clusterConfig = {
     small: 30,
     medium: 40,
     large: 50
-  }
+  },
+  paint: {
+    'circle-color': [
+      'step',
+      ['get', 'point_count'],
+      '#22c55e', // small
+      50,
+      '#f59e0b', // medium
+      100,
+      '#ef4444' // large
+    ],
+    'circle-radius': [
+      'step',
+      ['get', 'point_count'],
+      30, // small size
+      50,
+      40, // medium size
+      100,
+      50 // large size
+    ]
+  } satisfies CirclePaint
 } as const;
 
 // Map style configuration

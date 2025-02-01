@@ -1,34 +1,112 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { apiClient } from '@/lib/api-client';
 import { useRealTime } from '@/contexts/RealTimeContext';
-import type { ProcessedPost } from '@/types/processed-post';
+import type { ProcessedPost, CategoryName } from '@/types/processed-post';
 import mapboxgl from 'mapbox-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useNavigate } from "react-router-dom";
 import MapError from "./map/MapError";
-import { clusterConfig, mapStyle } from './map/styles';
+import { clusterConfig, mapStyle, categoryColors, categoryShapeMap } from './map/styles';
 import { getClusterColor, getClusterSize } from './map/utils';
+import { toast } from '@/components/ui/use-toast';
+import { useMapContainer } from '@/hooks/useMapContainer';
 
 interface MapProps {
-  token: string;  // Mapbox token
-  selectedCategories: string[];
+  token: string;
+  selectedCategories: CategoryName[];
   selectedProvince: string | null;
+  selectedAmphure: string | null;
+  selectedTumbon: string | null;
   selectedOffice: string | null;
 }
 
-export function Map({ token, selectedCategories, selectedProvince, selectedOffice }: MapProps) {
-  const mapContainer = useRef<HTMLDivElement>(null);
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 2000;
+
+const isValidCoordinates = (post: ProcessedPost): boolean => {
+  return (
+    typeof post.latitude === 'number' && 
+    typeof post.longitude === 'number' && 
+    !isNaN(post.latitude) && 
+    !isNaN(post.longitude) &&
+    post.latitude !== 0 && 
+    post.longitude !== 0
+  );
+};
+
+const matchesAdministrativeArea = (
+  post: ProcessedPost,
+  selectedProvince: string | null,
+  selectedAmphure: string | null,
+  selectedTumbon: string | null
+): boolean => {
+  if (!selectedProvince && !selectedAmphure && !selectedTumbon) {
+    return true;
+  }
+
+  if (selectedTumbon && post.tumbon) {
+    return post.tumbon.includes(selectedTumbon);
+  }
+
+  if (selectedAmphure && post.amphure) {
+    return post.amphure.includes(selectedAmphure);
+  }
+
+  if (selectedProvince && post.province) {
+    return post.province.includes(selectedProvince);
+  }
+
+  return false;
+};
+
+export function Map({ 
+  token, 
+  selectedCategories, 
+  selectedProvince, 
+  selectedAmphure, 
+  selectedTumbon, 
+  selectedOffice 
+}: MapProps) {
+  const {
+    containerRef,
+    containerState,
+    isReady,
+    hasError,
+    error
+  } = useMapContainer();
+
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { latestPost } = useRealTime();
   const [apiPosts, setApiPosts] = useState<ProcessedPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load initial posts from API
+  const withRetry = useCallback(async <T,>(
+    operation: () => Promise<T>,
+    retries: number = MAX_RETRIES
+  ): Promise<T> => {
+    try {
+      return await operation();
+    } catch (error) {
+      if (retries > 0) {
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+        return withRetry(operation, retries - 1);
+      }
+      throw error;
+    }
+  }, []);
+
+  // Load initial posts
   useEffect(() => {
     const loadPosts = async () => {
       try {
-        const posts = await apiClient.getUnprocessedPosts();
+        setIsLoading(true);
+        const posts = await withRetry(async () => {
+          const result = await apiClient.getUnprocessedPosts();
+          if (!result) throw new Error('No posts returned from API');
+          return result;
+        });
+
         if (posts && posts.length > 0) {
           const latest20 = posts
             .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
@@ -36,20 +114,32 @@ export function Map({ token, selectedCategories, selectedProvince, selectedOffic
           setApiPosts(latest20);
         } else {
           setApiPosts([]);
+          toast({
+            title: "No posts found",
+            description: "There are currently no posts to display on the map.",
+            variant: "default"
+          });
         }
       } catch (error) {
         console.error('Failed to load posts:', error);
-        setError("Failed to load posts from API");
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        toast({
+          title: "Error loading posts",
+          description: "Failed to load posts. Please try again later.",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
       }
     };
 
     loadPosts();
-  }, []);
+  }, [withRetry]);
 
   // Handle real-time updates
   useEffect(() => {
     if (latestPost) {
-      setApiPosts(current => {
+      setApiPosts((current: ProcessedPost[]) => {
         const updated = [...current];
         const index = updated.findIndex(p => p.processed_post_id === latestPost.processed_post_id);
         
@@ -69,18 +159,15 @@ export function Map({ token, selectedCategories, selectedProvince, selectedOffic
 
   // Initialize map
   useEffect(() => {
-    if (!mapContainer.current || !token) {
-      setError(!token ? "Please provide a valid Mapbox access token" : "Map container not found");
-      return;
-    }
+    if (!isReady || !token || mapRef.current) return;
 
     try {
       mapboxgl.accessToken = token;
 
       const map = new mapboxgl.Map({
-        container: mapContainer.current,
+        container: containerRef.current!,
         style: mapStyle.default,
-        center: [101.0, 15.0], // Thailand center
+        center: [101.0, 15.0],
         zoom: 5.5,
         language: 'th',
         localIdeographFontFamily: "'Noto Sans Thai', 'Noto Sans', sans-serif"
@@ -88,8 +175,62 @@ export function Map({ token, selectedCategories, selectedProvince, selectedOffic
 
       map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
-      // Add clustering source
       map.on('load', () => {
+        // Create SVG markers for each category
+        const createSVGMarker = (shape: string) => {
+          const size = 24;
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return;
+
+          ctx.clearRect(0, 0, size, size);
+          
+          // Draw shape based on type
+          ctx.beginPath();
+          switch (shape) {
+            case 'circle':
+              ctx.arc(size/2, size/2, size/3, 0, Math.PI * 2);
+              break;
+            case 'triangle':
+              ctx.moveTo(size/2, size/6);
+              ctx.lineTo(size*5/6, size*5/6);
+              ctx.lineTo(size/6, size*5/6);
+              ctx.closePath();
+              break;
+            case 'square':
+              ctx.rect(size/6, size/6, size*2/3, size*2/3);
+              break;
+            case 'hexa':
+              const a = size/3;
+              ctx.moveTo(size/2, size/6);
+              ctx.lineTo(size*5/6, size/3);
+              ctx.lineTo(size*5/6, size*2/3);
+              ctx.lineTo(size/2, size*5/6);
+              ctx.lineTo(size/6, size*2/3);
+              ctx.lineTo(size/6, size/3);
+              ctx.closePath();
+              break;
+          }
+          ctx.fillStyle = '#ffffff';
+          ctx.fill();
+          ctx.strokeStyle = '#000000';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          // Return canvas data instead of canvas element
+          return ctx.getImageData(0, 0, size, size);
+        };
+
+        // Add marker images
+        Object.values(categoryShapeMap).forEach(shape => {
+          const imageData = createSVGMarker(shape);
+          if (imageData) {
+            map.addImage(shape, imageData);
+          }
+        });
+
         map.addSource('posts', {
           type: 'geojson',
           data: {
@@ -97,39 +238,18 @@ export function Map({ token, selectedCategories, selectedProvince, selectedOffic
             features: []
           },
           cluster: true,
-          clusterMaxZoom: clusterConfig.maxZoom,
-          clusterRadius: clusterConfig.radius
+          clusterMaxZoom: 14,
+          clusterRadius: 50
         });
 
-        // Add cluster layer
         map.addLayer({
           id: 'clusters',
           type: 'circle',
           source: 'posts',
           filter: ['has', 'point_count'],
-          paint: {
-            'circle-color': [
-              'step',
-              ['get', 'point_count'],
-              clusterConfig.colors.small,
-              50,
-              clusterConfig.colors.medium,
-              100,
-              clusterConfig.colors.large
-            ],
-            'circle-radius': [
-              'step',
-              ['get', 'point_count'],
-              clusterConfig.sizes.small,
-              50,
-              clusterConfig.sizes.medium,
-              100,
-              clusterConfig.sizes.large
-            ]
-          }
+          paint: clusterConfig.paint
         });
 
-        // Add cluster count layer
         map.addLayer({
           id: 'cluster-count',
           type: 'symbol',
@@ -139,35 +259,40 @@ export function Map({ token, selectedCategories, selectedProvince, selectedOffic
             'text-field': '{point_count_abbreviated}',
             'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
             'text-size': 12
-          },
-          paint: {
-            'text-color': '#ffffff'
           }
         });
-      });
 
-      // Handle cluster click
-      map.on('click', 'clusters', (e) => {
-        const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-        if (!features.length) return;
+        map.addLayer({
+          id: 'unclustered-point',
+          type: 'symbol',
+          source: 'posts',
+          filter: ['!', ['has', 'point_count']],
+          layout: {
+            'icon-image': ['get', 'shape'],
+            'icon-size': 1,
+            'icon-allow-overlap': true
+          },
+          paint: {
+            'icon-color': ['get', 'color']
+          }
+        });
+
+        // Add click handler for posts
+        map.on('click', 'unclustered-point', (e) => {
+          const feature = e.features?.[0];
+          if (!feature?.properties) return;
+          
+          const properties = feature.properties as { id: string };
+          navigate(`/posts/${properties.id}`);
+        });
+
+        // Change cursor on hover
+        map.on('mouseenter', 'unclustered-point', () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
         
-        const clusterId = features[0].properties?.cluster_id;
-        if (!clusterId) return;
-
-        const source = map.getSource('posts');
-        if (!source || !('getClusterExpansionZoom' in source)) return;
-
-        (source as mapboxgl.GeoJSONSource).getClusterExpansionZoom(clusterId, (err, zoom) => {
-          if (err || typeof zoom !== 'number') return;
-          const point = features[0].geometry as GeoJSON.Point;
-          const coordinates: [number, number] = [
-            point.coordinates[0] as number,
-            point.coordinates[1] as number
-          ];
-          map.easeTo({
-            center: coordinates,
-            zoom
-          });
+        map.on('mouseleave', 'unclustered-point', () => {
+          map.getCanvas().style.cursor = '';
         });
       });
 
@@ -178,59 +303,66 @@ export function Map({ token, selectedCategories, selectedProvince, selectedOffic
         mapRef.current = null;
       };
     } catch (error) {
-      console.error('Mapbox error:', error);
-      setError("Error loading map. Please check your Mapbox token.");
+      console.error('Map initialization error:', error);
+      toast({
+        title: "Map Error",
+        description: "Failed to initialize map. Please try again.",
+        variant: "destructive"
+      });
     }
-  }, [token]);
+  }, [isReady, token, containerRef, navigate]);
 
-  // Update markers when posts or filters change
+  // Update map data
   useEffect(() => {
-    const map = mapRef.current;
-    if (!map) return;
+    if (!mapRef.current || !apiPosts.length) return;
 
-    const source = map.getSource('posts');
-    if (!source || !('setData' in source)) return;
-
-    const filteredPosts = apiPosts.filter(post => {
-      const categoryMatch = selectedCategories.includes(post.category_name);
-      const provinceMatch = !selectedProvince || 
-        (post.location.province && post.location.province === selectedProvince);
-      const officeMatch = !selectedOffice ||
-        (post.location.irrigation_office && post.location.irrigation_office === selectedOffice);
-      return categoryMatch && provinceMatch && officeMatch;
-    });
+    const filteredPosts = apiPosts.filter((post: ProcessedPost) => 
+      isValidCoordinates(post) &&
+      matchesAdministrativeArea(post, selectedProvince, selectedAmphure, selectedTumbon) &&
+      (selectedCategories.length === 0 || selectedCategories.includes(post.category_name as CategoryName))
+    );
 
     const features = filteredPosts.map(post => ({
       type: 'Feature' as const,
       geometry: {
         type: 'Point' as const,
-        coordinates: [
-          post.location.longitude ?? 0,
-          post.location.latitude ?? 0
-        ] as [number, number]
+        coordinates: [post.longitude, post.latitude]
       },
       properties: {
         id: post.processed_post_id,
+        shape: categoryShapeMap[post.category_name as CategoryName],
+        color: categoryColors[post.category_name as CategoryName],
         category: post.category_name,
-        province: post.location.province || '',
-        created_at: post.created_at,
-        sub_category: post.sub1_category_name,
-        status: post.status
+        title: post.category_name
       }
     }));
 
-    (source as mapboxgl.GeoJSONSource).setData({
+    const source = mapRef.current.getSource('posts') as mapboxgl.GeoJSONSource;
+    source.setData({
       type: 'FeatureCollection',
       features
     });
-  }, [apiPosts, selectedCategories, selectedProvince, selectedOffice]);
-
-  if (error) {
-    return <MapError error={error} />;
-  }
+  }, [apiPosts, selectedCategories, selectedProvince, selectedAmphure, selectedTumbon]);
 
   return (
-    <div ref={mapContainer} className="w-full h-full min-h-[400px]" />
+    <div className="relative w-full h-full min-h-[400px]">
+      {hasError && (
+        <MapError 
+          error={error} 
+          onRetry={() => window.location.reload()} 
+        />
+      )}
+      <div 
+        ref={containerRef}
+        className="w-full h-full rounded-lg overflow-hidden"
+        data-testid="map-container"
+      />
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white/80">
+          <div className="loading-spinner" />
+        </div>
+      )}
+    </div>
   );
 }
 

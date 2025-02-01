@@ -1,17 +1,47 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useState, useEffect } from 'react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 
 interface MapErrorProps {
-  error: string;
+  error: Error | null;
+  onRetry?: () => void;
 }
 
-const MapError = ({ error }: MapErrorProps) => {
+const MapError: React.FC<MapErrorProps> = ({ error, onRetry }) => {
+  const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    if (error) {
+      setShowError(true);
+    }
+  }, [error]);
+
+  if (!showError || !error) {
+    return null;
+  }
+
   return (
-    <div className="w-full h-full min-h-[400px] flex items-center justify-center bg-gray-100 rounded-lg">
-      <div className="text-center">
-        <div className="text-red-500 text-xl mb-2">⚠️</div>
-        <p className="text-gray-600">{error}</p>
-      </div>
-    </div>
+    <Alert variant="destructive" className="mb-4">
+      <AlertTitle>Map Loading Error</AlertTitle>
+      <AlertDescription className="mt-2">
+        <p className="text-sm mb-4">{error.message || 'An unexpected error occurred while loading the map.'}</p>
+        {onRetry && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setShowError(false);
+              onRetry();
+            }}
+            className="flex items-center gap-2"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Retry
+          </Button>
+        )}
+      </AlertDescription>
+    </Alert>
   );
 };
 
