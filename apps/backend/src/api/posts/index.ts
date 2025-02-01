@@ -8,10 +8,10 @@ export const router = express.Router();
 // Get the io instance from app settings
 const getIo = (req: express.Request) => req.app.get('io');
 
-// Create service instance with io
+// Create service instance with io and pool
 const createPostService = (req: express.Request) => {
   const io = getIo(req);
-  return new ProcessedPostService(io);
+  return new ProcessedPostService(readPool, io);
 };
 
 // Test database connection

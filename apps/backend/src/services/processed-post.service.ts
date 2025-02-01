@@ -17,21 +17,11 @@ import { BatchProgressManager } from '../utils/batch-progress-manager.js';
 import { BatchOperation, BatchProgress } from '../models/batch-progress.js';
 import { Server } from 'socket.io';
 
-interface BatchUpdateStatus {
-  id: string;
-  status: ProcessedPost['status'];
-}
-
 interface BatchUpdateLocation {
   id: string;
   tumbon?: string;
   amphure?: string;
   province?: string;
-}
-
-interface BatchUpdateSensor {
-  id: string;
-  sensorId: string;
 }
 
 const MAX_RETRIES = 3;
@@ -66,17 +56,26 @@ export class ProcessedPostService {
 
   private toDTO(post: ProcessedPost): ProcessedPostDTO {
     return {
-      ...post,
-      created_at: post.created_at.toISOString(),
-      updated_at: post.updated_at.toISOString()
+      processed_post_id: post.processed_post_id,
+      text: post.text,
+      category_name: post.category_name,
+      sub1_category_name: post.sub1_category_name,
+      profile_name: post.profile_name,
+      post_date: post.post_date.toISOString(),
+      post_url: post.post_url,
+      latitude: post.latitude,
+      longitude: post.longitude,
+      tumbon: post.tumbon,
+      amphure: post.amphure,
+      province: post.province
     };
   }
 
   async getUnprocessedPosts(): Promise<ProcessedPostDTO[]> {
     try {
       const posts = await this.executeQuery<ProcessedPost>(
-        'SELECT * FROM processed_posts WHERE status = $1',
-        ['unprocessed']
+        'SELECT * FROM processed_posts ORDER BY post_date DESC LIMIT 100',
+        []
       );
 
       return posts.map(this.toDTO);
@@ -117,64 +116,32 @@ export class ProcessedPostService {
     const result = await this.pool.query(
       `SELECT * FROM processed_posts
        WHERE ST_DWithin(
-         ST_MakePoint(location->>'longitude', location->>'latitude')::geography,
+         ST_MakePoint(longitude, latitude)::geography,
          ST_MakePoint($1, $2)::geography,
          $3 * 1000
        )`,
       [longitude, latitude, radiusKm]
     );
     
-    return result.rows;
-  }
-
-  async updatePostStatus(id: string, status: ProcessedPost['status'], client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO | null> {
-    try {
-      const result = await this.executeQuery<ProcessedPost>(
-        'UPDATE processed_posts SET status = $1, updated_at = NOW() WHERE processed_post_id = $2 RETURNING *',
-        [status, id],
-        client
-      );
-
-      if (result.length === 0) {
-        return null;
-      }
-
-      const post = result[0];
-      this.io.to('posts').emit('post:update', post);
-      return this.toDTO(post);
-    } catch (error) {
-      logger.error(`Error updating post status for id ${id}:`, error);
-      throw new Error('Failed to update post status');
-    }
+    return result.rows.map(this.toDTO);
   }
 
   async updateLocationDetails(
     id: string,
-    tumbon?: string,
-    amphure?: string,
-    province?: string,
+    tumbon?: string[],
+    amphure?: string[],
+    province?: string[],
     client: PoolType | TransactionClient = this.pool
   ): Promise<ProcessedPostDTO | null> {
     try {
       const result = await this.executeQuery<ProcessedPost>(
         `UPDATE processed_posts 
-         SET location = jsonb_set(
-           jsonb_set(
-             jsonb_set(
-               location::jsonb,
-               '{tumbon}',
-               $2::jsonb
-             ),
-             '{amphure}',
-             $3::jsonb
-           ),
-           '{province}',
-           $4::jsonb
-         ),
-         updated_at = NOW()
+         SET tumbon = $2,
+             amphure = $3,
+             province = $4
          WHERE processed_post_id = $1
          RETURNING *`,
-        [id, JSON.stringify(tumbon), JSON.stringify(amphure), JSON.stringify(province)],
+        [id, tumbon, amphure, province],
         client
       );
 
@@ -190,30 +157,10 @@ export class ProcessedPostService {
     }
   }
 
-  async updateNearestSensor(id: string, sensorId: string, client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO | null> {
-    try {
-      const result = await this.executeQuery<ProcessedPost>(
-        'UPDATE processed_posts SET nearest_sensor_id = $1, updated_at = NOW() WHERE processed_post_id = $2 RETURNING *',
-        [sensorId, id],
-        client
-      );
-
-      if (result.length === 0) {
-        return null;
-      }
-
-      const post = result[0];
-      return this.toDTO(post);
-    } catch (error) {
-      logger.error(`Error updating nearest sensor for post ${id}:`, error);
-      throw new Error('Failed to update nearest sensor');
-    }
-  }
-
   async getRecentPosts(minutes: number = 5, client: PoolType | TransactionClient = this.pool): Promise<ProcessedPostDTO[]> {
     try {
       const result = await this.executeQuery<ProcessedPost>(
-        'SELECT * FROM processed_posts WHERE created_at >= NOW() - INTERVAL \'$1 minutes\' ORDER BY created_at DESC',
+        'SELECT * FROM processed_posts WHERE post_date >= NOW() - INTERVAL \'$1 minutes\' ORDER BY post_date DESC',
         [minutes],
         client
       );
@@ -225,244 +172,17 @@ export class ProcessedPostService {
     }
   }
 
-  async updatePostWithTransaction(
-    id: string,
-    updates: {
-      status?: ProcessedPost['status'];
-      location?: {
-        tumbon?: string;
-        amphure?: string;
-        province?: string;
-      };
-      nearest_sensor_id?: string;
-    },
-    client: PoolType | TransactionClient = this.pool
-  ): Promise<ProcessedPostDTO> {
-    return this.transactionManager.withTransaction(async (client) => {
-      // First verify the post exists
-      const post = await this.getPostById(id, client);
-      
-      if (updates.status) {
-        await this.updatePostStatus(id, updates.status, client);
-      }
-
-      if (updates.location) {
-        await this.updateLocationDetails(
-          id,
-          updates.location.tumbon,
-          updates.location.amphure,
-          updates.location.province,
-          client
-        );
-      }
-
-      if (updates.nearest_sensor_id) {
-        await this.updateNearestSensor(id, updates.nearest_sensor_id, client);
-      }
-
-      // Get the final updated post
-      return this.getPostById(id, client);
-    });
-  }
-
-  async batchUpdateStatus(updates: BatchUpdateStatus[]): Promise<ProcessedPostDTO[]> {
-    return this.transactionManager.withTransaction(async (client) => {
-      try {
-        const result = await this.executeQuery<ProcessedPost>(`
-          UPDATE processed_posts 
-          SET 
-            status = u.status,
-            updated_at = NOW()
-          FROM (
-            SELECT UNNEST($1::uuid[]) as id, 
-                   UNNEST($2::text[]) as status
-          ) u 
-          WHERE processed_post_id = u.id
-          RETURNING *
-        `, [
-          updates.map(u => u.id),
-          updates.map(u => u.status)
-        ], client);
-
-        return result.map(this.toDTO);
-      } catch (error) {
-        logger.error('Batch status update failed:', error);
-        throw new DatabaseError('Failed to update post statuses', error);
-      }
-    });
-  }
-
-  async batchUpdateLocation(updates: BatchUpdateLocation[]): Promise<ProcessedPostDTO[]> {
-    return this.transactionManager.withTransaction(async (client) => {
-      try {
-        const result = await this.executeQuery<ProcessedPost>(`
-          UPDATE processed_posts 
-          SET 
-            location = jsonb_set(
-              jsonb_set(
-                jsonb_set(
-                  location::jsonb,
-                  '{tumbon}',
-                  COALESCE(u.tumbon::jsonb, location->'tumbon')
-                ),
-                '{amphure}',
-                COALESCE(u.amphure::jsonb, location->'amphure')
-              ),
-              '{province}',
-              COALESCE(u.province::jsonb, location->'province')
-            ),
-            updated_at = NOW()
-          FROM (
-            SELECT 
-              UNNEST($1::uuid[]) as id,
-              UNNEST($2::text[]) as tumbon,
-              UNNEST($3::text[]) as amphure,
-              UNNEST($4::text[]) as province
-          ) u 
-          WHERE processed_post_id = u.id
-          RETURNING *
-        `, [
-          updates.map(u => u.id),
-          updates.map(u => u.tumbon),
-          updates.map(u => u.amphure),
-          updates.map(u => u.province)
-        ], client);
-
-        return result.map(this.toDTO);
-      } catch (error) {
-        logger.error('Batch location update failed:', error);
-        throw new DatabaseError('Failed to update post locations', error);
-      }
-    });
-  }
-
-  async batchUpdateSensors(updates: BatchUpdateSensor[]): Promise<ProcessedPostDTO[]> {
-    return this.transactionManager.withTransaction(async (client) => {
-      try {
-        const result = await this.executeQuery<ProcessedPost>(`
-          UPDATE processed_posts 
-          SET 
-            nearest_sensor_id = u.sensor_id,
-            updated_at = NOW()
-          FROM (
-            SELECT UNNEST($1::uuid[]) as id, 
-                   UNNEST($2::text[]) as sensor_id
-          ) u 
-          WHERE processed_post_id = u.id
-          RETURNING *
-        `, [
-          updates.map(u => u.id),
-          updates.map(u => u.sensorId)
-        ], client);
-
-        return result.map(this.toDTO);
-      } catch (error) {
-        logger.error('Batch sensor update failed:', error);
-        throw new DatabaseError('Failed to update post sensors', error);
-      }
-    });
-  }
-
-  private async withRetry<T>(
-    operation: () => Promise<T>,
-    retries: number = MAX_RETRIES,
-    delay: number = RETRY_DELAY
-  ): Promise<T> {
-    try {
-      return await operation();
-    } catch (error) {
-      if (retries > 0) {
-        await new Promise(resolve => setTimeout(resolve, delay));
-        return this.withRetry(operation, retries - 1, delay * 2);
-      }
-      throw error;
-    }
-  }
-
-  async batchUpdatePostsWithProgress(
-    updates: Array<{
-      id: string;
-      status?: ProcessedPost['status'];
-      location?: {
-        tumbon?: string;
-        amphure?: string;
-        province?: string;
-      };
-      nearest_sensor_id?: string;
-    }>
-  ): Promise<BatchOperation> {
-    const batchId = randomUUID();
-    const batch = this.batchProgressManager.createBatch(batchId, updates.length);
-
-    // Process in chunks to avoid overwhelming the database
-    const chunkSize = 50;
-    const chunks = [];
-    for (let i = 0; i < updates.length; i += chunkSize) {
-      chunks.push(updates.slice(i, i + chunkSize));
-    }
-
-    // Process each chunk
-    for (const chunk of chunks) {
-      await this.transactionManager.withTransaction(async (client) => {
-        const promises = chunk.map(async (update) => {
-          try {
-            batch.progress.inProgress++;
-            
-            await this.withRetry(async () => {
-              if (update.status) {
-                await this.updatePostStatus(update.id, update.status, client);
-              }
-              if (update.location) {
-                await this.updateLocationDetails(
-                  update.id,
-                  update.location.tumbon,
-                  update.location.amphure,
-                  update.location.province,
-                  client
-                );
-              }
-              if (update.nearest_sensor_id) {
-                await this.updateNearestSensor(update.id, update.nearest_sensor_id, client);
-              }
-            });
-
-            this.batchProgressManager.markCompleted(batchId, update.id);
-          } catch (error: unknown) {
-            const errorMessage = error instanceof Error 
-              ? error.message 
-              : 'Unknown error occurred';
-            this.batchProgressManager.addError(batchId, update.id, errorMessage);
-          }
-        });
-
-        await Promise.all(promises);
-      });
-    }
-
-    // Schedule cleanup after 1 hour
-    setTimeout(() => {
-      this.batchProgressManager.cleanupBatch(batchId);
-    }, 60 * 60 * 1000);
-
-    this.io.to('posts').emit('batch:progress', batch.progress);
-    return batch;
-  }
-
-  getBatchProgress(batchId: string): BatchProgress | undefined {
-    return this.batchProgressManager.getBatchProgress(batchId);
-  }
-
   async createPost(data: CreatePostDTO): Promise<ProcessedPostDTO> {
-    const { category_name, sub1_category_name, location, status } = data;
+    const { category_name, sub1_category_name, text, profile_name, post_url, latitude, longitude, tumbon, amphure, province } = data;
     
     const result = await this.pool.query(
       `INSERT INTO processed_posts 
-       (category_name, sub1_category_name, location, status)
-       VALUES ($1, $2, $3, $4)
+       (category_name, sub1_category_name, text, profile_name, post_url, latitude, longitude, tumbon, amphure, province)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
        RETURNING *`,
-      [category_name, sub1_category_name, location, status]
+      [category_name, sub1_category_name, text, profile_name, post_url, latitude, longitude, tumbon, amphure, province]
     );
     
-    return result.rows[0];
+    return this.toDTO(result.rows[0]);
   }
 } 
