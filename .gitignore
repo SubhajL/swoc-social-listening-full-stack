@@ -17,3 +17,12 @@ apps/**/dist
 .cursorrules
 ProjectStructure.md
 CONVENTIONS.md
+
+# Utility scripts
+check_tables.js
+check_tables.mjs
+verify_coordinates.mjs
+
+# Data files
+*.xlsx
+~$*
