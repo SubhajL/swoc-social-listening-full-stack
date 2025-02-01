@@ -127,7 +127,7 @@ export function FilterPanel({
       </div>
 
       {/* Province Selection */}
-      <div className="bg-[#8B5CF6] text-white rounded-2xl p-6">
+      <div className="bg-[#8B5CF6] text-white rounded-2xl p-6" data-testid="province-select">
         <Select
           value={selectedProvince || "all"}
           onValueChange={(value) => onProvinceChange(value === "all" ? null : value)}
