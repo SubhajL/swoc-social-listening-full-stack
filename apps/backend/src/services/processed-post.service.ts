@@ -67,7 +67,10 @@ export class ProcessedPostService {
       longitude: post.longitude,
       tumbon: post.tumbon,
       amphure: post.amphure,
-      province: post.province
+      province: post.province,
+      replied_post: post.replied_post,
+      replied_date: post.replied_date?.toISOString(),
+      replied_by: post.replied_by
     };
   }
 

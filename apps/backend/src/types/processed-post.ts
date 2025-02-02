@@ -20,4 +20,7 @@ export interface ProcessedPost {
   named_entities: string[];
   river_basin: string[];
   extracted_at: Date;
+  replied_post: boolean;
+  replied_date?: Date;
+  replied_by?: string;
 } 

@@ -7,14 +7,19 @@ export const mockPost: ProcessedPostDTO = {
   category_name: 'Test Category',
   sub1_category_name: 'Test Sub Category',
   profile_name: 'Test User',
-  post_date: new Date('2024-01-19T00:00:00.000Z').toISOString(),
+  post_date: '2024-01-19T00:00:00.000Z',
   post_url: 'https://example.com/post',
   latitude: 13.7563,
   longitude: 100.5018,
   tumbon: ['Test Tumbon'],
   amphure: ['Test Amphure'],
-  province: ['Test Province']
+  province: ['Test Province'],
+  replied_post: false,
+  replied_date: undefined,
+  replied_by: undefined
 };
+
+export const mockPosts: ProcessedPostDTO[] = [mockPost];
 
 // Mock service implementation
 export const mockProcessedPostService = {

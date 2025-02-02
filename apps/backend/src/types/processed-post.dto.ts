@@ -22,4 +22,7 @@ export interface ProcessedPostDTO {
   tumbon: string[];
   amphure: string[];
   province: string[];
+  replied_post: boolean;
+  replied_date?: string;  // ISO string for API
+  replied_by?: string;
 } 
