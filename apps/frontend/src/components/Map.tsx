@@ -108,15 +108,22 @@ export function Map({
         });
 
         if (posts && posts.length > 0) {
-          const latest20 = posts
-            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-            .slice(0, 20);
-          setApiPosts(latest20);
+          // Filter out posts without valid coordinates
+          const validPosts = posts.filter(post => isValidCoordinates(post));
+          setApiPosts(validPosts);
+
+          if (validPosts.length === 0) {
+            toast({
+              title: "No posts with valid coordinates",
+              description: "There are currently no unreplied posts with valid coordinates to display on the map.",
+              variant: "default"
+            });
+          }
         } else {
           setApiPosts([]);
           toast({
-            title: "No posts found",
-            description: "There are currently no posts to display on the map.",
+            title: "No unreplied posts found",
+            description: "There are currently no unreplied posts to display on the map.",
             variant: "default"
           });
         }
@@ -125,7 +132,7 @@ export function Map({
         const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         toast({
           title: "Error loading posts",
-          description: "Failed to load posts. Please try again later.",
+          description: "Failed to load unreplied posts. Please try again later.",
           variant: "destructive"
         });
       } finally {

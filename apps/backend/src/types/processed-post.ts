@@ -23,4 +23,11 @@ export interface ProcessedPost {
   replied_post: boolean;
   replied_date?: Date;
   replied_by?: string;
+  // Additional fields from location query
+  location_data?: {
+    lat: number;
+    lng: number;
+  };
+  final_latitude?: number;
+  final_longitude?: number;
 } 

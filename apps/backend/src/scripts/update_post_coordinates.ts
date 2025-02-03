@@ -35,20 +35,88 @@ async function updatePostCoordinates() {
   try {
     logger.info('Starting post coordinates update...');
     
-    // Read and execute the SQL file
-    const sqlFile = readFileSync(join(__dirname, 'update_post_coordinates.sql'), 'utf8');
-    const results = await client.query<QueryResultRow>(sqlFile);
-    
-    // Log results (results is an array of QueryResult for multiple statements)
-    if (Array.isArray(results)) {
-      results.forEach((res) => {
-        if (res.rows && res.rows.length > 0) {
-          res.rows.forEach((row: QueryResultRow) => {
-            logger.info(row.message || JSON.stringify(row));
-          });
-        }
-      });
-    }
+    // Create temporary table for updates
+    await client.query(`
+      CREATE TEMP TABLE post_updates AS
+      WITH location_hierarchy AS (
+        SELECT 
+          pp.processed_post_id,
+          COALESCE(
+            -- Try tumbon first
+            (
+              SELECT jsonb_build_object('lat', t.latitude, 'lng', t.longitude, 'source', 'tumbon')
+              FROM tumbons t
+              WHERE t.name_th = ANY(pp.tumbon)
+                AND t.latitude IS NOT NULL 
+                AND t.longitude IS NOT NULL
+              LIMIT 1
+            ),
+            -- Then try amphure
+            (
+              SELECT jsonb_build_object('lat', a.latitude, 'lng', a.longitude, 'source', 'amphure')
+              FROM amphures a
+              WHERE a.name_th = ANY(pp.amphure)
+                AND a.latitude IS NOT NULL 
+                AND a.longitude IS NOT NULL
+              LIMIT 1
+            ),
+            -- Finally try province
+            (
+              SELECT jsonb_build_object('lat', p.latitude, 'lng', p.longitude, 'source', 'province')
+              FROM provinces p
+              WHERE p.name_th = ANY(pp.province)
+                AND p.latitude IS NOT NULL 
+                AND p.longitude IS NOT NULL
+              LIMIT 1
+            )
+          ) as location_data
+        FROM processed_posts pp
+        WHERE (pp.latitude IS NULL OR pp.longitude IS NULL)
+          AND (
+            array_length(pp.tumbon, 1) > 0 OR 
+            array_length(pp.amphure, 1) > 0 OR 
+            array_length(pp.province, 1) > 0
+          )
+      )
+      SELECT 
+        processed_post_id,
+        (location_data->>'lat')::numeric as latitude,
+        (location_data->>'lng')::numeric as longitude,
+        location_data->>'source' as source
+      FROM location_hierarchy
+      WHERE location_data IS NOT NULL;
+    `);
+
+    // Get update summary
+    const summaryResult = await client.query(`
+      SELECT 
+        source,
+        COUNT(*) as count
+      FROM post_updates
+      GROUP BY source
+      ORDER BY count DESC;
+    `);
+
+    logger.info('Update summary:');
+    summaryResult.rows.forEach(row => {
+      logger.info(`- ${row.source}: ${row.count} posts`);
+    });
+
+    // Perform the update
+    const updateResult = await client.query(`
+      UPDATE processed_posts pp
+      SET 
+        latitude = pu.latitude,
+        longitude = pu.longitude
+      FROM post_updates pu
+      WHERE pp.processed_post_id = pu.processed_post_id
+      RETURNING pp.processed_post_id;
+    `);
+
+    logger.info(`Total posts updated: ${updateResult.rowCount}`);
+
+    // Drop temporary table
+    await client.query('DROP TABLE post_updates;');
     
     logger.info('Post coordinates update completed successfully');
   } catch (error) {

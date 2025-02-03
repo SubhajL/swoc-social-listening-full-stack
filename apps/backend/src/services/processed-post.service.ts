@@ -16,6 +16,7 @@ import { randomUUID } from 'crypto';
 import { BatchProgressManager } from '../utils/batch-progress-manager.js';
 import { BatchOperation, BatchProgress } from '../models/batch-progress.js';
 import { Server } from 'socket.io';
+import { LocationCacheService } from './location-cache.service.js';
 
 interface BatchUpdateLocation {
   id: string;
@@ -31,6 +32,7 @@ export class ProcessedPostService {
   private transactionManager: TransactionManager;
   private batchProgressManager: BatchProgressManager;
   private io: Server;
+  private locationCache: LocationCacheService;
 
   constructor(
     private readonly pool: PoolType,
@@ -39,6 +41,12 @@ export class ProcessedPostService {
     this.transactionManager = new TransactionManager(pool);
     this.batchProgressManager = new BatchProgressManager();
     this.io = io;
+    this.locationCache = new LocationCacheService(pool);
+  }
+
+  async initialize(): Promise<void> {
+    await this.locationCache.initialize();
+    logger.info('ProcessedPostService initialized with location cache');
   }
 
   private async executeQuery<T extends QueryResultRow>(
@@ -76,12 +84,62 @@ export class ProcessedPostService {
 
   async getUnprocessedPosts(): Promise<ProcessedPostDTO[]> {
     try {
+      logger.info('Starting to fetch unprocessed posts');
+      
       const posts = await this.executeQuery<ProcessedPost>(
-        'SELECT * FROM processed_posts ORDER BY post_date DESC LIMIT 100',
+        `SELECT * FROM processed_posts 
+         WHERE replied_post = false 
+         ORDER BY post_date DESC`,
         []
       );
 
-      return posts.map(this.toDTO);
+      logger.info(`Found ${posts.length} total unprocessed posts`);
+      
+      let directCoordinatesCount = 0;
+      let cacheCoordinatesCount = 0;
+      let noCoordinatesCount = 0;
+
+      const result = posts.map(post => {
+        // Check direct coordinates
+        if (post.latitude !== null && post.longitude !== null) {
+          directCoordinatesCount++;
+          return {
+            ...this.toDTO(post),
+            latitude: post.latitude,
+            longitude: post.longitude
+          };
+        }
+
+        // Try cache
+        const location = this.locationCache.getLocation(
+          post.tumbon,
+          post.amphure,
+          post.province
+        );
+
+        if (location) {
+          cacheCoordinatesCount++;
+          return {
+            ...this.toDTO(post),
+            latitude: location.lat,
+            longitude: location.lng
+          };
+        }
+
+        // No coordinates found
+        noCoordinatesCount++;
+        return null;
+      }).filter((post): post is ProcessedPostDTO => post !== null);
+
+      logger.info('Coordinates source breakdown:', {
+        totalPosts: posts.length,
+        postsWithDirectCoordinates: directCoordinatesCount,
+        postsWithCachedCoordinates: cacheCoordinatesCount,
+        postsWithNoCoordinates: noCoordinatesCount,
+        totalReturnedPosts: result.length
+      });
+
+      return result;
     } catch (error) {
       logger.error('Error fetching unprocessed posts:', error);
       throw error;
