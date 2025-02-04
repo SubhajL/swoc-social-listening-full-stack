@@ -1,7 +1,8 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { apiClient } from '@/lib/api-client';
 import { useRealTime } from '@/contexts/RealTimeContext';
-import type { ProcessedPost, CategoryName } from '@/types/processed-post';
+import { ProcessedPost } from '@/types/processed-post';
+import { CategoryName } from '@/types/processed-post';
 import mapboxgl from 'mapbox-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useNavigate } from "react-router-dom";
@@ -23,16 +24,19 @@ interface MapProps {
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 2000;
 
-const isValidCoordinates = (post: ProcessedPost): boolean => {
-  return (
-    typeof post.latitude === 'number' && 
-    typeof post.longitude === 'number' && 
-    !isNaN(post.latitude) && 
-    !isNaN(post.longitude) &&
-    post.latitude !== 0 && 
-    post.longitude !== 0
-  );
-};
+function isValidCoordinates(post: ProcessedPost): boolean {
+  // Direct coordinates
+  if (post.latitude && post.longitude) {
+    return true;
+  }
+
+  // Check for cached coordinates based on coordinate_source
+  if (post.coordinate_source === 'cache_direct' || post.coordinate_source === 'cache_inherited') {
+    return true;
+  }
+
+  return false;
+}
 
 const matchesAdministrativeArea = (
   post: ProcessedPost,
@@ -104,12 +108,14 @@ export function Map({
         const posts = await withRetry(async () => {
           const result = await apiClient.getUnprocessedPosts();
           if (!result) throw new Error('No posts returned from API');
+          console.log('Total posts from API:', result.length);
           return result;
         });
 
         if (posts && posts.length > 0) {
           // Filter out posts without valid coordinates
           const validPosts = posts.filter(post => isValidCoordinates(post));
+          console.log('Posts with valid coordinates:', validPosts.length);
           setApiPosts(validPosts);
 
           if (validPosts.length === 0) {
@@ -182,7 +188,8 @@ export function Map({
 
       map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
-      map.on('load', () => {
+      // Wait for map style to load before adding sources and layers
+      map.on('style.load', () => {
         // Create SVG markers for each category
         const createSVGMarker = (shape: string) => {
           const size = 24;
@@ -226,7 +233,6 @@ export function Map({
           ctx.lineWidth = 1;
           ctx.stroke();
 
-          // Return canvas data instead of canvas element
           return ctx.getImageData(0, 0, size, size);
         };
 
@@ -238,51 +244,116 @@ export function Map({
           }
         });
 
-        map.addSource('posts', {
-          type: 'geojson',
-          data: {
-            type: 'FeatureCollection',
-            features: []
-          },
-          cluster: true,
-          clusterMaxZoom: 14,
-          clusterRadius: 50
-        });
+        // Initialize the source with empty data
+        if (!map.getSource('posts')) {
+          map.addSource('posts', {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: []
+            },
+            cluster: true,
+            clusterMaxZoom: 14,
+            clusterRadius: 50,
+            clusterProperties: {
+              // Count occurrences of each category
+              'report_incident_count': ['+', ['case', ['==', ['get', 'category'], 'REPORT_INCIDENT'], 1, 0]],
+              'request_support_count': ['+', ['case', ['==', ['get', 'category'], 'REQUEST_SUPPORT'], 1, 0]],
+              'request_info_count': ['+', ['case', ['==', ['get', 'category'], 'REQUEST_INFO'], 1, 0]],
+              'suggestion_count': ['+', ['case', ['==', ['get', 'category'], 'SUGGESTION'], 1, 0]],
+              // Count occurrences of each coordinate source
+              'direct_count': ['+', ['case', ['==', ['get', 'coordinate_source'], 'direct'], 1, 0]],
+              'cache_direct_count': ['+', ['case', ['==', ['get', 'coordinate_source'], 'cache_direct'], 1, 0]],
+              'cache_inherited_count': ['+', ['case', ['==', ['get', 'coordinate_source'], 'cache_inherited'], 1, 0]]
+            }
+          });
 
-        map.addLayer({
-          id: 'clusters',
-          type: 'circle',
-          source: 'posts',
-          filter: ['has', 'point_count'],
-          paint: clusterConfig.paint
-        });
+          map.addLayer({
+            id: 'clusters',
+            type: 'circle',
+            source: 'posts',
+            filter: ['has', 'point_count'],
+            paint: {
+              'circle-color': [
+                'let',
+                'max_category',
+                ['max',
+                  ['get', 'report_incident_count'],
+                  ['get', 'request_support_count'],
+                  ['get', 'request_info_count'],
+                  ['get', 'suggestion_count']
+                ],
+                [
+                  'case',
+                  ['==', ['var', 'max_category'], ['get', 'report_incident_count']], categoryColors[CategoryName.REPORT_INCIDENT],
+                  ['==', ['var', 'max_category'], ['get', 'request_support_count']], categoryColors[CategoryName.REQUEST_SUPPORT],
+                  ['==', ['var', 'max_category'], ['get', 'request_info_count']], categoryColors[CategoryName.REQUEST_INFO],
+                  ['==', ['var', 'max_category'], ['get', 'suggestion_count']], categoryColors[CategoryName.SUGGESTION],
+                  '#6b7280' // Default gray if no dominant category
+                ]
+              ],
+              'circle-radius': clusterConfig.paint['circle-radius'],
+              'circle-opacity': [
+                'let',
+                'max_source',
+                ['max',
+                  ['get', 'direct_count'],
+                  ['get', 'cache_direct_count'],
+                  ['get', 'cache_inherited_count']
+                ],
+                [
+                  'case',
+                  ['==', ['var', 'max_source'], ['get', 'direct_count']], 1,
+                  ['==', ['var', 'max_source'], ['get', 'cache_direct_count']], 0.8,
+                  ['==', ['var', 'max_source'], ['get', 'cache_inherited_count']], 0.6,
+                  1 // Default opacity if no dominant source
+                ]
+              ]
+            }
+          });
 
-        map.addLayer({
-          id: 'cluster-count',
-          type: 'symbol',
-          source: 'posts',
-          filter: ['has', 'point_count'],
-          layout: {
-            'text-field': '{point_count_abbreviated}',
-            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-            'text-size': 12
-          }
-        });
+          map.addLayer({
+            id: 'cluster-count',
+            type: 'symbol',
+            source: 'posts',
+            filter: ['has', 'point_count'],
+            layout: {
+              'text-field': '{point_count_abbreviated}',
+              'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+              'text-size': 12
+            }
+          });
 
-        map.addLayer({
-          id: 'unclustered-point',
-          type: 'symbol',
-          source: 'posts',
-          filter: ['!', ['has', 'point_count']],
-          layout: {
-            'icon-image': ['get', 'shape'],
-            'icon-size': 1,
-            'icon-allow-overlap': true
-          },
-          paint: {
-            'icon-color': ['get', 'color']
-          }
-        });
+          map.addLayer({
+            id: 'unclustered-point',
+            type: 'symbol',
+            source: 'posts',
+            filter: ['!', ['has', 'point_count']],
+            layout: {
+              'icon-image': ['get', 'shape'],
+              'icon-size': [
+                'match',
+                ['get', 'coordinate_source'],
+                'direct', 1,
+                'cache_direct', 0.8,
+                'cache_inherited', 0.6,
+                1 // default size
+              ],
+              'icon-allow-overlap': true
+            },
+            paint: {
+              'icon-color': ['get', 'color'],
+              'icon-opacity': [
+                'match',
+                ['get', 'coordinate_source'],
+                'direct', 1,
+                'cache_direct', 0.8,
+                'cache_inherited', 0.6,
+                1 // default opacity
+              ]
+            }
+          });
+        }
 
         // Add click handler for posts
         map.on('click', 'unclustered-point', (e) => {
@@ -323,32 +394,56 @@ export function Map({
   useEffect(() => {
     if (!mapRef.current || !apiPosts.length) return;
 
-    const filteredPosts = apiPosts.filter((post: ProcessedPost) => 
-      isValidCoordinates(post) &&
-      matchesAdministrativeArea(post, selectedProvince, selectedAmphure, selectedTumbon) &&
-      (selectedCategories.length === 0 || selectedCategories.includes(post.category_name as CategoryName))
-    );
-
-    const features = filteredPosts.map(post => ({
-      type: 'Feature' as const,
-      geometry: {
-        type: 'Point' as const,
-        coordinates: [post.longitude, post.latitude]
-      },
-      properties: {
-        id: post.processed_post_id,
-        shape: categoryShapeMap[post.category_name as CategoryName],
-        color: categoryColors[post.category_name as CategoryName],
-        category: post.category_name,
-        title: post.category_name
+    try {
+      const source = mapRef.current.getSource('posts') as mapboxgl.GeoJSONSource;
+      if (!source) {
+        console.warn('Map source not initialized yet');
+        return;
       }
-    }));
 
-    const source = mapRef.current.getSource('posts') as mapboxgl.GeoJSONSource;
-    source.setData({
-      type: 'FeatureCollection',
-      features
-    });
+      const filteredPosts = apiPosts.filter((post: ProcessedPost) => 
+        isValidCoordinates(post) &&
+        matchesAdministrativeArea(post, selectedProvince, selectedAmphure, selectedTumbon) &&
+        (selectedCategories.length === 0 || selectedCategories.includes(post.category_name as CategoryName))
+      );
+      console.log('Posts after all filters:', filteredPosts.length);
+      console.log('Selected filters:', {
+        categories: selectedCategories,
+        province: selectedProvince,
+        amphure: selectedAmphure,
+        tumbon: selectedTumbon
+      });
+
+      const features = filteredPosts.map(post => ({
+        type: 'Feature' as const,
+        geometry: {
+          type: 'Point' as const,
+          coordinates: [post.longitude, post.latitude]
+        },
+        properties: {
+          id: post.processed_post_id,
+          shape: categoryShapeMap[post.category_name as CategoryName],
+          color: categoryColors[post.category_name as CategoryName],
+          category: post.category_name,
+          title: post.category_name,
+          coordinate_source: post.coordinate_source,
+          report_incident_count: post.category_name === CategoryName.REPORT_INCIDENT ? 1 : 0,
+          request_support_count: post.category_name === CategoryName.REQUEST_SUPPORT ? 1 : 0,
+          request_info_count: post.category_name === CategoryName.REQUEST_INFO ? 1 : 0,
+          suggestion_count: post.category_name === CategoryName.SUGGESTION ? 1 : 0,
+          direct_count: post.coordinate_source === 'direct' ? 1 : 0,
+          cache_direct_count: post.coordinate_source === 'cache_direct' ? 1 : 0,
+          cache_inherited_count: post.coordinate_source === 'cache_inherited' ? 1 : 0
+        }
+      }));
+
+      source.setData({
+        type: 'FeatureCollection',
+        features
+      });
+    } catch (error) {
+      console.error('Error updating map data:', error);
+    }
   }, [apiPosts, selectedCategories, selectedProvince, selectedAmphure, selectedTumbon]);
 
   return (
