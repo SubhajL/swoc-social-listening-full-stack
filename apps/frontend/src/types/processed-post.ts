@@ -5,6 +5,8 @@ export enum CategoryName {
   SUGGESTION = 'ข้อเสนอแนะ'
 }
 
+export type CoordinateSource = 'direct' | 'cache_direct' | 'cache_inherited';
+
 export interface ProcessedPost {
   processed_post_id: number;
   text: string;
@@ -20,6 +22,7 @@ export interface ProcessedPost {
   province: string[];
   created_at: string;
   status?: string;
+  coordinate_source: CoordinateSource;
 }
 
 export const CategoryIconMap = {

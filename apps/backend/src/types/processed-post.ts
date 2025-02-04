@@ -1,4 +1,5 @@
 import { Location } from './processed-post.dto.js';
+import { CoordinateSource } from './processed-post.dto';
 
 export interface ProcessedPost {
   processed_post_id: number;
@@ -30,4 +31,5 @@ export interface ProcessedPost {
   };
   final_latitude?: number;
   final_longitude?: number;
+  coordinate_source?: CoordinateSource;
 } 

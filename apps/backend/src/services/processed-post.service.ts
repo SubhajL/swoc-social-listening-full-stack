@@ -3,7 +3,7 @@ import type { QueryResultRow } from 'pg';
 const { Pool } = pkg;
 type PoolType = InstanceType<typeof Pool>;
 import { ProcessedPost } from '../types/processed-post.js';
-import { ProcessedPostDTO } from '../types/processed-post.dto.js';
+import { ProcessedPostDTO, CoordinateSource } from '../types/processed-post.dto.js';
 import { CreatePostDTO } from '../types/create-post.dto.js';
 import { logger } from '../utils/logger.js';
 import { TransactionManager, TransactionClient } from '../utils/transaction-manager.js';
@@ -78,7 +78,8 @@ export class ProcessedPostService {
       province: post.province,
       replied_post: post.replied_post,
       replied_date: post.replied_date?.toISOString(),
-      replied_by: post.replied_by
+      replied_by: post.replied_by,
+      coordinate_source: post.coordinate_source || 'direct'
     };
   }
 
@@ -99,49 +100,60 @@ export class ProcessedPostService {
       let cacheCoordinatesCount = 0;
       let noCoordinatesCount = 0;
 
-      const result = posts.map(post => {
+      const processedPosts = posts.map(post => {
         // Check direct coordinates
         if (post.latitude !== null && post.longitude !== null) {
           directCoordinatesCount++;
           return {
             ...this.toDTO(post),
-            latitude: post.latitude,
-            longitude: post.longitude
+            coordinate_source: 'direct' as const
           };
         }
 
-        // Try cache
-        const location = this.locationCache.getLocation(
-          post.tumbon,
-          post.amphure,
-          post.province
-        );
+        // Try cache if we have any administrative location
+        if (post.tumbon?.length || post.amphure?.length || post.province?.length) {
+          const location = this.locationCache.getLocation(
+            post.tumbon?.[0],
+            post.amphure?.[0],
+            post.province?.[0]
+          );
 
-        if (location) {
-          cacheCoordinatesCount++;
-          return {
-            ...this.toDTO(post),
-            latitude: location.lat,
-            longitude: location.lng
-          };
+          if (location) {
+            cacheCoordinatesCount++;
+            return {
+              ...this.toDTO(post),
+              latitude: location.lat,
+              longitude: location.lng,
+              coordinate_source: location.source === 'direct' ? ('cache_direct' as const) : ('cache_inherited' as const)
+            };
+          }
         }
 
         // No coordinates found
         noCoordinatesCount++;
         return null;
-      }).filter((post): post is ProcessedPostDTO => post !== null);
+      });
 
-      logger.info('Coordinates source breakdown:', {
+      const result = processedPosts.filter((post): post is ProcessedPostDTO => 
+        post !== null && 
+        post.coordinate_source !== undefined &&
+        ['direct', 'cache_direct', 'cache_inherited'].includes(post.coordinate_source)
+      );
+
+      logger.info('Posts processing completed', {
         totalPosts: posts.length,
-        postsWithDirectCoordinates: directCoordinatesCount,
-        postsWithCachedCoordinates: cacheCoordinatesCount,
-        postsWithNoCoordinates: noCoordinatesCount,
-        totalReturnedPosts: result.length
+        withDirectCoordinates: directCoordinatesCount,
+        withCachedCoordinates: cacheCoordinatesCount,
+        withoutCoordinates: noCoordinatesCount,
+        finalProcessedCount: result.length
       });
 
       return result;
     } catch (error) {
-      logger.error('Error fetching unprocessed posts:', error);
+      logger.error('Error fetching unprocessed posts:', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      });
       throw error;
     }
   }
@@ -184,7 +196,7 @@ export class ProcessedPostService {
       [longitude, latitude, radiusKm]
     );
     
-    return result.rows.map(this.toDTO);
+    return result.rows.map((post: ProcessedPost) => this.toDTO(post));
   }
 
   async updateLocationDetails(
@@ -226,7 +238,7 @@ export class ProcessedPostService {
         client
       );
 
-      return result.map(this.toDTO);
+      return result.map((post: ProcessedPost) => this.toDTO(post));
     } catch (error) {
       logger.error('Error fetching recent posts:', error);
       throw new Error('Failed to fetch recent posts');

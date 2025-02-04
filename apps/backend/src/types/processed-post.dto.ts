@@ -1,4 +1,5 @@
 export type LocationSource = 'coordinates' | 'address';
+export type CoordinateSource = 'direct' | 'cache_direct' | 'cache_inherited';
 
 export interface Location {
   latitude: number;
@@ -25,4 +26,5 @@ export interface ProcessedPostDTO {
   replied_post: boolean;
   replied_date?: string;  // ISO string for API
   replied_by?: string;
+  coordinate_source: CoordinateSource;  // Required field
 } 
