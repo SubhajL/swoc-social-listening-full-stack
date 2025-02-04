@@ -40,36 +40,28 @@ export const categoryShapeMap: Record<CategoryName, keyof typeof shapeStyles> = 
 
 // Cluster configuration
 export const clusterConfig = {
-  maxZoom: 14, // Maximum zoom level for clustering
-  radius: 50, // Cluster radius in pixels
+  maxZoom: 14,
+  radius: 50,
   paint: {
     'circle-color': [
-      'case',
-      ['has', 'dominant_category'],
-      ['get', 'dominant_color'],
-      '#6b7280' // Default gray if no dominant category
+      'step',
+      ['get', 'point_count'],
+      categoryColors[CategoryName.REPORT_INCIDENT], // 1-9 points
+      10,
+      categoryColors[CategoryName.REQUEST_SUPPORT], // 10-49 points
+      50,
+      categoryColors[CategoryName.REQUEST_INFO] // 50+ points
     ],
     'circle-radius': [
       'step',
       ['get', 'point_count'],
-      30, // small size
-      50,
-      40, // medium size
-      100,
-      50 // large size
+      20,    // Default radius
+      10, 30,   // If point_count >= 10, radius = 30
+      50, 40    // If point_count >= 50, radius = 40
     ],
-    'circle-opacity': [
-      'case',
-      ['has', 'dominant_source'],
-      ['match',
-        ['get', 'dominant_source'],
-        'direct', 1,
-        'cache_direct', 0.8,
-        'cache_inherited', 0.6,
-        1 // default opacity
-      ],
-      1 // default if no dominant source
-    ]
+    'circle-opacity': 0.9,
+    'circle-stroke-width': 2,
+    'circle-stroke-color': '#ffffff'
   } satisfies CirclePaint
 } as const;
 

@@ -22,7 +22,10 @@ export const validateMapboxToken = (token: string): boolean => {
   console.log('Mapbox Token Validation:', {
     token: token.substring(0, 10) + '...',
     isValid,
-    matchesPattern: tokenPattern.test(token)
+    matchesPattern: tokenPattern.test(token),
+    length: token.length,
+    startsWithPk: token.startsWith('pk.'),
+    parts: token.split('.').length
   });
   
   return isValid;
@@ -31,12 +34,21 @@ export const validateMapboxToken = (token: string): boolean => {
 export const getMapboxToken = (): string => {
   console.log('Getting Mapbox Token:', {
     tokenExists: !!MAPBOX_TOKEN,
-    tokenPrefix: MAPBOX_TOKEN?.substring(0, 10)
+    tokenPrefix: MAPBOX_TOKEN?.substring(0, 10),
+    tokenLength: MAPBOX_TOKEN?.length,
+    envVars: Object.keys(import.meta.env).filter(key => key.includes('MAPBOX'))
   });
+
+  if (!MAPBOX_TOKEN) {
+    console.error('Mapbox Token Error: Token is undefined or empty');
+    throw new Error('VITE_MAPBOX_TOKEN environment variable is required');
+  }
 
   if (!validateMapboxToken(MAPBOX_TOKEN)) {
     console.error('Mapbox Token Error: Invalid token format', {
-      token: MAPBOX_TOKEN.substring(0, 10) + '...'
+      token: MAPBOX_TOKEN.substring(0, 10) + '...',
+      length: MAPBOX_TOKEN.length,
+      format: 'Expected format: pk.xxxx.xxxx'
     });
     throw new Error('Invalid Mapbox token format');
   }
