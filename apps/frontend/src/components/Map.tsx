@@ -7,10 +7,17 @@ import mapboxgl from 'mapbox-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useNavigate } from "react-router-dom";
 import MapError from "./map/MapError";
-import { clusterConfig, mapStyle, categoryColors, categoryShapeMap } from './map/styles';
-import { getClusterColor, getClusterSize } from './map/utils';
+import { mapStyle, categoryColors, categoryShapeMap } from './map/styles';
 import { toast } from '@/components/ui/use-toast';
 import { useMapContainer } from '@/hooks/useMapContainer';
+import { hasValidCoordinates, createPostFeature } from '@/utils/coordinates';
+import { 
+  MAP_CORE_CONFIG, 
+  LAYER_CONFIG,
+  initializeMapCore, 
+  updateMapData,
+  filterPosts
+} from '@/utils/map-core';
 
 interface MapProps {
   token: string;
@@ -25,16 +32,30 @@ const MAX_RETRIES = 3;
 const RETRY_DELAY = 2000;
 
 function isValidCoordinates(post: ProcessedPost): boolean {
-  // Direct coordinates
-  if (post.latitude && post.longitude) {
+  console.log('Validating coordinates for post:', {
+    id: post.processed_post_id,
+    lat: post.latitude,
+    lng: post.longitude,
+    source: post.coordinate_source
+  });
+
+  // Check for direct coordinates
+  if (typeof post.latitude === 'number' && 
+      typeof post.longitude === 'number' && 
+      !isNaN(post.latitude) && 
+      !isNaN(post.longitude)) {
+    console.log('Post has valid direct coordinates');
     return true;
   }
 
-  // Check for cached coordinates based on coordinate_source
-  if (post.coordinate_source === 'cache_direct' || post.coordinate_source === 'cache_inherited') {
+  // Check for cached coordinates
+  if (post.coordinate_source && 
+      ['direct', 'cache_direct', 'cache_inherited'].includes(post.coordinate_source)) {
+    console.log('Post has valid cached coordinates');
     return true;
   }
 
+  console.log('Post has invalid coordinates');
   return false;
 }
 
@@ -63,6 +84,117 @@ const matchesAdministrativeArea = (
   return false;
 };
 
+// Add helper function at the top level
+const getCategoryFromName = (categoryName: string): CategoryName | undefined => {
+  console.log('Category mapping debug:', {
+    input: categoryName,
+    availableCategories: Object.values(CategoryName),
+    exactMatch: Object.values(CategoryName).includes(categoryName),
+    matchAttempts: Object.values(CategoryName).map(cat => ({
+      category: cat,
+      matches: cat === categoryName,
+      inputLength: categoryName.length,
+      categoryLength: cat.length
+    }))
+  });
+
+  // Check if the category name exists in our enum
+  const matchedCategory = Object.values(CategoryName).find(cat => cat === categoryName);
+  if (matchedCategory) {
+    return matchedCategory;
+  }
+  
+  console.warn('Category mapping failed:', {
+    input: categoryName,
+    availableCategories: Object.values(CategoryName)
+  });
+  return undefined;
+};
+
+const getMarkerKey = (category: CategoryName | undefined): string => {
+  if (!category) {
+    console.warn('Invalid category in getMarkerKey:', category);
+    return 'circle-666666'; // Default fallback
+  }
+
+  const shape = categoryShapeMap[category];
+  const color = categoryColors[category];
+
+  console.log('Marker key generation:', {
+    category,
+    shape,
+    color,
+    markerKey: `${shape}-${color?.replace('#', '')}`
+  });
+
+  if (!shape || !color) {
+    console.warn('Missing shape or color for category:', {
+      category,
+      shape,
+      color,
+      shapeMap: categoryShapeMap,
+      colorMap: categoryColors
+    });
+    return 'circle-666666'; // Default fallback
+  }
+
+  return `${shape}-${color.replace('#', '')}`;
+};
+
+// Add helper function at the top level
+const createMarkerImage = (shape: string, color: string, size: number = 32) => {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+
+  // Set up shadow
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 2;
+
+  ctx.clearRect(0, 0, size, size);
+  
+  // Draw shape
+  ctx.beginPath();
+  const margin = size * 0.15;
+  switch (shape) {
+    case 'circle':
+      ctx.arc(size/2, size/2, (size - margin*2)/2, 0, Math.PI * 2);
+      break;
+    case 'triangle':
+      ctx.moveTo(size/2, margin);
+      ctx.lineTo(size - margin, size - margin);
+      ctx.lineTo(margin, size - margin);
+      break;
+    case 'square':
+      ctx.rect(margin, margin, size - margin*2, size - margin*2);
+      break;
+    case 'hexa':
+      ctx.moveTo(size/2, margin);
+      ctx.lineTo(size - margin, size/2);
+      ctx.lineTo(size - margin, size/2);
+      ctx.lineTo(size/2, size - margin);
+      ctx.lineTo(margin, size/2);
+      ctx.lineTo(margin, size/2);
+      break;
+  }
+  ctx.closePath();
+
+  // Fill with color
+  ctx.fillStyle = color;
+  ctx.fill();
+
+  // Add white border
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  return ctx.getImageData(0, 0, size, size);
+};
+
 export function Map({ 
   token, 
   selectedCategories, 
@@ -84,6 +216,8 @@ export function Map({
   const { latestPost } = useRealTime();
   const [apiPosts, setApiPosts] = useState<ProcessedPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const loadedImagesRef = useRef(new Set<string>());
 
   const withRetry = useCallback(async <T,>(
     operation: () => Promise<T>,
@@ -105,37 +239,44 @@ export function Map({
     const loadPosts = async () => {
       try {
         setIsLoading(true);
+        console.log('Fetching posts from API...');
         const posts = await withRetry(async () => {
           const result = await apiClient.getUnprocessedPosts();
+          console.log('API Response:', {
+            totalPosts: result?.length || 0,
+            firstPost: result?.[0],
+            hasCoordinates: result?.some(p => p.latitude && p.longitude)
+          });
           if (!result) throw new Error('No posts returned from API');
-          console.log('Total posts from API:', result.length);
           return result;
         });
 
         if (posts && posts.length > 0) {
+          console.log('Raw posts from API:', posts.slice(0, 5)); // Log first 5 posts for debugging
+          
           // Filter out posts without valid coordinates
-          const validPosts = posts.filter(post => isValidCoordinates(post));
-          console.log('Posts with valid coordinates:', validPosts.length);
-          setApiPosts(validPosts);
+          const validPosts = posts.filter(post => hasValidCoordinates(post));
 
-          if (validPosts.length === 0) {
-            toast({
-              title: "No posts with valid coordinates",
-              description: "There are currently no unreplied posts with valid coordinates to display on the map.",
-              variant: "default"
-            });
-          }
-        } else {
-          setApiPosts([]);
-          toast({
-            title: "No unreplied posts found",
-            description: "There are currently no unreplied posts to display on the map.",
-            variant: "default"
+          console.log('Posts validation summary:', {
+            total: posts.length,
+            valid: validPosts.length,
+            categories: [...new Set(validPosts.map(p => p.category_name))],
+            sources: [...new Set(validPosts.map(p => p.coordinate_source))],
+            firstThree: validPosts.slice(0, 3).map(p => ({
+              id: p.processed_post_id,
+              lat: p.latitude,
+              lng: p.longitude,
+              source: p.coordinate_source
+            }))
           });
+          
+          setApiPosts(validPosts);
+        } else {
+          console.log('No posts returned from API');
+          setApiPosts([]);
         }
       } catch (error) {
         console.error('Failed to load posts:', error);
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         toast({
           title: "Error loading posts",
           description: "Failed to load unreplied posts. Please try again later.",
@@ -180,271 +321,151 @@ export function Map({
       const map = new mapboxgl.Map({
         container: containerRef.current!,
         style: mapStyle.default,
-        center: [101.0, 15.0],
-        zoom: 5.5,
-        language: 'th',
-        localIdeographFontFamily: "'Noto Sans Thai', 'Noto Sans', sans-serif"
+        center: MAP_CORE_CONFIG.DEFAULT_CENTER,
+        zoom: MAP_CORE_CONFIG.DEFAULT_ZOOM,
+        language: MAP_CORE_CONFIG.LANGUAGE,
+        localIdeographFontFamily: MAP_CORE_CONFIG.FONT_FAMILY
+      });
+
+      // Initialize source immediately
+      map.on('load', () => {
+        console.log('Map load event fired');
+        
+        // Initialize core functionality
+        initializeMapCore(map);
+        
+        // Load marker images
+        Object.values(CategoryName).forEach(category => {
+          const shape = categoryShapeMap[category];
+          const color = categoryColors[category];
+          const imageId = getMarkerKey(category);
+          
+          const imageData = createMarkerImage(shape, color);
+          if (!imageData) {
+            console.error('Failed to create marker image:', { category, shape, color });
+            return;
+          }
+
+          map.addImage(imageId, imageData, { pixelRatio: 2 });
+          loadedImagesRef.current.add(imageId);
+        });
+
+        setImagesLoaded(true);
+      });
+
+      // Handle click events
+      map.on('click', LAYER_CONFIG.UNCLUSTERED_POINT, (e) => {
+        if (!e.features?.[0]) return;
+        const { properties } = e.features[0];
+        if (properties?.id) {
+          navigate(`/posts/${properties.id}`);
+        }
+      });
+
+      // Change cursor on hover
+      map.on('mouseenter', LAYER_CONFIG.UNCLUSTERED_POINT, () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+      
+      map.on('mouseleave', LAYER_CONFIG.UNCLUSTERED_POINT, () => {
+        map.getCanvas().style.cursor = '';
+      });
+
+      // Handle cluster clicks
+      map.on('click', LAYER_CONFIG.CLUSTERS, (e) => {
+        const features = map.queryRenderedFeatures(e.point, {
+          layers: [LAYER_CONFIG.CLUSTERS]
+        });
+        if (!features.length) return;
+
+        const clusterId = features[0].properties?.cluster_id;
+        if (!clusterId) return;
+
+        const source = map.getSource(MAP_CORE_CONFIG.SOURCE_ID);
+        if (!source || !('getClusterExpansionZoom' in source)) return;
+
+        const geometry = features[0].geometry as GeoJSON.Point;
+        const coordinates = geometry.coordinates as [number, number];
+
+        (source as mapboxgl.GeoJSONSource).getClusterExpansionZoom(
+          clusterId,
+          (error, result) => {
+            if (error || !result) return;
+
+            map.easeTo({
+              center: coordinates,
+              zoom: result
+            });
+          }
+        );
+      });
+
+      map.on('mouseenter', LAYER_CONFIG.CLUSTERS, () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+      
+      map.on('mouseleave', LAYER_CONFIG.CLUSTERS, () => {
+        map.getCanvas().style.cursor = '';
       });
 
       map.addControl(new mapboxgl.NavigationControl(), "top-right");
-
-      // Wait for map style to load before adding sources and layers
-      map.on('style.load', () => {
-        // Create SVG markers for each category
-        const createSVGMarker = (shape: string) => {
-          const size = 24;
-          const canvas = document.createElement('canvas');
-          canvas.width = size;
-          canvas.height = size;
-          const ctx = canvas.getContext('2d');
-          if (!ctx) return;
-
-          ctx.clearRect(0, 0, size, size);
-          
-          // Draw shape based on type
-          ctx.beginPath();
-          switch (shape) {
-            case 'circle':
-              ctx.arc(size/2, size/2, size/3, 0, Math.PI * 2);
-              break;
-            case 'triangle':
-              ctx.moveTo(size/2, size/6);
-              ctx.lineTo(size*5/6, size*5/6);
-              ctx.lineTo(size/6, size*5/6);
-              ctx.closePath();
-              break;
-            case 'square':
-              ctx.rect(size/6, size/6, size*2/3, size*2/3);
-              break;
-            case 'hexa':
-              const a = size/3;
-              ctx.moveTo(size/2, size/6);
-              ctx.lineTo(size*5/6, size/3);
-              ctx.lineTo(size*5/6, size*2/3);
-              ctx.lineTo(size/2, size*5/6);
-              ctx.lineTo(size/6, size*2/3);
-              ctx.lineTo(size/6, size/3);
-              ctx.closePath();
-              break;
-          }
-          ctx.fillStyle = '#ffffff';
-          ctx.fill();
-          ctx.strokeStyle = '#000000';
-          ctx.lineWidth = 1;
-          ctx.stroke();
-
-          return ctx.getImageData(0, 0, size, size);
-        };
-
-        // Add marker images
-        Object.values(categoryShapeMap).forEach(shape => {
-          const imageData = createSVGMarker(shape);
-          if (imageData) {
-            map.addImage(shape, imageData);
-          }
-        });
-
-        // Initialize the source with empty data
-        if (!map.getSource('posts')) {
-          map.addSource('posts', {
-            type: 'geojson',
-            data: {
-              type: 'FeatureCollection',
-              features: []
-            },
-            cluster: true,
-            clusterMaxZoom: 14,
-            clusterRadius: 50,
-            clusterProperties: {
-              // Count occurrences of each category
-              'report_incident_count': ['+', ['case', ['==', ['get', 'category'], 'REPORT_INCIDENT'], 1, 0]],
-              'request_support_count': ['+', ['case', ['==', ['get', 'category'], 'REQUEST_SUPPORT'], 1, 0]],
-              'request_info_count': ['+', ['case', ['==', ['get', 'category'], 'REQUEST_INFO'], 1, 0]],
-              'suggestion_count': ['+', ['case', ['==', ['get', 'category'], 'SUGGESTION'], 1, 0]],
-              // Count occurrences of each coordinate source
-              'direct_count': ['+', ['case', ['==', ['get', 'coordinate_source'], 'direct'], 1, 0]],
-              'cache_direct_count': ['+', ['case', ['==', ['get', 'coordinate_source'], 'cache_direct'], 1, 0]],
-              'cache_inherited_count': ['+', ['case', ['==', ['get', 'coordinate_source'], 'cache_inherited'], 1, 0]]
-            }
-          });
-
-          map.addLayer({
-            id: 'clusters',
-            type: 'circle',
-            source: 'posts',
-            filter: ['has', 'point_count'],
-            paint: {
-              'circle-color': [
-                'let',
-                'max_category',
-                ['max',
-                  ['get', 'report_incident_count'],
-                  ['get', 'request_support_count'],
-                  ['get', 'request_info_count'],
-                  ['get', 'suggestion_count']
-                ],
-                [
-                  'case',
-                  ['==', ['var', 'max_category'], ['get', 'report_incident_count']], categoryColors[CategoryName.REPORT_INCIDENT],
-                  ['==', ['var', 'max_category'], ['get', 'request_support_count']], categoryColors[CategoryName.REQUEST_SUPPORT],
-                  ['==', ['var', 'max_category'], ['get', 'request_info_count']], categoryColors[CategoryName.REQUEST_INFO],
-                  ['==', ['var', 'max_category'], ['get', 'suggestion_count']], categoryColors[CategoryName.SUGGESTION],
-                  '#6b7280' // Default gray if no dominant category
-                ]
-              ],
-              'circle-radius': clusterConfig.paint['circle-radius'],
-              'circle-opacity': [
-                'let',
-                'max_source',
-                ['max',
-                  ['get', 'direct_count'],
-                  ['get', 'cache_direct_count'],
-                  ['get', 'cache_inherited_count']
-                ],
-                [
-                  'case',
-                  ['==', ['var', 'max_source'], ['get', 'direct_count']], 1,
-                  ['==', ['var', 'max_source'], ['get', 'cache_direct_count']], 0.8,
-                  ['==', ['var', 'max_source'], ['get', 'cache_inherited_count']], 0.6,
-                  1 // Default opacity if no dominant source
-                ]
-              ]
-            }
-          });
-
-          map.addLayer({
-            id: 'cluster-count',
-            type: 'symbol',
-            source: 'posts',
-            filter: ['has', 'point_count'],
-            layout: {
-              'text-field': '{point_count_abbreviated}',
-              'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-              'text-size': 12
-            }
-          });
-
-          map.addLayer({
-            id: 'unclustered-point',
-            type: 'symbol',
-            source: 'posts',
-            filter: ['!', ['has', 'point_count']],
-            layout: {
-              'icon-image': ['get', 'shape'],
-              'icon-size': [
-                'match',
-                ['get', 'coordinate_source'],
-                'direct', 1,
-                'cache_direct', 0.8,
-                'cache_inherited', 0.6,
-                1 // default size
-              ],
-              'icon-allow-overlap': true
-            },
-            paint: {
-              'icon-color': ['get', 'color'],
-              'icon-opacity': [
-                'match',
-                ['get', 'coordinate_source'],
-                'direct', 1,
-                'cache_direct', 0.8,
-                'cache_inherited', 0.6,
-                1 // default opacity
-              ]
-            }
-          });
-        }
-
-        // Add click handler for posts
-        map.on('click', 'unclustered-point', (e) => {
-          const feature = e.features?.[0];
-          if (!feature?.properties) return;
-          
-          const properties = feature.properties as { id: string };
-          navigate(`/posts/${properties.id}`);
-        });
-
-        // Change cursor on hover
-        map.on('mouseenter', 'unclustered-point', () => {
-          map.getCanvas().style.cursor = 'pointer';
-        });
-        
-        map.on('mouseleave', 'unclustered-point', () => {
-          map.getCanvas().style.cursor = '';
-        });
-      });
-
       mapRef.current = map;
-
-      return () => {
-        map.remove();
-        mapRef.current = null;
-      };
     } catch (error) {
       console.error('Map initialization error:', error);
       toast({
         title: "Map Error",
-        description: "Failed to initialize map. Please try again.",
+        description: "Failed to initialize map. Please try again later.",
         variant: "destructive"
       });
     }
-  }, [isReady, token, containerRef, navigate]);
+  }, [isReady, token, navigate]);
 
-  // Update map data
+  // Update map data when posts change
   useEffect(() => {
-    if (!mapRef.current || !apiPosts.length) return;
+    const map = mapRef.current;
+    if (!map || !map.getSource(MAP_CORE_CONFIG.SOURCE_ID) || !imagesLoaded) {
+      console.log('Map update skipped:', {
+        hasMap: !!map,
+        hasSource: map?.getSource(MAP_CORE_CONFIG.SOURCE_ID) !== undefined,
+        imagesLoaded,
+        postCount: apiPosts.length
+      });
+      return;
+    }
 
     try {
-      const source = mapRef.current.getSource('posts') as mapboxgl.GeoJSONSource;
-      if (!source) {
-        console.warn('Map source not initialized yet');
-        return;
-      }
-
-      const filteredPosts = apiPosts.filter((post: ProcessedPost) => 
-        isValidCoordinates(post) &&
-        matchesAdministrativeArea(post, selectedProvince, selectedAmphure, selectedTumbon) &&
-        (selectedCategories.length === 0 || selectedCategories.includes(post.category_name as CategoryName))
+      // Filter posts based on selected criteria
+      const filteredPosts = filterPosts(
+        apiPosts,
+        selectedCategories,
+        selectedProvince,
+        selectedAmphure,
+        selectedTumbon
       );
-      console.log('Posts after all filters:', filteredPosts.length);
-      console.log('Selected filters:', {
-        categories: selectedCategories,
-        province: selectedProvince,
-        amphure: selectedAmphure,
-        tumbon: selectedTumbon
+
+      console.log('Creating features from filtered posts:', {
+        total: apiPosts.length,
+        filtered: filteredPosts.length,
+        firstPost: filteredPosts[0]
       });
 
-      const features = filteredPosts.map(post => ({
-        type: 'Feature' as const,
-        geometry: {
-          type: 'Point' as const,
-          coordinates: [post.longitude, post.latitude]
-        },
-        properties: {
-          id: post.processed_post_id,
-          shape: categoryShapeMap[post.category_name as CategoryName],
-          color: categoryColors[post.category_name as CategoryName],
-          category: post.category_name,
-          title: post.category_name,
-          coordinate_source: post.coordinate_source,
-          report_incident_count: post.category_name === CategoryName.REPORT_INCIDENT ? 1 : 0,
-          request_support_count: post.category_name === CategoryName.REQUEST_SUPPORT ? 1 : 0,
-          request_info_count: post.category_name === CategoryName.REQUEST_INFO ? 1 : 0,
-          suggestion_count: post.category_name === CategoryName.SUGGESTION ? 1 : 0,
-          direct_count: post.coordinate_source === 'direct' ? 1 : 0,
-          cache_direct_count: post.coordinate_source === 'cache_direct' ? 1 : 0,
-          cache_inherited_count: post.coordinate_source === 'cache_inherited' ? 1 : 0
-        }
-      }));
+      // Create GeoJSON features
+      const features = filteredPosts
+        .map(createPostFeature)
+        .filter(Boolean) as GeoJSON.Feature[];
 
-      source.setData({
-        type: 'FeatureCollection',
-        features
+      // Update map data using core utility
+      updateMapData(map, features);
+
+      console.log('Map data updated:', {
+        featureCount: features.length,
+        categories: [...new Set(features.map(f => f.properties?.category))],
+        sources: [...new Set(features.map(f => f.properties?.source))]
       });
     } catch (error) {
       console.error('Error updating map data:', error);
     }
-  }, [apiPosts, selectedCategories, selectedProvince, selectedAmphure, selectedTumbon]);
+  }, [apiPosts, selectedCategories, selectedProvince, selectedAmphure, selectedTumbon, imagesLoaded]);
 
   return (
     <div className="relative w-full h-full min-h-[400px]">
