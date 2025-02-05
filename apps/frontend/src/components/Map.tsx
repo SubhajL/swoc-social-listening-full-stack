@@ -7,7 +7,7 @@ import mapboxgl from 'mapbox-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useNavigate } from "react-router-dom";
 import MapError from "./map/MapError";
-import { mapStyle, categoryColors, categoryShapeMap } from './map/styles';
+import { mapStyle, categoryColors, categoryShapeMap, clusterConfig } from './map/styles';
 import { toast } from '@/components/ui/use-toast';
 import { useMapContainer } from '@/hooks/useMapContainer';
 import { hasValidCoordinates, createPostFeature } from '@/utils/coordinates';
@@ -311,13 +311,83 @@ export function Map({
     }
   }, [latestPost]);
 
+  // Add new function to handle cluster clicks
+  const handleClusterClick = useCallback(async (
+    map: mapboxgl.Map,
+    clusterId: number,
+    coordinates: [number, number],
+    pointCount: number
+  ) => {
+    const source = map.getSource(MAP_CORE_CONFIG.SOURCE_ID);
+    if (!source || !('getClusterLeaves' in source)) return;
+
+    // For small clusters (less than 5 points), show popup with links
+    if (pointCount < 5) {
+      (source as mapboxgl.GeoJSONSource).getClusterLeaves(
+        clusterId,
+        pointCount,
+        0,
+        (error, features) => {
+          if (error || !features) return;
+
+          // Create popup content
+          const popupContent = document.createElement('div');
+          popupContent.className = 'p-2 space-y-2';
+          
+          // Add title
+          const title = document.createElement('div');
+          title.className = 'font-semibold text-sm mb-2';
+          title.textContent = `${pointCount} ข้อร้องเรียน`;
+          popupContent.appendChild(title);
+
+          // Add links for each post
+          features.forEach(feature => {
+            const link = document.createElement('a');
+            link.className = 'block text-sm text-blue-600 hover:text-blue-800 cursor-pointer mb-1';
+            link.textContent = feature.properties?.text?.substring(0, 50) + '...';
+            link.onclick = () => {
+              if (feature.properties?.id) {
+                navigate(`/posts/${feature.properties.id}`);
+              }
+            };
+            popupContent.appendChild(link);
+          });
+
+          // Show popup
+          new mapboxgl.Popup({
+            closeButton: true,
+            closeOnClick: false,
+            maxWidth: '300px'
+          })
+            .setLngLat(coordinates)
+            .setDOMContent(popupContent)
+            .addTo(map);
+        }
+      );
+    } else {
+      // For larger clusters, zoom in smoothly
+      (source as mapboxgl.GeoJSONSource).getClusterExpansionZoom(
+        clusterId,
+        (error, zoom) => {
+          if (error || !zoom) return;
+
+          map.easeTo({
+            center: coordinates,
+            zoom: zoom + 0.5, // Zoom a bit more than default
+            duration: 500, // Smooth animation
+            easing: t => t * (2 - t) // Ease out quadratic
+          });
+        }
+      );
+    }
+  }, [navigate]);
+
   // Initialize map
   useEffect(() => {
     if (!isReady || !token || mapRef.current) return;
 
     try {
       mapboxgl.accessToken = token;
-
       const map = new mapboxgl.Map({
         container: containerRef.current!,
         style: mapStyle.default,
@@ -371,7 +441,7 @@ export function Map({
         map.getCanvas().style.cursor = '';
       });
 
-      // Handle cluster clicks
+      // Update cluster click handler
       map.on('click', LAYER_CONFIG.CLUSTERS, (e) => {
         const features = map.queryRenderedFeatures(e.point, {
           layers: [LAYER_CONFIG.CLUSTERS]
@@ -379,25 +449,13 @@ export function Map({
         if (!features.length) return;
 
         const clusterId = features[0].properties?.cluster_id;
-        if (!clusterId) return;
-
-        const source = map.getSource(MAP_CORE_CONFIG.SOURCE_ID);
-        if (!source || !('getClusterExpansionZoom' in source)) return;
+        const pointCount = features[0].properties?.point_count;
+        if (!clusterId || !pointCount) return;
 
         const geometry = features[0].geometry as GeoJSON.Point;
         const coordinates = geometry.coordinates as [number, number];
 
-        (source as mapboxgl.GeoJSONSource).getClusterExpansionZoom(
-          clusterId,
-          (error, result) => {
-            if (error || !result) return;
-
-            map.easeTo({
-              center: coordinates,
-              zoom: result
-            });
-          }
-        );
+        handleClusterClick(map, clusterId, coordinates, pointCount);
       });
 
       map.on('mouseenter', LAYER_CONFIG.CLUSTERS, () => {
@@ -418,7 +476,7 @@ export function Map({
         variant: "destructive"
       });
     }
-  }, [isReady, token, navigate]);
+  }, [isReady, token, handleClusterClick]);
 
   // Update map data when posts change
   useEffect(() => {

@@ -40,24 +40,24 @@ export const categoryShapeMap: Record<CategoryName, keyof typeof shapeStyles> = 
 
 // Cluster configuration
 export const clusterConfig = {
-  maxZoom: 14,
-  radius: 50,
+  maxZoom: 11,
+  radius: 30,
   paint: {
     'circle-color': [
       'step',
       ['get', 'point_count'],
-      categoryColors[CategoryName.REPORT_INCIDENT], // 1-9 points
+      categoryColors[CategoryName.REPORT_INCIDENT], // 1-4 points
+      5,
+      categoryColors[CategoryName.REQUEST_SUPPORT], // 5-9 points
       10,
-      categoryColors[CategoryName.REQUEST_SUPPORT], // 10-49 points
-      50,
-      categoryColors[CategoryName.REQUEST_INFO] // 50+ points
+      categoryColors[CategoryName.REQUEST_INFO] // 10+ points
     ],
     'circle-radius': [
       'step',
       ['get', 'point_count'],
       20,    // Default radius
-      10, 30,   // If point_count >= 10, radius = 30
-      50, 40    // If point_count >= 50, radius = 40
+      5, 25,   // If point_count >= 5, radius = 25
+      10, 30    // If point_count >= 10, radius = 30
     ],
     'circle-opacity': 0.9,
     'circle-stroke-width': 2,
