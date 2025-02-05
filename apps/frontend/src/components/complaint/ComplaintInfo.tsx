@@ -6,7 +6,14 @@ export const ComplaintInfo = () => {
   const location = useLocation();
   const data = location.state;
 
-  console.log('ComplaintInfo data:', data);
+  const getCategoryDisplay = () => {
+    const category = data?.category_name;
+    const subCategory = data?.sub1_category_name;
+    if (category && subCategory) {
+      return `${category} - ${subCategory}`;
+    }
+    return category || subCategory || '';
+  };
 
   return (
     <div className="space-y-4 mb-6">
@@ -14,7 +21,7 @@ export const ComplaintInfo = () => {
         <div>
           <Label>ประเด็นข้อร้องเรียน</Label>
           <Input 
-            value={data?.issue ?? ''} 
+            value={data?.text ?? ''} 
             placeholder="ยังไม่มีข้อมูล"
             readOnly 
           />
@@ -22,7 +29,7 @@ export const ComplaintInfo = () => {
         <div>
           <Label>ประเภทข้อร้องเรียน</Label>
           <Input 
-            value={data?.category ?? ''} 
+            value={getCategoryDisplay()} 
             placeholder="ยังไม่มีข้อมูล"
             readOnly 
           />
@@ -33,7 +40,7 @@ export const ComplaintInfo = () => {
         <Label>ข้อมูลผู้ร้องเรียน</Label>
         <Input 
           className="h-24" 
-          value={data?.reporter ?? ''} 
+          value={data?.profile_name ?? ''} 
           placeholder="ยังไม่มีข้อมูล"
           readOnly 
         />
@@ -44,7 +51,7 @@ export const ComplaintInfo = () => {
           <Label>วันที่</Label>
           <Input 
             type="date" 
-            value={data?.date ?? ''} 
+            value={data?.post_date?.split('T')[0] ?? ''} 
             placeholder="ยังไม่มีข้อมูล"
             readOnly 
           />
@@ -52,7 +59,7 @@ export const ComplaintInfo = () => {
         <div>
           <Label>Link</Label>
           <Input 
-            value={data?.link ?? ''} 
+            value={data?.post_url ?? ''} 
             placeholder="ยังไม่มีข้อมูล"
             readOnly 
           />

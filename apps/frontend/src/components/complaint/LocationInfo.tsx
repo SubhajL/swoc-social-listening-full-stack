@@ -6,6 +6,14 @@ export const LocationInfo = () => {
   const location = useLocation();
   const data = location.state;
 
+  const getFullAddress = () => {
+    const parts = [];
+    if (data?.tumbon) parts.push(`ตำบล${data.tumbon}`);
+    if (data?.amphure) parts.push(`อำเภอ${data.amphure}`);
+    if (data?.province) parts.push(`จังหวัด${data.province}`);
+    return parts.join(' ') || '';
+  };
+
   return (
     <div className="grid grid-cols-2 gap-4 mb-6">
       <div>
@@ -24,26 +32,10 @@ export const LocationInfo = () => {
           readOnly
         />
       </div>
-      <div>
-        <Label>ตำบล</Label>
-        <Input 
-          value={data?.tumbon ?? ''}
-          placeholder="ยังไม่มีข้อมูล"
-          readOnly
-        />
-      </div>
-      <div>
-        <Label>อำเภอ</Label>
-        <Input 
-          value={data?.amphure ?? ''}
-          placeholder="ยังไม่มีข้อมูล"
-          readOnly
-        />
-      </div>
       <div className="col-span-2">
-        <Label>จังหวัด</Label>
+        <Label>ที่อยู่</Label>
         <Input 
-          value={data?.province ?? ''}
+          value={getFullAddress()}
           placeholder="ยังไม่มีข้อมูล"
           readOnly
         />
