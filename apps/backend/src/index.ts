@@ -2,6 +2,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import pkg from 'pg';
+import cors from 'cors';
 const { Pool } = pkg;
 import { ProcessedPostService } from './services/processed-post.service.js';
 import { LocationCacheService } from './services/location-cache.service.js';
@@ -14,7 +15,19 @@ dotenv.config();
 
 const app = express();
 const httpServer = createServer(app);
-const io = new SocketIOServer(httpServer);
+const io = new SocketIOServer(httpServer, {
+  cors: {
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+});
+
+// Configure CORS for Express
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true
+}));
 
 const pool = new Pool({
   user: process.env.DB_WRITE_USER,
@@ -47,6 +60,7 @@ const startServer = async () => {
     const port = process.env.PORT || 3000;
     httpServer.listen(port, () => {
       logger.info(`Server is running on port ${port}`);
+      logger.info(`CORS enabled for origin: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
     }).on('error', (err) => {
       logger.error(`Error during server startup: ${err}`);
       process.exit(1);

@@ -1,31 +1,21 @@
 import { ProcessedPost } from '@/types/processed-post';
+import { APIService } from '../services/core';
+
+const apiService = APIService.getInstance();
 
 interface ApiResponse<T> {
   data: T;
-  error?: {
-    code: string;
-    message: string;
-  };
+  message?: string;
 }
 
 export const apiClient = {
-  async getUnprocessedPosts(): Promise<ProcessedPost[]> {
-    const response = await fetch('/api/posts/unprocessed');
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || 'Failed to fetch posts');
-    }
-    const { data } = (await response.json()) as ApiResponse<ProcessedPost[]>;
-    return data || [];
+  getUnprocessedPosts: async (): Promise<ProcessedPost> => {
+    const response = await apiService.get<ApiResponse<ProcessedPost>>('/posts/unprocessed');
+    return response.data;
   },
 
-  async getPostById(id: string): Promise<ProcessedPost> {
-    const response = await fetch(`/api/posts/${id}`);
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || 'Failed to fetch post');
-    }
-    const { data } = (await response.json()) as ApiResponse<ProcessedPost>;
-    return data;
+  getPostById: async (id: string): Promise<ProcessedPost> => {
+    const response = await apiService.get<ApiResponse<ProcessedPost>>(`/posts/${id}`);
+    return response.data;
   }
 }; 

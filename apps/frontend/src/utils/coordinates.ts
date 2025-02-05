@@ -93,6 +93,13 @@ export const createPostFeature = (post: ProcessedPost): GeoJSON.Feature | null =
       id: post.processed_post_id,
       text: post.text,
       category: category,
+      subCategory: post.sub1_category_name,
+      reporter: post.profile_name,
+      date: post.post_date,
+      link: post.post_url,
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+      location: `${post.tumbon?.[0] || ''} ${post.amphure?.[0] || ''} ${post.province?.[0] || ''}`.trim(),
       source: post.coordinate_source,
       marker
     }
