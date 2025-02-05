@@ -1,8 +1,11 @@
+import { shapeStyles } from '@/components/map/styles';
+
 export enum CategoryName {
+  REQUEST_SUPPORT = 'การขอการสนับสนุน/ช่วยดำเนินการ',
   REPORT_INCIDENT = 'การรายงานและแจ้งเหตุ',
-  REQUEST_SUPPORT = 'การขอการสนับสนุน',
-  REQUEST_INFO = 'การขอข้อมูล',
-  SUGGESTION = 'ข้อเสนอแนะ'
+  REQUEST_INFO = 'ขอข้อมูล',
+  SUGGESTION = 'ข้อเสนอแนะ',
+  UNKNOWN = 'Unknown'
 }
 
 export type CoordinateSource = 'direct' | 'cache_direct' | 'cache_inherited';
@@ -25,59 +28,21 @@ export interface ProcessedPost {
   coordinate_source: CoordinateSource;
 }
 
-export const CategoryIconMap = {
-  [CategoryName.REPORT_INCIDENT]: 'circle',
-  [CategoryName.REQUEST_SUPPORT]: 'triangle',
-  [CategoryName.REQUEST_INFO]: 'square',
-  [CategoryName.SUGGESTION]: 'hexa'
-} as const;
+export const categoryShapeMap: Record<CategoryName, keyof typeof shapeStyles> = {
+  [CategoryName.REPORT_INCIDENT]: 'triangle',
+  [CategoryName.REQUEST_SUPPORT]: 'square',
+  [CategoryName.REQUEST_INFO]: 'circle',
+  [CategoryName.SUGGESTION]: 'hexa',
+  [CategoryName.UNKNOWN]: 'diamond'
+};
 
 export const SubCategories: Record<CategoryName, string[]> = {
-  [CategoryName.REPORT_INCIDENT]: [
-    'All',
-    'อาคารชลประทานชำรุด',
-    'สถานการณ์น้ำท่วม',
-    'สถานการณ์น้ำแล้ง',
-    'ดำเนินการปลอดภัยอื่นๆ อาทิ หญ้าขึ้นสูงบังวิสัยทัศน์ และอื่นๆ'
-  ],
-  [CategoryName.REQUEST_SUPPORT]: [
-    'All',
-    'เพิ่ม/ลด การปล่อยน้ำ',
-    'การขอความสนับสนุนเครื่องมือเครื่องจักร',
-    'เปิด/ปิด ประตูน้ำ',
-    'มาตรการรองรับฤดูฝน',
-    'มาตรการรองรับฤดูแล้ง',
-    'แนวทาง/มาตรการรับมือพื้นที่เสี่ยงน้ำท่วม',
-    'แนวทาง/มาตรการรับมือพื้นที่น้ำท่วมซ้ำซาก',
-    'แนวทาง/มาตรการรับมือพื้นที่เสี่ยงภัยแล้ง',
-    'แนวทาง/มาตรการรับมือพื้นที่เสี่ยงภัยแล้งซ้ำซาก',
-    'การเตรียมความพร้อมอาคารชลประทาน',
-    'การขอความสนับสนุนนอกพื้นที่ชลประทาน',
-    'การขอใช้พื้นที่',
-    'การก่อสร้างแหล่งน้ำ/สถานีสูบน้ำชุมชน',
-    'การแก้ไขปัญหาวัชพืช',
-    'ข้อมูลในระบบสารสนเทศกรมชลประทานสูญหาย'
-  ],
-  [CategoryName.REQUEST_INFO]: [
-    'All',
-    'สภาพฝน',
-    'สภาพแล้ง',
-    'แหล่งข้อมูลฝน',
-    'การจัดลำดับความสำคัญการใช้น้ำ',
-    'แหล่งน้ำกรมชลประทานรับผิดชอบ',
-    'หลักการบริหารจัดการอ่างเก็บน้ำ',
-    'การดำเนินการร่วมกับหน่วยงานอื่น',
-    'พื้นที่เสี่ยงน้ำท่วม',
-    'พื้นที่เสี่ยงภัยแล้ง',
-    'พื้นที่น้ำท่วมซ้ำซาก',
-    'การจ่ายค่าไฟฟ้าสำหรับอาคารชลประทาน',
-    'ข้อมูลการติดต่อ',
-    'ช่องทางการแจ้งเตือนสถานการณ์ในพื้นที่',
-    'การใช้งานระบบ/อุปกรณ์',
-    'แผนงานโครงการเพื่อการแก้ไขปัญหา'
-  ],
-  [CategoryName.SUGGESTION]: ['All']
-}
+  [CategoryName.REPORT_INCIDENT]: ['ทั้งหมด'],
+  [CategoryName.REQUEST_SUPPORT]: ['ทั้งหมด'],
+  [CategoryName.REQUEST_INFO]: ['ทั้งหมด'],
+  [CategoryName.SUGGESTION]: ['ทั้งหมด'],
+  [CategoryName.UNKNOWN]: ['ทั้งหมด']
+};
 
 export const IrrigationOffices = [
   'สำนักงานชลประทานที่ 1',

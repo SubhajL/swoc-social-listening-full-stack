@@ -6,7 +6,8 @@ export const categoryColors = {
   [CategoryName.REPORT_INCIDENT]: '#dc2626', // Strong red for incidents
   [CategoryName.REQUEST_SUPPORT]: '#059669', // Emerald for support
   [CategoryName.REQUEST_INFO]: '#2563eb', // Royal blue for info
-  [CategoryName.SUGGESTION]: '#d97706' // Amber for suggestions
+  [CategoryName.SUGGESTION]: '#d97706', // Amber for suggestions
+  [CategoryName.UNKNOWN]: '#6b7280' // Gray for unknown
 } as const;
 
 // Status-based colors
@@ -27,31 +28,28 @@ export const shapeStyles = {
   hexa: {
     clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
     borderRadius: '0'
+  },
+  diamond: {
+    clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)',
+    borderRadius: '0'
   }
 } as const;
 
 // Category to shape mapping based on ontology semantics
 export const categoryShapeMap: Record<CategoryName, keyof typeof shapeStyles> = {
-  [CategoryName.REPORT_INCIDENT]: 'circle', // Circular for incidents (easy to spot)
-  [CategoryName.REQUEST_SUPPORT]: 'triangle', // Triangle for support (action needed)
-  [CategoryName.REQUEST_INFO]: 'square', // Square for information (structured)
-  [CategoryName.SUGGESTION]: 'hexa' // Hexagon for suggestions (unique)
+  [CategoryName.REPORT_INCIDENT]: 'triangle', // Triangle for incidents (urgent)
+  [CategoryName.REQUEST_SUPPORT]: 'square',   // Square for support (structured)
+  [CategoryName.REQUEST_INFO]: 'circle',      // Circle for info (simple)
+  [CategoryName.SUGGESTION]: 'hexa',          // Hexagon for suggestions (unique)
+  [CategoryName.UNKNOWN]: 'diamond'           // Diamond for unknown (distinct)
 };
 
 // Cluster configuration
 export const clusterConfig = {
-  maxZoom: 11,
-  radius: 30,
+  maxZoom: 5, // Separate into individual points at zoom level 5
+  radius: 40,
   paint: {
-    'circle-color': [
-      'step',
-      ['get', 'point_count'],
-      categoryColors[CategoryName.REPORT_INCIDENT], // 1-4 points
-      5,
-      categoryColors[CategoryName.REQUEST_SUPPORT], // 5-9 points
-      10,
-      categoryColors[CategoryName.REQUEST_INFO] // 10+ points
-    ],
+    'circle-color': '#ef4444',
     'circle-radius': [
       'step',
       ['get', 'point_count'],
@@ -67,7 +65,7 @@ export const clusterConfig = {
 
 // Map style configuration
 export const mapStyle = {
-  default: "mapbox://styles/mapbox/satellite-streets-v12",
+  default: "mapbox://styles/mapbox/satellite-streets-v12",  // Restored to original satellite view
   light: "mapbox://styles/mapbox/light-v11",
   dark: "mapbox://styles/mapbox/dark-v11"
 } as const;

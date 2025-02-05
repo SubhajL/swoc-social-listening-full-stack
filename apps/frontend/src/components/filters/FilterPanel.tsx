@@ -5,23 +5,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface FilterPanelProps {
-  selectedSubCategories: string[];
-  onSubCategoryChange: (subCategory: string, checked: boolean) => void;
+  selectedCategories: string[];
+  setSelectedCategories: (categories: string[]) => void;
   selectedProvince: string | null;
-  onProvinceChange: (province: string | null) => void;
+  setSelectedProvince: (province: string | null) => void;
   selectedOffice: string | null;
-  onOfficeChange: (office: string | null) => void;
+  setSelectedOffice: (office: string | null) => void;
   provinces: string[];
   onDateRangeChange?: (range: { start: string; end: string }) => void;
 }
 
 export function FilterPanel({
-  selectedSubCategories,
-  onSubCategoryChange,
+  selectedCategories,
+  setSelectedCategories,
   selectedProvince,
-  onProvinceChange,
+  setSelectedProvince,
   selectedOffice,
-  onOfficeChange,
+  setSelectedOffice,
   provinces,
   onDateRangeChange
 }: FilterPanelProps) {
@@ -33,22 +33,30 @@ export function FilterPanel({
       onDateRangeChange(dateRange);
     }
   }, [dateRange, onDateRangeChange]);
+
   const isAllSelected = (category: CategoryName) => {
     const subcategories = SubCategories[category].filter(sub => sub !== 'All');
     const selectedCount = subcategories.filter(sub => 
-      selectedSubCategories.includes(sub)
+      selectedCategories.includes(sub)
     ).length;
-    console.log(`Category ${category} selection status:`, {
-      total: subcategories.length,
-      selected: selectedCount
-    });
     return selectedCount === subcategories.length;
   };
 
-  // Simplified helper function - no conditions
   const handleAllChange = (category: CategoryName, checked: boolean) => {
     const subcategories = SubCategories[category].filter(sub => sub !== 'All');
-    subcategories.forEach(sub => onSubCategoryChange(sub, checked));
+    if (checked) {
+      setSelectedCategories([...selectedCategories, ...subcategories]);
+    } else {
+      setSelectedCategories(selectedCategories.filter(cat => !subcategories.includes(cat)));
+    }
+  };
+
+  const handleCategoryChange = (subCategory: string, checked: boolean) => {
+    if (checked) {
+      setSelectedCategories([...selectedCategories, subCategory]);
+    } else {
+      setSelectedCategories(selectedCategories.filter(cat => cat !== subCategory));
+    }
   };
 
   const renderCategory = (category: CategoryName, title: string) => (
@@ -71,8 +79,8 @@ export function FilterPanel({
               <div key={subCategory} className="flex items-center space-x-2">
                 <Checkbox
                   id={`${category}-${subCategory}`}
-                  checked={selectedSubCategories.includes(subCategory)}
-                  onCheckedChange={(checked) => onSubCategoryChange(subCategory, checked === true)}
+                  checked={selectedCategories.includes(subCategory)}
+                  onCheckedChange={(checked) => handleCategoryChange(subCategory, checked === true)}
                   className="h-4 w-4 rounded-sm border-gray-300"
                 />
                 <label htmlFor={`${category}-${subCategory}`} className="text-sm text-gray-700">{subCategory}</label>
@@ -83,13 +91,6 @@ export function FilterPanel({
       </div>
     </div>
   );
-
-  // Temporary debug logging
-  console.log('FilterPanel render:', {
-    categories: Object.keys(SubCategories),
-    subcategoriesExample: SubCategories[CategoryName.REPORT_INCIDENT],
-    selectedSubCategories
-  });
 
   return (
     <div className="flex flex-col space-y-4 p-6 overflow-y-auto">
@@ -130,7 +131,7 @@ export function FilterPanel({
       <div className="bg-[#8B5CF6] text-white rounded-2xl p-6" data-testid="province-select">
         <Select
           value={selectedProvince || "all"}
-          onValueChange={(value) => onProvinceChange(value === "all" ? null : value)}
+          onValueChange={(value) => setSelectedProvince(value === "all" ? null : value)}
         >
           <SelectTrigger className="bg-transparent border-none text-white text-lg font-medium">
             <SelectValue placeholder="ทุกจังหวัด" />
@@ -151,7 +152,7 @@ export function FilterPanel({
         <h3 className="text-lg font-medium mb-4">สำนักงานชลประทาน</h3>
         <IrrigationOfficeFilter
           selectedOffice={selectedOffice}
-          onOfficeChange={onOfficeChange}
+          onOfficeChange={setSelectedOffice}
         />
       </div>
     </div>

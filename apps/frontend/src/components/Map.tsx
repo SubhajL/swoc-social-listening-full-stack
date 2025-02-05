@@ -16,7 +16,8 @@ import {
   LAYER_CONFIG,
   initializeMapCore, 
   updateMapData,
-  filterPosts
+  filterPosts,
+  loadMapPosts
 } from '@/utils/map-core';
 
 interface MapProps {
@@ -111,37 +112,14 @@ const getCategoryFromName = (categoryName: string): CategoryName | undefined => 
   return undefined;
 };
 
-const getMarkerKey = (category: CategoryName | undefined): string => {
-  if (!category) {
-    console.warn('Invalid category in getMarkerKey:', category);
-    return 'circle-666666'; // Default fallback
-  }
-
+// Add helper function at the top level
+const getMarkerKey = (category: CategoryName): string => {
   const shape = categoryShapeMap[category];
   const color = categoryColors[category];
-
-  console.log('Marker key generation:', {
-    category,
-    shape,
-    color,
-    markerKey: `${shape}-${color?.replace('#', '')}`
-  });
-
-  if (!shape || !color) {
-    console.warn('Missing shape or color for category:', {
-      category,
-      shape,
-      color,
-      shapeMap: categoryShapeMap,
-      colorMap: categoryColors
-    });
-    return 'circle-666666'; // Default fallback
-  }
-
   return `${shape}-${color.replace('#', '')}`;
 };
 
-// Add helper function at the top level
+// Update createMarkerImage function
 const createMarkerImage = (shape: string, color: string, size: number = 32) => {
   const canvas = document.createElement('canvas');
   canvas.width = size;
@@ -150,35 +128,42 @@ const createMarkerImage = (shape: string, color: string, size: number = 32) => {
   if (!ctx) return null;
 
   // Set up shadow
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
-  ctx.shadowBlur = 4;
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+  ctx.shadowBlur = 6;
   ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 2;
+  ctx.shadowOffsetY = 3;
 
   ctx.clearRect(0, 0, size, size);
   
-  // Draw shape
+  // Draw shape with padding
   ctx.beginPath();
-  const margin = size * 0.15;
+  const padding = size * 0.1; // 10% padding
+  const drawSize = size - (padding * 2);
+  
   switch (shape) {
     case 'circle':
-      ctx.arc(size/2, size/2, (size - margin*2)/2, 0, Math.PI * 2);
+      ctx.arc(size/2, size/2, drawSize/2, 0, Math.PI * 2);
       break;
     case 'triangle':
-      ctx.moveTo(size/2, margin);
-      ctx.lineTo(size - margin, size - margin);
-      ctx.lineTo(margin, size - margin);
+      const h = drawSize * Math.sin(Math.PI * 2/3);
+      ctx.moveTo(size/2, padding);
+      ctx.lineTo(size - padding, size - padding);
+      ctx.lineTo(padding, size - padding);
       break;
     case 'square':
-      ctx.rect(margin, margin, size - margin*2, size - margin*2);
+      ctx.rect(padding, padding, drawSize, drawSize);
       break;
     case 'hexa':
-      ctx.moveTo(size/2, margin);
-      ctx.lineTo(size - margin, size/2);
-      ctx.lineTo(size - margin, size/2);
-      ctx.lineTo(size/2, size - margin);
-      ctx.lineTo(margin, size/2);
-      ctx.lineTo(margin, size/2);
+      const a = (drawSize/2) * Math.cos(Math.PI/6);
+      const b = (drawSize/2) * Math.sin(Math.PI/6);
+      const cx = size/2;
+      const cy = size/2;
+      ctx.moveTo(cx + drawSize/2, cy);
+      ctx.lineTo(cx + a, cy + b);
+      ctx.lineTo(cx - a, cy + b);
+      ctx.lineTo(cx - drawSize/2, cy);
+      ctx.lineTo(cx - a, cy - b);
+      ctx.lineTo(cx + a, cy - b);
       break;
   }
   ctx.closePath();
@@ -219,76 +204,32 @@ export function Map({
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const loadedImagesRef = useRef(new Set<string>());
 
-  const withRetry = useCallback(async <T,>(
-    operation: () => Promise<T>,
-    retries: number = MAX_RETRIES
-  ): Promise<T> => {
-    try {
-      return await operation();
-    } catch (error) {
-      if (retries > 0) {
-        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
-        return withRetry(operation, retries - 1);
-      }
-      throw error;
-    }
-  }, []);
-
   // Load initial posts
   useEffect(() => {
     const loadPosts = async () => {
       try {
         setIsLoading(true);
-        console.log('Fetching posts from API...');
-        const posts = await withRetry(async () => {
-          const result = await apiClient.getUnprocessedPosts();
-          console.log('API Response:', {
-            totalPosts: result?.length || 0,
-            firstPost: result?.[0],
-            hasCoordinates: result?.some(p => p.latitude && p.longitude)
-          });
-          if (!result) throw new Error('No posts returned from API');
-          return result;
-        });
-
-        if (posts && posts.length > 0) {
-          console.log('Raw posts from API:', posts.slice(0, 5)); // Log first 5 posts for debugging
-          
-          // Filter out posts without valid coordinates
-          const validPosts = posts.filter(post => hasValidCoordinates(post));
-
-          console.log('Posts validation summary:', {
-            total: posts.length,
-            valid: validPosts.length,
-            categories: [...new Set(validPosts.map(p => p.category_name))],
-            sources: [...new Set(validPosts.map(p => p.coordinate_source))],
-            firstThree: validPosts.slice(0, 3).map(p => ({
-              id: p.processed_post_id,
-              lat: p.latitude,
-              lng: p.longitude,
-              source: p.coordinate_source
-            }))
-          });
-          
-          setApiPosts(validPosts);
-        } else {
-          console.log('No posts returned from API');
-          setApiPosts([]);
-        }
-      } catch (error) {
-        console.error('Failed to load posts:', error);
-        toast({
-          title: "Error loading posts",
-          description: "Failed to load unreplied posts. Please try again later.",
-          variant: "destructive"
-        });
+        const posts = await loadMapPosts(
+          undefined,
+          (validPosts) => {
+            setApiPosts(validPosts);
+          },
+          (error) => {
+            console.error('Failed to load posts:', error);
+            toast({
+              title: "Error loading posts",
+              description: "Failed to load unreplied posts. Please try again later.",
+              variant: "destructive"
+            });
+          }
+        );
       } finally {
         setIsLoading(false);
       }
     };
 
     loadPosts();
-  }, [withRetry]);
+  }, []);
 
   // Handle real-time updates
   useEffect(() => {
@@ -423,6 +364,87 @@ export function Map({
         setImagesLoaded(true);
       });
 
+      // Add zoom change handler to count individual posts
+      map.on('zoomend', () => {
+        const currentZoom = map.getZoom();
+        console.log('Map zoom changed:', {
+          zoom: currentZoom,
+          isClusteringEnabled: currentZoom <= 5,
+          layerIds: map.getStyle().layers?.map(l => l.id) || []
+        });
+        
+        // Get visible features in the viewport
+        const bounds = map.getBounds();
+        if (!bounds) return;
+        
+        const sw = bounds.getSouthWest();
+        const ne = bounds.getNorthEast();
+        
+        // Log viewport bounds
+        console.log('Querying features in viewport:', {
+          bounds: {
+            sw: [sw.lng, sw.lat],
+            ne: [ne.lng, ne.lat]
+          },
+          visibleLayers: map.getStyle().layers
+            ?.filter(l => map.getLayoutProperty(l.id, 'visibility') !== 'none')
+            .map(l => l.id)
+        });
+
+        // Query features from each layer separately for debugging
+        const clusterFeatures = map.queryRenderedFeatures(
+          [[sw.lng, sw.lat], [ne.lng, ne.lat]],
+          { layers: [LAYER_CONFIG.CLUSTERS] }
+        );
+
+        const unclusteredFeatures = map.queryRenderedFeatures(
+          [[sw.lng, sw.lat], [ne.lng, ne.lat]],
+          { layers: [LAYER_CONFIG.UNCLUSTERED_POINT] }
+        );
+
+        console.log('Layer query results:', {
+          clusters: {
+            count: clusterFeatures.length,
+            sample: clusterFeatures.slice(0, 2).map(f => ({
+              id: f.properties?.cluster_id,
+              pointCount: f.properties?.point_count
+            }))
+          },
+          unclustered: {
+            count: unclusteredFeatures.length,
+            sample: unclusteredFeatures.slice(0, 2).map(f => ({
+              id: f.properties?.id,
+              category: f.properties?.category
+            }))
+          }
+        });
+
+        // Count clustered points
+        const clusteredPoints = clusterFeatures
+          .reduce((sum, f) => sum + (f.properties?.point_count || 0), 0);
+
+        // Count and categorize unclustered points
+        const categoryCounts = unclusteredFeatures.reduce((acc, feature) => {
+          const category = feature.properties?.category;
+          if (category) {
+            acc[category] = (acc[category] || 0) + 1;
+          }
+          return acc;
+        }, {} as Record<string, number>);
+
+        // Log final counts
+        console.log('Points on map:', {
+          zoom: currentZoom,
+          totalClustered: clusteredPoints,
+          totalUnclustered: unclusteredFeatures.length,
+          byCategory: categoryCounts,
+          viewport: {
+            sw: [sw.lng, sw.lat],
+            ne: [ne.lng, ne.lat]
+          }
+        });
+      });
+
       // Handle click events
       map.on('click', LAYER_CONFIG.UNCLUSTERED_POINT, (e) => {
         if (!e.features?.[0]) return;
@@ -492,6 +514,17 @@ export function Map({
     }
 
     try {
+      // Debug log raw posts
+      console.log('Raw posts before filtering:', {
+        total: apiPosts.length,
+        samplePosts: apiPosts.slice(0, 3).map(p => ({
+          id: p.processed_post_id,
+          category: p.category_name,
+          coords: [p.longitude, p.latitude],
+          source: p.coordinate_source
+        }))
+      });
+
       // Filter posts based on selected criteria
       const filteredPosts = filterPosts(
         apiPosts,
@@ -501,29 +534,98 @@ export function Map({
         selectedTumbon
       );
 
-      console.log('Creating features from filtered posts:', {
+      console.log('Posts after filtering:', {
         total: apiPosts.length,
         filtered: filteredPosts.length,
-        firstPost: filteredPosts[0]
+        selectedFilters: {
+          categories: selectedCategories,
+          province: selectedProvince,
+          amphure: selectedAmphure,
+          tumbon: selectedTumbon
+        },
+        sampleFiltered: filteredPosts.slice(0, 3).map(p => ({
+          id: p.processed_post_id,
+          category: p.category_name,
+          coords: [p.longitude, p.latitude]
+        }))
       });
 
       // Create GeoJSON features
       const features = filteredPosts
-        .map(createPostFeature)
+        .map(post => {
+          const feature = createPostFeature(post);
+          if (!feature) {
+            console.warn('Failed to create feature for post:', {
+              id: post.processed_post_id,
+              category: post.category_name,
+              coords: [post.longitude, post.latitude]
+            });
+          }
+          return feature;
+        })
         .filter(Boolean) as GeoJSON.Feature[];
+
+      console.log('Features created:', {
+        total: features.length,
+        sampleFeatures: features.slice(0, 3).map(f => ({
+          geometry: f.geometry,
+          properties: f.properties
+        }))
+      });
 
       // Update map data using core utility
       updateMapData(map, features);
 
-      console.log('Map data updated:', {
-        featureCount: features.length,
-        categories: [...new Set(features.map(f => f.properties?.category))],
-        sources: [...new Set(features.map(f => f.properties?.source))]
-      });
+      // Verify source data after update
+      const source = map.getSource(MAP_CORE_CONFIG.SOURCE_ID) as mapboxgl.GeoJSONSource;
+      if (source) {
+        // @ts-ignore - Accessing internal _data for debugging
+        const currentData = source._data;
+        console.log('Source data after update:', {
+          hasData: !!currentData,
+          featureCount: currentData?.features?.length || 0,
+          bounds: map.getBounds().toArray()
+        });
+      }
     } catch (error) {
       console.error('Error updating map data:', error);
     }
   }, [apiPosts, selectedCategories, selectedProvince, selectedAmphure, selectedTumbon, imagesLoaded]);
+
+  // Update marker image loading
+  useEffect(() => {
+    if (!mapRef.current || !imagesLoaded) return;
+
+    try {
+      // Load marker images for each category
+      Object.values(CategoryName).forEach(category => {
+        const shape = categoryShapeMap[category];
+        const color = categoryColors[category];
+        const imageId = getMarkerKey(category);
+        
+        // Skip if already loaded
+        if (loadedImagesRef.current.has(imageId)) return;
+        
+        const imageData = createMarkerImage(shape, color);
+        if (!imageData) {
+          console.error('Failed to create marker image:', { category, shape, color });
+          return;
+        }
+
+        mapRef.current?.addImage(imageId, imageData, { pixelRatio: 2 });
+        loadedImagesRef.current.add(imageId);
+      });
+
+      setImagesLoaded(true);
+      
+      console.log('Marker images loaded:', {
+        categories: Object.values(CategoryName),
+        loadedImages: Array.from(loadedImagesRef.current)
+      });
+    } catch (error) {
+      console.error('Error loading marker images:', error);
+    }
+  }, [mapRef.current]);
 
   return (
     <div className="relative w-full h-full min-h-[400px]">

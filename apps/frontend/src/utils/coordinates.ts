@@ -1,4 +1,6 @@
 import { ProcessedPost } from '@/types/processed-post';
+import { CategoryName } from '@/types/processed-post';
+import { categoryShapeMap, categoryColors } from '@/components/map/styles';
 
 /**
  * Validates and parses coordinates from a post, handling both number and string types
@@ -49,14 +51,37 @@ export const hasValidCoordinates = (post: ProcessedPost): boolean => {
   return true;
 };
 
+const getMarkerKey = (category: CategoryName): string => {
+  const shape = categoryShapeMap[category];
+  const color = categoryColors[category];
+  return `${shape}-${color.replace('#', '')}`;
+};
+
 /**
  * Creates a GeoJSON feature from a post
  */
 export const createPostFeature = (post: ProcessedPost): GeoJSON.Feature | null => {
   const coords = parseCoordinates(post);
   if (!coords) {
+    console.warn('Invalid coordinates for post:', post.processed_post_id);
     return null;
   }
+
+  // Get marker key based on category
+  let category = Object.values(CategoryName).find(cat => cat === post.category_name);
+  if (!category) {
+    console.warn('Invalid category, using UNKNOWN:', post.category_name);
+    category = CategoryName.UNKNOWN;
+  }
+
+  const marker = getMarkerKey(category);
+  console.log('Created feature:', { 
+    id: post.processed_post_id,
+    category,
+    marker,
+    coords,
+    source: post.coordinate_source
+  });
 
   return {
     type: 'Feature',
@@ -66,8 +91,10 @@ export const createPostFeature = (post: ProcessedPost): GeoJSON.Feature | null =
     },
     properties: {
       id: post.processed_post_id,
-      category: post.category_name,
-      source: post.coordinate_source
+      text: post.text,
+      category: category,
+      source: post.coordinate_source,
+      marker
     }
   };
 }; 
