@@ -8,13 +8,18 @@ const CoordinatesSchema = z.object({
 
 // Base complaint schema
 export const ComplaintDTO = z.object({
-  issue: z.string().min(1, "ประเด็นข้อร้องเรียนจำเป็นต้องระบุ"),
-  category: z.string().min(1, "ประเภทข้อร้องเรียนจำเป็นต้องระบุ"),
-  reporter: z.string().min(1, "ข้อมูลผู้ร้องเรียนจำเป็นต้องระบุ"),
+  id: z.number(),
+  issue: z.string(),
+  category: z.string(),
+  reporter: z.string(),
   date: z.string(),
-  link: z.string().url().optional(),
-  coordinates: CoordinatesSchema,
-  location: z.string().min(1, "ที่อยู่จำเป็นต้องระบุ"),
+  link: z.string().optional(),
+  coordinates: CoordinatesSchema.optional(),
+  location: z.string().optional(),
+  // Add validation for location arrays
+  tumbon: z.array(z.string()).optional(),
+  amphure: z.array(z.string()).optional(),
+  province: z.array(z.string()).optional()
 });
 
 export type CreateComplaintDTO = z.infer<typeof ComplaintDTO>;

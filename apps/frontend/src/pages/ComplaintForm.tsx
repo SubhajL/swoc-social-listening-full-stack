@@ -18,7 +18,7 @@ const isProcessedPost = (data: any): data is ProcessedPost => {
   return 'processed_post_id' in data && 'text' in data && 'category_name' in data;
 };
 
-// Convert ProcessedPost to ComplaintDTO format
+// Convert ProcessedPost to ComplaintDTO format while preserving location data
 const convertToComplaintFormat = (data: ProcessedPost | Complaint) => {
   if (isProcessedPost(data)) {
     return {
@@ -34,7 +34,12 @@ const convertToComplaintFormat = (data: ProcessedPost | Complaint) => {
         lat: data.latitude,
         lng: data.longitude
       },
-      location: [data.tumbon?.[0], data.amphure?.[0], data.province?.[0]].filter(Boolean).join(' ')
+      // Preserve original location data structure
+      tumbon: data.tumbon,
+      amphure: data.amphure,
+      province: data.province,
+      // Keep location field for backward compatibility
+      location: ''
     };
   }
   return data;
@@ -74,7 +79,7 @@ const ComplaintForm = () => {
     return <div>Invalid complaint data</div>;
   }
 
-  const currentComplaint = complaint || complaintData;
+  const currentComplaint = convertToComplaintFormat(complaint || complaintData!);
 
   return (
     <div className="min-h-screen bg-[#F0F8FF] pb-32">

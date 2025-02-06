@@ -14,8 +14,14 @@ export interface Complaint {
   reporter: string;
   date: string;
   link?: string;
-  coordinates: Coordinates;
-  location: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  location?: string;
+  tumbon?: string[];
+  amphure?: string[];
+  province?: string[];
 }
 
 // Response interfaces
