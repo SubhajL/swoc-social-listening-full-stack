@@ -7,20 +7,53 @@ import { LocationInfo } from "@/components/complaint/LocationInfo";
 import { WaterFlowPanel } from "@/components/complaint/WaterFlowPanel";
 import { ComplaintNavigation } from "@/components/complaint/ComplaintNavigation";
 import { useComplaint } from "@/hooks/useComplaint";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { Complaint } from "@/types/complaint";
 import { ComplaintDTO } from "@/dto/complaint.dto";
 import { toast } from "sonner";
+import { ProcessedPost } from "@/types/processed-post";
+
+// Type guard to check if data is ProcessedPost
+const isProcessedPost = (data: any): data is ProcessedPost => {
+  return 'processed_post_id' in data && 'text' in data && 'category_name' in data;
+};
+
+// Convert ProcessedPost to ComplaintDTO format
+const convertToComplaintFormat = (data: ProcessedPost | Complaint) => {
+  if (isProcessedPost(data)) {
+    return {
+      id: data.processed_post_id,
+      issue: data.text,
+      category: data.category_name,
+      reporter: data.profile_name,
+      date: data.post_date instanceof Date 
+        ? data.post_date.toISOString().split('T')[0] 
+        : new Date(data.post_date).toISOString().split('T')[0],
+      link: data.post_url,
+      coordinates: {
+        lat: data.latitude,
+        lng: data.longitude
+      },
+      location: [data.tumbon?.[0], data.amphure?.[0], data.province?.[0]].filter(Boolean).join(' ')
+    };
+  }
+  return data;
+};
 
 const ComplaintForm = () => {
   const location = useLocation();
-  const complaintData = location.state as Complaint | undefined;
-  const { isLoading } = useComplaint(complaintData?.id);
+  const [searchParams] = useSearchParams();
+  const postId = searchParams.get('postId');
+  const complaintData = location.state as ProcessedPost | undefined;
+  const { isLoading, complaint } = useComplaint(postId ? Number(postId) : undefined);
 
   const validateComplaintData = () => {
-    if (!complaintData) return;
+    const data = complaint || complaintData;
+    if (!data) return;
 
-    const result = ComplaintDTO.safeParse(complaintData);
+    const complaintFormat = convertToComplaintFormat(data);
+    const result = ComplaintDTO.safeParse(complaintFormat);
+
     if (!result.success) {
       console.error('Complaint data validation failed:', result.error);
       toast.error('ข้อมูลข้อร้องเรียนไม่ถูกต้อง');
@@ -33,9 +66,15 @@ const ComplaintForm = () => {
     return <div>Loading...</div>;
   }
 
-  if (complaintData && !validateComplaintData()) {
+  if (!complaint && !complaintData) {
+    return <div>No complaint data found</div>;
+  }
+
+  if (!validateComplaintData()) {
     return <div>Invalid complaint data</div>;
   }
+
+  const currentComplaint = complaint || complaintData;
 
   return (
     <div className="min-h-screen bg-[#F0F8FF] pb-32">
@@ -43,8 +82,8 @@ const ComplaintForm = () => {
       
       <main className="container mx-auto p-4 space-y-6">
         <Card className="p-6">
-          <ComplaintInfo />
-          <LocationInfo />
+          <ComplaintInfo complaint={currentComplaint} />
+          <LocationInfo complaint={currentComplaint} />
         </Card>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

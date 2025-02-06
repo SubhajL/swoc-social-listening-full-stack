@@ -1,17 +1,41 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useLocation } from "react-router-dom";
+import { ProcessedPost } from "@/types/processed-post";
+import { Complaint } from "@/types/complaint";
 
-export const LocationInfo = () => {
-  const location = useLocation();
-  const data = location.state;
+interface LocationInfoProps {
+  complaint: ProcessedPost | Complaint;
+}
 
+// Type guard to check if data is ProcessedPost
+const isProcessedPost = (data: any): data is ProcessedPost => {
+  return 'processed_post_id' in data && 'text' in data && 'category_name' in data;
+};
+
+export const LocationInfo = ({ complaint }: LocationInfoProps) => {
   const getFullAddress = () => {
-    const parts = [];
-    if (data?.tumbon) parts.push(`ตำบล${data.tumbon}`);
-    if (data?.amphure) parts.push(`อำเภอ${data.amphure}`);
-    if (data?.province) parts.push(`จังหวัด${data.province}`);
-    return parts.join(' ') || '';
+    if (isProcessedPost(complaint)) {
+      const parts = [];
+      if (complaint.tumbon?.[0]) parts.push(`ตำบล${complaint.tumbon[0]}`);
+      if (complaint.amphure?.[0]) parts.push(`อำเภอ${complaint.amphure[0]}`);
+      if (complaint.province?.[0]) parts.push(`จังหวัด${complaint.province[0]}`);
+      return parts.join(' ') || '';
+    }
+    return complaint.location || '';
+  };
+
+  const getLatitude = () => {
+    if (isProcessedPost(complaint)) {
+      return complaint.latitude;
+    }
+    return complaint.coordinates?.lat;
+  };
+
+  const getLongitude = () => {
+    if (isProcessedPost(complaint)) {
+      return complaint.longitude;
+    }
+    return complaint.coordinates?.lng;
   };
 
   return (
@@ -19,7 +43,7 @@ export const LocationInfo = () => {
       <div>
         <Label>พิกัด (ละติจูด)</Label>
         <Input 
-          value={data?.latitude ?? ''}
+          value={getLatitude() ?? ''}
           placeholder="ยังไม่มีข้อมูล"
           readOnly
         />
@@ -27,7 +51,7 @@ export const LocationInfo = () => {
       <div>
         <Label>พิกัด (ลองจิจูด)</Label>
         <Input 
-          value={data?.longitude ?? ''}
+          value={getLongitude() ?? ''}
           placeholder="ยังไม่มีข้อมูล"
           readOnly
         />

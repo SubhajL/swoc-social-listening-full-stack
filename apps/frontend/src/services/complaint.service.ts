@@ -1,10 +1,31 @@
 import { Complaint } from "@/types/complaint";
 import { CreateComplaintDTO, ComplaintDTO } from "@/dto/complaint.dto";
 import { toast } from "sonner";
+import { apiClient } from "@/lib/api-client";
+import { ProcessedPost } from "@/types/processed-post";
+
+// Convert ProcessedPost to Complaint
+const mapPostToComplaint = (post: ProcessedPost): Complaint => ({
+  id: post.processed_post_id,
+  issue: post.text || '',
+  category: post.category_name || '',
+  reporter: post.profile_name || '',
+  date: post.post_date instanceof Date 
+    ? post.post_date.toISOString().split('T')[0] 
+    : new Date(post.post_date).toISOString().split('T')[0],
+  link: post.post_url || '',
+  coordinates: {
+    lat: post.latitude || 0,
+    lng: post.longitude || 0
+  },
+  location: [
+    post.tumbon?.[0], 
+    post.amphure?.[0], 
+    post.province?.[0]
+  ].filter(Boolean).join(' ')
+});
 
 class ComplaintService {
-  private complaints: Complaint[] = [];
-
   async getComplaints(filters?: {
     categories?: string[];
     province?: string | null;
@@ -13,30 +34,8 @@ class ComplaintService {
     try {
       console.log('Fetching complaints with filters:', filters);
       
-      let filteredComplaints = [...this.complaints];
-      
-      if (filters?.categories && filters.categories.length > 0) {
-        console.log('Applying category filter:', filters.categories);
-        filteredComplaints = filteredComplaints.filter(complaint => 
-          filters.categories!.includes(complaint.category)
-        );
-      }
-
-      if (filters?.province) {
-        console.log('Applying province filter:', filters.province);
-        filteredComplaints = filteredComplaints.filter(complaint => 
-          complaint.location.includes(filters.province!)
-        );
-      }
-
-      if (filters?.office) {
-        console.log('Applying office filter:', filters.office);
-        filteredComplaints = filteredComplaints.filter(complaint => 
-          complaint.location.includes(filters.office!)
-        );
-      }
-
-      return filteredComplaints;
+      const posts = await apiClient.getUnprocessedPosts();
+      return posts.map(mapPostToComplaint);
     } catch (error) {
       console.error('Error fetching complaints:', error);
       toast.error('เกิดข้อผิดพลาดในการดึงข้อมูลข้อร้องเรียน');
@@ -47,7 +46,8 @@ class ComplaintService {
   async getComplaintById(id: number): Promise<Complaint | undefined> {
     try {
       console.log('Fetching complaint by ID:', id);
-      return this.complaints.find(complaint => complaint.id === id);
+      const post = await apiClient.getPostById(String(id));
+      return mapPostToComplaint(post);
     } catch (error) {
       console.error('Error fetching complaint by ID:', error);
       toast.error('เกิดข้อผิดพลาดในการดึงข้อมูลข้อร้องเรียน');
@@ -75,25 +75,8 @@ class ComplaintService {
         throw new Error('Invalid coordinates');
       }
 
-      const newComplaint: Complaint = {
-        id: this.complaints.length + 1,
-        issue: validationResult.data.issue,
-        category: validationResult.data.category,
-        reporter: validationResult.data.reporter,
-        date: validationResult.data.date,
-        link: validationResult.data.link || '',
-        coordinates: {
-          lat: validationResult.data.coordinates.lat,
-          lng: validationResult.data.coordinates.lng
-        },
-        location: validationResult.data.location
-      };
-      
-      this.complaints.push(newComplaint);
-      console.log('Complaint created successfully:', newComplaint);
-      toast.success('บันทึกข้อร้องเรียนสำเร็จ');
-      
-      return newComplaint;
+      // TODO: Implement actual API call when endpoint is ready
+      throw new Error('Create complaint endpoint not implemented');
     } catch (error) {
       console.error('Error creating complaint:', error);
       toast.error('เกิดข้อผิดพลาดในการบันทึกข้อร้องเรียน');

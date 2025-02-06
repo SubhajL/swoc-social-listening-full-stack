@@ -21,7 +21,7 @@ const App = () => {
         <TooltipProvider>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/complaint-form" element={<ComplaintForm />} />
+            <Route path="/complaint/create" element={<ComplaintForm />} />
           </Routes>
           <Toaster />
           <Sonner />

@@ -19,6 +19,8 @@ import {
   filterPosts,
   loadMapPosts
 } from '@/utils/map-core';
+import type { Feature, GeoJSON, Point, GeoJsonProperties } from 'geojson';
+import type { AnySourceData } from 'mapbox-gl';
 
 interface MapProps {
   token: string;
@@ -31,6 +33,26 @@ interface MapProps {
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 2000;
+
+// Update PostFeatureProperties interface
+interface PostFeatureProperties extends GeoJsonProperties {
+  id: number;
+  text?: string;
+  category: CategoryName;
+  cluster?: boolean;
+  cluster_id?: number;
+  point_count?: number;
+}
+
+// Type guard for GeoJSON source
+function isGeoJSONSource(source: AnySourceData): source is mapboxgl.GeoJSONSource {
+  return typeof source === 'object' && source.type === 'geojson';
+}
+
+// Type guard for Point feature
+function isPointFeature(feature: Feature): feature is Feature<Point> {
+  return feature.geometry.type === 'Point';
+}
 
 function isValidCoordinates(post: ProcessedPost): boolean {
   console.log('Validating coordinates for post:', {
@@ -285,10 +307,11 @@ export function Map({
           features.forEach(feature => {
             const link = document.createElement('a');
             link.className = 'block text-sm text-blue-600 hover:text-blue-800 cursor-pointer mb-1';
-            link.textContent = feature.properties?.text?.substring(0, 50) + '...';
+            const properties = feature.properties as PostFeatureProperties;
+            link.textContent = properties?.text?.substring(0, 50) + '...';
             link.onclick = () => {
-              if (feature.properties?.id) {
-                navigate(`/posts/${feature.properties.id}`);
+              if (properties?.id) {
+                navigate(`/complaint/create?postId=${properties.id}`);
               }
             };
             popupContent.appendChild(link);
@@ -447,10 +470,13 @@ export function Map({
 
       // Handle click events
       map.on('click', LAYER_CONFIG.UNCLUSTERED_POINT, (e) => {
-        if (!e.features?.[0]) return;
-        const { properties } = e.features[0];
+        if (!e.features?.length) return;
+        
+        const feature = e.features[0] as Feature<Point, PostFeatureProperties>;
+        const properties = feature.properties;
+        
         if (properties?.id) {
-          navigate(`/posts/${properties.id}`);
+          navigate(`/complaint/create?postId=${properties.id}`);
         }
       });
 
@@ -468,16 +494,79 @@ export function Map({
         const features = map.queryRenderedFeatures(e.point, {
           layers: [LAYER_CONFIG.CLUSTERS]
         });
+        
         if (!features.length) return;
 
-        const clusterId = features[0].properties?.cluster_id;
-        const pointCount = features[0].properties?.point_count;
+        const feature = features[0] as Feature<Point, PostFeatureProperties>;
+        if (!isPointFeature(feature)) return;
+
+        const clusterId = feature.properties?.cluster_id;
+        const pointCount = feature.properties?.point_count;
+        
         if (!clusterId || !pointCount) return;
 
-        const geometry = features[0].geometry as GeoJSON.Point;
-        const coordinates = geometry.coordinates as [number, number];
+        const source = map.getSource(MAP_CORE_CONFIG.SOURCE_ID);
+        if (!source || !isGeoJSONSource(source)) return;
 
-        handleClusterClick(map, clusterId, coordinates, pointCount);
+        // For small clusters (less than 5 points), show popup with links
+        if (pointCount < 5) {
+          source.getClusterLeaves(
+            clusterId,
+            pointCount,
+            0,
+            (error, features) => {
+              if (error || !features) return;
+
+              const popupContent = document.createElement('div');
+              popupContent.className = 'p-2 space-y-2';
+              
+              const title = document.createElement('div');
+              title.className = 'font-semibold text-sm mb-2';
+              title.textContent = `${pointCount} ข้อร้องเรียน`;
+              popupContent.appendChild(title);
+
+              features.forEach(feature => {
+                if (!isPointFeature(feature)) return;
+                const properties = feature.properties as PostFeatureProperties;
+                
+                const link = document.createElement('a');
+                link.className = 'block text-sm text-blue-600 hover:text-blue-800 cursor-pointer mb-1';
+                link.textContent = properties?.text?.substring(0, 50) + '...';
+                link.onclick = () => {
+                  if (properties?.id) {
+                    navigate(`/complaint/create?postId=${properties.id}`);
+                  }
+                };
+                popupContent.appendChild(link);
+              });
+
+              // Show popup
+              new mapboxgl.Popup({
+                closeButton: true,
+                closeOnClick: false,
+                maxWidth: '300px'
+              })
+                .setLngLat(feature.geometry.coordinates as [number, number])
+                .setDOMContent(popupContent)
+                .addTo(map);
+            }
+          );
+        }
+
+        // For larger clusters, zoom in smoothly
+        source.getClusterExpansionZoom(
+          clusterId,
+          (error, zoom) => {
+            if (error || !zoom) return;
+
+            map.easeTo({
+              center: feature.geometry.coordinates as [number, number],
+              zoom: zoom + 0.5,
+              duration: 500,
+              easing: t => t * (2 - t)
+            });
+          }
+        );
       });
 
       map.on('mouseenter', LAYER_CONFIG.CLUSTERS, () => {
