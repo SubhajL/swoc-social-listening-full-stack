@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { errorHandler } from './middleware/error-handler.js';
 import { createPostsRouter } from './api/posts/index.js';
+import telemetryStationsRouter from './api/telemetry-stations.js';
 import { ProcessedPostService } from './services/processed-post.service.js';
 import { pool } from './lib/db.js';
 import { logger } from './utils/logger.js';
@@ -21,6 +22,7 @@ export const initializeServices = async (io: Server) => {
   // Create router with initialized service
   const postsRouter = createPostsRouter(processedPostService);
   app.use('/api/posts', postsRouter);
+  app.use('/api/monitoring-stations', telemetryStationsRouter);
 
   return { processedPostService };
 };

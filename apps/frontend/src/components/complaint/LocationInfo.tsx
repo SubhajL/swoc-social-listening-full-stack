@@ -45,8 +45,7 @@ export const LocationInfo = ({ complaint }: LocationInfoProps) => {
 
         console.log('Location parts after cleaning:', parts);
 
-        // For "ละลาย ลอง" -> ["ละลาย", "ลอง"] -> tumbon, amphur
-        // For "เชียงคำ พะเยา" -> ["เชียงคำ", "พะเยา"] -> tumbon, province
+        // For "ห้วย มหาสารคาม" -> ["ห้วย", "มหาสารคาม"] -> tumbon, province
         if (parts.length === 2) {
           // Check if second part is a known province name
           const isSecondPartProvince = isProvinceOrAmphur(parts[1]);
@@ -77,7 +76,9 @@ export const LocationInfo = ({ complaint }: LocationInfoProps) => {
       'กรุงเทพ',
       'เชียงใหม่',
       'ระยอง',
-      'พังงา'
+      'พังงา',
+      'มหาสารคาม',
+      'แพร่'
       // Add more as needed
     ];
     return commonProvinces.includes(name);

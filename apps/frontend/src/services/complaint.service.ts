@@ -18,6 +18,9 @@ const mapPostToComplaint = (post: ProcessedPost): Complaint => ({
     lat: post.latitude || 0,
     lng: post.longitude || 0
   },
+  tumbon: post.tumbon || [],
+  amphure: post.amphure || [],
+  province: post.province || [],
   location: [
     post.tumbon?.[0], 
     post.amphure?.[0], 
