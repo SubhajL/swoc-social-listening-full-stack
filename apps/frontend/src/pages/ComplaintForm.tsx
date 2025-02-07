@@ -58,7 +58,6 @@ const ComplaintForm = () => {
 
     const complaintFormat = convertToComplaintFormat(data);
     const result = ComplaintDTO.safeParse(complaintFormat);
-
     if (!result.success) {
       console.error('Complaint data validation failed:', result.error);
       toast.error('ข้อมูลข้อร้องเรียนไม่ถูกต้อง');
@@ -71,15 +70,15 @@ const ComplaintForm = () => {
     return <div>Loading...</div>;
   }
 
-  if (!complaint && !complaintData) {
-    return <div>No complaint data found</div>;
-  }
-
-  if (!validateComplaintData()) {
+  const data = complaint || complaintData;
+  if (data && !validateComplaintData()) {
     return <div>Invalid complaint data</div>;
   }
 
-  const currentComplaint = convertToComplaintFormat(complaint || complaintData!);
+  // Get the first amphure and province from the arrays
+  const locationData = data ? convertToComplaintFormat(data) : undefined;
+  const firstAmphure = locationData?.amphure?.[0];
+  const firstProvince = locationData?.province?.[0];
 
   return (
     <div className="min-h-screen bg-[#F0F8FF] pb-32">
@@ -87,12 +86,15 @@ const ComplaintForm = () => {
       
       <main className="container mx-auto p-4 space-y-6">
         <Card className="p-6">
-          <ComplaintInfo complaint={currentComplaint} />
-          <LocationInfo complaint={currentComplaint} />
+          <ComplaintInfo complaint={data!} />
+          <LocationInfo complaint={data!} />
         </Card>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <WaterLevelInfo />
+          <WaterLevelInfo 
+            amphure={firstAmphure}
+            province={firstProvince}
+          />
           <WaterFlowPanel />
         </div>
       </main>

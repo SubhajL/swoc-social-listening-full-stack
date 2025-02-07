@@ -7,8 +7,10 @@ import { ProcessedPostService } from './services/processed-post.service.js';
 import { LocationCacheService } from './services/location-cache.service.js';
 import { createPostsRouter } from './api/posts/index.js';
 import { createLocationRouter } from './api/location/index.js';
+import telemetryStationsRouter from './api/telemetry-stations.js';
 import { logger } from './utils/logger.js';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -40,19 +42,55 @@ const startServer = async () => {
     await processedPostService.initialize();
     logger.info('Services initialized successfully');
 
+    // Configure CORS first
+    app.use(cors({
+      origin: true, // Enable all origins temporarily for debugging
+      credentials: true
+    }));
+
+    // Then other middleware
     app.use(express.json());
+
+    // Request logging middleware
+    app.use((req, res, next) => {
+      logger.info(`📥 Incoming Request`, {
+        method: req.method,
+        url: req.url,
+        origin: req.headers.origin,
+        timestamp: new Date().toISOString()
+      });
+      next();
+    });
+
+    // Register routes
     app.use('/api/posts', createPostsRouter(processedPostService));
     app.use('/api/location', createLocationRouter(locationCacheService));
+    app.use('/api/monitoring-stations', telemetryStationsRouter);
+
+    logger.info('📍 API routes registered', {
+      routes: ['/api/posts', '/api/location', '/api/monitoring-stations'],
+      timestamp: new Date().toISOString()
+    });
 
     const port = process.env.PORT || 3000;
     httpServer.listen(port, () => {
-      logger.info(`Server is running on port ${port}`);
+      logger.info(`🚀 Server is running on port ${port}`, {
+        port,
+        env: process.env.NODE_ENV,
+        timestamp: new Date().toISOString()
+      });
     }).on('error', (err) => {
-      logger.error(`Error during server startup: ${err}`);
+      logger.error('❌ Error during server startup:', {
+        error: err.message,
+        timestamp: new Date().toISOString()
+      });
       process.exit(1);
     });
   } catch (error) {
-    logger.error(`Error during server startup: ${error}`);
+    logger.error('❌ Error during server startup:', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString()
+    });
     process.exit(1);
   }
 };

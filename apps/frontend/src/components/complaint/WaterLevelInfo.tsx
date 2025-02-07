@@ -7,6 +7,7 @@ import { useMonitoringStations } from "@/hooks/useMonitoringStations";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 interface WaterLevelInfoProps {
   amphure?: string;
@@ -15,6 +16,86 @@ interface WaterLevelInfoProps {
 
 export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
   const { data: monitoringData, isLoading, error } = useMonitoringStations(amphure, province);
+  const cardCreationCount = useRef(0);
+
+  // Log when component mounts and when location changes
+  useEffect(() => {
+    console.info("[WaterLevelInfo] Component initialized", {
+      amphure,
+      province,
+      timestamp: new Date().toISOString()
+    });
+    // Reset card creation counter on location change
+    cardCreationCount.current = 0;
+  }, [amphure, province]);
+
+  // Log when data changes
+  useEffect(() => {
+    if (monitoringData) {
+      console.info("[WaterLevelInfo] 📊 Monitoring stations data received", {
+        totalStations: monitoringData.total,
+        location: {
+          amphure,
+          province,
+          queryType: amphure ? 'amphure' : province ? 'province' : 'none'
+        },
+        timestamp: new Date().toISOString()
+      });
+
+      // Reset card creation counter when new data arrives
+      cardCreationCount.current = 0;
+    }
+  }, [monitoringData, amphure, province]);
+
+  // Function to log card creation
+  const logCardCreation = (station: any, index: number, total: number) => {
+    cardCreationCount.current++;
+    console.info(`[WaterLevelInfo] 🔄 Creating station card ${index + 1}/${total}`, {
+      stationId: station.id,
+      stationName: station.station_name,
+      location: `${station.amphure}, ${station.province}`,
+      cardNumber: cardCreationCount.current,
+      totalExpected: total,
+      timestamp: new Date().toISOString()
+    });
+  };
+
+  // Log final card creation count when component updates or unmounts
+  useEffect(() => {
+    return () => {
+      if (cardCreationCount.current > 0) {
+        console.info("[WaterLevelInfo] 📋 Final card creation count", {
+          createdCards: cardCreationCount.current,
+          expectedTotal: monitoringData?.total || 0,
+          location: {
+            amphure,
+            province
+          },
+          timestamp: new Date().toISOString()
+        });
+      }
+    };
+  }, [monitoringData?.total, amphure, province]);
+
+  // Early return if no location data
+  if (!amphure && !province) {
+    console.info("[WaterLevelInfo] ⚠️ No location data provided", {
+      timestamp: new Date().toISOString()
+    });
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-2">
+          <Info className="w-5 h-5 text-primary" />
+          <h2 className="font-semibold text-lg">ข้อมูลสนับสนุน</h2>
+        </div>
+        <Alert>
+          <AlertDescription>
+            ไม่พบข้อมูลพื้นที่สำหรับค้นหาสถานีเฝ้าระวัง
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -84,12 +165,15 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
         )}
 
         <div className="space-y-4">
-          {monitoringData?.stations.map((station) => (
-            <MonitoringStationCard 
-              key={station.id} 
-              station={station} 
-            />
-          ))}
+          {monitoringData?.stations.map((station, index) => {
+            logCardCreation(station, index, monitoringData.total);
+            return (
+              <MonitoringStationCard 
+                key={station.id} 
+                station={station} 
+              />
+            );
+          })}
         </div>
       </div>
 
