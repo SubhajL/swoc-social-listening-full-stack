@@ -11,7 +11,17 @@ export const RainStationCard = ({ station }: RainStationCardProps) => {
   return (
     <Card className="w-full">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">{station.station_name}</CardTitle>
+        <CardTitle className="text-base">
+          {station.station_name}
+          {(station.station_id || station.code) && (
+            <span className="text-sm text-gray-500 ml-2">
+              ({station.station_id && `ID: ${station.station_id}`}
+              {station.station_id && station.code && ', '}
+              {!station.station_id && station.code && `Code: ${station.code}`}
+              {station.station_id && station.code && `Code: ${station.code}`})
+            </span>
+          )}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
         <div className="grid grid-cols-2 gap-2">

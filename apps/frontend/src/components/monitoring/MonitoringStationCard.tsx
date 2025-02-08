@@ -11,7 +11,14 @@ export const MonitoringStationCard = ({ station }: MonitoringStationCardProps) =
   return (
     <Card className="w-full">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">{station.station_name}</CardTitle>
+        <CardTitle className="text-base">
+          {station.station_name}
+          {station.station_id && (
+            <span className="text-sm text-gray-500 ml-2">
+              (ID: {station.station_id})
+            </span>
+          )}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
         <div className="grid grid-cols-2 gap-2">

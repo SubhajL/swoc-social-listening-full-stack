@@ -1,5 +1,53 @@
-# Feature Locks Status
-Last Updated: 2025-02-08
+# LOCK CODE STATUS
+
+## Working Features
+
+### 1. Rain Station
+- Components:
+  - RainStationList
+  - RainStationCard (with working station ID and code display)
+  Path: apps/frontend/src/components/monitoring/RainStationList.tsx
+  Path: apps/frontend/src/components/monitoring/RainStationCard.tsx
+
+- API Endpoints:
+  - /api/rain-stations
+  - GET with amphure/province params
+  Path: apps/backend/src/api/rain-stations.ts
+
+- Database:
+  - Table: rain_station
+  - Queries: SELECT with location filters
+  Path: apps/backend/src/api/rain-stations.ts
+
+- Dependencies:
+  - Mapbox for display
+  - PostgreSQL for data
+  - Shared types with telemetry station
+
+- Critical Flows:
+  - Rain station listing by location
+  - Rainfall data display
+  - Station ID and code display in grey text
+
+### 2. Telemetry Station
+- Components:
+  - MonitoringStationList
+  - MonitoringStationCard (with working station ID display)
+  Path: apps/frontend/src/components/monitoring/MonitoringStationList.tsx
+  Path: apps/frontend/src/components/monitoring/MonitoringStationCard.tsx
+
+- Display Features:
+  - Station name with grey station ID
+  - Water level and flow rate data
+  - Consistent styling with rain station cards
+
+## Latest Updates (2024-02-08)
+- Added station ID and code display for rain stations
+- Added station ID display for telemetry stations
+- Implemented consistent grey text styling for IDs and codes
+- Maintained proper null value handling for both station types
+
+DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
 
 ## 🔒 Locked Features (DO NOT MODIFY)
 
