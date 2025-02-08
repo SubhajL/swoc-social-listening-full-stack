@@ -1,8 +1,10 @@
 import { Complaint } from "@/types/complaint";
 import { CreateComplaintDTO, ComplaintDTO } from "@/dto/complaint.dto";
 import { toast } from "sonner";
-import { apiClient } from "@/lib/api-client";
+import { apiClient } from "@/lib/enhanced-api-client";
 import { ProcessedPost } from "@/types/processed-post";
+import { logger } from "@/lib/logger";
+import { AppError, ErrorCode, ErrorSeverity } from "@/types/api/errors";
 
 // Convert ProcessedPost to Complaint
 const mapPostToComplaint = (post: ProcessedPost): Complaint => ({
@@ -35,12 +37,21 @@ class ComplaintService {
     office?: string | null;
   }): Promise<Complaint[]> {
     try {
-      console.log('Fetching complaints with filters:', filters);
+      logger.info('Fetching complaints', 'ComplaintService', {
+        filters
+      });
       
-      const posts = await apiClient.getUnprocessedPosts();
+      const response = await apiClient.get<ProcessedPost[]>('/api/posts', {
+        validateResponse: (data): data is ProcessedPost[] => Array.isArray(data)
+      });
+      
+      const posts = response.data;
       return posts.map(mapPostToComplaint);
     } catch (error) {
-      console.error('Error fetching complaints:', error);
+      logger.error('Failed to fetch complaints', 'ComplaintService', error, {
+        filters
+      });
+      
       toast.error('เกิดข้อผิดพลาดในการดึงข้อมูลข้อร้องเรียน');
       throw error;
     }
@@ -48,11 +59,21 @@ class ComplaintService {
 
   async getComplaintById(id: number): Promise<Complaint | undefined> {
     try {
-      console.log('Fetching complaint by ID:', id);
-      const post = await apiClient.getPostById(String(id));
-      return mapPostToComplaint(post);
+      logger.info('Fetching complaint', 'ComplaintService', {
+        id
+      });
+
+      const response = await apiClient.get<ProcessedPost>(`/api/posts/${id}`, {
+        validateResponse: (data): data is ProcessedPost => 
+          typeof data === 'object' && data !== null && 'processed_post_id' in data
+      });
+      
+      return mapPostToComplaint(response.data);
     } catch (error) {
-      console.error('Error fetching complaint by ID:', error);
+      logger.error('Failed to fetch complaint', 'ComplaintService', error, {
+        id
+      });
+      
       toast.error('เกิดข้อผิดพลาดในการดึงข้อมูลข้อร้องเรียน');
       throw error;
     }
@@ -60,28 +81,60 @@ class ComplaintService {
 
   async createComplaint(data: CreateComplaintDTO): Promise<Complaint> {
     try {
-      console.log('Creating new complaint:', data);
+      logger.info('Creating complaint', 'ComplaintService', {
+        data
+      });
       
       // Validate input data
       const validationResult = ComplaintDTO.safeParse(data);
       
       if (!validationResult.success) {
-        console.error('Validation failed:', validationResult.error);
+        logger.error('Validation failed', 'ComplaintService', validationResult.error, {
+          errors: validationResult.error.errors
+        });
+        
         toast.error('ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบข้อมูลที่กรอก');
-        throw new Error('Validation failed');
+        throw new AppError({
+          code: ErrorCode.VALIDATION_ERROR,
+          message: 'Complaint validation failed',
+          severity: ErrorSeverity.MEDIUM,
+          component: 'ComplaintService',
+          details: {
+            validationErrors: validationResult.error.errors
+          }
+        });
       }
 
       // Ensure coordinates are present and valid
       if (!validationResult.data.coordinates?.lat || !validationResult.data.coordinates?.lng) {
-        console.error('Invalid coordinates');
+        logger.error('Invalid coordinates', 'ComplaintService', new Error('Invalid coordinates'), {
+          coordinates: validationResult.data.coordinates
+        });
+        
         toast.error('พิกัดไม่ถูกต้อง');
-        throw new Error('Invalid coordinates');
+        throw new AppError({
+          code: ErrorCode.VALIDATION_ERROR,
+          message: 'Invalid coordinates',
+          severity: ErrorSeverity.MEDIUM,
+          component: 'ComplaintService',
+          details: {
+            coordinates: validationResult.data.coordinates
+          }
+        });
       }
 
       // TODO: Implement actual API call when endpoint is ready
-      throw new Error('Create complaint endpoint not implemented');
+      throw new AppError({
+        code: ErrorCode.NOT_FOUND,
+        message: 'Create complaint endpoint not implemented',
+        severity: ErrorSeverity.HIGH,
+        component: 'ComplaintService'
+      });
     } catch (error) {
-      console.error('Error creating complaint:', error);
+      logger.error('Failed to create complaint', 'ComplaintService', error, {
+        data
+      });
+      
       toast.error('เกิดข้อผิดพลาดในการบันทึกข้อร้องเรียน');
       throw error;
     }

@@ -7,6 +7,7 @@ import { ProcessedPostService } from './services/processed-post.service.js';
 import { pool } from './lib/db.js';
 import { logger } from './utils/logger.js';
 import { Server } from 'socket.io';
+import rainStationsRouter from './api/rain-stations.js';
 
 const app = express();
 
@@ -57,9 +58,10 @@ export const initializeServices = async (io: Server) => {
   // Register routes
   app.use('/api/posts', postsRouter);
   app.use('/api/monitoring-stations', telemetryStationsRouter);
+  app.use('/api/rain-stations', rainStationsRouter);
   
   logger.info('📍 API routes registered', {
-    routes: ['/api/posts', '/api/monitoring-stations'],
+    routes: ['/api/posts', '/api/monitoring-stations', '/api/rain-stations'],
     timestamp: new Date().toISOString()
   });
 
