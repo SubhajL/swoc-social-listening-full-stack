@@ -3,7 +3,9 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Info } from "lucide-react";
 import { MonitoringStationCard } from "@/components/monitoring/MonitoringStationCard";
+import { RainStationCard } from "@/components/monitoring/RainStationCard";
 import { useMonitoringStations } from "@/hooks/useMonitoringStations";
+import { useRainStations } from "@/hooks/useRainStations";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -15,7 +17,8 @@ interface WaterLevelInfoProps {
 }
 
 export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
-  const { data: monitoringData, isLoading, error } = useMonitoringStations(amphure, province);
+  const { data: monitoringData, isLoading: isLoadingMonitoring, error: monitoringError } = useMonitoringStations(amphure, province);
+  const { data: rainData, isLoading: isLoadingRain, error: rainError } = useRainStations(amphure, province);
   const cardCreationCount = useRef(0);
 
   // Log when component mounts and when location changes
@@ -41,16 +44,26 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
         },
         timestamp: new Date().toISOString()
       });
-
-      // Reset card creation counter when new data arrives
-      cardCreationCount.current = 0;
     }
-  }, [monitoringData, amphure, province]);
+    if (rainData) {
+      console.info("[WaterLevelInfo] 🌧️ Rain stations data received", {
+        totalStations: rainData.total,
+        location: {
+          amphure,
+          province,
+          queryType: amphure ? 'amphure' : province ? 'province' : 'none'
+        },
+        timestamp: new Date().toISOString()
+      });
+    }
+    // Reset card creation counter when new data arrives
+    cardCreationCount.current = 0;
+  }, [monitoringData, rainData, amphure, province]);
 
   // Function to log card creation
-  const logCardCreation = (station: any, index: number, total: number) => {
+  const logCardCreation = (station: any, index: number, total: number, type: 'monitoring' | 'rain') => {
     cardCreationCount.current++;
-    console.info(`[WaterLevelInfo] 🔄 Creating station card ${index + 1}/${total}`, {
+    console.info(`[WaterLevelInfo] 🔄 Creating ${type} station card ${index + 1}/${total}`, {
       stationId: station.id,
       stationName: station.station_name,
       location: `${station.amphure}, ${station.province}`,
@@ -66,7 +79,8 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
       if (cardCreationCount.current > 0) {
         console.info("[WaterLevelInfo] 📋 Final card creation count", {
           createdCards: cardCreationCount.current,
-          expectedTotal: monitoringData?.total || 0,
+          expectedTotalMonitoring: monitoringData?.total || 0,
+          expectedTotalRain: rainData?.total || 0,
           location: {
             amphure,
             province
@@ -75,7 +89,7 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
         });
       }
     };
-  }, [monitoringData?.total, amphure, province]);
+  }, [monitoringData?.total, rainData?.total, amphure, province]);
 
   // Early return if no location data
   if (!amphure && !province) {
@@ -90,7 +104,7 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
         </div>
         <Alert>
           <AlertDescription>
-            ไม่พบข้อมูลพื้นที่สำหรับค้นหาสถานีเฝ้าระวัง
+            ไม่พบข้อมูลพื้นที่สำหรับค้นหาสถานี
           </AlertDescription>
         </Alert>
       </div>
@@ -104,11 +118,6 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
           <Info className="w-5 h-5 text-primary" />
           <h2 className="font-semibold text-lg">ข้อมูลสนับสนุน</h2>
         </div>
-        {monitoringData && (
-          <div className="text-sm text-muted-foreground">
-            จำนวนสถานี: {monitoringData.total}
-          </div>
-        )}
       </div>
       
       <Card className="p-4">
@@ -140,14 +149,14 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
           {!amphure && province && `ใน${province}`}
         </h3>
         
-        {isLoading && (
+        {isLoadingMonitoring && (
           <div className="space-y-4">
             <Skeleton className="h-[300px] w-full" />
             <Skeleton className="h-[300px] w-full" />
           </div>
         )}
 
-        {error && (
+        {monitoringError && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
@@ -166,9 +175,53 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
 
         <div className="space-y-4">
           {monitoringData?.stations.map((station, index) => {
-            logCardCreation(station, index, monitoringData.total);
+            logCardCreation(station, index, monitoringData.total, 'monitoring');
             return (
               <MonitoringStationCard 
+                key={station.id} 
+                station={station} 
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Rain Stations Section */}
+      <div className="space-y-4">
+        <h3 className="font-medium">
+          สถานีน้ำฝน {amphure && `ใน${amphure}`}
+          {!amphure && province && `ใน${province}`}
+        </h3>
+        
+        {isLoadingRain && (
+          <div className="space-y-4">
+            <Skeleton className="h-[300px] w-full" />
+            <Skeleton className="h-[300px] w-full" />
+          </div>
+        )}
+
+        {rainError && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              ไม่สามารถโหลดข้อมูลสถานีน้ำฝนได้
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {rainData?.stations.length === 0 && (
+          <Alert>
+            <AlertDescription>
+              ไม่พบสถานีน้ำฝนในพื้นที่นี้
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <div className="space-y-4">
+          {rainData?.stations.map((station, index) => {
+            logCardCreation(station, index, rainData.total, 'rain');
+            return (
+              <RainStationCard 
                 key={station.id} 
                 station={station} 
               />
@@ -201,21 +254,6 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
               <Input />
               <span>ลบ.ม. / วินาที</span>
             </div>
-          </div>
-        </div>
-      </Card>
-
-      <Card className="p-4">
-        <div className="space-y-4">
-          <div>
-            <Label>สถานีวัดน้ำฝน</Label>
-            <Input />
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Label>ปริมาณน้ำฝนในรอบ ... วัน</Label>
-            <Input className="w-24" />
-            <span>มม.</span>
           </div>
         </div>
       </Card>

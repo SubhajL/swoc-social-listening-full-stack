@@ -2,129 +2,111 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ProcessedPost } from "@/types/processed-post";
 import { Complaint } from "@/types/complaint";
+import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 interface LocationInfoProps {
-  complaint: ProcessedPost | Complaint;
+  complaint: ProcessedPost | Complaint | null;
 }
 
-// Type guard to check if data is ProcessedPost
 const isProcessedPost = (data: any): data is ProcessedPost => {
-  return 'processed_post_id' in data && 'text' in data && 'category_name' in data;
+  return data !== null && typeof data === 'object' && 'processed_post_id' in data;
+};
+
+const getArrayValue = (arr: string[] | undefined | null): string => {
+  if (!arr || !Array.isArray(arr) || arr.length === 0) return '';
+  return String(arr[0]).trim();
+};
+
+const getLocation = (complaint: ProcessedPost | Complaint | null): string => {
+  if (!complaint) return '';
+  if (isProcessedPost(complaint)) {
+    return complaint.text || '';
+  }
+  return complaint.location || '';
+};
+
+const getProvince = (complaint: ProcessedPost | Complaint | null): string => {
+  if (!complaint) return '';
+  if (isProcessedPost(complaint)) {
+    return getArrayValue(complaint.province as string[]);
+  }
+  const provinceValue = complaint.province;
+  return Array.isArray(provinceValue) ? getArrayValue(provinceValue) : (provinceValue || '');
+};
+
+const getDistrict = (complaint: ProcessedPost | Complaint | null): string => {
+  if (!complaint) return '';
+  if (isProcessedPost(complaint)) {
+    return getArrayValue(complaint.amphure as string[]);
+  }
+  const amphureValue = complaint.amphure;
+  return Array.isArray(amphureValue) ? getArrayValue(amphureValue) : (amphureValue || '');
+};
+
+const getSubDistrict = (complaint: ProcessedPost | Complaint | null): string => {
+  if (!complaint) return '';
+  if (isProcessedPost(complaint)) {
+    return getArrayValue(complaint.tumbon as string[]);
+  }
+  const tumbonValue = complaint.tumbon;
+  return Array.isArray(tumbonValue) ? getArrayValue(tumbonValue) : (tumbonValue || '');
 };
 
 export const LocationInfo = ({ complaint }: LocationInfoProps) => {
-  console.log('LocationInfo mounting with complaint:', complaint);
-
-  const getFullAddress = () => {
-    try {
-      console.log('Full complaint object:', JSON.stringify(complaint, null, 2));
-
-      // If we have arrays, use them
-      if (complaint.tumbon?.length || complaint.amphure?.length || complaint.province?.length) {
-        const addressParts = [];
-        if (complaint.tumbon?.[0]) {
-          addressParts.push(`ตำบล${complaint.tumbon[0].trim()}`);
-        }
-        if (complaint.amphure?.[0]) {
-          addressParts.push(`อำเภอ${complaint.amphure[0].trim()}`);
-        }
-        if (complaint.province?.[0]) {
-          addressParts.push(`จังหวัด${complaint.province[0].trim()}`);
-        }
-        return addressParts.join(' ') || 'ยังไม่มีข้อมูล';
-      }
-
-      // If we have a location string, parse it
-      if (!isProcessedPost(complaint) && complaint.location) {
-        // Split and clean the location string
-        const parts = complaint.location
-          .replace(/^และ\s+/, '') // Remove leading "และ"
-          .split(' ')
-          .filter(Boolean)
-          .map(part => part.trim());
-
-        console.log('Location parts after cleaning:', parts);
-
-        // For "ห้วย มหาสารคาม" -> ["ห้วย", "มหาสารคาม"] -> tumbon, province
-        if (parts.length === 2) {
-          // Check if second part is a known province name
-          const isSecondPartProvince = isProvinceOrAmphur(parts[1]);
-          if (isSecondPartProvince) {
-            return `ตำบล${parts[0]} จังหวัด${parts[1]}`;
-          } else {
-            return `ตำบล${parts[0]} อำเภอ${parts[1]}`;
-          }
-        } else if (parts.length === 3) {
-          return `ตำบล${parts[0]} อำเภอ${parts[1]} จังหวัด${parts[2]}`;
-        } else if (parts.length === 1) {
-          return `ตำบล${parts[0]}`;
-        }
-      }
-
-      return 'ยังไม่มีข้อมูล';
-    } catch (error) {
-      console.error('Error in getFullAddress:', error);
-      return 'ยังไม่มีข้อมูล';
-    }
-  };
-
-  // Helper function to check if a string is likely a province name
-  const isProvinceOrAmphur = (name: string): boolean => {
-    // List of known province names that commonly appear in our data
-    const commonProvinces = [
-      'พะเยา',
-      'กรุงเทพ',
-      'เชียงใหม่',
-      'ระยอง',
-      'พังงา',
-      'มหาสารคาม',
-      'แพร่'
-      // Add more as needed
-    ];
-    return commonProvinces.includes(name);
-  };
-
-  const getLatitude = () => {
-    if (isProcessedPost(complaint)) {
-      return complaint.latitude;
-    }
-    return complaint.coordinates?.lat;
-  };
-
-  const getLongitude = () => {
-    if (isProcessedPost(complaint)) {
-      return complaint.longitude;
-    }
-    return complaint.coordinates?.lng;
-  };
+  if (!complaint) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          ไม่พบข้อมูลสถานที่
+        </AlertDescription>
+      </Alert>
+    );
+  }
 
   return (
-    <div className="grid grid-cols-2 gap-4 mb-6">
-      <div>
-        <Label>พิกัด (ละติจูด)</Label>
-        <Input 
-          value={getLatitude() ?? ''}
-          placeholder="ยังไม่มีข้อมูล"
-          readOnly
-        />
+    <ErrorBoundary component="LocationInfo">
+      <div className="space-y-4 mb-6">
+        <h3 className="font-medium">ข้อมูลสถานที่</h3>
+        <div>
+          <Label>สถานที่</Label>
+          <Input 
+            value={getLocation(complaint)}
+            placeholder="ยังไม่มีข้อมูล"
+            readOnly 
+          />
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <Label>จังหวัด</Label>
+            <Input 
+              value={getProvince(complaint)}
+              placeholder="ยังไม่มีข้อมูล"
+              readOnly 
+            />
+          </div>
+          <div>
+            <Label>อำเภอ</Label>
+            <Input 
+              value={getDistrict(complaint)}
+              placeholder="ยังไม่มีข้อมูล"
+              readOnly 
+            />
+          </div>
+          <div>
+            <Label>ตำบล</Label>
+            <Input 
+              value={getSubDistrict(complaint)}
+              placeholder="ยังไม่มีข้อมูล"
+              readOnly 
+            />
+          </div>
+        </div>
       </div>
-      <div>
-        <Label>พิกัด (ลองจิจูด)</Label>
-        <Input 
-          value={getLongitude() ?? ''}
-          placeholder="ยังไม่มีข้อมูล"
-          readOnly
-        />
-      </div>
-      <div className="col-span-2">
-        <Label>ที่อยู่</Label>
-        <Input 
-          value={getFullAddress()}
-          placeholder="ยังไม่มีข้อมูล"
-          readOnly
-        />
-      </div>
-    </div>
+    </ErrorBoundary>
   );
 };
 
