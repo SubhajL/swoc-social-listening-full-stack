@@ -9,6 +9,7 @@ import { createPostsRouter } from './api/posts/index.js';
 import { createLocationRouter } from './api/location/index.js';
 import telemetryStationsRouter from './api/telemetry-stations.js';
 import rainStationsRouter from './api/rain-stations.js';
+import reservoirsRouter from './api/reservoirs.js';
 import { logger } from './utils/logger.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -68,9 +69,10 @@ const startServer = async () => {
     app.use('/api/location', createLocationRouter(locationCacheService));
     app.use('/api/monitoring-stations', telemetryStationsRouter);
     app.use('/api/rain-stations', rainStationsRouter);
+    app.use('/api/reservoirs', reservoirsRouter);
 
     logger.info('📍 API routes registered', {
-      routes: ['/api/posts', '/api/location', '/api/monitoring-stations', '/api/rain-stations'],
+      routes: ['/api/posts', '/api/location', '/api/monitoring-stations', '/api/rain-stations', '/api/reservoirs'],
       timestamp: new Date().toISOString()
     });
 

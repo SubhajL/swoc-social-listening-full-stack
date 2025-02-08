@@ -23,6 +23,7 @@ const getBaseUrl = (endpoint: string): string => {
 export const API_ENDPOINTS = {
   MONITORING_STATIONS: `monitoring-stations`,
   RAIN_STATIONS: `rain-stations`,
+  RESERVOIRS: `reservoirs`,
   POSTS: `posts`,
 } as const;
 

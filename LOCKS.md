@@ -73,7 +73,25 @@ Last Updated: 2025-02-08
   - Logging: Enhanced
   - Type Safety: Enforced
 
-### 5. Safety Measures System
+### 5. Reservoir System
+- Status: LOCKED
+- Last Lock Date: 2025-02-08
+- Components:
+  - ReservoirCard.tsx
+  - WaterLevelInfo.tsx (reservoir display)
+- API: /api/reservoirs
+- Critical Paths:
+  - Data retrieval and filtering
+  - Location-based reservoir filtering
+  - Storage capacity display
+  - Thai language support
+- Safety Measures: ✅ Complete
+  - Feature Management: Implemented
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
+
+### 6. Safety Measures System
 - Status: LOCKED
 - Last Lock Date: 2025-02-08
 - Components:
