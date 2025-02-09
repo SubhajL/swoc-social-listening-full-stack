@@ -3,7 +3,7 @@ import cors from 'cors';
 import { errorHandler } from './middleware/error-handler.js';
 import { createPostsRouter } from './api/posts/index.js';
 import telemetryStationsRouter from './api/telemetry-stations.js';
-import telemetryRouter from './api/telemetry.js';
+import telemetryRouter from './api/telemetry';
 import { ProcessedPostService } from './services/processed-post.service.js';
 import { pool } from './lib/db.js';
 import { logger } from './utils/logger.js';

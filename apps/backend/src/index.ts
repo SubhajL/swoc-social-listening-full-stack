@@ -8,11 +8,18 @@ import { LocationCacheService } from './services/location-cache.service.js';
 import { createPostsRouter } from './api/posts/index.js';
 import { createLocationRouter } from './api/location/index.js';
 import telemetryStationsRouter from './api/telemetry-stations.js';
+import telemetryRouter from './api/telemetry';
 import rainStationsRouter from './api/rain-stations.js';
 import reservoirsRouter from './api/reservoirs.js';
 import { logger } from './utils/logger.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
+
+// Define SystemError interface for Node.js system errors
+interface SystemError extends Error {
+  code?: string;
+  syscall?: string;
+}
 
 dotenv.config();
 
@@ -50,8 +57,9 @@ const startServer = async () => {
       credentials: true
     }));
 
-    // Then other middleware
+    // Add body parser middleware
     app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
 
     // Request logging middleware
     app.use((req, res, next) => {
@@ -70,9 +78,17 @@ const startServer = async () => {
     app.use('/api/monitoring-stations', telemetryStationsRouter);
     app.use('/api/rain-stations', rainStationsRouter);
     app.use('/api/reservoirs', reservoirsRouter);
+    app.use('/api/telemetry', telemetryRouter);
 
     logger.info('📍 API routes registered', {
-      routes: ['/api/posts', '/api/location', '/api/monitoring-stations', '/api/rain-stations', '/api/reservoirs'],
+      routes: [
+        '/api/posts', 
+        '/api/location', 
+        '/api/monitoring-stations', 
+        '/api/rain-stations', 
+        '/api/reservoirs',
+        '/api/telemetry'
+      ],
       timestamp: new Date().toISOString()
     });
 
@@ -83,16 +99,23 @@ const startServer = async () => {
         env: process.env.NODE_ENV,
         timestamp: new Date().toISOString()
       });
-    }).on('error', (err) => {
+    }).on('error', (err: SystemError) => {
       logger.error('❌ Error during server startup:', {
         error: err.message,
+        code: err.code,
+        syscall: err.syscall,
+        stack: err.stack,
         timestamp: new Date().toISOString()
       });
       process.exit(1);
     });
   } catch (error) {
     logger.error('❌ Error during server startup:', {
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+      } : 'Unknown error',
       timestamp: new Date().toISOString()
     });
     process.exit(1);

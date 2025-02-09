@@ -6,9 +6,8 @@ export interface TelemetryReading {
 }
 
 export interface TelemetryResponse {
-  waterLevel: number;
-  waterFlow: number;
-  readingTime: Date;
+  success: boolean;
+  data: TelemetryReading[];
 }
 
 export interface TelemetryRequest {
