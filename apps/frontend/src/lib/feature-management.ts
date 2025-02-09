@@ -22,6 +22,7 @@ export const FEATURES = {
     MOCK_DATA: 'telemetry.mockData' as const,
     DATA_VALIDATION: 'telemetry.dataValidation' as const,
     LOCATION_FILTERING: 'telemetry.locationFiltering' as const,
+    RID_INTEGRATION: 'telemetry.ridIntegration' as const,
   },
   DATABASE: {
     TRANSACTION_MANAGEMENT: 'database.transactionManagement' as const,
@@ -83,15 +84,15 @@ const initializeFeatureState = () => {
 
   // Telemetry features
   featureState.set(FEATURES.TELEMETRY.REAL_TIME_DATA, {
-    enabled: false,
-    description: 'Real-time telemetry data fetching (IN DEVELOPMENT)',
+    enabled: true,
+    description: 'Real-time telemetry data fetching via RID API',
     owner: 'telemetry-team',
     lastUpdated: new Date().toISOString(),
   });
   
   featureState.set(FEATURES.TELEMETRY.MOCK_DATA, {
-    enabled: true,
-    description: 'Mock data for telemetry stations (TEMPORARY)',
+    enabled: false,
+    description: 'Mock data for telemetry stations (DEPRECATED)',
     owner: 'telemetry-team',
     lastUpdated: new Date().toISOString(),
   });
@@ -106,6 +107,13 @@ const initializeFeatureState = () => {
   featureState.set(FEATURES.TELEMETRY.LOCATION_FILTERING, {
     enabled: true,
     description: 'Location-based filtering for telemetry stations (IN DEVELOPMENT)',
+    owner: 'telemetry-team',
+    lastUpdated: new Date().toISOString(),
+  });
+
+  featureState.set(FEATURES.TELEMETRY.RID_INTEGRATION, {
+    enabled: true,
+    description: 'Integration with RID Telemetry API',
     owner: 'telemetry-team',
     lastUpdated: new Date().toISOString(),
   });

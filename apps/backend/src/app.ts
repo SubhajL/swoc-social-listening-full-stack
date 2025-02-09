@@ -3,6 +3,7 @@ import cors from 'cors';
 import { errorHandler } from './middleware/error-handler.js';
 import { createPostsRouter } from './api/posts/index.js';
 import telemetryStationsRouter from './api/telemetry-stations.js';
+import telemetryRouter from './api/telemetry.js';
 import { ProcessedPostService } from './services/processed-post.service.js';
 import { pool } from './lib/db.js';
 import { logger } from './utils/logger.js';
@@ -59,9 +60,15 @@ export const initializeServices = async (io: Server) => {
   app.use('/api/posts', postsRouter);
   app.use('/api/monitoring-stations', telemetryStationsRouter);
   app.use('/api/rain-stations', rainStationsRouter);
+  app.use('/api/telemetry', telemetryRouter);
   
   logger.info('📍 API routes registered', {
-    routes: ['/api/posts', '/api/monitoring-stations', '/api/rain-stations'],
+    routes: [
+      '/api/posts', 
+      '/api/monitoring-stations', 
+      '/api/rain-stations',
+      '/api/telemetry'
+    ],
     timestamp: new Date().toISOString()
   });
 

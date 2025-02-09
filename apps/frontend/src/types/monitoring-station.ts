@@ -11,8 +11,14 @@ export interface MonitoringStation {
   bank_level_meters: string;
   capacity_cms: string;
   pole_center_msl: string;
-  water_level?: number;  // Current water level in meters
-  flow_rate?: number;    // Current flow rate in cubic meters per second
+  water_level?: number;  // Current water level in meters (from RID API wlvalues)
+  flow_rate?: number;    // Current flow rate in cubic meters per second (from RID API qvalues)
+  telemetry_data?: {
+    timestamp: string;
+    water_level: number | null;
+    flow_rate: number | null;
+    notation: string;
+  };
 }
 
 export interface MonitoringStationResponse {

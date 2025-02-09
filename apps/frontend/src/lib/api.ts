@@ -4,6 +4,15 @@ import { logger } from './logger';
 // API configuration with feature-specific base URLs
 const MAIN_API_URL = import.meta.env.VITE_MAIN_API_URL || 'http://localhost:8080/api';
 const MONITORING_API_URL = import.meta.env.VITE_MONITORING_API_URL || 'http://localhost:3000/api';
+const RID_API_URL = 'http://hyd-app.rid.go.th/API';
+
+// OAuth library URLs
+export const RID_OAUTH_URLS = {
+  OAUTH_JS: `${RID_API_URL}/source/oauth.js`,
+  SHA1_JS: `${RID_API_URL}/source/sha1.js`,
+  OAUTH_PROXY: `${MONITORING_API_URL}/proxy/oauth.js`,
+  SHA1_PROXY: `${MONITORING_API_URL}/proxy/sha1.js`
+} as const;
 
 // Helper to determine which base URL to use
 const getBaseUrl = (endpoint: string): string => {

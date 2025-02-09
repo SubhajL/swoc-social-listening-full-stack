@@ -1303,3 +1303,46 @@
 - Component integration
 - Error handling
 - Environment configuration 
+
+## 2024-02-09: RID Telemetry API Integration
+
+### Type: FEATURE
+
+### Description
+Implemented integration with RID Telemetry API to fetch real-time water level and flow rate data from monitoring stations.
+
+### Technical Details
+#### Implementation
+1. Created OAuth 1.0a authentication for RID API
+2. Implemented telemetry service with error handling and logging
+3. Added new API endpoint `/api/telemetry`
+4. Updated feature management to enable RID integration
+5. Deprecated mock data in favor of real API data
+
+#### Affected Files
+- apps/backend/src/services/rid-telemetry/
+  - oauth.ts
+  - telemetry.service.ts
+  - types.ts
+- apps/backend/src/api/telemetry.ts
+- apps/backend/src/app.ts
+- apps/frontend/src/lib/feature-management.ts
+
+### Considerations
+#### Previous Changes
+- Related to telemetry station implementation
+- Builds upon existing monitoring station infrastructure
+
+#### Potential Impacts
+- Requires RID API credentials in production
+- May need rate limiting for API calls
+- Consider caching responses for performance
+
+#### Alternatives Considered
+- Continue using mock data (rejected for production use)
+- Build own telemetry system (rejected due to existing RID infrastructure)
+
+### Related Issues
+- Replaces mock telemetry data
+- Enhances monitoring station functionality
+- Provides real-time water data 

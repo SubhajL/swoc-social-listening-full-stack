@@ -171,6 +171,8 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
               <MonitoringStationCard 
                 key={station.id} 
                 station={station} 
+                isLoading={isLoadingMonitoring}
+                error={monitoringError}
               />
             );
           })}

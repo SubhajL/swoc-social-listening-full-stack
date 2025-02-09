@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { MonitoringStationResponse } from "@/types/monitoring-station";
+import { MonitoringStationResponse, MonitoringStation } from "@/types/monitoring-station";
 import { API_ENDPOINTS, buildUrl, createApiError } from "@/lib/api";
+import { ridTelemetryService } from "@/services/rid-telemetry.service";
 
 const fetchMonitoringStations = async (
   amphure?: string,
@@ -30,11 +31,40 @@ const fetchMonitoringStations = async (
     }
     
     const data = await response.json();
-    console.info("[useMonitoringStations] Data received", {
-      totalStations: data.total,
-      timestamp: new Date().toISOString()
-    });
-    return data;
+
+    // Fetch real-time data for each station
+    const stationsWithTelemetry = await Promise.all(
+      data.stations.map(async (station: MonitoringStation) => {
+        try {
+          if (!station.station_id) return station;
+
+          const telemetryData = await ridTelemetryService.getHourlyData(station.station_id);
+          if (!telemetryData || telemetryData.length === 0) return station;
+
+          const latestData = telemetryData[telemetryData.length - 1];
+          return {
+            ...station,
+            telemetry_data: {
+              timestamp: latestData.hourlytime,
+              water_level: latestData.wlvalues,
+              flow_rate: latestData.qvalues,
+              notation: latestData.notationString
+            }
+          };
+        } catch (error) {
+          console.warn("[useMonitoringStations] Failed to fetch telemetry data", {
+            stationId: station.station_id,
+            error: error instanceof Error ? error.message : "Unknown error"
+          });
+          return station;
+        }
+      })
+    );
+
+    return {
+      ...data,
+      stations: stationsWithTelemetry
+    };
   } catch (error) {
     console.error("[useMonitoringStations] Error fetching data", {
       error: error instanceof Error ? error.message : "Unknown error",

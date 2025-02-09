@@ -2,11 +2,30 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>figma-magic-creator</title>
+    <title>SWOC Social Listening</title>
     <meta name="description" content="Lovable Generated Project" />
     <meta name="author" content="Lovable" />
     <meta property="og:image" content="/og-image.png" />
+    <!-- Primary RID API OAuth libraries -->
+    <script src="http://hyd-app.rid.go.th/API/source/oauth.js" onerror="fallbackOAuth()"></script>
+    <script src="http://hyd-app.rid.go.th/API/source/sha1.js" onerror="fallbackSHA1()"></script>
+    <!-- Fallback scripts -->
+    <script>
+      function fallbackOAuth() {
+        console.warn('[OAuth] Failed to load from RID server, using local fallback');
+        const script = document.createElement('script');
+        script.src = '/lib/oauth.js';
+        document.head.appendChild(script);
+      }
+      function fallbackSHA1() {
+        console.warn('[SHA1] Failed to load from RID server, using local fallback');
+        const script = document.createElement('script');
+        script.src = '/lib/sha1.js';
+        document.head.appendChild(script);
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

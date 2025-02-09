@@ -19,12 +19,15 @@ const App = () => {
         }}
       >
         <TooltipProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/complaint/create" element={<ComplaintForm />} />
-          </Routes>
-          <Toaster />
-          <Sonner />
+          <div className="relative">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/complaint/create" element={<ComplaintForm />} />
+            </Routes>
+            <Toaster />
+            <Sonner />
+            <div id="radix-hover-card-portal" className="fixed top-0 left-0 z-[9999]" />
+          </div>
         </TooltipProvider>
       </BrowserRouter>
     </QueryClientProvider>
