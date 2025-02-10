@@ -1,4 +1,4 @@
-import pino from 'pino';
+import winston from 'winston';
 import path from 'path';
 import fs from 'fs';
 
@@ -8,38 +8,72 @@ if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir, { recursive: true });
 }
 
-// Create file stream
-const logFile = fs.createWriteStream(path.join(logsDir, 'app.log'), { flags: 'a' });
+// Define log levels
+const levels = {
+  error: 0,
+  warn: 1,
+  info: 2,
+  debug: 3
+};
 
-// Create a logger instance with custom configuration
-export const logger = pino(
-  {
-    level: process.env.LOG_LEVEL || 'info',
-    base: {
-      env: process.env.NODE_ENV,
-    },
-    // Add timestamp to all logs
-    timestamp: () => `,"time":"${new Date().toISOString()}"`,
-  },
-  pino.multistream([
-    { stream: logFile },
-    {
-      level: 'info',
-      stream: pino.transport({
-        target: 'pino-pretty',
-        options: {
-          colorize: true,
-          translateTime: 'SYS:standard',
-          ignore: 'pid,hostname',
-        }
-      })
+// Define colors for each level
+const colors = {
+  error: 'red',
+  warn: 'yellow',
+  info: 'green',
+  debug: 'blue'
+};
+
+// Add colors to winston
+winston.addColors(colors);
+
+// Create format for console output
+const consoleFormat = winston.format.combine(
+  winston.format.timestamp(),
+  winston.format.colorize({ all: true }),
+  winston.format.printf((info: winston.Logform.TransformableInfo) => {
+    const { level, message, timestamp, service, ...metadata } = info;
+    let msg = `${timestamp} [${service || 'APP'}] ${level}: ${message}`;
+    if (Object.keys(metadata).length > 0) {
+      msg += `\n${JSON.stringify(metadata, null, 2)}`;
     }
-  ])
+    return msg;
+  })
 );
 
-// Log initial configuration
-if (process.env.LOG_LEVEL === 'debug') {
-  logger.debug('Logger initialized in DEBUG mode');
-} else {
-  logger.info('Logger initialized with level:', process.env.LOG_LEVEL);
-} 
+// Create format for file output
+const fileFormat = winston.format.combine(
+  winston.format.timestamp(),
+  winston.format.json()
+);
+
+// Create the logger
+const logger = winston.createLogger({
+  levels,
+  format: fileFormat,
+  transports: [
+    // Write all logs to console
+    new winston.transports.Console({
+      format: consoleFormat,
+      level: 'debug'
+    }),
+    // Write all logs to app.log
+    new winston.transports.File({
+      filename: path.join(logsDir, 'app.log'),
+      format: fileFormat,
+      level: 'debug',
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
+      tailable: true
+    })
+  ]
+});
+
+// Add a simple test log to verify it's working
+logger.info('Logger initialized', 'System', {
+  timestamp: new Date().toISOString(),
+  logsDir,
+  logFile: path.join(logsDir, 'app.log')
+});
+
+export { logger }; 

@@ -1,12 +1,15 @@
 import axios from 'axios';
+import type { InternalAxiosRequestConfig } from 'axios';
 import { logger } from '../../utils/logger';
 import { getOAuthHeader } from './oauth';
 import type { TelemetryReading, TelemetryResponse, TelemetryRequest, TelemetryError } from './types';
+import { TelemetryRequest as TelemetryRequestDto } from '../../dto/telemetry.dto';
+import https from 'https';
 
 // API configuration
-const RID_API_BASE_URL = 'http://hyd-app.rid.go.th/webservice';
+const RID_API_BASE_URL = 'https://hyd-app.rid.go.th/webservice';
 const RID_API_SERVICE = `${RID_API_BASE_URL}/HydroAuthenticateService.svc`;
-const TELEMETRY_ENDPOINT = 'http://hyd-app.rid.go.th/webservice/api/telemetry';
+const TELEMETRY_ENDPOINT = 'https://hyd-app.rid.go.th/webservice/api/telemetry';
 
 // Type guard for Axios error
 function isAxiosError(error: unknown): error is Error & { 
@@ -48,7 +51,7 @@ function isErrorWithResponse(error: unknown): error is ErrorWithResponse {
  * Fetches telemetry data from RID API for a specific station
  */
 export async function getTelemetryData(
-  request: TelemetryRequest
+  request: TelemetryRequestDto
 ): Promise<TelemetryResponse> {
   let requestDetails: {
     url: string;
@@ -57,7 +60,7 @@ export async function getTelemetryData(
     headers: Record<string, string>;
   } = {
     url: TELEMETRY_ENDPOINT,
-    method: 'POST',
+    method: 'GET',
     body: {},
     headers: {}
   };
@@ -69,12 +72,11 @@ export async function getTelemetryData(
       timestamp: new Date().toISOString()
     });
 
-    // Prepare request body with exact parameter names RID expects
+    // Prepare request body
     const requestBody = {
-      hydro: {
-        stationid: request.stationId, // lowercase as per API spec
-        TimeStart: request.timeStart  // maintain case for TimeStart
-      }
+      stationid: request.stationid,
+      timestart: request.timestart,
+      timeend: request.timeend || request.timestart // If no end time provided, use start time
     };
 
     logger.debug('Prepared request body', 'RidTelemetryService', {
@@ -112,14 +114,21 @@ export async function getTelemetryData(
     });
 
     // Make API request with timeout
-    const response = await axios.post<TelemetryReading[]>(
-      TELEMETRY_ENDPOINT, 
+    const config: InternalAxiosRequestConfig = {
+      headers: requestDetails.headers,
+      timeout: 30000, // Increased timeout to 30 seconds
+      validateStatus: () => true, // Allow any status code to be handled in our code
+      responseType: 'text',
+      maxRedirects: 5, // Allow up to 5 redirects
+      httpsAgent: new https.Agent({ 
+        rejectUnauthorized: false // Allow self-signed certificates
+      })
+    };
+
+    const response = await axios.post<string>(
+      TELEMETRY_ENDPOINT,
       requestBody,
-      { 
-        headers: requestDetails.headers,
-        timeout: 10000, // 10 second timeout
-        validateStatus: () => true, // Allow any status code to be handled in our code
-      }
+      config
     );
 
     // Log detailed response information
@@ -128,19 +137,83 @@ export async function getTelemetryData(
         url: TELEMETRY_ENDPOINT,
         method: 'POST',
         headers: requestDetails.headers,
-        body: requestBody,
-        timeout: 10000
+        params: requestBody,
+        timeout: 30000
       },
       response: {
         status: response.status,
         statusText: response.statusText,
         headers: response.headers,
         data: response.data,
-        size: JSON.stringify(response.data).length,
+        size: typeof response.data === 'string' ? response.data.length : 0,
         duration: response.headers['x-response-time'] || 'unknown'
       },
       timestamp: new Date().toISOString()
     });
+
+    // Log raw response
+    const rawData = response.data;
+    logger.debug('Raw response details', 'RidTelemetryService', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+      rawData: rawData,
+      dataLength: typeof rawData === 'string' ? rawData.length : 0,
+      dataType: typeof rawData,
+      isString: typeof rawData === 'string',
+      firstChars: typeof rawData === 'string' ? rawData.substring(0, 100) : '',
+      hasContent: !!rawData,
+      contentPreview: typeof rawData === 'string' ? rawData.substring(0, 200).replace(/[\n\r]/g, '\\n') : null,
+      contentType: response.headers['content-type'],
+      timestamp: new Date().toISOString()
+    });
+
+    // Try to parse JSON response
+    let data: TelemetryReading[] = [];
+    try {
+      if (rawData) {
+        const parsed = JSON.parse(rawData);
+        logger.debug('Parsed response details', 'RidTelemetryService', {
+          parsed,
+          isArray: Array.isArray(parsed),
+          type: typeof parsed,
+          parsedData: parsed,
+          rawDataPreview: typeof rawData === 'string' ? rawData.substring(0, 500) : null,
+          timestamp: new Date().toISOString()
+        });
+        
+        if (Array.isArray(parsed)) {
+          data = parsed;
+          logger.info('Successfully parsed response data', 'RidTelemetryService', {
+            dataLength: data.length,
+            readings: data.map(reading => ({
+              stationid: reading.stationid,
+              wlvalues: reading.wlvalues,
+              qvalues: reading.qvalues,
+              hourlytime: reading.hourlytime
+            })),
+            timestamp: new Date().toISOString()
+          });
+        } else {
+          logger.warn('Response is not an array', 'RidTelemetryService', {
+            type: typeof parsed,
+            parsedValue: parsed,
+            timestamp: new Date().toISOString()
+          });
+        }
+      } else {
+        logger.warn('Empty response data', 'RidTelemetryService', {
+          timestamp: new Date().toISOString()
+        });
+      }
+    } catch (error) {
+      logger.warn('Failed to parse response as JSON', 'RidTelemetryService', {
+        error: error instanceof Error ? error.message : String(error),
+        rawData: rawData,
+        rawDataPreview: typeof rawData === 'string' ? rawData.substring(0, 500) : null,
+        timestamp: new Date().toISOString()
+      });
+    }
 
     // If status is not 2xx, log as warning
     if (response.status < 200 || response.status >= 300) {
@@ -154,7 +227,6 @@ export async function getTelemetryData(
     }
 
     // Parse and validate response
-    const data = response.data;
     if (!data || typeof data !== 'object') {
       throw new Error('Invalid response format from RID API');
     }
@@ -233,7 +305,7 @@ export async function testTelemetryService(): Promise<{
 }> {
   try {
     // Use a known valid station ID from RID
-    const testStationId = 'TD01'; // Telemetry station in Thailand
+    const testStationId = 'P.1'; // Telemetry station in Thailand
     const timeStart = new Date().toLocaleDateString('th-TH'); // Format date in Thai calendar
     
     logger.info('Testing telemetry service', 'TelemetryService', {
@@ -244,8 +316,8 @@ export async function testTelemetryService(): Promise<{
     });
 
     const data = await getTelemetryData({
-      stationId: testStationId,
-      timeStart
+      stationid: testStationId,
+      timestart: timeStart
     });
     
     logger.info('Telemetry test successful', 'TelemetryService', {
@@ -258,8 +330,8 @@ export async function testTelemetryService(): Promise<{
       success: true,
       message: 'Telemetry service test successful',
       details: {
-        stationId: testStationId,
-        timeStart,
+        stationid: testStationId,
+        timestart: timeStart,
         data,
         timestamp: new Date().toISOString()
       }

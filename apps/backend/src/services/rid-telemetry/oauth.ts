@@ -63,7 +63,7 @@ export class RIDOAuth {
       process.env.RID_CONSUMER_KEY || '364d90f1532f4e0190a91c56cf9e4045',
       process.env.RID_CONSUMER_SECRET || '6791161988d646aeb41d5730b73e2735',
       process.env.RID_ACCESS_TOKEN || '2Rx39Jq!cL&Reu5',
-      'http://hyd-app.rid.go.th/webservice'
+      'https://hyd-app.rid.go.th/webservice'
     );
 
     // Sync time with server on initialization
@@ -72,108 +72,146 @@ export class RIDOAuth {
 
   private async syncTimeWithServer(): Promise<void> {
     try {
+      const localStartTime = new Date();
+      const mainEndpoint = 'https://hyd-app.rid.go.th/webservice/HydroAuthenticateService.svc/getHourlyTodayFromStationID';
+      
       logger.info('Starting time sync with RID server', 'RIDOAuth', {
+        localTime: {
+          iso: localStartTime.toISOString(),
+          unix: Math.floor(localStartTime.getTime() / 1000),
+          thai: localStartTime.toLocaleString('th-TH'),
+          year: localStartTime.getFullYear(),
+          thaiYear: localStartTime.getFullYear() + 543
+        },
+        endpoint: mainEndpoint,
         timestamp: new Date().toISOString()
       });
 
-      // Try multiple endpoints for time sync
-      const timeEndpoints = [
-        'http://hyd-app.rid.go.th/API/time',
-        'http://hyd-app.rid.go.th/webservice/time',
-        'http://hyd-app.rid.go.th/webservice/api/time'
-      ];
-
-      let serverTime: Date | null = null;
-      let error: Error | null = null;
-
-      interface TimeResponse {
-        timestamp?: string;
-        time?: string;
-        serverTime?: string;
-        date?: string;
-      }
-
-      for (const endpoint of timeEndpoints) {
-        try {
-          logger.debug('Trying time sync endpoint', 'RIDOAuth', {
-            endpoint,
-            timestamp: new Date().toISOString()
-          });
-
-          const response = await fetch(endpoint, {
-            method: 'GET',
-            headers: {
-              'Accept': 'application/json, text/plain, */*',
-              'User-Agent': 'RID-Telemetry-Client/1.0'
-            }
-          });
-
-          if (!response.ok) {
-            logger.warn('Time sync endpoint failed', 'RIDOAuth', {
-              endpoint,
-              status: response.status,
-              statusText: response.statusText,
-              timestamp: new Date().toISOString()
-            });
-            continue;
-          }
-
-          // Try to get time from response body first
-          const data = await response.json().catch(() => null) as TimeResponse | null;
-          if (data) {
-            const timeStr = data.timestamp || data.time || data.serverTime || data.date;
-            if (timeStr) {
-              serverTime = new Date(timeStr);
-              logger.debug('Got server time from response body', 'RIDOAuth', {
-                endpoint,
-                timeStr,
-                serverTime: serverTime.toISOString(),
-                timestamp: new Date().toISOString()
-              });
-              break;
-            }
-          }
-
-          // Fallback to response headers
-          const dateHeader = response.headers.get('date');
-          if (dateHeader) {
-            serverTime = new Date(dateHeader);
-            logger.debug('Got server time from response header', 'RIDOAuth', {
-              endpoint,
-              dateHeader,
-              serverTime: serverTime.toISOString(),
-              timestamp: new Date().toISOString()
-            });
-            break;
-          }
-        } catch (e) {
-          error = e as Error;
-          logger.warn('Time sync attempt failed', 'RIDOAuth', {
-            endpoint,
-            error: error instanceof Error ? {
-              name: error.name,
-              message: error.message,
-              stack: error.stack
-            } : error,
-            timestamp: new Date().toISOString()
-          });
-          continue;
+      // Add detailed time sync logging
+      const timeBeforeSync = new Date();
+      const timeBeforeSyncUnix = Math.floor(timeBeforeSync.getTime() / 1000);
+      
+      logger.debug('Time sync details before', 'RIDOAuth', {
+        localTime: {
+          iso: timeBeforeSync.toISOString(),
+          unix: timeBeforeSyncUnix,
+          thai: timeBeforeSync.toLocaleString('th-TH'),
+          year: timeBeforeSync.getFullYear(),
+          thaiYear: timeBeforeSync.getFullYear() + 543
+        },
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        systemTime: {
+          nodeVersion: process.version,
+          platform: process.platform,
+          timestamp: Date.now(),
+          timezoneOffset: new Date().getTimezoneOffset()
         }
-      }
+      });
 
-      if (!serverTime) {
-        throw error || new Error('Failed to sync time with any endpoint');
+      const startTime = Date.now();
+      const response = await fetch(mainEndpoint, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'User-Agent': 'RID-Telemetry-Client/1.0',
+          'Cache-Control': 'no-cache'
+        },
+        agent: new (require('https').Agent)({ 
+          rejectUnauthorized: false // Allow self-signed certificates
+        })
+      });
+
+      const roundTripTime = Date.now() - startTime;
+      const responseTime = startTime + Math.floor(roundTripTime / 2); // Approximate server time accounting for latency
+
+      // Get server time from Date header
+      const dateHeader = response.headers.get('date');
+      let serverTime: Date;
+      
+      if (dateHeader) {
+        serverTime = new Date(dateHeader);
+        logger.debug('Got server time from response header', 'RIDOAuth', {
+          endpoint: mainEndpoint,
+          dateHeader,
+          serverTime: serverTime.toISOString(),
+          roundTripTime,
+          timestamp: new Date().toISOString()
+        });
+      } else {
+        // Fallback to response time if no Date header
+        serverTime = new Date(responseTime);
+        logger.debug('Using calculated response time', 'RIDOAuth', {
+          endpoint: mainEndpoint,
+          responseTime: serverTime.toISOString(),
+          roundTripTime,
+          timestamp: new Date().toISOString()
+        });
       }
 
       const localTime = new Date();
       this.timeOffset = serverTime.getTime() - localTime.getTime();
       
+      // Enhanced time sync logging
       logger.info('Time synchronized with RID server', 'RIDOAuth', {
-        serverTime: serverTime.toISOString(),
-        localTime: localTime.toISOString(),
-        offset: this.timeOffset,
-        timestamp: new Date().toISOString()
+        endpoint: mainEndpoint,
+        serverTime: {
+          iso: serverTime.toISOString(),
+          unix: Math.floor(serverTime.getTime() / 1000),
+          thai: serverTime.toLocaleString('th-TH'),
+          year: serverTime.getFullYear(),
+          thaiYear: serverTime.getFullYear() + 543
+        },
+        localTime: {
+          iso: localTime.toISOString(),
+          unix: Math.floor(localTime.getTime() / 1000),
+          thai: localTime.toLocaleString('th-TH'),
+          year: localTime.getFullYear(),
+          thaiYear: localTime.getFullYear() + 543
+        },
+        offset: {
+          milliseconds: this.timeOffset,
+          seconds: Math.floor(this.timeOffset / 1000),
+          minutes: Math.floor(this.timeOffset / 60000)
+        },
+        adjustedTime: {
+          date: new Date(Date.now() + this.timeOffset).toISOString(),
+          unix: Math.floor((Date.now() + this.timeOffset) / 1000),
+          thai: new Date(Date.now() + this.timeOffset).toLocaleString('th-TH')
+        },
+        validation: {
+          localUnix: Math.floor(localTime.getTime() / 1000),
+          serverUnix: Math.floor(serverTime.getTime() / 1000),
+          diffSeconds: Math.floor(Math.abs(serverTime.getTime() - localTime.getTime()) / 1000),
+          yearCheck: {
+            localYear: localTime.getFullYear(),
+            serverYear: serverTime.getFullYear(),
+            yearDiff: serverTime.getFullYear() - localTime.getFullYear()
+          }
+        }
       });
+
+      // Validate the time offset is reasonable
+      if (Math.abs(this.timeOffset) > 24 * 60 * 60 * 1000) { // More than 24 hours
+        logger.warn('Large time offset detected', 'RIDOAuth', {
+          offset: this.timeOffset,
+          threshold: 24 * 60 * 60 * 1000,
+          serverTime: {
+            iso: serverTime.toISOString(),
+            unix: Math.floor(serverTime.getTime() / 1000),
+            thai: serverTime.toLocaleString('th-TH'),
+            year: serverTime.getFullYear(),
+            thaiYear: serverTime.getFullYear() + 543
+          },
+          localTime: {
+            iso: localTime.toISOString(),
+            unix: Math.floor(localTime.getTime() / 1000),
+            thai: localTime.toLocaleString('th-TH'),
+            year: localTime.getFullYear(),
+            thaiYear: localTime.getFullYear() + 543
+          },
+          timestamp: new Date().toISOString()
+        });
+      }
     } catch (error) {
       logger.error('Failed to sync time with RID server', 'RIDOAuth', {
         error: error instanceof Error ? {
@@ -219,13 +257,42 @@ export class RIDOAuth {
     const adjustedTime = new Date(Date.now() + this.timeOffset);
     const timestamp = Math.floor(adjustedTime.getTime() / 1000).toString();
     
+    // Add year validation
+    const year = adjustedTime.getFullYear();
+    if (year !== 2025) {
+      logger.warn('OAuth timestamp year mismatch', 'RIDOAuth', {
+        expected: 2025,
+        actual: year,
+        timestamp: {
+          unix: timestamp,
+          iso: adjustedTime.toISOString(),
+          thai: adjustedTime.toLocaleString('th-TH'),
+          thaiYear: year + 543
+        },
+        timeOffset: this.timeOffset,
+        systemTime: {
+          now: Date.now(),
+          nowDate: new Date().toISOString(),
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        }
+      });
+    }
+    
     logger.debug('Generated OAuth timestamp', 'RIDOAuth', { 
       timestamp,
       adjustedTime: adjustedTime.toISOString(),
       localTime: new Date().toISOString(),
       offset: this.timeOffset,
-      unixTimestamp: parseInt(timestamp),
-      humanReadable: new Date(parseInt(timestamp) * 1000).toISOString()
+      formats: {
+        unixTimestamp: parseInt(timestamp),
+        humanReadable: new Date(parseInt(timestamp) * 1000).toISOString(),
+        thaiCalendar: adjustedTime.toLocaleDateString('th-TH'),
+        thaiDateTime: adjustedTime.toLocaleString('th-TH'),
+        utcString: adjustedTime.toUTCString(),
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        year: year,
+        thaiYear: year + 543
+      }
     });
     
     return timestamp;
@@ -254,27 +321,35 @@ export class RIDOAuth {
   }
 
   private normalizeParameters(message: RIDOAuthMessage): string {
+    // Get all parameters except oauth_signature
     const params = Array.from(message.getParameterMap().entries())
+      .filter(([key]) => key !== 'oauth_signature')
       .map(([key, value]) => ({
         key: this.percentEncode(key),
         value: this.percentEncode(value)
       }))
+      // Sort exactly as RID does: first by encoded key, then by encoded value
       .sort((a, b) => {
-        if (a.key < b.key) return -1;
-        if (a.key > b.key) return 1;
-        if (a.value < b.value) return -1;
-        if (a.value > b.value) return 1;
-        return 0;
+        const keyCompare = a.key.localeCompare(b.key);
+        if (keyCompare !== 0) return keyCompare;
+        return a.value.localeCompare(b.value);
       });
 
+    // Build normalized string exactly as RID does
     const normalizedString = params
       .map(({ key, value }) => `${key}=${value}`)
       .join('&');
       
     logger.debug('OAuth parameter normalization', 'RIDOAuth', {
       originalParams: Array.from(message.getParameterMap().entries()),
-      normalizedParams: params,
-      normalizedString
+      filteredParams: params.map(p => ({ key: p.key, value: p.value })),
+      normalizedString,
+      analysis: {
+        paramCount: params.length,
+        excludedSignature: !message.getParameterMap().has('oauth_signature'),
+        sortedKeys: params.map(p => p.key),
+        timestamp: new Date().toISOString()
+      }
     });
 
     return normalizedString;
@@ -285,11 +360,166 @@ export class RIDOAuth {
     url: string,
     normalizedParameters: string
   ): string {
-    return [
+    // Normalize URL exactly as RID does
+    const normalizedUrl = this.normalizeUrl(url);
+
+    // Build base string in exact RID format
+    const baseString = [
       method.toUpperCase(),
-      this.percentEncode(url),
+      this.percentEncode(normalizedUrl),
       this.percentEncode(normalizedParameters)
     ].join('&');
+
+    logger.debug('OAuth base string generation', 'RIDOAuth', {
+      input: {
+        method,
+        url,
+        normalizedParameters
+      },
+      processing: {
+        normalizedUrl,
+        encodedUrl: this.percentEncode(normalizedUrl),
+        encodedParams: this.percentEncode(normalizedParameters)
+      },
+      output: baseString,
+      timestamp: new Date().toISOString()
+    });
+
+    return baseString;
+  }
+
+  private normalizeUrl(url: string): string {
+    // Parse URL
+    const urlParts = new URL(url);
+    
+    // Convert scheme and host to lowercase
+    const scheme = urlParts.protocol.toLowerCase().replace(':', '');
+    const host = urlParts.host.toLowerCase();
+    
+    // Remove default ports
+    const port = urlParts.port;
+    const shouldRemovePort = 
+      (scheme === 'http' && port === '80') ||
+      (scheme === 'https' && port === '443');
+    
+    const normalizedPort = shouldRemovePort ? '' : (port ? `:${port}` : '');
+    
+    // Ensure path is present and normalized
+    let path = urlParts.pathname;
+    if (!path) {
+      path = '/';
+    }
+    
+    // Build normalized URL exactly as RID expects
+    const normalizedUrl = `${scheme}://${host}${normalizedPort}${path}`;
+    
+    logger.debug('URL normalization', 'RIDOAuth', {
+      original: url,
+      parsed: {
+        scheme,
+        host,
+        port,
+        path
+      },
+      normalized: normalizedUrl,
+      timestamp: new Date().toISOString()
+    });
+    
+    return normalizedUrl;
+  }
+
+  // RID's example OAuth header format for comparison
+  private readonly RID_EXAMPLE_FORMAT = {
+    realm: 'http://hyd-app.rid.go.th/webservice',
+    oauth_consumer_key: 'example_key',
+    oauth_nonce: 'unique_nonce',
+    oauth_signature_method: 'HMAC-SHA1',
+    oauth_timestamp: '1234567890',
+    oauth_version: '1.0',
+    oauth_signature: 'calculated_signature'
+  };
+
+  private validateOAuthHeader(headerParams: string): void {
+    try {
+      // Parse our header
+      const ourParams = new Map<string, string>();
+      headerParams.replace('OAuth ', '').split(', ').forEach(param => {
+        const [key, value] = param.split('=');
+        ourParams.set(key, value.replace(/"/g, ''));
+      });
+
+      // Compare with RID's format
+      const comparison = {
+        hasAllRequiredParams: true,
+        correctOrder: true,
+        parameterAnalysis: {} as Record<string, {
+          exists: boolean,
+          format: string,
+          matchesPattern: boolean
+        }>
+      };
+
+      // Check each required parameter
+      Object.keys(this.RID_EXAMPLE_FORMAT).forEach(param => {
+        const value = ourParams.get(param);
+        comparison.parameterAnalysis[param] = {
+          exists: !!value,
+          format: value || 'missing',
+          matchesPattern: this.validateParameterFormat(param, value || '')
+        };
+        if (!value) {
+          comparison.hasAllRequiredParams = false;
+        }
+      });
+
+      // Check order
+      const ridOrder = Object.keys(this.RID_EXAMPLE_FORMAT);
+      const ourOrder = Array.from(ourParams.keys());
+      comparison.correctOrder = ridOrder.every((param, index) => ourOrder[index] === param);
+
+      // Log detailed comparison
+      logger.debug('OAuth header validation', 'RIDOAuth', {
+        ourHeader: Object.fromEntries(ourParams),
+        ridFormat: this.RID_EXAMPLE_FORMAT,
+        comparison,
+        timestamp: new Date().toISOString()
+      });
+
+      // Log any issues found
+      if (!comparison.hasAllRequiredParams || !comparison.correctOrder) {
+        logger.warn('OAuth header validation issues', 'RIDOAuth', {
+          issues: {
+            missingParams: !comparison.hasAllRequiredParams,
+            wrongOrder: !comparison.correctOrder,
+            analysis: comparison.parameterAnalysis
+          },
+          timestamp: new Date().toISOString()
+        });
+      }
+    } catch (error) {
+      logger.error('OAuth header validation failed', 'RIDOAuth', {
+        error: error instanceof Error ? {
+          name: error.name,
+          message: error.message,
+          stack: error.stack
+        } : error,
+        headerParams,
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+
+  private validateParameterFormat(param: string, value: string): boolean {
+    const patterns: Record<string, RegExp> = {
+      realm: /^http:\/\/[\w\-\.\/]+$/,
+      oauth_consumer_key: /^[\w\-]+$/,
+      oauth_nonce: /^[\w\-]+$/,
+      oauth_signature_method: /^HMAC-SHA1$/,
+      oauth_timestamp: /^\d+$/,
+      oauth_version: /^1\.0$/,
+      oauth_signature: /^[A-Za-z0-9+/=]+$/ // Base64 pattern
+    };
+    return patterns[param]?.test(value) ?? false;
   }
 
   public async getAuthorizationHeader(
@@ -327,11 +557,12 @@ export class RIDOAuth {
         log_timestamp: new Date().toISOString()
       });
 
-      // Set OAuth parameters
+      // Set OAuth parameters in RID's expected order
+      message.setParameter('realm', this.accessor.realm);
       message.setParameter('oauth_consumer_key', this.accessor.consumerKey);
       message.setParameter('oauth_nonce', nonce);
-      message.setParameter('oauth_timestamp', timestamp);
       message.setParameter('oauth_signature_method', 'HMAC-SHA1');
+      message.setParameter('oauth_timestamp', timestamp);
       message.setParameter('oauth_version', '1.0');
 
       // Do not include request body parameters in signature
@@ -339,19 +570,23 @@ export class RIDOAuth {
       const baseString = this.generateBaseString(method, url, normalizedParams);
       const signature = this.sign(baseString);
 
-      // Build authorization header
+      // Add signature last, as per RID's format
+      message.setParameter('oauth_signature', signature);
+
+      // Build authorization header in RID's exact order
       const headerParams = [
         `realm="${this.accessor.realm}"`,
         `oauth_consumer_key="${this.percentEncode(this.accessor.consumerKey)}"`,
         `oauth_nonce="${this.percentEncode(nonce)}"`,
-        `oauth_signature="${this.percentEncode(signature)}"`,
         `oauth_signature_method="HMAC-SHA1"`,
         `oauth_timestamp="${timestamp}"`,
-        `oauth_version="1.0"`
+        `oauth_version="1.0"`,
+        `oauth_signature="${this.percentEncode(signature)}"`
       ].join(', ');
 
       const authHeader = `OAuth ${headerParams}`;
       
+      // Enhanced OAuth header logging
       logger.info('Generated OAuth authorization header', 'RIDOAuth', {
         url,
         method,
@@ -364,12 +599,19 @@ export class RIDOAuth {
           timestamp,
           adjustedTime: new Date(parseInt(timestamp) * 1000).toISOString()
         },
-        normalizedParams,
-        baseString,
-        headerParams: headerParams.split(', '),
-        fullHeader: authHeader,
+        headerAnalysis: {
+          normalizedParams,
+          baseString,
+          headerParts: headerParams.split(', '),
+          fullHeader: authHeader,
+          parameterCount: headerParams.split(', ').length,
+          signatureLength: signature.length
+        },
         timestamp: new Date().toISOString()
       });
+
+      // Validate the generated header
+      this.validateOAuthHeader(authHeader);
 
       return authHeader;
     } catch (error) {

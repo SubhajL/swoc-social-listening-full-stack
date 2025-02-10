@@ -7,15 +7,15 @@ const CONSUMER_SECRET = '7c9e6679-7425-40de-944b';
 
 // RID Telemetry API response types
 export interface RIDTelemetryResponse {
-  stationid: number;
-  hourlytime: string;
-  hourlytimeUTC: string;
-  wlvalues: number | null;
-  wlvaluesabove: number | null;
-  qvalues: number | null;
-  qavrvalues: number | null;
-  notationid: number;
-  notationString: string;
+  stationid: string;           // Station ID (string in RID API, e.g., 'P.1')
+  hourlytime: string;          // Data timestamp in local time
+  hourlytimeutc: string;       // Data timestamp in UTC
+  wlvalues: number | null;     // Water level (m)
+  wlvaluesabove: number | null;// Water level above dam (m)
+  qvalues: number | null;      // Flow rate (m³/s)
+  qavrvalues: number | null;   // Average daily flow rate (m³/s)
+  notationid: number;          // Notation ID for data quality/status
+  notationstring: string;      // Human-readable notation description
 }
 
 declare const OAuth: any;

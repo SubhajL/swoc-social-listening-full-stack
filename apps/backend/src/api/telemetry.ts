@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { logger } from '../utils/logger';
-import { getTelemetryData } from '../services/rid-telemetry/telemetry.service';
+import { getTelemetryData, testTelemetryService } from '../services/rid-telemetry/telemetry.service';
 import type { TelemetryError } from '../services/rid-telemetry/types';
 
 const router = Router();
@@ -29,8 +29,7 @@ function isErrorWithResponse(error: unknown): error is Error & {
 
 // Validation schema for query parameters
 const TelemetryQuerySchema = z.object({
-  stationId: z.string(),
-  timeStart: z.string().optional()
+  station_id: z.string()
 });
 
 /**
@@ -39,19 +38,11 @@ const TelemetryQuerySchema = z.object({
  */
 router.get('/test', async (req, res) => {
   try {
-    const testStationId = 'TD01'; // Known valid station ID
-    const timeStart = new Date().toLocaleDateString('th-TH');
-    
     logger.info('Testing telemetry endpoint', 'TelemetryAPI', {
-      stationId: testStationId,
-      timeStart,
       timestamp: new Date().toISOString()
     });
     
-    const telemetryData = await getTelemetryData({
-      stationId: testStationId,
-      timeStart
-    });
+    const telemetryData = await testTelemetryService();
 
     logger.info('Test endpoint succeeded', 'TelemetryAPI', {
       response: telemetryData,
@@ -60,44 +51,76 @@ router.get('/test', async (req, res) => {
 
     return res.json(telemetryData);
   } catch (error: unknown) {
+    // Enhanced error logging with proper typing
+    interface ErrorDetails {
+      name: string;
+      message: string;
+      stack?: string;
+      status?: number;
+      details?: unknown;
+      timestamp: string;
+      response?: {
+        status?: number;
+        statusText?: string;
+        data?: unknown;
+        headers?: Record<string, string>;
+        config?: {
+          url?: string;
+          method?: string;
+          headers?: Record<string, string>;
+          data?: unknown;
+        };
+      };
+      code?: string;
+    }
+
+    const errorDetails: ErrorDetails = {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      timestamp: new Date().toISOString()
+    };
+
+    // Handle TelemetryError properties
+    if (error instanceof Error && 'status' in error) {
+      const telemetryError = error as TelemetryError;
+      errorDetails.status = telemetryError.status;
+      errorDetails.details = telemetryError.details;
+    }
+
+    // Handle response properties
+    if (isErrorWithResponse(error)) {
+      errorDetails.response = {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        headers: error.response?.headers,
+        config: {
+          url: error.response?.config?.url,
+          method: error.response?.config?.method,
+          headers: error.response?.config?.headers,
+          data: error.response?.config?.data
+        }
+      };
+      errorDetails.code = error.code;
+    }
+
     logger.error('Test endpoint failed', 'TelemetryAPI', { 
-      error,
-      errorDetails: {
-        name: error instanceof Error ? error.name : 'Unknown',
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-        code: isErrorWithResponse(error) ? error.code : undefined,
-        response: isErrorWithResponse(error) ? {
-          status: error.response?.status,
-          statusText: error.response?.statusText,
-          data: error.response?.data,
-          headers: error.response?.headers,
-          config: {
-            url: error.response?.config?.url,
-            method: error.response?.config?.method,
-            headers: error.response?.config?.headers,
-            data: error.response?.config?.data
-          }
-        } : undefined
-      },
+      error: errorDetails,
       timestamp: new Date().toISOString()
     });
     
-    if (error instanceof Error && 'status' in error) {
-      const telemetryError = error as TelemetryError;
-      return res.status(telemetryError.status || 500).json({
-        success: false,
-        error: telemetryError.message,
-        details: telemetryError.details,
-        timestamp: new Date().toISOString()
-      });
-    }
-
-    return res.status(500).json({
+    // Return detailed error response with all available information
+    return res.status(errorDetails.status || 500).json({
       success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error',
-      timestamp: new Date().toISOString()
+      error: errorDetails.message || 'Telemetry test failed',
+      details: {
+        ...errorDetails,
+        telemetryError: errorDetails.details,
+        response: errorDetails.response,
+        code: errorDetails.code,
+        timestamp: new Date().toISOString()
+      }
     });
   }
 });
@@ -107,8 +130,7 @@ router.get('/test', async (req, res) => {
  * 
  * Fetches telemetry data for a specific station
  * Query parameters:
- * - stationId: string (required)
- * - timeStart: string (optional, format: dd/MM/yyyy in Buddhist calendar)
+ * - station_id: string (required)
  */
 router.get('/', async (req, res) => {
   try {
@@ -124,12 +146,13 @@ router.get('/', async (req, res) => {
       });
     }
 
-    const { stationId, timeStart = new Date().toLocaleDateString('th-TH') } = result.data;
+    const { station_id } = result.data;
+    const time_start = new Date().toLocaleDateString('th-TH'); // Format date in Thai calendar
 
     // Get telemetry data
     const telemetryData = await getTelemetryData({
-      stationId,
-      timeStart
+      station_id,
+      time_start
     });
 
     return res.json(telemetryData);
