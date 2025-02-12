@@ -1,10 +1,10 @@
-import { Router } from 'express';
+import express from 'express';
 import { z } from 'zod';
 import { logger } from '../utils/logger';
-import { getTelemetryData, testTelemetryService } from '../services/rid-telemetry/telemetry.service';
+import { getTelemetryData, testTelemetryService, getStationList } from '../services/rid-telemetry/telemetry.service';
 import type { TelemetryError } from '../services/rid-telemetry/types';
 
-const router = Router();
+const router = express.Router();
 
 // Type guard for error with response property
 function isErrorWithResponse(error: unknown): error is Error & { 
@@ -147,12 +147,15 @@ router.get('/', async (req, res) => {
     }
 
     const { station_id } = result.data;
-    const time_start = new Date().toLocaleDateString('th-TH'); // Format date in Thai calendar
+    
+    // Format date in Thai Buddhist calendar format (dd/MM/yyyy)
+    const now = new Date();
+    const time_start = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear() + 543}`;
 
     // Get telemetry data
     const telemetryData = await getTelemetryData({
-      station_id,
-      time_start
+      stationid: station_id,
+      timestart: time_start
     });
 
     return res.json(telemetryData);
@@ -172,6 +175,47 @@ router.get('/', async (req, res) => {
       success: false,
       error: 'Internal server error',
       details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * GET /api/telemetry/stations
+ * 
+ * Fetches list of available telemetry stations
+ */
+router.get('/stations', async (req, res) => {
+  try {
+    logger.info('Fetching telemetry stations list', 'TelemetryAPI', {
+      timestamp: new Date().toISOString()
+    });
+    
+    // Use hydro ID 7 as it's used in test scripts
+    const hydroId = '7';
+    
+    const stationList = await getStationList(hydroId);
+
+    logger.info('Successfully fetched station list', 'TelemetryAPI', {
+      totalStations: stationList.data?.length || 0,
+      timestamp: new Date().toISOString()
+    });
+
+    return res.json(stationList);
+  } catch (error) {
+    logger.error('Failed to fetch station list', 'TelemetryAPI', { error });
+
+    if (error instanceof Error && 'status' in error) {
+      const telemetryError = error as TelemetryError;
+      return res.status(telemetryError.status || 500).json({
+        success: false,
+        error: telemetryError.message,
+        details: telemetryError.details
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: 'Internal server error'
     });
   }
 });

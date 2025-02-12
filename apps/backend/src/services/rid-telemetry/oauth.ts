@@ -60,8 +60,8 @@ export class RIDOAuth {
   constructor() {
     // Initialize with RID's OAuth credentials and base URL for realm
     this.accessor = new RIDOAuthAccessor(
-      process.env.RID_CONSUMER_KEY || '364d90f1532f4e0190a91c56cf9e4045',
-      process.env.RID_CONSUMER_SECRET || '6791161988d646aeb41d5730b73e2735',
+      process.env.RID_CONSUMER_KEY || '0f8fad5b-d9cb-469f-a165',
+      process.env.RID_CONSUMER_SECRET || '7c9e6679-7425-40de-944b',
       process.env.RID_ACCESS_TOKEN || '2Rx39Jq!cL&Reu5',
       'https://hyd-app.rid.go.th/webservice'
     );
@@ -324,10 +324,20 @@ export class RIDOAuth {
     // Get all parameters except oauth_signature
     const params = Array.from(message.getParameterMap().entries())
       .filter(([key]) => key !== 'oauth_signature')
-      .map(([key, value]) => ({
-        key: this.percentEncode(key),
-        value: this.percentEncode(value)
-      }))
+      .map(([key, value]) => {
+        // Handle nested objects by flattening with dot notation
+        if (typeof value === 'object' && value !== null) {
+          return Object.entries(value).map(([nestedKey, nestedValue]) => ({
+            key: this.percentEncode(`${key}.${nestedKey}`),
+            value: this.percentEncode(String(nestedValue))
+          }));
+        }
+        return [{
+          key: this.percentEncode(key),
+          value: this.percentEncode(String(value))
+        }];
+      })
+      .flat()
       // Sort exactly as RID does: first by encoded key, then by encoded value
       .sort((a, b) => {
         const keyCompare = a.key.localeCompare(b.key);
@@ -430,7 +440,7 @@ export class RIDOAuth {
 
   // RID's example OAuth header format for comparison
   private readonly RID_EXAMPLE_FORMAT = {
-    realm: 'http://hyd-app.rid.go.th/webservice',
+    realm: 'https://hyd-app.rid.go.th/webservice',
     oauth_consumer_key: 'example_key',
     oauth_nonce: 'unique_nonce',
     oauth_signature_method: 'HMAC-SHA1',
