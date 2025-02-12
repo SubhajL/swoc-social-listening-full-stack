@@ -4,6 +4,7 @@ import { errorHandler } from './middleware/error-handler.js';
 import { createPostsRouter } from './api/posts/index.js';
 import telemetryStationsRouter from './api/telemetry-stations.js';
 import telemetryRouter from './api/telemetry';
+import thaiWaterRouter from './api/thaiwater';
 import { ProcessedPostService } from './services/processed-post.service.js';
 import { pool } from './lib/db.js';
 import { logger } from './utils/logger.js';
@@ -61,13 +62,15 @@ export const initializeServices = async (io: Server) => {
   app.use('/api/monitoring-stations', telemetryStationsRouter);
   app.use('/api/rain-stations', rainStationsRouter);
   app.use('/api/telemetry', telemetryRouter);
+  app.use('/api/thaiwater', thaiWaterRouter);
   
   logger.info('📍 API routes registered', {
     routes: [
       '/api/posts', 
       '/api/monitoring-stations', 
       '/api/rain-stations',
-      '/api/telemetry'
+      '/api/telemetry',
+      '/api/thaiwater'
     ],
     timestamp: new Date().toISOString()
   });

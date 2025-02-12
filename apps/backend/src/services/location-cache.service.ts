@@ -55,39 +55,55 @@ export class LocationCacheService {
   async initialize(): Promise<void> {
     try {
       logger.info('Starting location cache initialization');
-      logger.info('Loading location hierarchy');
-      await this.loadLocationHierarchy();
-      logger.info('Location hierarchy loaded');
-      logger.info('Loading tumbon data');
-      await this.loadTumbons();
-      logger.info('Tumbon data loaded');
-      logger.info('Loading province data');
-      await this.loadProvinces();
-      logger.info('Province data loaded');
-      logger.info('Loading amphure data');
-      await this.loadAmphures();
-      logger.info('Amphure data loaded');
-      logger.info('Resolving missing coordinates through hierarchy');
-      await this.resolveMissingCoordinates();
-      logger.info('Coordinate resolution completed');
+      
+      // Load data in sequence with proper error handling
+      await this.safeLoadData('location hierarchy', () => this.loadLocationHierarchy());
+      await this.safeLoadData('tumbon data', () => this.loadTumbons());
+      await this.safeLoadData('province data', () => this.loadProvinces());
+      await this.safeLoadData('amphure data', () => this.loadAmphures());
+      await this.safeLoadData('missing coordinates', () => this.resolveMissingCoordinates());
       
       // Log cache statistics
+      this.logCacheStats();
+    } catch (error) {
+      logger.error('Failed to initialize location cache', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      });
+      // Don't throw here - allow the service to start with partial data
+    }
+  }
+
+  private async safeLoadData(dataType: string, loadFn: () => Promise<void>): Promise<void> {
+    try {
+      logger.info(`Loading ${dataType}...`);
+      await loadFn();
+      logger.info(`Successfully loaded ${dataType}`);
+    } catch (error) {
+      logger.error(`Error loading ${dataType}`, {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      });
+      // Don't throw - continue with other data loading
+    }
+  }
+
+  private logCacheStats(): void {
+    try {
       logger.info('Cache initialization completed', {
         tumbonCount: this.cache.tumbon.size,
         amphureCount: this.cache.amphure.size,
         provinceCount: this.cache.province.size,
-        sampleTumbon: Array.from(this.cache.tumbon.keys())[0],
-        sampleAmphure: Array.from(this.cache.amphure.keys())[0],
-        sampleProvince: Array.from(this.cache.province.keys())[0]
+        metrics: {
+          tumbon: this.calculateHitRate('tumbon'),
+          amphure: this.calculateHitRate('amphure'),
+          province: this.calculateHitRate('province')
+        }
       });
     } catch (error) {
-      const err = error as Error;
-      logger.error('Failed to initialize location cache', {
-        error: err.message,
-        stack: err.stack,
-        details: error
+      logger.error('Error logging cache stats', {
+        error: error instanceof Error ? error.message : String(error)
       });
-      throw error;
     }
   }
 
@@ -156,57 +172,46 @@ export class LocationCacheService {
   }
 
   private async loadTumbons(): Promise<void> {
-    try {
-      const result = await this.pool.query<LocationRow>('SELECT id, name_th, latitude, longitude FROM tumbons');
-      logger.debug('Loaded raw tumbon data', {
-        totalRows: result.rowCount,
-        sampleRow: result.rows[0]
-      });
-      
-      let normalizedCount = 0;
-      let failedNormalization = 0;
+    const result = await this.pool.query<LocationRow>('SELECT id, name_th, latitude, longitude FROM tumbons');
+    let normalizedCount = 0;
+    let failedNormalization = 0;
+    let skippedNoCoordinates = 0;
 
-      result.rows.forEach(row => {
-        if (row.latitude && row.longitude) {
-          const normalizedName = normalizeThaiLocationName(row.name_th);
-          if (normalizedName) {
-            this.cache.tumbon.set(normalizedName, {
-              lat: row.latitude,
-              lng: row.longitude,
-              source: 'direct'
-            });
-            normalizedCount++;
-            logger.debug('Normalized and cached tumbon', {
-              original: row.name_th,
-              normalized: normalizedName,
-              coordinates: { lat: row.latitude, lng: row.longitude }
-            });
-          } else {
-            failedNormalization++;
-            logger.warn('Failed to normalize tumbon name:', {
-              id: row.id,
-              name_th: row.name_th,
-              nameBytes: Buffer.from(row.name_th).length
-            });
-          }
+    for (const row of result.rows) {
+      try {
+        if (!row.latitude || !row.longitude) {
+          skippedNoCoordinates++;
+          continue;
         }
-      });
 
-      logger.info('Tumbon cache loading completed', {
-        total: result.rowCount,
-        withCoordinates: normalizedCount,
-        failedNormalization,
-        cacheSize: this.cache.tumbon.size
-      });
-    } catch (error) {
-      const err = error as Error;
-      logger.error('Failed to load tumbon data', {
-        error: err.message,
-        stack: err.stack,
-        details: error
-      });
-      throw error;
+        const normalizedName = normalizeThaiLocationName(row.name_th);
+        if (normalizedName) {
+          this.cache.tumbon.set(normalizedName, {
+            lat: row.latitude,
+            lng: row.longitude,
+            source: 'direct'
+          });
+          normalizedCount++;
+        } else {
+          failedNormalization++;
+        }
+      } catch (error) {
+        failedNormalization++;
+        logger.warn('Error processing tumbon row', {
+          id: row.id,
+          name: row.name_th,
+          error: error instanceof Error ? error.message : String(error)
+        });
+      }
     }
+
+    logger.info('Tumbon cache loading completed', {
+      total: result.rowCount,
+      normalized: normalizedCount,
+      failed: failedNormalization,
+      skipped: skippedNoCoordinates,
+      cacheSize: this.cache.tumbon.size
+    });
   }
 
   private async loadProvinces(): Promise<void> {
@@ -294,14 +299,10 @@ export class LocationCacheService {
       let missingCoordinates = 0;
       const normalizedNames = new Set<string>();
 
-      result.rows.forEach(row => {
+      for (const row of result.rows) {
         if (!row.latitude || !row.longitude) {
           missingCoordinates++;
-          logger.warn('Amphure missing coordinates:', {
-            id: row.id,
-            name_th: row.name_th
-          });
-          return;
+          continue;
         }
 
         // Create both simple and qualified normalized names
@@ -328,24 +329,10 @@ export class LocationCacheService {
           
           normalizedNames.add(qualifiedNormalizedName);
           normalizedCount++;
-          
-          logger.debug('Normalized and cached amphure', {
-            id: row.id,
-            original: row.name_th,
-            simpleNormalized: simpleNormalizedName,
-            qualifiedNormalized: qualifiedNormalizedName,
-            coordinates
-          });
         } else {
           failedNormalization++;
-          logger.warn('Failed to normalize amphure name:', {
-            id: row.id,
-            name_th: row.name_th,
-            province_name_th: row.province_name_th,
-            nameBytes: Buffer.from(row.name_th).length
-          });
         }
-      });
+      }
 
       logger.info('Amphure cache loading completed', {
         totalInDb: totalAmphures,
@@ -353,8 +340,7 @@ export class LocationCacheService {
         normalizedAndCached: normalizedCount,
         failedNormalization,
         missingCoordinates,
-        cacheSize: this.cache.amphure.size,
-        normalizedNames: Array.from(normalizedNames).slice(0, 10) // Log first 10 for sample
+        cacheSize: this.cache.amphure.size
       });
     } catch (error) {
       const err = error as Error;

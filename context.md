@@ -1346,3 +1346,55 @@ Implemented integration with RID Telemetry API to fetch real-time water level an
 - Replaces mock telemetry data
 - Enhances monitoring station functionality
 - Provides real-time water data 
+
+## 2025-02-12: Thaiwater API Integration for Rain Station Data
+
+### Type: FEATURE
+
+**Description**:
+Integrated real-time rainfall data from Thaiwater API to replace mocked data in rain station cards.
+
+**Technical Details**:
+1. Implementation:
+   - Added Thaiwater API integration with correct endpoint and parameters
+   - Implemented station ID mapping between our system and Thaiwater's tele_station_id
+   - Added proper error handling and logging
+   - Updated frontend to display real-time rainfall data
+
+2. Affected Files:
+   - `apps/backend/src/services/thaiwater/thaiwater.service.ts`
+   - `apps/frontend/src/components/monitoring/RainStationCard.tsx`
+
+3. API Configuration:
+   ```typescript
+   const THAIWATER_API_ENDPOINT = 'https://api-v3.thaiwater.net/api/v1/thaiwater30/api_service';
+   const THAIWATER_API_MID = '98';
+   ```
+
+4. Station ID Mapping:
+   ```typescript
+   // Station ID mapping (our station_id -> ThaiWater tele_station_id)
+   const STATION_ID_MAP: Record<string, number> = {
+     '7391': 1109570,  // สชป.1
+     '7013': 494       // อุตุสนามบิน
+   };
+   ```
+
+**Considerations**:
+1. Previous Changes:
+   - Replaced mocked rainfall data with real-time data
+   - Implemented proper station ID mapping
+
+2. Potential Impacts:
+   - Real-time data updates every time the API is called
+   - Station ID mapping needs to be maintained if new stations are added
+
+3. Future Implications:
+   - May need to add caching for API responses
+   - Consider adding more error handling for API failures
+   - Station ID mapping should be reviewed when adding new stations
+
+**Related Issues**:
+- Fixed incorrect API endpoint usage
+- Implemented proper station ID mapping between systems
+- Added real-time rainfall data display 

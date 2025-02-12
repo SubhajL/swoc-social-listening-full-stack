@@ -11,6 +11,7 @@ import telemetryStationsRouter from './api/telemetry-stations.js';
 import telemetryRouter from './api/telemetry';
 import rainStationsRouter from './api/rain-stations.js';
 import reservoirsRouter from './api/reservoirs.js';
+import thaiWaterRouter from './api/thaiwater';
 import { logger } from './utils/logger.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -47,9 +48,37 @@ app.set('io', io);
 // Initialize services before starting the server
 const startServer = async () => {
   try {
-    await locationCacheService.initialize();
-    await processedPostService.initialize();
-    logger.info('Services initialized successfully');
+    logger.info('🔄 Initializing services...', {
+      timestamp: new Date().toISOString()
+    });
+
+    try {
+      await locationCacheService.initialize();
+      logger.info('✅ Location cache service initialized', {
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      logger.error('❌ Error initializing location cache service:', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        timestamp: new Date().toISOString()
+      });
+      throw error;
+    }
+
+    try {
+      await processedPostService.initialize();
+      logger.info('✅ Processed post service initialized', {
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      logger.error('❌ Error initializing processed post service:', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        timestamp: new Date().toISOString()
+      });
+      throw error;
+    }
 
     // Configure CORS first
     app.use(cors({
@@ -79,6 +108,7 @@ const startServer = async () => {
     app.use('/api/rain-stations', rainStationsRouter);
     app.use('/api/reservoirs', reservoirsRouter);
     app.use('/api/telemetry', telemetryRouter);
+    app.use('/api/thaiwater', thaiWaterRouter);
 
     logger.info('📍 API routes registered', {
       routes: [
@@ -87,7 +117,8 @@ const startServer = async () => {
         '/api/monitoring-stations', 
         '/api/rain-stations', 
         '/api/reservoirs',
-        '/api/telemetry'
+        '/api/telemetry',
+        '/api/thaiwater'
       ],
       timestamp: new Date().toISOString()
     });
