@@ -60,22 +60,35 @@ async function createTelemetryTable() {
     // Read data with header row
     const data = xlsx.utils.sheet_to_json(worksheet, { 
       raw: true,
-      defval: null
-    }) as TelemetryRow[];
+      defval: null,
+      header: 1, // Use 1-based array of arrays
+      blankrows: false
+    }) as any[];
 
     if (data.length === 0) {
       throw new Error('Excel file is empty');
     }
 
-    console.log('First row of data:', data[0]);
-    console.log('Total rows:', data.length);
+    // Get headers from first row
+    const headers = data[0] as string[];
+    console.log('Headers:', headers);
+    console.log('Total rows (including header):', data.length);
 
-    // Get column names from the first row and normalize them
-    const firstRow = data[0] as Record<string, unknown>;
-    const originalColumns = Object.keys(firstRow);
-    const normalizedColumns = originalColumns.map(normalizeColumnName);
+    // Remove header row and convert to objects
+    const rows = data.slice(1).map((row: any[]) => {
+      const obj: Record<string, any> = {};
+      headers.forEach((header, index) => {
+        obj[header] = row[index] ?? null;
+      });
+      return obj;
+    });
 
-    console.log('Original columns:', originalColumns);
+    console.log('First data row:', rows[0]);
+    console.log('Last data row:', rows[rows.length - 1]);
+    console.log('Total data rows:', rows.length);
+
+    // Get column names and normalize them
+    const normalizedColumns = headers.map(normalizeColumnName);
     console.log('Normalized columns:', normalizedColumns);
 
     // Create table SQL with normalized column names
@@ -92,26 +105,44 @@ async function createTelemetryTable() {
     console.log('Table created successfully');
 
     // Insert data with normalized column names
-    for (const row of data) {
-      const normalizedRow: Record<string, unknown> = {};
-      Object.entries(row).forEach(([key, value]) => {
-        // Convert null or undefined to empty string for TEXT columns
-        normalizedRow[normalizeColumnName(key)] = value ?? '';
-      });
+    let insertedCount = 0;
+    let errorCount = 0;
 
-      const columnNames = Object.keys(normalizedRow);
-      const values = Object.values(normalizedRow);
-      const placeholders = values.map((_, index) => `$${index + 1}`).join(', ');
-      
-      const insertSQL = `
-        INSERT INTO telemetry_station (${columnNames.map(name => `"${name}"`).join(', ')})
-        VALUES (${placeholders});
-      `;
-      
-      await client.query(insertSQL, values);
+    for (const row of rows) {
+      try {
+        const normalizedRow: Record<string, unknown> = {};
+        Object.entries(row).forEach(([key, value]) => {
+          // Convert null or undefined to empty string for TEXT columns
+          normalizedRow[normalizeColumnName(key)] = value ?? '';
+        });
+
+        const columnNames = Object.keys(normalizedRow);
+        const values = Object.values(normalizedRow);
+        const placeholders = values.map((_, index) => `$${index + 1}`).join(', ');
+        
+        const insertSQL = `
+          INSERT INTO telemetry_station (${columnNames.map(name => `"${name}"`).join(', ')})
+          VALUES (${placeholders});
+        `;
+        
+        await client.query(insertSQL, values);
+        insertedCount++;
+
+        if (insertedCount % 100 === 0) {
+          console.log(`Inserted ${insertedCount} rows...`);
+        }
+      } catch (error) {
+        errorCount++;
+        console.error(`Error inserting row ${insertedCount + errorCount}:`, error);
+        console.error('Problematic row:', row);
+      }
     }
 
-    console.log(`Inserted ${data.length} rows successfully`);
+    console.log(`Import completed:
+      Total rows in Excel: ${rows.length}
+      Successfully inserted: ${insertedCount}
+      Failed to insert: ${errorCount}
+    `);
 
     // Add indexes for commonly queried columns
     const indexColumns = ['station_id', 'province', 'amphure', 'river_basin'];

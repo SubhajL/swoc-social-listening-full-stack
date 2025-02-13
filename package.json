@@ -19,6 +19,7 @@
     "@types/testing-library__jest-dom": "^5.14.9",
     "concurrently": "^8.2.2",
     "node-fetch": "^2.7.0",
+    "ts-node": "^10.9.2",
     "vitest": "^1.6.0"
   },
   "dependencies": {
