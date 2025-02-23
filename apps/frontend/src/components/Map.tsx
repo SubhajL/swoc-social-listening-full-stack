@@ -142,72 +142,80 @@ const getCategoryFromName = (categoryName: string): CategoryName | undefined => 
   return undefined;
 };
 
-// Get marker key helper
-const getMarkerKey = (category: CategoryName): string => {
-  const shape = categoryShapeMap[category] || 'circle';
-  const color = categoryColors[category] || '#94A3B8';
-  return `${shape}-${color.replace('#', '')}`;
-};
+// Update helper function to get marker image ID
+function getMarkerImageId(category: CategoryName): string {
+  // Use shape instead of category to avoid duplicates
+  const shape = categoryShapeMap[category];
+  return `marker-${shape}`;
+}
 
-// Update createMarkerImage function to use the new shapes
-const createMarkerImage = (shape: keyof typeof shapeStyles, color: string, size: number = 32) => {
-  const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return null;
+// Update createMarkerImage function to be more robust
+const createMarkerImage = (shape: keyof typeof shapeStyles, color: string, size: number = 32): ImageData | null => {
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error('Failed to get canvas context');
+      return null;
+    }
 
-  // Set up shadow
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-  ctx.shadowBlur = 6;
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 3;
+    // Set up shadow
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 3;
 
-  ctx.clearRect(0, 0, size, size);
-  
-  // Draw shape with padding
-  ctx.beginPath();
-  const padding = size * 0.1; // 10% padding
-  const drawSize = size - (padding * 2);
-  
-  switch (shape) {
-    case 'diamond':
-      ctx.moveTo(size/2, padding);
-      ctx.lineTo(size - padding, size/2);
-      ctx.lineTo(size/2, size - padding);
-      ctx.lineTo(padding, size/2);
-      break;
-    case 'square':
-      ctx.rect(padding, padding, drawSize, drawSize);
-      break;
-    case 'circle':
-      ctx.arc(size/2, size/2, drawSize/2, 0, Math.PI * 2);
-      break;
-    case 'hexa':
-      const a = (drawSize/2) * Math.cos(Math.PI/6);
-      const b = (drawSize/2) * Math.sin(Math.PI/6);
-      const cx = size/2;
-      const cy = size/2;
-      ctx.moveTo(cx + drawSize/2, cy);
-      ctx.lineTo(cx + a, cy + b);
-      ctx.lineTo(cx - a, cy + b);
-      ctx.lineTo(cx - drawSize/2, cy);
-      ctx.lineTo(cx - a, cy - b);
-      ctx.lineTo(cx + a, cy - b);
-      break;
+    ctx.clearRect(0, 0, size, size);
+    
+    // Draw shape with padding
+    ctx.beginPath();
+    const padding = size * 0.1; // 10% padding
+    const drawSize = size - (padding * 2);
+    
+    switch (shape) {
+      case 'diamond':
+        ctx.moveTo(size/2, padding);
+        ctx.lineTo(size - padding, size/2);
+        ctx.lineTo(size/2, size - padding);
+        ctx.lineTo(padding, size/2);
+        break;
+      case 'square':
+        ctx.rect(padding, padding, drawSize, drawSize);
+        break;
+      case 'circle':
+        ctx.arc(size/2, size/2, drawSize/2, 0, Math.PI * 2);
+        break;
+      case 'hexa':
+        const a = (drawSize/2) * Math.cos(Math.PI/6);
+        const b = (drawSize/2) * Math.sin(Math.PI/6);
+        const cx = size/2;
+        const cy = size/2;
+        ctx.moveTo(cx + drawSize/2, cy);
+        ctx.lineTo(cx + a, cy + b);
+        ctx.lineTo(cx - a, cy + b);
+        ctx.lineTo(cx - drawSize/2, cy);
+        ctx.lineTo(cx - a, cy - b);
+        ctx.lineTo(cx + a, cy - b);
+        break;
+    }
+    ctx.closePath();
+
+    // Fill with color
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    // Add white border
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    return ctx.getImageData(0, 0, size, size);
+  } catch (error) {
+    console.error('Error creating marker image:', { shape, color, error });
+    return null;
   }
-  ctx.closePath();
-
-  // Fill with color
-  ctx.fillStyle = color;
-  ctx.fill();
-
-  // Add white border
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  return ctx.getImageData(0, 0, size, size);
 };
 
 export function Map({ 
@@ -380,7 +388,9 @@ export function Map({
         Object.values(CategoryName).forEach(category => {
           const shape = categoryShapeMap[category];
           const color = categoryColors[category];
-          const imageId = getMarkerKey(category);
+          const imageId = getMarkerImageId(category);
+          
+          console.log('Creating marker image:', { category, shape, color, imageId });
           
           const imageData = createMarkerImage(shape, color);
           if (!imageData) {
@@ -388,8 +398,17 @@ export function Map({
             return;
           }
 
-          map.addImage(imageId, imageData, { pixelRatio: 2 });
-          loadedImagesRef.current.add(imageId);
+          try {
+            if (!map.hasImage(imageId)) {
+              map.addImage(imageId, imageData, { pixelRatio: 2 });
+              loadedImagesRef.current.add(imageId);
+              console.log('Successfully added marker image:', imageId);
+            } else {
+              console.log('Image already exists:', imageId);
+            }
+          } catch (error) {
+            console.error('Error adding marker image:', { imageId, error });
+          }
         });
 
         setImagesLoaded(true);
@@ -706,14 +725,22 @@ export function Map({
     if (!mapRef.current || !imagesLoaded) return;
 
     try {
+      // Create a Set to track unique shapes
+      const processedShapes = new Set<string>();
+
       // Load marker images for each category
       Object.values(CategoryName).forEach(category => {
         const shape = categoryShapeMap[category];
         const color = categoryColors[category];
-        const imageId = getMarkerKey(category);
+        const imageId = getMarkerImageId(category);
         
-        // Skip if already loaded
-        if (loadedImagesRef.current.has(imageId)) return;
+        // Skip if shape already processed
+        if (processedShapes.has(shape)) {
+          console.log('Shape already processed:', { shape, category });
+          return;
+        }
+        
+        console.log('Creating marker image:', { category, shape, color, imageId });
         
         const imageData = createMarkerImage(shape, color);
         if (!imageData) {
@@ -721,15 +748,26 @@ export function Map({
           return;
         }
 
-        mapRef.current?.addImage(imageId, imageData, { pixelRatio: 2 });
-        loadedImagesRef.current.add(imageId);
+        try {
+          if (!mapRef.current?.hasImage(imageId)) {
+            mapRef.current?.addImage(imageId, imageData, { pixelRatio: 2 });
+            loadedImagesRef.current.add(imageId);
+            processedShapes.add(shape);
+            console.log('Successfully added marker image:', imageId);
+          } else {
+            console.log('Image already exists:', imageId);
+          }
+        } catch (error) {
+          console.error('Error adding marker image:', { imageId, error });
+        }
       });
 
       setImagesLoaded(true);
       
-      console.log('Marker images loaded:', {
+      console.log('All marker images loaded:', {
         categories: Object.values(CategoryName),
-        loadedImages: Array.from(loadedImagesRef.current)
+        loadedImages: Array.from(loadedImagesRef.current),
+        processedShapes: Array.from(processedShapes)
       });
     } catch (error) {
       console.error('Error loading marker images:', error);

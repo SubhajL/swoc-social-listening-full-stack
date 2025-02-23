@@ -1,9 +1,11 @@
 import { ProcessedPost } from '@/types/processed-post';
 import { CategoryName } from '@/types/processed-post';
 import mapboxgl from 'mapbox-gl';
-import { clusterConfig } from '@/components/map/styles';
+import { clusterConfig, categoryShapeMap, categoryColors } from '@/components/map/styles';
 import { hasValidCoordinates } from '@/utils/coordinates';
 import { apiClient } from '@/lib/api-client';
+import type { GeoJSON } from 'geojson';
+import type { AnyLayer } from 'mapbox-gl';
 
 /**
  * @readonly Core map initialization configuration
@@ -22,9 +24,9 @@ export const MAP_CORE_CONFIG = {
  * @readonly Core layer configuration
  */
 export const LAYER_CONFIG = {
-  CLUSTERS: 'clusters',
-  CLUSTER_COUNT: 'cluster-count',
-  UNCLUSTERED_POINT: 'unclustered-point'
+  CLUSTERS: 'clusters' as const,
+  CLUSTER_COUNT: 'cluster-count' as const,
+  UNCLUSTERED_POINT: 'unclustered-point' as const
 } as const;
 
 /**
@@ -35,18 +37,13 @@ export function initializeMapCore(map: mapboxgl.Map): void {
   console.log('Initializing map core with config:', {
     sourceId: MAP_CORE_CONFIG.SOURCE_ID,
     clusterConfig: {
-      maxZoom: 5,
+      maxZoom: clusterConfig.maxZoom,
       radius: clusterConfig.radius
     },
-    layerIds: {
-      clusters: LAYER_CONFIG.CLUSTERS,
-      clusterCount: LAYER_CONFIG.CLUSTER_COUNT,
-      unclustered: LAYER_CONFIG.UNCLUSTERED_POINT
-    }
+    layerIds: LAYER_CONFIG
   });
 
-  // Add source for posts
-  const sourceData = {
+  const sourceData: GeoJSON.FeatureCollection = {
     type: 'FeatureCollection' as const,
     features: []
   };
@@ -55,32 +52,70 @@ export function initializeMapCore(map: mapboxgl.Map): void {
     type: 'geojson',
     data: sourceData,
     cluster: true,
-    clusterMaxZoom: 5,
-    clusterRadius: clusterConfig.radius
+    clusterMaxZoom: clusterConfig.maxZoom,
+    clusterRadius: clusterConfig.radius,
+    clusterProperties: {
+      // Simple count for each category
+      'incident_count': ['+', ['case', ['==', ['get', 'category'], 'การรายงานและแจ้งเหตุ'], 1, 0]],
+      'support_count': ['+', ['case', ['==', ['get', 'category'], 'การขอการสนับสนุน/ช่วยดำเนินการ'], 1, 0]],
+      'info_count': ['+', ['case', ['==', ['get', 'category'], 'ขอข้อมูล'], 1, 0]],
+      'suggestion_count': ['+', ['case', ['==', ['get', 'category'], 'ข้อเสนอแนะ'], 1, 0]]
+    }
   });
 
   const source = map.getSource(MAP_CORE_CONFIG.SOURCE_ID);
-  console.log('Source initialized:', {
-    sourceId: MAP_CORE_CONFIG.SOURCE_ID,
-    sourceExists: !!source,
-    sourceType: source?.type,
-    // @ts-ignore - Accessing internal properties for debugging
-    hasClusterOptions: !!(source?._options?.cluster),
-    // @ts-ignore
-    maxZoom: source?._options?.clusterMaxZoom
-  });
+  if (!source) return;
 
-  // Add cluster layer
-  map.addLayer({
+  const style = map.getStyle();
+  if (!style) return;
+
+  // Add cluster layer with category-based colors
+  const clusterLayer: AnyLayer = {
     id: LAYER_CONFIG.CLUSTERS,
     type: 'circle',
     source: MAP_CORE_CONFIG.SOURCE_ID,
     filter: ['has', 'point_count'],
-    paint: clusterConfig.paint
-  });
+    paint: {
+      'circle-color': [
+        'case',
+        ['==', ['get', 'point_count'], 1],
+        ['match',
+          ['get', 'category'],
+          'การรายงานและแจ้งเหตุ', categoryColors[CategoryName.REPORT_INCIDENT],
+          'การขอการสนับสนุน/ช่วยดำเนินการ', categoryColors[CategoryName.REQUEST_SUPPORT],
+          'ขอข้อมูล', categoryColors[CategoryName.REQUEST_INFO],
+          'ข้อเสนอแนะ', categoryColors[CategoryName.SUGGESTION],
+          categoryColors[CategoryName.UNKNOWN]
+        ],
+        [
+          'case',
+          ['>', ['get', 'incident_count'], ['max', ['get', 'support_count'], ['get', 'info_count'], ['get', 'suggestion_count']]],
+          categoryColors[CategoryName.REPORT_INCIDENT],
+          ['>', ['get', 'support_count'], ['max', ['get', 'info_count'], ['get', 'suggestion_count']]],
+          categoryColors[CategoryName.REQUEST_SUPPORT],
+          ['>', ['get', 'info_count'], ['get', 'suggestion_count']],
+          categoryColors[CategoryName.REQUEST_INFO],
+          ['>', ['get', 'suggestion_count'], 0],
+          categoryColors[CategoryName.SUGGESTION],
+          categoryColors[CategoryName.UNKNOWN]
+        ]
+      ],
+      'circle-radius': [
+        'step',
+        ['get', 'point_count'],
+        20,    // Default radius
+        5, 25,   // If point_count >= 5, radius = 25
+        10, 30    // If point_count >= 10, radius = 30
+      ],
+      'circle-opacity': 0.9,
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#ffffff'
+    }
+  };
+  map.addLayer(clusterLayer);
 
   // Add cluster count layer
-  map.addLayer({
+  const clusterCountLayer: AnyLayer = {
     id: LAYER_CONFIG.CLUSTER_COUNT,
     type: 'symbol',
     source: MAP_CORE_CONFIG.SOURCE_ID,
@@ -93,55 +128,49 @@ export function initializeMapCore(map: mapboxgl.Map): void {
     paint: {
       'text-color': '#ffffff'
     }
-  });
+  };
+  map.addLayer(clusterCountLayer);
 
-  // Add unclustered point layer
-  map.addLayer({
+  // Add unclustered point layer with category-based icons
+  const unclusteredLayer: AnyLayer = {
     id: LAYER_CONFIG.UNCLUSTERED_POINT,
-    type: 'circle',
+    type: 'symbol',
     source: MAP_CORE_CONFIG.SOURCE_ID,
     filter: ['!', ['has', 'point_count']],
-    paint: {
-      'circle-color': [
-        'match',
-        ['get', 'category'],
-        'การรายงานและแจ้งเหตุ', '#dc2626',
-        'การขอการสนับสนุน/ช่วยดำเนินการ', '#059669',
-        'ขอข้อมูล', '#2563eb',
-        'ข้อเสนอแนะ', '#d97706',
-        '#6b7280' // default color for unknown
+    layout: {
+      'icon-image': [
+        'case',
+        ['has', 'icon'], ['get', 'icon'],
+        [
+          'match',
+          ['get', 'category'],
+          CategoryName.REPORT_INCIDENT, 'marker-diamond',
+          CategoryName.REQUEST_SUPPORT, 'marker-square',
+          CategoryName.REQUEST_INFO, 'marker-circle',
+          CategoryName.SUGGESTION, 'marker-hexa',
+          'marker-circle' // Default fallback
+        ]
       ],
-      'circle-radius': [
+      'icon-size': [
         'interpolate',
         ['linear'],
         ['zoom'],
-        5, 4,     // Small at zoom level 5
-        7, 6,     // Medium at zoom level 7
-        9, 8,     // Larger at zoom level 9
-        11, 10    // Largest at zoom level 11
+        4, 0.5,    // Small at initial zoom
+        5, 1.0     // Full size at max zoom
       ],
-      'circle-stroke-width': 2,
-      'circle-stroke-color': '#ffffff'
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true
     }
+  };
+
+  console.log('Adding unclustered point layer:', {
+    id: unclusteredLayer.id,
+    filter: unclusteredLayer.filter,
+    iconImage: unclusteredLayer.layout?.['icon-image'],
+    iconSize: unclusteredLayer.layout?.['icon-size']
   });
 
-  // Verify layer visibility
-  const style = map.getStyle();
-  const mapLayers = style.layers || [];
-  const ourLayers = mapLayers.filter(l => 
-    [LAYER_CONFIG.CLUSTERS, LAYER_CONFIG.CLUSTER_COUNT, LAYER_CONFIG.UNCLUSTERED_POINT].includes(l.id)
-  );
-
-  console.log('Layer configuration:', {
-    totalLayers: mapLayers.length,
-    ourLayers: ourLayers.map(l => ({
-      id: l.id,
-      type: l.type,
-      source: l.source,
-      filter: l.filter,
-      visible: map.getLayoutProperty(l.id, 'visibility') !== 'none'
-    }))
-  });
+  map.addLayer(unclusteredLayer);
 }
 
 /**
@@ -158,32 +187,66 @@ export function updateMapData(
     return;
   }
 
-  // Debug log features
-  console.log('Updating map with features:', {
+  console.log('Updating map data with raw features:', {
     total: features.length,
-    categories: [...new Set(features.map(f => f.properties?.category))],
-    coordinates: features.slice(0, 3).map(f => (f.geometry as GeoJSON.Point).coordinates),
-    properties: features.slice(0, 3).map(f => ({
-      category: f.properties?.category,
-      marker: f.properties?.marker,
-      id: f.properties?.id
+    sample: features.slice(0, 2).map(f => ({
+      geometry: f.geometry,
+      properties: f.properties,
+      category: f.properties?.category
     }))
   });
 
-  // Log the complete GeoJSON being set
-  const data = {
+  const data: GeoJSON.FeatureCollection = {
     type: 'FeatureCollection',
-    features
+    features: features.map(feature => {
+      // Ensure category is properly set
+      const category = (feature.properties?.category || CategoryName.UNKNOWN) as CategoryName;
+      const markerKey = getMarkerKey(category);
+      
+      // Log the feature transformation
+      console.log('Transforming feature:', {
+        originalCategory: category,
+        markerKey,
+        properties: feature.properties
+      });
+
+      return {
+        type: 'Feature',
+        geometry: feature.geometry,
+        properties: {
+          ...feature.properties,
+          category, // Ensure category is set
+          icon: markerKey,
+          shape: categoryShapeMap[category],
+          color: categoryColors[category]
+        }
+      };
+    })
   };
-  
-  console.log('Setting source data:', {
-    featureCount: data.features.length,
-    firstFeature: data.features[0],
-    hasCluster: data.features.some(f => f.properties?.cluster),
-    uniqueCategories: [...new Set(data.features.map(f => f.properties?.category))]
+
+  console.log('Setting map data with transformed features:', {
+    total: data.features.length,
+    sampleFeatures: data.features.slice(0, 2).map(f => ({
+      category: f.properties?.category,
+      icon: f.properties?.icon,
+      shape: f.properties?.shape,
+      color: f.properties?.color
+    }))
   });
 
   source.setData(data);
+}
+
+// Helper function to get marker key
+function getMarkerKey(category: CategoryName): string {
+  const iconMap: Record<CategoryName, string> = {
+    [CategoryName.REPORT_INCIDENT]: 'marker-diamond',
+    [CategoryName.REQUEST_SUPPORT]: 'marker-square',
+    [CategoryName.REQUEST_INFO]: 'marker-circle',
+    [CategoryName.SUGGESTION]: 'marker-hexa',
+    [CategoryName.UNKNOWN]: 'marker-circle'
+  };
+  return iconMap[category] || 'marker-circle';
 }
 
 /**

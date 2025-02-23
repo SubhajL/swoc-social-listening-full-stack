@@ -3,10 +3,10 @@ import type { CirclePaint } from 'mapbox-gl';
 
 // Category colors
 export const categoryColors: Record<CategoryName, string> = {
-  [CategoryName.REPORT_INCIDENT]: '#B91C1C', // Red from diamond.svg
-  [CategoryName.REQUEST_SUPPORT]: '#22C55E', // Green from square.svg
-  [CategoryName.REQUEST_INFO]: '#FFD25F',    // Yellow from circle.svg
-  [CategoryName.SUGGESTION]: '#FF8431',      // Orange from hexagon.svg
+  [CategoryName.REPORT_INCIDENT]: '#B91C1C', // Red for diamond
+  [CategoryName.REQUEST_SUPPORT]: '#22C55E', // Green for square
+  [CategoryName.REQUEST_INFO]: '#FFD25F',    // Yellow for circle
+  [CategoryName.SUGGESTION]: '#FF8431',      // Orange for hexagon
   [CategoryName.UNKNOWN]: '#94A3B8'          // Gray for unknown
 };
 
@@ -46,10 +46,25 @@ export const categoryShapeMap: Record<CategoryName, keyof typeof shapeStyles> = 
 
 // Cluster configuration
 export const clusterConfig = {
-  maxZoom: 5, // Separate into individual points at zoom level 5
+  maxZoom: 5, // Maximum zoom level for clustering
+  zoomSteps: [4, 5], // Two-step zoom for clustering
   radius: 40,
   paint: {
-    'circle-color': '#ef4444',
+    'circle-color': [
+      'case',
+      // Check if cluster has predominant category
+      ['has', 'dominant_category'],
+      [
+        'match',
+        ['get', 'dominant_category'],
+        CategoryName.REPORT_INCIDENT, categoryColors[CategoryName.REPORT_INCIDENT],
+        CategoryName.REQUEST_SUPPORT, categoryColors[CategoryName.REQUEST_SUPPORT],
+        CategoryName.REQUEST_INFO, categoryColors[CategoryName.REQUEST_INFO],
+        CategoryName.SUGGESTION, categoryColors[CategoryName.SUGGESTION],
+        categoryColors[CategoryName.UNKNOWN] // default
+      ],
+      categoryColors[CategoryName.UNKNOWN] // If no dominant category
+    ],
     'circle-radius': [
       'step',
       ['get', 'point_count'],
@@ -61,6 +76,30 @@ export const clusterConfig = {
     'circle-stroke-width': 2,
     'circle-stroke-color': '#ffffff'
   } satisfies CirclePaint
+} as const;
+
+// Icon configuration
+export const iconConfig = {
+  layout: {
+    'icon-image': [
+      'match',
+      ['get', 'category'],
+      CategoryName.REPORT_INCIDENT, 'marker-diamond',
+      CategoryName.REQUEST_SUPPORT, 'marker-square',
+      CategoryName.REQUEST_INFO, 'marker-circle',
+      CategoryName.SUGGESTION, 'marker-hexa',
+      'marker-circle' // Default fallback
+    ],
+    'icon-size': [
+      'interpolate',
+      ['linear'],
+      ['zoom'],
+      4, 0.5,    // Small at initial zoom
+      5, 1.0     // Full size at max zoom
+    ],
+    'icon-allow-overlap': true,
+    'icon-ignore-placement': true
+  }
 } as const;
 
 // Map style configuration
