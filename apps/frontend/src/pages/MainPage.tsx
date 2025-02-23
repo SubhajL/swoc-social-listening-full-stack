@@ -89,74 +89,82 @@ export function MainPage() {
       <DashboardHeader />
       
       {/* Page Title */}
-      <div className="w-full bg-[#EBF5FF] py-4 px-6">
-        <h1 className="text-xl font-medium text-[#17254D]">ระบบจัดการข้อมูลสื่อสังคมออนไลน์</h1>
+      <div className="w-full bg-[#EBF5FF] py-4">
+        <div className="container mx-auto px-6">
+          <h1 className="text-xl font-medium text-[#17254D]">ระบบจัดการข้อมูลสื่อสังคมออนไลน์</h1>
+        </div>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-6">
-        <div className="bg-white rounded-lg shadow-sm">
-          {/* Frame Title */}
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-[#17254D]">ระบบจัดการข้อมูลสื่อสังคมออนไลน์</h2>
+      <div className="container mx-auto px-6 py-6">
+        {/* Frame with Label */}
+        <div className="relative mt-6 pt-4">
+          {/* Frame Label */}
+          <div className="absolute -top-3 left-6 px-4 bg-[#EBF5FF] rounded-full">
+            <span className="text-lg font-medium text-[#17254D]">ระบบจัดการข้อมูลสื่อสังคมออนไลน์</span>
           </div>
-          
-          <div className="flex gap-6 p-6">
-            {/* Filter Panel - Increased width */}
-            <aside className="w-[520px] bg-white">
-              <FilterPanel
-                selectedCategories={selectedCategories}
-                setSelectedCategories={setSelectedCategories}
-                selectedProvince={selectedProvince}
-                setSelectedProvince={setSelectedProvince}
-                selectedOffice={selectedOffice}
-                setSelectedOffice={setSelectedOffice}
-                onDateRangeChange={setDateRange}
-                isLoading={isLoading}
-              />
-            </aside>
 
-            {/* Map Panel */}
-            <main className="flex-1 bg-white">
-              <div className="h-full flex flex-col">
-                <div className="flex-1 relative">
-                  <Map
-                    token={MAPBOX_TOKEN}
+          {/* Frame Content */}
+          <div className="bg-[#EBF5FF] rounded-lg p-6">
+            <div className="flex gap-6">
+              {/* Filter Panel */}
+              <aside className="w-[520px]">
+                <div className="bg-white rounded-lg border border-[#E2E8F0]">
+                  <FilterPanel
                     selectedCategories={selectedCategories}
+                    setSelectedCategories={setSelectedCategories}
                     selectedProvince={selectedProvince}
-                    selectedAmphure={selectedAmphure}
-                    selectedTumbon={selectedTumbon}
+                    setSelectedProvince={setSelectedProvince}
                     selectedOffice={selectedOffice}
+                    setSelectedOffice={setSelectedOffice}
+                    onDateRangeChange={setDateRange}
+                    isLoading={isLoading}
                   />
                 </div>
-                
-                {/* Category summary */}
-                <div className="p-4 border-t border-gray-200">
-                  <div className="flex items-center justify-around">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-red-500" />
-                      <span className="text-sm text-gray-600">การรายงานและแจ้งเหตุ</span>
-                      <span className="text-sm font-medium ml-1">100</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-green-500" />
-                      <span className="text-sm text-gray-600">การขอการสนับสนุน</span>
-                      <span className="text-sm font-medium ml-1">100</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                      <span className="text-sm text-gray-600">การขอข้อมูล</span>
-                      <span className="text-sm font-medium ml-1">100</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-orange-500" />
-                      <span className="text-sm text-gray-600">ข้อเสนอแนะ</span>
-                      <span className="text-sm font-medium ml-1">100</span>
+              </aside>
+
+              {/* Map Panel */}
+              <main className="flex-1">
+                <div className="bg-white rounded-lg border border-[#E2E8F0] h-full flex flex-col">
+                  <div className="flex-1 relative">
+                    <Map
+                      token={MAPBOX_TOKEN}
+                      selectedCategories={selectedCategories}
+                      selectedProvince={selectedProvince}
+                      selectedAmphure={selectedAmphure}
+                      selectedTumbon={selectedTumbon}
+                      selectedOffice={selectedOffice}
+                    />
+                  </div>
+                  
+                  {/* Category summary */}
+                  <div className="p-4 border-t border-[#E2E8F0]">
+                    <div className="flex items-center justify-around">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-red-500" />
+                        <span className="text-sm text-gray-600">การรายงานและแจ้งเหตุ</span>
+                        <span className="text-sm font-medium ml-1">100</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-green-500" />
+                        <span className="text-sm text-gray-600">การขอการสนับสนุน</span>
+                        <span className="text-sm font-medium ml-1">100</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                        <span className="text-sm text-gray-600">การขอข้อมูล</span>
+                        <span className="text-sm font-medium ml-1">100</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-orange-500" />
+                        <span className="text-sm text-gray-600">ข้อเสนอแนะ</span>
+                        <span className="text-sm font-medium ml-1">100</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </main>
+              </main>
+            </div>
           </div>
         </div>
       </div>
