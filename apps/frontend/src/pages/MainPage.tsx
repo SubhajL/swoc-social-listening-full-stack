@@ -4,6 +4,10 @@ import { FilterPanel } from "../components/filters/FilterPanel";
 import { CategoryName, SubCategories } from "@/types/processed-post";
 import { getMapboxToken } from "@/utils/mapbox";
 import { DashboardHeader } from "@/components/complaint/DashboardHeader";
+import DiamondIcon from "@/assets/icon/diamond.svg";
+import SquareIcon from "@/assets/icon/square.svg";
+import CircleIcon from "@/assets/icon/circle.svg";
+import HexagonIcon from "@/assets/icon/hexagon.svg";
 
 // Get Mapbox token from utility
 const MAPBOX_TOKEN = getMapboxToken();
@@ -88,82 +92,77 @@ export function MainPage() {
     <div className="min-h-screen bg-gray-50">
       <DashboardHeader />
       
-      {/* Page Title */}
-      <div className="w-full bg-[#EBF5FF] py-4">
-        <div className="container mx-auto px-6">
-          <h1 className="text-xl font-medium text-[#17254D]">ระบบจัดการข้อมูลสื่อสังคมออนไลน์</h1>
-        </div>
-      </div>
-
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-6">
+      <div className="container-fluid mt-6">
         {/* Frame with Label */}
-        <div className="relative mt-6 pt-4">
+        <div className="relative">
           {/* Frame Label */}
-          <div className="absolute -top-3 left-6 px-4 bg-[#EBF5FF] rounded-full">
-            <span className="text-lg font-medium text-[#17254D]">ระบบจัดการข้อมูลสื่อสังคมออนไลน์</span>
+          <div className="absolute -top-4 left-12 px-6 bg-[#EBF5FF] rounded-full z-10">
+            <span className="text-2xl font-medium text-[#17254D]">ระบบจัดการข้อมูลสื่อสังคมออนไลน์</span>
           </div>
 
           {/* Frame Content */}
-          <div className="bg-[#EBF5FF] rounded-lg p-6">
-            <div className="flex gap-6">
-              {/* Filter Panel */}
-              <aside className="w-[520px]">
-                <div className="bg-white rounded-lg border border-[#E2E8F0]">
-                  <FilterPanel
-                    selectedCategories={selectedCategories}
-                    setSelectedCategories={setSelectedCategories}
-                    selectedProvince={selectedProvince}
-                    setSelectedProvince={setSelectedProvince}
-                    selectedOffice={selectedOffice}
-                    setSelectedOffice={setSelectedOffice}
-                    onDateRangeChange={setDateRange}
-                    isLoading={isLoading}
-                  />
-                </div>
-              </aside>
-
-              {/* Map Panel */}
-              <main className="flex-1">
-                <div className="bg-white rounded-lg border border-[#E2E8F0] h-full flex flex-col">
-                  <div className="flex-1 relative">
-                    <Map
-                      token={MAPBOX_TOKEN}
+          <div className="bg-[#EBF5FF] min-h-[calc(100vh-80px)]">
+            <div className="px-12 py-6 pt-12">
+              <div className="flex gap-8">
+                {/* Filter Panel */}
+                <aside className="w-[520px]">
+                  <div className="bg-white rounded-lg border border-[#E2E8F0]">
+                    <FilterPanel
                       selectedCategories={selectedCategories}
+                      setSelectedCategories={setSelectedCategories}
                       selectedProvince={selectedProvince}
-                      selectedAmphure={selectedAmphure}
-                      selectedTumbon={selectedTumbon}
+                      setSelectedProvince={setSelectedProvince}
                       selectedOffice={selectedOffice}
+                      setSelectedOffice={setSelectedOffice}
+                      onDateRangeChange={setDateRange}
+                      isLoading={isLoading}
                     />
                   </div>
-                  
-                  {/* Category summary */}
-                  <div className="p-4 border-t border-[#E2E8F0]">
-                    <div className="flex items-center justify-around">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-red-500" />
-                        <span className="text-sm text-gray-600">การรายงานและแจ้งเหตุ</span>
-                        <span className="text-sm font-medium ml-1">100</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500" />
-                        <span className="text-sm text-gray-600">การขอการสนับสนุน</span>
-                        <span className="text-sm font-medium ml-1">100</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                        <span className="text-sm text-gray-600">การขอข้อมูล</span>
-                        <span className="text-sm font-medium ml-1">100</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-orange-500" />
-                        <span className="text-sm text-gray-600">ข้อเสนอแนะ</span>
-                        <span className="text-sm font-medium ml-1">100</span>
+                </aside>
+
+                {/* Map Panel */}
+                <main className="flex-1">
+                  <div className="bg-white rounded-lg border border-[#E2E8F0] h-full flex flex-col">
+                    <div className="flex-1 relative">
+                      <Map
+                        token={MAPBOX_TOKEN}
+                        selectedCategories={selectedCategories}
+                        selectedProvince={selectedProvince}
+                        selectedAmphure={selectedAmphure}
+                        selectedTumbon={selectedTumbon}
+                        selectedOffice={selectedOffice}
+                      />
+                    </div>
+                    
+                    {/* Category summary */}
+                    <div className="p-4 border-t border-[#E2E8F0]">
+                      <div className="flex items-center justify-around">
+                        <div className="flex items-center gap-2">
+                          <img src={DiamondIcon} alt="Report" className="w-4 h-4" />
+                          <span className="text-sm text-gray-600">การรายงานและแจ้งเหตุ</span>
+                          <span className="text-sm font-medium ml-1">100</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <img src={SquareIcon} alt="Support" className="w-4 h-4" />
+                          <span className="text-sm text-gray-600">การขอการสนับสนุน</span>
+                          <span className="text-sm font-medium ml-1">100</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <img src={CircleIcon} alt="Info" className="w-4 h-4" />
+                          <span className="text-sm text-gray-600">การขอข้อมูล</span>
+                          <span className="text-sm font-medium ml-1">100</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <img src={HexagonIcon} alt="Suggestion" className="w-4 h-4" />
+                          <span className="text-sm text-gray-600">ข้อเสนอแนะ</span>
+                          <span className="text-sm font-medium ml-1">100</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </main>
+                </main>
+              </div>
             </div>
           </div>
         </div>

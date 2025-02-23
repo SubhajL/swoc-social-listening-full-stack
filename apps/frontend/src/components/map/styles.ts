@@ -1,14 +1,14 @@
 import { CategoryName } from "@/types/processed-post";
 import type { CirclePaint } from 'mapbox-gl';
 
-// Category-specific colors that match the ontology semantics
-export const categoryColors = {
-  [CategoryName.REPORT_INCIDENT]: '#dc2626', // Strong red for incidents
-  [CategoryName.REQUEST_SUPPORT]: '#059669', // Emerald for support
-  [CategoryName.REQUEST_INFO]: '#2563eb', // Royal blue for info
-  [CategoryName.SUGGESTION]: '#d97706', // Amber for suggestions
-  [CategoryName.UNKNOWN]: '#6b7280' // Gray for unknown
-} as const;
+// Category colors
+export const categoryColors: Record<CategoryName, string> = {
+  [CategoryName.REPORT_INCIDENT]: '#B91C1C', // Red from diamond.svg
+  [CategoryName.REQUEST_SUPPORT]: '#22C55E', // Green from square.svg
+  [CategoryName.REQUEST_INFO]: '#FFD25F',    // Yellow from circle.svg
+  [CategoryName.SUGGESTION]: '#FF8431',      // Orange from hexagon.svg
+  [CategoryName.UNKNOWN]: '#94A3B8'          // Gray for unknown
+};
 
 // Status-based colors
 export const statusColors = {
@@ -19,29 +19,29 @@ export const statusColors = {
 
 // Shape styles for different marker types
 export const shapeStyles = {
-  circle: { borderRadius: '50%' },
-  triangle: { 
-    clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
-    borderRadius: '0'
-  },
-  square: { borderRadius: '0' },
-  hexa: {
-    clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
-    borderRadius: '0'
-  },
   diamond: {
     clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)',
+    borderRadius: '0'
+  },
+  square: { 
+    borderRadius: '0' 
+  },
+  circle: { 
+    borderRadius: '50%' 
+  },
+  hexa: {
+    clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
     borderRadius: '0'
   }
 } as const;
 
-// Category to shape mapping based on ontology semantics
+// Category shape mapping
 export const categoryShapeMap: Record<CategoryName, keyof typeof shapeStyles> = {
-  [CategoryName.REPORT_INCIDENT]: 'triangle', // Triangle for incidents (urgent)
-  [CategoryName.REQUEST_SUPPORT]: 'square',   // Square for support (structured)
-  [CategoryName.REQUEST_INFO]: 'circle',      // Circle for info (simple)
-  [CategoryName.SUGGESTION]: 'hexa',          // Hexagon for suggestions (unique)
-  [CategoryName.UNKNOWN]: 'diamond'           // Diamond for unknown (distinct)
+  [CategoryName.REPORT_INCIDENT]: 'diamond',
+  [CategoryName.REQUEST_SUPPORT]: 'square',
+  [CategoryName.REQUEST_INFO]: 'circle',
+  [CategoryName.SUGGESTION]: 'hexa',
+  [CategoryName.UNKNOWN]: 'circle'
 };
 
 // Cluster configuration

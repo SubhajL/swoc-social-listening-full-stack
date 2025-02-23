@@ -6,10 +6,9 @@ import logo2 from "@/assets/logo2.png";
 export const DashboardHeader = () => {
   return (
     <header className="bg-white shadow-sm">
-      {/* Top Navigation */}
       <div className="container mx-auto px-6">
-        {/* Logos and Icons */}
-        <div className="flex items-center justify-between py-3">
+        {/* Top row - Logos and Icons */}
+        <div className="flex items-center justify-between pt-3">
           {/* Left section - Logos */}
           <div className="flex items-center gap-4">
             <img 
@@ -44,27 +43,29 @@ export const DashboardHeader = () => {
           </div>
         </div>
 
-        {/* Navigation Menu */}
-        <nav className="flex items-center border-b border-[#E2E8F0]">
-          <Link 
-            to="/" 
-            className="px-6 py-3 text-[#17254D] border-b-2 border-[#42A5F5] font-medium text-sm -mb-[1px]"
-          >
-            ระบบจัดการข้อมูลสื่อสังคมออนไลน์
-          </Link>
-          <Link 
-            to="/response" 
-            className="px-6 py-3 text-[#6B7280] hover:text-[#17254D] text-sm"
-          >
-            ระบบตอบประเด็นข้อร้องเรียน
-          </Link>
-          <Link 
-            to="/dashboard" 
-            className="px-6 py-3 text-[#6B7280] hover:text-[#17254D] text-sm"
-          >
-            ระบบแสดงผลข้อมูลและสรุปผลผู้บริหาร
-          </Link>
-        </nav>
+        {/* Bottom row - Navigation, shifted right */}
+        <div className="flex justify-end mt-4">
+          <nav className="flex items-center border-b border-[#E2E8F0] w-[800px]">
+            <Link 
+              to="/" 
+              className="px-6 py-3 text-[#17254D] border-b-2 border-[#42A5F5] font-medium text-sm -mb-[1px]"
+            >
+              ระบบจัดการข้อมูลสื่อสังคมออนไลน์
+            </Link>
+            <Link 
+              to="/response" 
+              className="px-6 py-3 text-[#6B7280] hover:text-[#17254D] text-sm"
+            >
+              ระบบตอบประเด็นข้อร้องเรียน
+            </Link>
+            <Link 
+              to="/dashboard" 
+              className="px-6 py-3 text-[#6B7280] hover:text-[#17254D] text-sm"
+            >
+              ระบบแสดงผลข้อมูลและสรุปผลผู้บริหาร
+            </Link>
+          </nav>
+        </div>
       </div>
     </header>
   );

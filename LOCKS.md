@@ -293,6 +293,47 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
   - Consider implementing caching
   - Document API response patterns
 
+### 10. Social Media Monitoring System
+- Status: 🔒 PARTIALLY LOCKED
+- Last Lock Date: 2024-02-14
+- Components:
+  - MainPage.tsx (layout and structure)
+  - DashboardHeader.tsx (navigation and user interface)
+  - FilterPanel.tsx (filtering interface)
+  - Map.tsx (visualization component)
+- Working Features: ✅
+  - Main Page Layout
+  - Header with Navigation
+  - Filter Panel with:
+    - Message Type Selection
+    - Message Subtype Selection
+    - Communication Channel Selection
+    - Province Selection
+    - Irrigation Office Selection
+    - Date Range Selection
+  - Map Integration:
+    - Clustering
+    - Click Handlers
+    - Real-time Updates
+    - Filter Integration
+- Known Issues: ⚠️
+  - Map Icons:
+    - Category-specific markers need fixing:
+      - Diamond (red) for "การรายงานและแจ้งเหตุ"
+      - Square (green) for "การขอการสนับสนุน"
+      - Circle (yellow) for "การขอข้อมูล"
+      - Hexagon (orange) for "ข้อเสนอแนะ"
+- Critical Paths:
+  - Layout Management
+  - Filter System
+  - Map Visualization
+  - Real-time Updates
+- Safety Measures: ✅ Complete
+  - Feature Management: Implemented
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
+
 ## 🚧 In Development Features
 
 ### 1. Complaint System

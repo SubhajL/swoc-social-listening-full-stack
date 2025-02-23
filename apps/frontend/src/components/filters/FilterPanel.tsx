@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { CategoryName } from "@/types/processed-post";
 import { IrrigationOfficeFilter } from "./IrrigationOfficeFilter";
 import { Button } from "@/components/ui/button";
-import { Search, ChevronDown, CalendarCheck } from "lucide-react";
+import { Search, ChevronDown, Calendar } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
@@ -145,32 +145,40 @@ export function FilterPanel({
 
       <div className="space-y-6">
         {/* Message Type */}
-        <div className="space-y-2">
-          <label className="text-sm text-[#64748B]">ประเภทข้อความ</label>
-          <select className="w-full h-[37px] px-3 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]">
+        <div className="relative">
+          <div className="absolute -top-3.5 left-2 px-2 bg-white">
+            <label className="text-sm text-[#64748B]">ประเภทข้อความ</label>
+          </div>
+          <select className="w-full h-[48px] px-3 bg-white border border-[#CBD5E1] rounded-md text-[#4B5563]">
             <option>เลือกทั้งหมด</option>
           </select>
         </div>
 
         {/* Message Subtype */}
-        <div className="space-y-2">
-          <label className="text-sm text-[#64748B]">ประเภทข้อความย่อย</label>
-          <select className="w-full h-[37px] px-3 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]">
+        <div className="relative">
+          <div className="absolute -top-3.5 left-2 px-2 bg-white">
+            <label className="text-sm text-[#64748B]">ประเภทข้อความย่อย</label>
+          </div>
+          <select className="w-full h-[48px] px-3 bg-white border border-[#CBD5E1] rounded-md text-[#4B5563]">
             <option>เลือกทั้งหมด</option>
           </select>
         </div>
 
         {/* Communication Channel & Province */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm text-[#64748B]">ช่องทางการสื่อสาร</label>
-            <select className="w-full h-[37px] px-3 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]">
+          <div className="relative">
+            <div className="absolute -top-3.5 left-2 px-2 bg-white">
+              <label className="text-sm text-[#64748B]">ช่องทางการสื่อสาร</label>
+            </div>
+            <select className="w-full h-[48px] px-3 bg-white border border-[#CBD5E1] rounded-md text-[#4B5563]">
               <option>เลือกทั้งหมด</option>
             </select>
           </div>
-          <div className="space-y-2">
-            <label className="text-sm text-[#64748B]">จังหวัด</label>
-            <select className="w-full h-[37px] px-3 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]">
+          <div className="relative">
+            <div className="absolute -top-3.5 left-2 px-2 bg-white">
+              <label className="text-sm text-[#64748B]">จังหวัด</label>
+            </div>
+            <select className="w-full h-[48px] px-3 bg-white border border-[#CBD5E1] rounded-md text-[#4B5563]">
               <option>เลือกทั้งหมด</option>
             </select>
           </div>
@@ -178,15 +186,19 @@ export function FilterPanel({
 
         {/* Irrigation Office & Provincial Office */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm text-[#64748B]">สำนักงานชลประทาน</label>
-            <select className="w-full h-[37px] px-3 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]">
+          <div className="relative">
+            <div className="absolute -top-3.5 left-2 px-2 bg-white">
+              <label className="text-sm text-[#64748B]">สำนักงานชลประทาน</label>
+            </div>
+            <select className="w-full h-[48px] px-3 bg-white border border-[#CBD5E1] rounded-md text-[#4B5563]">
               <option>เลือกทั้งหมด</option>
             </select>
           </div>
-          <div className="space-y-2">
-            <label className="text-sm text-[#64748B]">สำนักงานชลประทานจังหวัด</label>
-            <select className="w-full h-[37px] px-3 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]">
+          <div className="relative">
+            <div className="absolute -top-3.5 left-2 px-2 bg-white">
+              <label className="text-sm text-[#64748B]">สำนักงานชลประทานจังหวัด</label>
+            </div>
+            <select className="w-full h-[48px] px-3 bg-white border border-[#CBD5E1] rounded-md text-[#4B5563]">
               <option>เลือกทั้งหมด</option>
             </select>
           </div>
@@ -209,12 +221,12 @@ export function FilterPanel({
                   onChange={() => setSelectedTimeRange('today')}
                   className="w-4 h-4 text-blue-500"
                 />
-                <label htmlFor="today" className="ml-2 text-sm text-gray-600">วันนี้</label>
+                <label htmlFor="today" className="ml-2 text-[#4B5563]">วันนี้</label>
               </div>
             </div>
 
             {/* Second line */}
-            <div className="flex items-center space-x-6">
+            <div className="flex items-start space-x-6">
               <div className="flex items-center">
                 <input
                   type="radio"
@@ -224,7 +236,7 @@ export function FilterPanel({
                   onChange={() => setSelectedTimeRange('lastWeek')}
                   className="w-4 h-4 text-blue-500"
                 />
-                <label htmlFor="lastWeek" className="ml-2 text-sm text-gray-600">สัปดาห์ที่แล้ว</label>
+                <label htmlFor="lastWeek" className="ml-2 text-[#4B5563]">สัปดาห์ที่แล้ว</label>
               </div>
               <div className="flex items-center">
                 <input
@@ -235,12 +247,12 @@ export function FilterPanel({
                   onChange={() => setSelectedTimeRange('thisWeek')}
                   className="w-4 h-4 text-blue-500"
                 />
-                <label htmlFor="thisWeek" className="ml-2 text-sm text-gray-600">สัปดาห์นี้</label>
+                <label htmlFor="thisWeek" className="ml-2 text-[#4B5563]">สัปดาห์นี้</label>
               </div>
             </div>
 
             {/* Third line */}
-            <div className="flex items-center space-x-6">
+            <div className="flex items-start space-x-6">
               <div className="flex items-center">
                 <input
                   type="radio"
@@ -250,7 +262,7 @@ export function FilterPanel({
                   onChange={() => setSelectedTimeRange('lastMonth')}
                   className="w-4 h-4 text-blue-500"
                 />
-                <label htmlFor="lastMonth" className="ml-2 text-sm text-gray-600">เดือนที่แล้ว</label>
+                <label htmlFor="lastMonth" className="ml-2 text-[#4B5563]">เดือนที่แล้ว</label>
               </div>
               <div className="flex items-center">
                 <input
@@ -261,7 +273,7 @@ export function FilterPanel({
                   onChange={() => setSelectedTimeRange('thisMonth')}
                   className="w-4 h-4 text-blue-500"
                 />
-                <label htmlFor="thisMonth" className="ml-2 text-sm text-gray-600">เดือนนี้</label>
+                <label htmlFor="thisMonth" className="ml-2 text-[#4B5563]">เดือนนี้</label>
               </div>
             </div>
           </div>
@@ -273,9 +285,8 @@ export function FilterPanel({
                 type="date"
                 value={dateRange.start}
                 onChange={(e) => handleCustomDateChange('start', e.target.value)}
-                className="w-full h-10 pl-3 pr-10 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]"
+                className="w-full h-10 pl-3 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]"
               />
-              <CalendarCheck className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
             </div>
             <span className="text-[#64748B]">ถึง</span>
             <div className="relative flex-1">
@@ -283,9 +294,8 @@ export function FilterPanel({
                 type="date"
                 value={dateRange.end}
                 onChange={(e) => handleCustomDateChange('end', e.target.value)}
-                className="w-full h-10 pl-3 pr-10 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]"
+                className="w-full h-10 pl-3 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]"
               />
-              <CalendarCheck className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
             </div>
           </div>
         </div>
@@ -299,7 +309,7 @@ export function FilterPanel({
           disabled={isLoading}
         >
           <Search className="w-4 h-4" />
-          <span>ค้นหา</span>
+          <span className="text-[16px]">ค้นหา</span>
         </Button>
       </div>
     </div>

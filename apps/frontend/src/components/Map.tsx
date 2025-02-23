@@ -7,7 +7,7 @@ import mapboxgl from 'mapbox-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useNavigate } from "react-router-dom";
 import MapError from "./map/MapError";
-import { mapStyle, categoryColors, categoryShapeMap, clusterConfig } from './map/styles';
+import { mapStyle, categoryColors, categoryShapeMap, clusterConfig, shapeStyles } from './map/styles';
 import { toast } from '@/components/ui/use-toast';
 import { useMapContainer } from '@/hooks/useMapContainer';
 import { hasValidCoordinates, createPostFeature } from '@/utils/coordinates';
@@ -35,7 +35,7 @@ const MAX_RETRIES = 3;
 const RETRY_DELAY = 2000;
 
 // Update PostFeatureProperties interface
-interface PostFeatureProperties extends GeoJsonProperties {
+interface PostFeatureProperties {
   id: number;
   text?: string;
   category: CategoryName;
@@ -44,14 +44,22 @@ interface PostFeatureProperties extends GeoJsonProperties {
   point_count?: number;
 }
 
-// Type guard for GeoJSON source
-function isGeoJSONSource(source: AnySourceData): source is mapboxgl.GeoJSONSource {
-  return typeof source === 'object' && source.type === 'geojson';
+// Update type guard for GeoJSON source
+function isGeoJSONSource(source: mapboxgl.AnySourceImpl): source is mapboxgl.GeoJSONSource {
+  return source.type === 'geojson';
 }
 
 // Type guard for Point feature
 function isPointFeature(feature: Feature): feature is Feature<Point> {
   return feature.geometry.type === 'Point';
+}
+
+// Type guard for PostFeatureProperties
+function isPostFeatureProperties(props: any): props is PostFeatureProperties {
+  return props && 
+    typeof props.id === 'number' && 
+    (!props.text || typeof props.text === 'string') &&
+    typeof props.category === 'string';
 }
 
 function isValidCoordinates(post: ProcessedPost): boolean {
@@ -107,12 +115,12 @@ const matchesAdministrativeArea = (
   return false;
 };
 
-// Add helper function at the top level
+// Update category name check
 const getCategoryFromName = (categoryName: string): CategoryName | undefined => {
   console.log('Category mapping debug:', {
     input: categoryName,
     availableCategories: Object.values(CategoryName),
-    exactMatch: Object.values(CategoryName).includes(categoryName),
+    exactMatch: Object.values(CategoryName).some(cat => cat === categoryName),
     matchAttempts: Object.values(CategoryName).map(cat => ({
       category: cat,
       matches: cat === categoryName,
@@ -122,7 +130,7 @@ const getCategoryFromName = (categoryName: string): CategoryName | undefined => 
   });
 
   // Check if the category name exists in our enum
-  const matchedCategory = Object.values(CategoryName).find(cat => cat === categoryName);
+  const matchedCategory = Object.values(CategoryName).find(cat => cat === categoryName) as CategoryName | undefined;
   if (matchedCategory) {
     return matchedCategory;
   }
@@ -134,15 +142,15 @@ const getCategoryFromName = (categoryName: string): CategoryName | undefined => 
   return undefined;
 };
 
-// Add helper function at the top level
+// Get marker key helper
 const getMarkerKey = (category: CategoryName): string => {
-  const shape = categoryShapeMap[category];
-  const color = categoryColors[category];
+  const shape = categoryShapeMap[category] || 'circle';
+  const color = categoryColors[category] || '#94A3B8';
   return `${shape}-${color.replace('#', '')}`;
 };
 
-// Update createMarkerImage function
-const createMarkerImage = (shape: string, color: string, size: number = 32) => {
+// Update createMarkerImage function to use the new shapes
+const createMarkerImage = (shape: keyof typeof shapeStyles, color: string, size: number = 32) => {
   const canvas = document.createElement('canvas');
   canvas.width = size;
   canvas.height = size;
@@ -163,17 +171,17 @@ const createMarkerImage = (shape: string, color: string, size: number = 32) => {
   const drawSize = size - (padding * 2);
   
   switch (shape) {
-    case 'circle':
-      ctx.arc(size/2, size/2, drawSize/2, 0, Math.PI * 2);
-      break;
-    case 'triangle':
-      const h = drawSize * Math.sin(Math.PI * 2/3);
+    case 'diamond':
       ctx.moveTo(size/2, padding);
-      ctx.lineTo(size - padding, size - padding);
-      ctx.lineTo(padding, size - padding);
+      ctx.lineTo(size - padding, size/2);
+      ctx.lineTo(size/2, size - padding);
+      ctx.lineTo(padding, size/2);
       break;
     case 'square':
       ctx.rect(padding, padding, drawSize, drawSize);
+      break;
+    case 'circle':
+      ctx.arc(size/2, size/2, drawSize/2, 0, Math.PI * 2);
       break;
     case 'hexa':
       const a = (drawSize/2) * Math.cos(Math.PI/6);
@@ -390,16 +398,25 @@ export function Map({
       // Add zoom change handler to count individual posts
       map.on('zoomend', () => {
         const currentZoom = map.getZoom();
+        const style = map.getStyle();
+        if (!style || !style.layers) {
+          console.warn('Map style or layers not available');
+          return;
+        }
+
         console.log('Map zoom changed:', {
           zoom: currentZoom,
           isClusteringEnabled: currentZoom <= 5,
-          layerIds: map.getStyle().layers?.map(l => l.id) || []
+          layerIds: style.layers.map(l => l.id)
         });
-        
+
         // Get visible features in the viewport
         const bounds = map.getBounds();
-        if (!bounds) return;
-        
+        if (!bounds) {
+          console.warn('Map bounds not available');
+          return;
+        }
+
         const sw = bounds.getSouthWest();
         const ne = bounds.getNorthEast();
         
@@ -409,8 +426,8 @@ export function Map({
             sw: [sw.lng, sw.lat],
             ne: [ne.lng, ne.lat]
           },
-          visibleLayers: map.getStyle().layers
-            ?.filter(l => map.getLayoutProperty(l.id, 'visibility') !== 'none')
+          visibleLayers: style.layers
+            .filter(l => map.getLayoutProperty(l.id, 'visibility') !== 'none')
             .map(l => l.id)
         });
 
@@ -472,7 +489,9 @@ export function Map({
       map.on('click', LAYER_CONFIG.UNCLUSTERED_POINT, (e) => {
         if (!e.features?.length) return;
         
-        const feature = e.features[0] as Feature<Point, PostFeatureProperties>;
+        const feature = e.features[0] as unknown as Feature<Point, PostFeatureProperties>;
+        if (!isPointFeature(feature) || !isPostFeatureProperties(feature.properties)) return;
+
         const properties = feature.properties;
         
         if (properties?.id) {
@@ -497,8 +516,8 @@ export function Map({
         
         if (!features.length) return;
 
-        const feature = features[0] as Feature<Point, PostFeatureProperties>;
-        if (!isPointFeature(feature)) return;
+        const feature = features[0] as unknown as Feature<Point, PostFeatureProperties>;
+        if (!isPointFeature(feature) || !isPostFeatureProperties(feature.properties)) return;
 
         const clusterId = feature.properties?.cluster_id;
         const pointCount = feature.properties?.point_count;
@@ -666,14 +685,15 @@ export function Map({
       updateMapData(map, features);
 
       // Verify source data after update
-      const source = map.getSource(MAP_CORE_CONFIG.SOURCE_ID) as mapboxgl.GeoJSONSource;
-      if (source) {
+      const source = map.getSource(MAP_CORE_CONFIG.SOURCE_ID);
+      if (source && isGeoJSONSource(source)) {
         // @ts-ignore - Accessing internal _data for debugging
-        const currentData = source._data;
+        const currentData = source._data as GeoJSON.FeatureCollection;
+        const mapBounds = map.getBounds();
         console.log('Source data after update:', {
           hasData: !!currentData,
           featureCount: currentData?.features?.length || 0,
-          bounds: map.getBounds().toArray()
+          bounds: mapBounds?.toArray() || []
         });
       }
     } catch (error) {
