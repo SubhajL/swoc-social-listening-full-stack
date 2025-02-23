@@ -1,16 +1,16 @@
 // Mapbox token validation and management
 
-export const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+export const MAPBOX_TOKEN = import.meta.env.MAPBOX_TOKEN;
 
 console.log('Mapbox Token Debug:', {
-  envToken: import.meta.env.VITE_MAPBOX_TOKEN,
-  isDefined: !!import.meta.env.VITE_MAPBOX_TOKEN,
-  tokenLength: import.meta.env.VITE_MAPBOX_TOKEN?.length
+  envToken: import.meta.env.MAPBOX_TOKEN,
+  isDefined: !!import.meta.env.MAPBOX_TOKEN,
+  tokenLength: import.meta.env.MAPBOX_TOKEN?.length
 });
 
 if (!MAPBOX_TOKEN) {
   console.error('Mapbox Token Error: Token is missing from environment');
-  throw new Error('VITE_MAPBOX_TOKEN environment variable is required');
+  throw new Error('MAPBOX_TOKEN environment variable is required');
 }
 
 export const validateMapboxToken = (token: string): boolean => {
@@ -41,7 +41,7 @@ export const getMapboxToken = (): string => {
 
   if (!MAPBOX_TOKEN) {
     console.error('Mapbox Token Error: Token is undefined or empty');
-    throw new Error('VITE_MAPBOX_TOKEN environment variable is required');
+    throw new Error('MAPBOX_TOKEN environment variable is required');
   }
 
   if (!validateMapboxToken(MAPBOX_TOKEN)) {

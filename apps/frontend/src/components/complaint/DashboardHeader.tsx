@@ -1,15 +1,64 @@
+import { Link } from "react-router-dom";
+import { Bell, Settings } from "lucide-react";
+
 export const DashboardHeader = () => {
   return (
     <header className="bg-white p-4 shadow-sm">
-      <div className="flex items-center gap-4">
-        <img 
-          src="/lovable-uploads/be1cb1d2-3b02-498d-aba9-906606ce612f.png" 
-          alt="Logo" 
-          className="h-12"
-        />
-        <h1 className="text-2xl font-semibold">
-          ระบบจัดการข้อมูลสื่อสังคมออนไลน์ ( Main )
-        </h1>
+      <div className="container mx-auto flex items-center justify-between">
+        {/* Left section - Logos */}
+        <div className="flex items-center gap-4">
+          <img 
+            src="/placeholder.svg" 
+            alt="Royal Irrigation Department Logo" 
+            className="h-12 w-auto object-contain"
+          />
+          <img 
+            src="/placeholder.svg" 
+            alt="SWOC Logo" 
+            className="h-12 w-auto object-contain"
+          />
+        </div>
+
+        {/* Middle section - Navigation */}
+        <nav className="flex items-center gap-0">
+          <Link 
+            to="/" 
+            className="px-8 py-4 text-[#17254D] border-b-2 border-[#42A5F5] font-medium"
+          >
+            ระบบจัดการข้อมูลสื่อสังคมออนไลน์
+          </Link>
+          <Link 
+            to="/response" 
+            className="px-8 py-4 text-[#6B7280]"
+          >
+            ระบบตอบประเด็นข้อร้องเรียน
+          </Link>
+          <Link 
+            to="/dashboard" 
+            className="px-8 py-4 text-[#6B7280]"
+          >
+            ระบบแสดงผลข้อมูลและสรุปผลผู้บริหาร
+          </Link>
+        </nav>
+
+        {/* Right section - Icons */}
+        <div className="flex items-center gap-2">
+          {/* Notification bell with indicator */}
+          <div className="relative p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
+            <Bell className="w-5 h-5 text-[#334155]" />
+            <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></div>
+          </div>
+          
+          {/* Settings */}
+          <div className="p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
+            <Settings className="w-5 h-5 text-[#334155]" />
+          </div>
+          
+          {/* Avatar */}
+          <div className="w-10 h-10 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-sm font-medium text-[#0F172B]">
+            CN
+          </div>
+        </div>
       </div>
     </header>
   );

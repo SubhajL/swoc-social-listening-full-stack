@@ -27,6 +27,7 @@ export default defineConfig({
   define: {
     // Add any global constants here
   },
+  envPrefix: ['VITE_', 'MAPBOX_'], // Allow MAPBOX_ prefixed env variables
   test: {
     globals: true,
     environment: 'jsdom',

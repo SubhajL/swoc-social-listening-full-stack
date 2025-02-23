@@ -5,8 +5,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface FilterPanelProps {
-  selectedCategories: string[];
-  setSelectedCategories: (categories: string[]) => void;
+  selectedCategories: CategoryName[];
+  setSelectedCategories: (categories: CategoryName[]) => void;
   selectedProvince: string | null;
   setSelectedProvince: (province: string | null) => void;
   selectedOffice: string | null;
@@ -43,7 +43,7 @@ export function FilterPanel({
   };
 
   const handleAllChange = (category: CategoryName, checked: boolean) => {
-    const subcategories = SubCategories[category].filter(sub => sub !== 'All');
+    const subcategories = SubCategories[category].filter(sub => sub !== 'All') as CategoryName[];
     if (checked) {
       setSelectedCategories([...selectedCategories, ...subcategories]);
     } else {
@@ -51,7 +51,7 @@ export function FilterPanel({
     }
   };
 
-  const handleCategoryChange = (subCategory: string, checked: boolean) => {
+  const handleCategoryChange = (subCategory: CategoryName, checked: boolean) => {
     if (checked) {
       setSelectedCategories([...selectedCategories, subCategory]);
     } else {
@@ -79,8 +79,8 @@ export function FilterPanel({
               <div key={subCategory} className="flex items-center space-x-2">
                 <Checkbox
                   id={`${category}-${subCategory}`}
-                  checked={selectedCategories.includes(subCategory)}
-                  onCheckedChange={(checked) => handleCategoryChange(subCategory, checked === true)}
+                  checked={selectedCategories.includes(subCategory as CategoryName)}
+                  onCheckedChange={(checked) => handleCategoryChange(subCategory as CategoryName, checked === true)}
                   className="h-4 w-4 rounded-sm border-gray-300"
                 />
                 <label htmlFor={`${category}-${subCategory}`} className="text-sm text-gray-700">{subCategory}</label>
