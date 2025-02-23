@@ -5,62 +5,65 @@ import logo2 from "@/assets/logo2.png";
 
 export const DashboardHeader = () => {
   return (
-    <header className="bg-white p-4 shadow-sm">
-      <div className="container mx-auto flex items-center justify-between">
-        {/* Left section - Logos */}
-        <div className="flex items-center gap-4">
-          <img 
-            src={logo1} 
-            alt="Royal Irrigation Department Logo" 
-            className="h-12 w-auto object-contain"
-          />
-          <img 
-            src={logo2} 
-            alt="SWOC Logo" 
-            className="h-12 w-auto object-contain"
-          />
+    <header className="bg-white shadow-sm">
+      {/* Top Navigation */}
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center justify-between mb-4">
+          {/* Left section - Logos */}
+          <div className="flex items-center gap-4">
+            <img 
+              src={logo1} 
+              alt="Royal Irrigation Department Logo" 
+              className="h-12 w-auto object-contain"
+            />
+            <img 
+              src={logo2} 
+              alt="SWOC Logo" 
+              className="h-12 w-auto object-contain"
+            />
+          </div>
+
+          {/* Right section - Icons */}
+          <div className="flex items-center gap-2">
+            {/* Notification bell with indicator */}
+            <div className="relative p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
+              <Bell className="w-5 h-5 text-[#334155]" />
+              <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></div>
+            </div>
+            
+            {/* Settings */}
+            <div className="p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
+              <Settings className="w-5 h-5 text-[#334155]" />
+            </div>
+            
+            {/* Avatar */}
+            <div className="w-10 h-10 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-sm font-medium text-[#0F172B]">
+              CN
+            </div>
+          </div>
         </div>
 
-        {/* Middle section - Navigation */}
-        <nav className="flex items-center gap-0">
+        {/* Navigation Menu */}
+        <nav className="flex items-center -mb-[1px]">
           <Link 
             to="/" 
-            className="px-8 py-4 text-[#17254D] border-b-2 border-[#42A5F5] font-medium"
+            className="px-6 py-3 text-[#17254D] border-b-2 border-[#42A5F5] font-medium text-sm"
           >
             ระบบจัดการข้อมูลสื่อสังคมออนไลน์
           </Link>
           <Link 
             to="/response" 
-            className="px-8 py-4 text-[#6B7280]"
+            className="px-6 py-3 text-[#6B7280] hover:text-[#17254D] text-sm"
           >
             ระบบตอบประเด็นข้อร้องเรียน
           </Link>
           <Link 
             to="/dashboard" 
-            className="px-8 py-4 text-[#6B7280]"
+            className="px-6 py-3 text-[#6B7280] hover:text-[#17254D] text-sm"
           >
             ระบบแสดงผลข้อมูลและสรุปผลผู้บริหาร
           </Link>
         </nav>
-
-        {/* Right section - Icons */}
-        <div className="flex items-center gap-2">
-          {/* Notification bell with indicator */}
-          <div className="relative p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
-            <Bell className="w-5 h-5 text-[#334155]" />
-            <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></div>
-          </div>
-          
-          {/* Settings */}
-          <div className="p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
-            <Settings className="w-5 h-5 text-[#334155]" />
-          </div>
-          
-          {/* Avatar */}
-          <div className="w-10 h-10 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-sm font-medium text-[#0F172B]">
-            CN
-          </div>
-        </div>
       </div>
     </header>
   );
