@@ -1,7 +1,7 @@
-import ComplaintDashboard from "@/components/complaint/ComplaintDashboard";
+import { MainPage } from "./MainPage";
 
 const Index = () => {
-  return <ComplaintDashboard />;
+  return <MainPage />;
 };
 
 export default Index;
