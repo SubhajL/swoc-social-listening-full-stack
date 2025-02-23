@@ -7,8 +7,9 @@ export const DashboardHeader = () => {
   return (
     <header className="bg-white shadow-sm">
       {/* Top Navigation */}
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between mb-4">
+      <div className="container mx-auto px-6">
+        {/* Logos and Icons */}
+        <div className="flex items-center justify-between py-3">
           {/* Left section - Logos */}
           <div className="flex items-center gap-4">
             <img 
@@ -44,10 +45,10 @@ export const DashboardHeader = () => {
         </div>
 
         {/* Navigation Menu */}
-        <nav className="flex items-center -mb-[1px]">
+        <nav className="flex items-center border-b border-[#E2E8F0]">
           <Link 
             to="/" 
-            className="px-6 py-3 text-[#17254D] border-b-2 border-[#42A5F5] font-medium text-sm"
+            className="px-6 py-3 text-[#17254D] border-b-2 border-[#42A5F5] font-medium text-sm -mb-[1px]"
           >
             ระบบจัดการข้อมูลสื่อสังคมออนไลน์
           </Link>
