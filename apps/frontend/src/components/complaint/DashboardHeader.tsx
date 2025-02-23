@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { Bell, Settings } from "lucide-react";
+import logo1 from "@/assets/logo1.png";
+import logo2 from "@/assets/logo2.png";
 
 export const DashboardHeader = () => {
   return (
@@ -8,12 +10,12 @@ export const DashboardHeader = () => {
         {/* Left section - Logos */}
         <div className="flex items-center gap-4">
           <img 
-            src="/placeholder.svg" 
+            src={logo1} 
             alt="Royal Irrigation Department Logo" 
             className="h-12 w-auto object-contain"
           />
           <img 
-            src="/placeholder.svg" 
+            src={logo2} 
             alt="SWOC Logo" 
             className="h-12 w-auto object-contain"
           />
