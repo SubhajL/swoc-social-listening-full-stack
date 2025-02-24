@@ -7,6 +7,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { provinceMapping } from "@/utils/provinces";
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+// Configure dayjs
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(customParseFormat);
 
 type TimeRangeType = 'today' | 'lastWeek' | 'thisWeek' | 'lastMonth' | 'thisMonth' | 'custom';
 
@@ -207,7 +216,7 @@ export function FilterPanel({
     { value: "17", label: "สำนักงานชลประทานที่ 17" }
   ];
 
-  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ start: '', end: '' });
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ start: '2025-02-01', end: '2025-02-24' });
   const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRangeType>('today');
 
   // Initialize states with all items selected by default (except 'all')
@@ -298,43 +307,105 @@ export function FilterPanel({
 
   // Handle time range selection
   useEffect(() => {
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];
+    // Create a reference date at the start of the day in Bangkok time
+    const bangkokDate = new Date('2025-02-24');
+    bangkokDate.setHours(7, 0, 0, 0); // UTC+7 offset
+    const now = new Date(bangkokDate);
+    
+    const getLastWeekDates = () => {
+      const monday = new Date(now);
+      monday.setDate(monday.getDate() - monday.getDay() - 6); // Go to last Monday
+      monday.setHours(7, 0, 0, 0);
+      
+      const sunday = new Date(monday);
+      sunday.setDate(sunday.getDate() + 6);
+      sunday.setHours(30, 59, 59, 999); // End of day in Bangkok time
+      
+      return {
+        start: monday.toISOString().split('T')[0],
+        end: sunday.toISOString().split('T')[0]
+      };
+    };
+
+    const getThisWeekDates = () => {
+      const monday = new Date(now);
+      monday.setDate(monday.getDate() - monday.getDay() + 1); // Go to this Monday
+      monday.setHours(7, 0, 0, 0);
+      
+      const endDate = new Date(now);
+      endDate.setHours(30, 59, 59, 999);
+      
+      return {
+        start: monday.toISOString().split('T')[0],
+        end: endDate.toISOString().split('T')[0]
+      };
+    };
+
+    const getLastMonthDates = () => {
+      // First get the first day of current month
+      const firstDayThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      firstDayThisMonth.setHours(7, 0, 0, 0);
+      
+      // Then get the first day of last month
+      const firstDayLastMonth = new Date(firstDayThisMonth);
+      firstDayLastMonth.setMonth(firstDayLastMonth.getMonth() - 1);
+      
+      // Get the last day of last month
+      const lastDayLastMonth = new Date(firstDayThisMonth);
+      lastDayLastMonth.setDate(0); // This sets it to the last day of previous month
+      lastDayLastMonth.setHours(30, 59, 59, 999);
+      
+      return {
+        start: firstDayLastMonth.toISOString().split('T')[0],
+        end: lastDayLastMonth.toISOString().split('T')[0]
+      };
+    };
+
+    const getThisMonthDates = () => {
+      // Get first day of current month
+      const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+      firstDay.setHours(7, 0, 0, 0);
+      
+      // Current date as end date
+      const lastDay = new Date(now);
+      lastDay.setHours(30, 59, 59, 999);
+      
+      return {
+        start: firstDay.toISOString().split('T')[0],
+        end: lastDay.toISOString().split('T')[0]
+      };
+    };
     
     switch (selectedTimeRange) {
-      case 'today':
-        setDateRange({ start: today, end: today });
-        break;
-      case 'lastWeek': {
-        const lastWeekStart = new Date(now.setDate(now.getDate() - 7));
+      case 'today': {
+        const todayStart = new Date(now);
+        todayStart.setHours(7, 0, 0, 0);
+        const todayEnd = new Date(now);
+        todayEnd.setHours(30, 59, 59, 999);
         setDateRange({ 
-          start: lastWeekStart.toISOString().split('T')[0], 
-          end: today 
+          start: todayStart.toISOString().split('T')[0],
+          end: todayEnd.toISOString().split('T')[0]
         });
+        break;
+      }
+      case 'lastWeek': {
+        const { start, end } = getLastWeekDates();
+        setDateRange({ start, end });
         break;
       }
       case 'thisWeek': {
-        const thisWeekStart = new Date(now.setDate(now.getDate() - now.getDay()));
-        setDateRange({ 
-          start: thisWeekStart.toISOString().split('T')[0], 
-          end: today 
-        });
+        const { start, end } = getThisWeekDates();
+        setDateRange({ start, end });
         break;
       }
       case 'lastMonth': {
-        const lastMonthStart = new Date(now.setMonth(now.getMonth() - 1));
-        setDateRange({ 
-          start: lastMonthStart.toISOString().split('T')[0], 
-          end: today 
-        });
+        const { start, end } = getLastMonthDates();
+        setDateRange({ start, end });
         break;
       }
       case 'thisMonth': {
-        const thisMonthStart = new Date(now.setDate(1));
-        setDateRange({ 
-          start: thisMonthStart.toISOString().split('T')[0], 
-          end: today 
-        });
+        const { start, end } = getThisMonthDates();
+        setDateRange({ start, end });
         break;
       }
     }
