@@ -173,8 +173,7 @@ export function FilterPanel({
 
   const communicationChannels = [
     { value: "facebook", label: "Facebook" },
-    { value: "line", label: "Line" },
-    { value: "twitter", label: "Twitter" }
+    { value: "x", label: "X" }
   ];
 
   const provinces = [
