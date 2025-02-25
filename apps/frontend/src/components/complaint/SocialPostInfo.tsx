@@ -139,7 +139,7 @@ export const SocialPostInfo = ({ complaint }: SocialPostInfoProps) => {
   return (
     <ErrorBoundary component="SocialPostInfo">
       {/* Reduce horizontal padding to create less spacing from borders */}
-      <div className="space-y-8 px-6">
+      <div className="space-y-8 px-4">
         {/* Main Heading - Selected message type */}
         <h2 className="text-2xl font-semibold text-[#17254D] mb-6">{mainCategory}</h2>
         

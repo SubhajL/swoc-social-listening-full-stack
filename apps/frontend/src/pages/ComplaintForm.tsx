@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { ComplaintHeader } from "@/components/complaint/ComplaintHeader";
 import { WaterLevelInfo } from "@/components/complaint/WaterLevelInfo";
 import { SocialPostInfo } from "@/components/complaint/SocialPostInfo";
-import { WaterFlowPanel } from "@/components/complaint/WaterFlowPanel";
+import { WaterManagementPlan } from "@/components/complaint/WaterManagementPlan";
 import { useComplaint } from "@/hooks/useComplaint";
 import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
 import { Complaint } from "@/types/complaint";
@@ -122,11 +122,18 @@ const ComplaintForm = () => {
         </Card>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-          <WaterLevelInfo 
-            amphure={firstAmphure}
-            province={firstProvince}
-          />
-          <WaterFlowPanel />
+          <Card className="p-6">
+            <WaterLevelInfo 
+              amphure={firstAmphure}
+              province={firstProvince}
+            />
+          </Card>
+          <Card className="p-6">
+            <WaterManagementPlan 
+              amphure={firstAmphure}
+              province={firstProvince}
+            />
+          </Card>
         </div>
       </main>
     </div>
