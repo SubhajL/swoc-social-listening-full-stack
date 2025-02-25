@@ -1,13 +1,10 @@
 import { Card } from "@/components/ui/card";
 import { ComplaintHeader } from "@/components/complaint/ComplaintHeader";
-import { ComplaintFooter } from "@/components/complaint/ComplaintFooter";
 import { WaterLevelInfo } from "@/components/complaint/WaterLevelInfo";
-import { ComplaintInfo } from "@/components/complaint/ComplaintInfo";
-import { LocationInfo } from "@/components/complaint/LocationInfo";
+import { SocialPostInfo } from "@/components/complaint/SocialPostInfo";
 import { WaterFlowPanel } from "@/components/complaint/WaterFlowPanel";
-import { ComplaintNavigation } from "@/components/complaint/ComplaintNavigation";
 import { useComplaint } from "@/hooks/useComplaint";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
 import { Complaint } from "@/types/complaint";
 import { ComplaintDTO } from "@/dto/complaint.dto";
 import { toast } from "sonner";
@@ -47,6 +44,7 @@ const convertToComplaintFormat = (data: ProcessedPost | Complaint) => {
 
 const ComplaintForm = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const postId = searchParams.get('postId');
   const complaintData = location.state as ProcessedPost | undefined;
@@ -64,6 +62,16 @@ const ComplaintForm = () => {
       return false;
     }
     return true;
+  };
+
+  const handleContinue = () => {
+    console.log('Processing complaint:', complaint || complaintData);
+    toast.success('ดำเนินการต่อ');
+    // Here you would typically submit the form or navigate to the next step
+  };
+
+  const handleCancel = () => {
+    navigate(-1); // Go back to the previous page
   };
 
   if (isLoading) {
@@ -84,13 +92,36 @@ const ComplaintForm = () => {
     <div className="min-h-screen bg-[#F0F8FF] pb-32">
       <ComplaintHeader />
       
-      <main className="container mx-auto p-4 space-y-6">
-        <Card className="p-6">
-          <ComplaintInfo complaint={data!} />
-          <LocationInfo complaint={data!} />
+      {/* Page Title */}
+      <div className="bg-[#EBF5FF]">
+        <div className="container mx-auto px-12 pt-6 pb-4">
+          <h1 className="text-2xl font-semibold text-[#17254D] mb-4">ระบบตอบประเด็นข้อร้องเรียน</h1>
+          
+          {/* Action Buttons */}
+          <div className="flex items-center mb-2">
+            <button 
+              className="bg-[#4B9FE1] hover:bg-[#3D8FD1] text-white px-2 py-2 rounded-[6px] w-[150px] h-[42px] font-medium flex items-center justify-center transition-colors duration-200 text-base whitespace-nowrap"
+              onClick={handleContinue}
+            >
+              เพิ่มเติม/แก้ไขข้อมูล
+            </button>
+            <div className="w-[10px]"></div>
+            <button 
+              className="bg-white hover:bg-[#f0f9ff] text-[#4B9FE1] border-[1.5px] border-[#4B9FE1] px-2 py-2 rounded-[6px] w-[140px] h-[42px] font-medium flex items-center justify-center transition-colors duration-200 text-base whitespace-nowrap"
+              onClick={handleCancel}
+            >
+              เตรียมร่างเอกสาร
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <main className="container mx-auto px-12 pt-2">
+        <Card className="p-6 -mt-2">
+          <SocialPostInfo complaint={data!} />
         </Card>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           <WaterLevelInfo 
             amphure={firstAmphure}
             province={firstProvince}
@@ -98,9 +129,6 @@ const ComplaintForm = () => {
           <WaterFlowPanel />
         </div>
       </main>
-
-      <ComplaintFooter />
-      <ComplaintNavigation />
     </div>
   );
 };
