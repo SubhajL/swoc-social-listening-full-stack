@@ -52,9 +52,14 @@ export const hasValidCoordinates = (post: ProcessedPost): boolean => {
 };
 
 const getMarkerKey = (category: CategoryName): string => {
-  const shape = categoryShapeMap[category];
-  const color = categoryColors[category];
-  return `${shape}-${color.replace('#', '')}`;
+  const iconMap: Record<CategoryName, string> = {
+    [CategoryName.REPORT_INCIDENT]: 'marker-diamond',
+    [CategoryName.REQUEST_SUPPORT]: 'marker-square',
+    [CategoryName.REQUEST_INFO]: 'marker-circle',
+    [CategoryName.SUGGESTION]: 'marker-hexa',
+    [CategoryName.UNKNOWN]: 'marker-circle'
+  };
+  return iconMap[category] || 'marker-circle';
 };
 
 /**
@@ -67,17 +72,32 @@ export const createPostFeature = (post: ProcessedPost): GeoJSON.Feature | null =
     return null;
   }
 
-  // Get marker key based on category
-  let category = Object.values(CategoryName).find(cat => cat === post.category_name);
-  if (!category) {
-    console.warn('Invalid category, using UNKNOWN:', post.category_name);
+  // Map the category name to CategoryName enum with variations
+  let category: CategoryName;
+  const categoryName = post.category_name.trim();
+  
+  // Handle variations in category names
+  if (categoryName === 'การรายงานและแจ้งเหตุ') {
+    category = CategoryName.REPORT_INCIDENT;
+  } else if (categoryName === 'การขอการสนับสนุน/ช่วยดำเนินการ' || categoryName === 'การขอการสนับสนุน') {
+    category = CategoryName.REQUEST_SUPPORT;
+  } else if (categoryName === 'ขอข้อมูล' || categoryName === 'การขอข้อมูล') {
+    category = CategoryName.REQUEST_INFO;
+  } else if (categoryName === 'ข้อเสนอแนะ') {
+    category = CategoryName.SUGGESTION;
+  } else {
+    console.warn('Unrecognized category, using UNKNOWN:', {
+      received: categoryName,
+      validCategories: Object.values(CategoryName)
+    });
     category = CategoryName.UNKNOWN;
   }
 
   const marker = getMarkerKey(category);
   console.log('Created feature:', { 
     id: post.processed_post_id,
-    category,
+    originalCategory: categoryName,
+    mappedCategory: category,
     marker,
     coords,
     source: post.coordinate_source

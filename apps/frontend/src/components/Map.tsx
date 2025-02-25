@@ -19,8 +19,7 @@ import {
   filterPosts,
   loadMapPosts
 } from '@/utils/map-core';
-import type { Feature, GeoJSON, Point, GeoJsonProperties } from 'geojson';
-import type { AnySourceData } from 'mapbox-gl';
+import type { Feature, GeoJSON, Point } from 'geojson';
 
 interface MapProps {
   token: string;
@@ -29,127 +28,20 @@ interface MapProps {
   selectedAmphure: string | null;
   selectedTumbon: string | null;
   selectedOffice: string | null;
+  filteredMessages?: ProcessedPost[];
 }
 
-const MAX_RETRIES = 3;
-const RETRY_DELAY = 2000;
-
-// Update PostFeatureProperties interface
 interface PostFeatureProperties {
   id: number;
-  text?: string;
+  text: string;
   category: CategoryName;
-  cluster?: boolean;
+  source: string;
+  marker: string;
   cluster_id?: number;
   point_count?: number;
 }
 
-// Update type guard for GeoJSON source
-function isGeoJSONSource(source: mapboxgl.AnySourceImpl): source is mapboxgl.GeoJSONSource {
-  return source.type === 'geojson';
-}
-
-// Type guard for Point feature
-function isPointFeature(feature: Feature): feature is Feature<Point> {
-  return feature.geometry.type === 'Point';
-}
-
-// Type guard for PostFeatureProperties
-function isPostFeatureProperties(props: any): props is PostFeatureProperties {
-  return props && 
-    typeof props.id === 'number' && 
-    (!props.text || typeof props.text === 'string') &&
-    typeof props.category === 'string';
-}
-
-function isValidCoordinates(post: ProcessedPost): boolean {
-  console.log('Validating coordinates for post:', {
-    id: post.processed_post_id,
-    lat: post.latitude,
-    lng: post.longitude,
-    source: post.coordinate_source
-  });
-
-  // Check for direct coordinates
-  if (typeof post.latitude === 'number' && 
-      typeof post.longitude === 'number' && 
-      !isNaN(post.latitude) && 
-      !isNaN(post.longitude)) {
-    console.log('Post has valid direct coordinates');
-    return true;
-  }
-
-  // Check for cached coordinates
-  if (post.coordinate_source && 
-      ['direct', 'cache_direct', 'cache_inherited'].includes(post.coordinate_source)) {
-    console.log('Post has valid cached coordinates');
-    return true;
-  }
-
-  console.log('Post has invalid coordinates');
-  return false;
-}
-
-const matchesAdministrativeArea = (
-  post: ProcessedPost,
-  selectedProvince: string | null,
-  selectedAmphure: string | null,
-  selectedTumbon: string | null
-): boolean => {
-  if (!selectedProvince && !selectedAmphure && !selectedTumbon) {
-    return true;
-  }
-
-  if (selectedTumbon && post.tumbon) {
-    return post.tumbon.includes(selectedTumbon);
-  }
-
-  if (selectedAmphure && post.amphure) {
-    return post.amphure.includes(selectedAmphure);
-  }
-
-  if (selectedProvince && post.province) {
-    return post.province.includes(selectedProvince);
-  }
-
-  return false;
-};
-
-// Update category name check
-const getCategoryFromName = (categoryName: string): CategoryName | undefined => {
-  console.log('Category mapping debug:', {
-    input: categoryName,
-    availableCategories: Object.values(CategoryName),
-    exactMatch: Object.values(CategoryName).some(cat => cat === categoryName),
-    matchAttempts: Object.values(CategoryName).map(cat => ({
-      category: cat,
-      matches: cat === categoryName,
-      inputLength: categoryName.length,
-      categoryLength: cat.length
-    }))
-  });
-
-  // Check if the category name exists in our enum
-  const matchedCategory = Object.values(CategoryName).find(cat => cat === categoryName) as CategoryName | undefined;
-  if (matchedCategory) {
-    return matchedCategory;
-  }
-  
-  console.warn('Category mapping failed:', {
-    input: categoryName,
-    availableCategories: Object.values(CategoryName)
-  });
-  return undefined;
-};
-
-// Update helper function to get marker image ID
-function getMarkerImageId(category: CategoryName): string {
-  // Use shape instead of category to avoid duplicates
-  const shape = categoryShapeMap[category];
-  return `marker-${shape}`;
-}
-
-// Update createMarkerImage function to be more robust
+// Create marker image function
 const createMarkerImage = (shape: keyof typeof shapeStyles, color: string, size: number = 32): ImageData | null => {
   try {
     const canvas = document.createElement('canvas');
@@ -224,145 +116,38 @@ export function Map({
   selectedProvince, 
   selectedAmphure, 
   selectedTumbon, 
-  selectedOffice 
+  selectedOffice,
+  filteredMessages
 }: MapProps) {
-  const {
-    containerRef,
-    containerState,
-    isReady,
-    hasError,
-    error
-  } = useMapContainer();
-
-  const mapRef = useRef<mapboxgl.Map | null>(null);
   const navigate = useNavigate();
-  const { latestPost } = useRealTime();
-  const [apiPosts, setApiPosts] = useState<ProcessedPost[]>([]);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const { containerRef, isReady } = useMapContainer();
   const [isLoading, setIsLoading] = useState(true);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
-  const loadedImagesRef = useRef(new Set<string>());
+  const [hasError, setHasError] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const { latestPost } = useRealTime();
+  
+  // New state for managing posts
+  const [allPosts, setAllPosts] = useState<ProcessedPost[]>([]);
+  const [currentPosts, setCurrentPosts] = useState<ProcessedPost[]>([]);
+  const [areMarkersReady, setAreMarkersReady] = useState(false);
 
-  // Load initial posts
-  useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        setIsLoading(true);
-        const posts = await loadMapPosts(
-          undefined,
-          (validPosts) => {
-            setApiPosts(validPosts);
-          },
-          (error) => {
-            console.error('Failed to load posts:', error);
-            toast({
-              title: "Error loading posts",
-              description: "Failed to load unreplied posts. Please try again later.",
-              variant: "destructive"
-            });
-          }
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // Helper function to check if a feature is a point feature
+  const isPointFeature = (feature: any): feature is Feature<Point> => {
+    return feature?.geometry?.type === 'Point';
+  };
 
-    loadPosts();
-  }, []);
+  // Helper function to check if properties are post properties
+  const isPostFeatureProperties = (props: any): props is PostFeatureProperties => {
+    return props?.id !== undefined && props?.category !== undefined;
+  };
 
-  // Handle real-time updates
-  useEffect(() => {
-    if (latestPost) {
-      setApiPosts((current: ProcessedPost[]) => {
-        const updated = [...current];
-        const index = updated.findIndex(p => p.processed_post_id === latestPost.processed_post_id);
-        
-        if (index >= 0) {
-          updated[index] = latestPost;
-        } else {
-          updated.unshift(latestPost);
-          if (updated.length > 20) {
-            updated.pop();
-          }
-        }
-        
-        return updated;
-      });
-    }
-  }, [latestPost]);
+  // Helper function to get marker image ID
+  const getMarkerImageId = (category: CategoryName): string => {
+    return `marker-${categoryShapeMap[category]}`;
+  };
 
-  // Add new function to handle cluster clicks
-  const handleClusterClick = useCallback(async (
-    map: mapboxgl.Map,
-    clusterId: number,
-    coordinates: [number, number],
-    pointCount: number
-  ) => {
-    const source = map.getSource(MAP_CORE_CONFIG.SOURCE_ID);
-    if (!source || !('getClusterLeaves' in source)) return;
-
-    // For small clusters (less than 5 points), show popup with links
-    if (pointCount < 5) {
-      (source as mapboxgl.GeoJSONSource).getClusterLeaves(
-        clusterId,
-        pointCount,
-        0,
-        (error, features) => {
-          if (error || !features) return;
-
-          // Create popup content
-          const popupContent = document.createElement('div');
-          popupContent.className = 'p-2 space-y-2';
-          
-          // Add title
-          const title = document.createElement('div');
-          title.className = 'font-semibold text-sm mb-2';
-          title.textContent = `${pointCount} ข้อร้องเรียน`;
-          popupContent.appendChild(title);
-
-          // Add links for each post
-          features.forEach(feature => {
-            const link = document.createElement('a');
-            link.className = 'block text-sm text-blue-600 hover:text-blue-800 cursor-pointer mb-1';
-            const properties = feature.properties as PostFeatureProperties;
-            link.textContent = properties?.text?.substring(0, 50) + '...';
-            link.onclick = () => {
-              if (properties?.id) {
-                navigate(`/complaint/create?postId=${properties.id}`);
-              }
-            };
-            popupContent.appendChild(link);
-          });
-
-          // Show popup
-          new mapboxgl.Popup({
-            closeButton: true,
-            closeOnClick: false,
-            maxWidth: '300px'
-          })
-            .setLngLat(coordinates)
-            .setDOMContent(popupContent)
-            .addTo(map);
-        }
-      );
-    } else {
-      // For larger clusters, zoom in smoothly
-      (source as mapboxgl.GeoJSONSource).getClusterExpansionZoom(
-        clusterId,
-        (error, zoom) => {
-          if (error || !zoom) return;
-
-          map.easeTo({
-            center: coordinates,
-            zoom: zoom + 0.5, // Zoom a bit more than default
-            duration: 500, // Smooth animation
-            easing: t => t * (2 - t) // Ease out quadratic
-          });
-        }
-      );
-    }
-  }, [navigate]);
-
-  // Initialize map
+  // Initialize map and load marker images
   useEffect(() => {
     if (!isReady || !token || mapRef.current) return;
 
@@ -373,135 +158,43 @@ export function Map({
         style: mapStyle.default,
         center: MAP_CORE_CONFIG.DEFAULT_CENTER,
         zoom: MAP_CORE_CONFIG.DEFAULT_ZOOM,
-        language: MAP_CORE_CONFIG.LANGUAGE,
-        localIdeographFontFamily: MAP_CORE_CONFIG.FONT_FAMILY
       });
+      mapRef.current = map;
 
-      // Initialize source immediately
-      map.on('load', () => {
+      // Initialize core functionality when map loads
+      map.on('load', async () => {
         console.log('Map load event fired');
         
         // Initialize core functionality
         initializeMapCore(map);
         
-        // Load marker images
-        Object.values(CategoryName).forEach(category => {
-          const shape = categoryShapeMap[category];
-          const color = categoryColors[category];
-          const imageId = getMarkerImageId(category);
-          
-          console.log('Creating marker image:', { category, shape, color, imageId });
-          
-          const imageData = createMarkerImage(shape, color);
-          if (!imageData) {
-            console.error('Failed to create marker image:', { category, shape, color });
-            return;
-          }
+        // Load marker images first
+        try {
+          Object.values(CategoryName).forEach(category => {
+            const shape = categoryShapeMap[category];
+            const color = categoryColors[category];
+            const imageId = getMarkerImageId(category);
+            
+            console.log('Creating marker image:', { category, shape, color, imageId });
+            
+            const imageData = createMarkerImage(shape, color);
+            if (!imageData) {
+              console.error('Failed to create marker image:', { category, shape, color });
+              return;
+            }
 
-          try {
             if (!map.hasImage(imageId)) {
               map.addImage(imageId, imageData, { pixelRatio: 2 });
-              loadedImagesRef.current.add(imageId);
               console.log('Successfully added marker image:', imageId);
-            } else {
-              console.log('Image already exists:', imageId);
             }
-          } catch (error) {
-            console.error('Error adding marker image:', { imageId, error });
-          }
-        });
-
-        setImagesLoaded(true);
-      });
-
-      // Add zoom change handler to count individual posts
-      map.on('zoomend', () => {
-        const currentZoom = map.getZoom();
-        const style = map.getStyle();
-        if (!style || !style.layers) {
-          console.warn('Map style or layers not available');
-          return;
+          });
+          
+          setAreMarkersReady(true);
+        } catch (error) {
+          console.error('Error loading marker images:', error);
+          setHasError(true);
+          setError(error as Error);
         }
-
-        console.log('Map zoom changed:', {
-          zoom: currentZoom,
-          isClusteringEnabled: currentZoom <= 5,
-          layerIds: style.layers.map(l => l.id)
-        });
-
-        // Get visible features in the viewport
-        const bounds = map.getBounds();
-        if (!bounds) {
-          console.warn('Map bounds not available');
-          return;
-        }
-
-        const sw = bounds.getSouthWest();
-        const ne = bounds.getNorthEast();
-        
-        // Log viewport bounds
-        console.log('Querying features in viewport:', {
-          bounds: {
-            sw: [sw.lng, sw.lat],
-            ne: [ne.lng, ne.lat]
-          },
-          visibleLayers: style.layers
-            .filter(l => map.getLayoutProperty(l.id, 'visibility') !== 'none')
-            .map(l => l.id)
-        });
-
-        // Query features from each layer separately for debugging
-        const clusterFeatures = map.queryRenderedFeatures(
-          [[sw.lng, sw.lat], [ne.lng, ne.lat]],
-          { layers: [LAYER_CONFIG.CLUSTERS] }
-        );
-
-        const unclusteredFeatures = map.queryRenderedFeatures(
-          [[sw.lng, sw.lat], [ne.lng, ne.lat]],
-          { layers: [LAYER_CONFIG.UNCLUSTERED_POINT] }
-        );
-
-        console.log('Layer query results:', {
-          clusters: {
-            count: clusterFeatures.length,
-            sample: clusterFeatures.slice(0, 2).map(f => ({
-              id: f.properties?.cluster_id,
-              pointCount: f.properties?.point_count
-            }))
-          },
-          unclustered: {
-            count: unclusteredFeatures.length,
-            sample: unclusteredFeatures.slice(0, 2).map(f => ({
-              id: f.properties?.id,
-              category: f.properties?.category
-            }))
-          }
-        });
-
-        // Count clustered points
-        const clusteredPoints = clusterFeatures
-          .reduce((sum, f) => sum + (f.properties?.point_count || 0), 0);
-
-        // Count and categorize unclustered points
-        const categoryCounts = unclusteredFeatures.reduce((acc, feature) => {
-          const category = feature.properties?.category;
-          if (category) {
-            acc[category] = (acc[category] || 0) + 1;
-          }
-          return acc;
-        }, {} as Record<string, number>);
-
-        // Log final counts
-        console.log('Points on map:', {
-          zoom: currentZoom,
-          totalClustered: clusteredPoints,
-          totalUnclustered: unclusteredFeatures.length,
-          byCategory: categoryCounts,
-          viewport: {
-            sw: [sw.lng, sw.lat],
-            ne: [ne.lng, ne.lat]
-          }
-        });
       });
 
       // Handle click events
@@ -527,7 +220,7 @@ export function Map({
         map.getCanvas().style.cursor = '';
       });
 
-      // Update cluster click handler
+      // Handle cluster clicks
       map.on('click', LAYER_CONFIG.CLUSTERS, (e) => {
         const features = map.queryRenderedFeatures(e.point, {
           layers: [LAYER_CONFIG.CLUSTERS]
@@ -538,13 +231,13 @@ export function Map({
         const feature = features[0] as unknown as Feature<Point, PostFeatureProperties>;
         if (!isPointFeature(feature) || !isPostFeatureProperties(feature.properties)) return;
 
-        const clusterId = feature.properties?.cluster_id;
-        const pointCount = feature.properties?.point_count;
+        const clusterId = feature.properties.cluster_id;
+        const pointCount = feature.properties.point_count;
         
-        if (!clusterId || !pointCount) return;
+        if (typeof clusterId === 'undefined' || typeof pointCount === 'undefined') return;
 
         const source = map.getSource(MAP_CORE_CONFIG.SOURCE_ID);
-        if (!source || !isGeoJSONSource(source)) return;
+        if (!source || !('getClusterLeaves' in source)) return;
 
         // For small clusters (less than 5 points), show popup with links
         if (pointCount < 5) {
@@ -578,7 +271,6 @@ export function Map({
                 popupContent.appendChild(link);
               });
 
-              // Show popup
               new mapboxgl.Popup({
                 closeButton: true,
                 closeOnClick: false,
@@ -589,190 +281,166 @@ export function Map({
                 .addTo(map);
             }
           );
-        }
+        } else {
+          // For larger clusters, zoom in
+          const source = map.getSource(MAP_CORE_CONFIG.SOURCE_ID);
+          if (!source || !('getClusterExpansionZoom' in source)) return;
 
-        // For larger clusters, zoom in smoothly
-        source.getClusterExpansionZoom(
-          clusterId,
-          (error, zoom) => {
-            if (error || !zoom) return;
+          source.getClusterExpansionZoom(clusterId, (error, zoom) => {
+            if (error || zoom === null || typeof zoom === 'undefined') return;
 
             map.easeTo({
               center: feature.geometry.coordinates as [number, number],
-              zoom: zoom + 0.5,
-              duration: 500,
-              easing: t => t * (2 - t)
+              zoom: zoom
             });
-          }
-        );
+          });
+        }
       });
 
-      map.on('mouseenter', LAYER_CONFIG.CLUSTERS, () => {
-        map.getCanvas().style.cursor = 'pointer';
-      });
-      
-      map.on('mouseleave', LAYER_CONFIG.CLUSTERS, () => {
-        map.getCanvas().style.cursor = '';
-      });
-
-      map.addControl(new mapboxgl.NavigationControl(), "top-right");
-      mapRef.current = map;
     } catch (error) {
-      console.error('Map initialization error:', error);
-      toast({
-        title: "Map Error",
-        description: "Failed to initialize map. Please try again later.",
-        variant: "destructive"
-      });
+      console.error('Error initializing map:', error);
+      setHasError(true);
+      setError(error as Error);
     }
-  }, [isReady, token, handleClusterClick]);
+  }, [isReady, token, containerRef, navigate]);
 
-  // Update map data when posts change
+  // Load initial data
   useEffect(() => {
+    const loadInitialData = async () => {
+      if (!mapRef.current || !areMarkersReady) return;
+
+      try {
+        setIsLoading(true);
+        const posts = await loadMapPosts();
+        console.log('Initial posts loaded:', posts.length);
+        setAllPosts(posts);
+        
+        // If no filtered messages, use all posts
+        if (!filteredMessages) {
+          setCurrentPosts(posts);
+          updateMapWithPosts(posts);
+        }
+      } catch (error) {
+        console.error('Error loading initial data:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load initial data. Please try again later.",
+          variant: "destructive"
+        });
+        setHasError(true);
+        setError(error as Error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadInitialData();
+  }, [areMarkersReady]);
+
+  // Handle filtered messages
+  useEffect(() => {
+    if (!mapRef.current || !areMarkersReady) return;
+
+    const posts = filteredMessages || allPosts;
+    setCurrentPosts(posts);
+    updateMapWithPosts(posts);
+  }, [filteredMessages, allPosts, areMarkersReady]);
+
+  // Update map with posts
+  const updateMapWithPosts = useCallback((posts: ProcessedPost[]) => {
     const map = mapRef.current;
-    if (!map || !map.getSource(MAP_CORE_CONFIG.SOURCE_ID) || !imagesLoaded) {
-      console.log('Map update skipped:', {
-        hasMap: !!map,
-        hasSource: map?.getSource(MAP_CORE_CONFIG.SOURCE_ID) !== undefined,
-        imagesLoaded,
-        postCount: apiPosts.length
-      });
-      return;
-    }
+    if (!map) return;
 
     try {
-      // Debug log raw posts
-      console.log('Raw posts before filtering:', {
-        total: apiPosts.length,
-        samplePosts: apiPosts.slice(0, 3).map(p => ({
+      console.log('Received posts for update:', {
+        count: posts.length,
+        sample: posts.slice(0, 2).map(p => ({
           id: p.processed_post_id,
           category: p.category_name,
-          coords: [p.longitude, p.latitude],
+          coords: [p.latitude, p.longitude],
           source: p.coordinate_source
         }))
       });
 
-      // Filter posts based on selected criteria
-      const filteredPosts = filterPosts(
-        apiPosts,
-        selectedCategories,
-        selectedProvince,
-        selectedAmphure,
-        selectedTumbon
-      );
-
-      console.log('Posts after filtering:', {
-        total: apiPosts.length,
-        filtered: filteredPosts.length,
-        selectedFilters: {
-          categories: selectedCategories,
-          province: selectedProvince,
-          amphure: selectedAmphure,
-          tumbon: selectedTumbon
-        },
-        sampleFiltered: filteredPosts.slice(0, 3).map(p => ({
-          id: p.processed_post_id,
-          category: p.category_name,
-          coords: [p.longitude, p.latitude]
-        }))
-      });
-
-      // Create GeoJSON features
-      const features = filteredPosts
+      const features = posts
         .map(post => {
           const feature = createPostFeature(post);
           if (!feature) {
             console.warn('Failed to create feature for post:', {
               id: post.processed_post_id,
               category: post.category_name,
-              coords: [post.longitude, post.latitude]
+              coords: [post.latitude, post.longitude],
+              source: post.coordinate_source
             });
           }
           return feature;
         })
         .filter(Boolean) as GeoJSON.Feature[];
 
-      console.log('Features created:', {
-        total: features.length,
-        sampleFeatures: features.slice(0, 3).map(f => ({
-          geometry: f.geometry,
-          properties: f.properties
+      console.log('Created features:', {
+        totalPosts: posts.length,
+        validFeatures: features.length,
+        sample: features.slice(0, 2).map(f => ({
+          id: f.properties?.id,
+          category: f.properties?.category,
+          marker: f.properties?.marker,
+          coords: (f.geometry as Point).coordinates
         }))
       });
 
-      // Update map data using core utility
-      updateMapData(map, features);
-
-      // Verify source data after update
       const source = map.getSource(MAP_CORE_CONFIG.SOURCE_ID);
-      if (source && isGeoJSONSource(source)) {
-        // @ts-ignore - Accessing internal _data for debugging
-        const currentData = source._data as GeoJSON.FeatureCollection;
-        const mapBounds = map.getBounds();
-        console.log('Source data after update:', {
-          hasData: !!currentData,
-          featureCount: currentData?.features?.length || 0,
-          bounds: mapBounds?.toArray() || []
+      if (!source || !('setData' in source)) {
+        console.error('Invalid map source:', {
+          hasSource: !!source,
+          sourceType: source ? typeof source : 'undefined',
+          hasSetData: source ? 'setData' in source : false
+        });
+        return;
+      }
+
+      source.setData({
+        type: 'FeatureCollection',
+        features
+      });
+    } catch (error) {
+      console.error('Error updating map with posts:', error);
+    }
+  }, []);
+
+  // Handle real-time updates
+  useEffect(() => {
+    if (!mapRef.current || !latestPost || !areMarkersReady) return;
+
+    try {
+      // Add to all posts
+      setAllPosts(prev => {
+        const newPosts = [...prev];
+        const index = newPosts.findIndex(p => p.processed_post_id === latestPost.processed_post_id);
+        if (index >= 0) {
+          newPosts[index] = latestPost;
+        } else {
+          newPosts.unshift(latestPost);
+        }
+        return newPosts;
+      });
+
+      // Update current posts if no filtering is active
+      if (!filteredMessages) {
+        setCurrentPosts(prev => {
+          const newPosts = [...prev];
+          const index = newPosts.findIndex(p => p.processed_post_id === latestPost.processed_post_id);
+          if (index >= 0) {
+            newPosts[index] = latestPost;
+          } else {
+            newPosts.unshift(latestPost);
+          }
+          return newPosts;
         });
       }
     } catch (error) {
-      console.error('Error updating map data:', error);
+      console.error('Error handling real-time update:', error);
     }
-  }, [apiPosts, selectedCategories, selectedProvince, selectedAmphure, selectedTumbon, imagesLoaded]);
-
-  // Update marker image loading
-  useEffect(() => {
-    if (!mapRef.current || !imagesLoaded) return;
-
-    try {
-      // Create a Set to track unique shapes
-      const processedShapes = new Set<string>();
-
-      // Load marker images for each category
-      Object.values(CategoryName).forEach(category => {
-        const shape = categoryShapeMap[category];
-        const color = categoryColors[category];
-        const imageId = getMarkerImageId(category);
-        
-        // Skip if shape already processed
-        if (processedShapes.has(shape)) {
-          console.log('Shape already processed:', { shape, category });
-          return;
-        }
-        
-        console.log('Creating marker image:', { category, shape, color, imageId });
-        
-        const imageData = createMarkerImage(shape, color);
-        if (!imageData) {
-          console.error('Failed to create marker image:', { category, shape, color });
-          return;
-        }
-
-        try {
-          if (!mapRef.current?.hasImage(imageId)) {
-            mapRef.current?.addImage(imageId, imageData, { pixelRatio: 2 });
-            loadedImagesRef.current.add(imageId);
-            processedShapes.add(shape);
-            console.log('Successfully added marker image:', imageId);
-          } else {
-            console.log('Image already exists:', imageId);
-          }
-        } catch (error) {
-          console.error('Error adding marker image:', { imageId, error });
-        }
-      });
-
-      setImagesLoaded(true);
-      
-      console.log('All marker images loaded:', {
-        categories: Object.values(CategoryName),
-        loadedImages: Array.from(loadedImagesRef.current),
-        processedShapes: Array.from(processedShapes)
-      });
-    } catch (error) {
-      console.error('Error loading marker images:', error);
-    }
-  }, [mapRef.current]);
+  }, [latestPost, areMarkersReady, filteredMessages]);
 
   return (
     <div className="relative w-full h-full min-h-[400px]">

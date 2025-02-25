@@ -421,6 +421,29 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
   - State Management: Optimized
   - Event Handling: Secured
 
+### 10. Main Page UI
+- Status: ✅ LOCKED
+- Last Lock Date: 2025-02-25
+- Components:
+  - MainPage.tsx
+  - DashboardHeader.tsx
+  - Category summary section
+- Critical Paths:
+  - Page layout and structure
+  - Navigation tabs alignment
+  - Category icons and labels display
+  - Map integration
+- Features:
+  - Responsive layout with filter panel and map
+  - Properly aligned navigation tabs
+  - Category summary with icons, labels, and counts on a single line
+  - Thai language support
+- Safety Measures: ✅ Complete
+  - Proper text handling with whitespace-nowrap
+  - Responsive design
+  - Consistent styling
+  - Clear visual hierarchy
+
 ## 🚧 In Development Features
 
 ### 1. Complaint System
@@ -481,4 +504,53 @@ To validate lock status, check:
 4. Documentation update
 5. Lock status re-validation
 
-Contact the relevant feature owner before attempting any modifications to locked features. 
+Contact the relevant feature owner before attempting any modifications to locked features.
+
+# Branch Locks and Development Status
+
+## Active Branches
+
+### task/filter-logic-new-20250225
+- **Status**: 🔄 In Progress
+- **Owner**: Current Developer
+- **Description**: Filter logic implementation with known issues
+- **Features**:
+  - Message type/subtype filtering
+  - Date range filtering
+  - Geographic location filtering
+  - Communication channel filtering
+- **Known Issues**: See `.tasks/2025-02-24_3_filter_logic.md`
+- **Last Updated**: 2025-02-24
+
+### task/frontend-development
+- **Status**: 🆕 New
+- **Owner**: Current Developer
+- **Description**: New frontend development branch from integration-post
+- **Features**: TBD
+- **Last Updated**: 2025-02-24
+
+## Base Branches
+
+### integration-post
+- **Status**: 🟢 Stable
+- **Description**: Base branch for post-related features
+- **Last Stable Commit**: Current HEAD
+- **Dependencies**:
+  - Frontend React components
+  - Backend API services
+  - PostgreSQL database
+
+## Branch Rules
+1. Feature branches should be created from stable base branches
+2. Each feature branch should have a corresponding task file in `.tasks/`
+3. Known issues must be documented before switching branches
+4. Merge conflicts must be resolved before marking a branch as stable
+
+## Current Development Focus
+- Primary: Frontend development (task/frontend-development)
+- Secondary: Filter logic fixes (task/filter-logic-new-20250225)
+
+## Notes
+- Filter logic implementation is temporarily paused
+- Frontend development will proceed independently
+- Known issues in filter logic are documented and will be addressed later 
