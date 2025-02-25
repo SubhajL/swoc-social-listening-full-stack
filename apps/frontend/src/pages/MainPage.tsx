@@ -93,20 +93,20 @@ export function MainPage() {
       <DashboardHeader />
       
       {/* Main Content */}
-      <div className="container-fluid mt-6">
+      <div className="container-fluid">
         {/* Frame with Content */}
-        <div className="relative">
+        <div className="relative -mt-[1px]">
           {/* Frame Content */}
           <div className="bg-[#EBF5FF] min-h-[calc(100vh-80px)]">
             {/* Page Title */}
-            <div className="px-12 pt-6 pb-4">
-              <h1 className="text-3xl font-bold text-[#17254D]">ระบบจัดการข้อมูลสื่อสังคมออนไลน์</h1>
+            <div className="px-12 pt-6 pb-6">
+              <h1 className="text-xl font-semibold text-[#17254D]">ระบบจัดการข้อมูลสื่อสังคมออนไลน์</h1>
             </div>
             
-            <div className="px-12 py-6">
+            <div className="px-12 pt-0 pb-6">
               <div className="flex gap-8">
                 {/* Filter Panel */}
-                <aside className="w-[520px]">
+                <aside className="w-[450px]">
                   <div className="bg-white rounded-lg border border-[#E2E8F0]">
                     <FilterPanel
                       selectedCategories={selectedCategories}
@@ -136,38 +136,38 @@ export function MainPage() {
                     </div>
                     
                     {/* Category summary - Redesigned */}
-                    <div className="p-4 border-t border-[#E2E8F0] bg-white">
+                    <div className="p-4 border-t border-[#E2E8F0] bg-white rounded-b-lg">
                       <div className="flex items-center justify-around px-4">
                         <div className="flex items-center gap-2">
                           <div className="bg-red-50 p-1.5 rounded-full">
-                            <img src={DiamondIcon} alt="Report" className="w-5 h-5" />
+                            <img src={DiamondIcon} alt="Report" className="w-4 h-4" />
                           </div>
-                          <span className="text-sm font-medium text-gray-700 whitespace-nowrap">การรายงานและแจ้งเหตุ</span>
-                          <span className="text-base font-bold text-[#B91C1C] ml-1.5">100</span>
+                          <span className="text-xs font-medium text-gray-700 whitespace-nowrap">การรายงานและแจ้งเหตุ</span>
+                          <span className="text-sm font-bold text-black ml-1.5">100</span>
                         </div>
                         
                         <div className="flex items-center gap-2">
                           <div className="bg-green-50 p-1.5 rounded-full">
-                            <img src={SquareIcon} alt="Support" className="w-5 h-5" />
+                            <img src={SquareIcon} alt="Support" className="w-4 h-4" />
                           </div>
-                          <span className="text-sm font-medium text-gray-700 whitespace-nowrap">การขอการสนับสนุน</span>
-                          <span className="text-base font-bold text-[#15803D] ml-1.5">100</span>
+                          <span className="text-xs font-medium text-gray-700 whitespace-nowrap">การขอการสนับสนุน</span>
+                          <span className="text-sm font-bold text-black ml-1.5">100</span>
                         </div>
                         
                         <div className="flex items-center gap-2">
                           <div className="bg-yellow-50 p-1.5 rounded-full">
-                            <img src={CircleIcon} alt="Info" className="w-5 h-5" />
+                            <img src={CircleIcon} alt="Info" className="w-4 h-4" />
                           </div>
-                          <span className="text-sm font-medium text-gray-700 whitespace-nowrap">การขอข้อมูล</span>
-                          <span className="text-base font-bold text-[#EAB308] ml-1.5">100</span>
+                          <span className="text-xs font-medium text-gray-700 whitespace-nowrap">การขอข้อมูล</span>
+                          <span className="text-sm font-bold text-black ml-1.5">100</span>
                         </div>
                         
                         <div className="flex items-center gap-2">
                           <div className="bg-orange-50 p-1.5 rounded-full">
-                            <img src={HexagonIcon} alt="Suggestion" className="w-5 h-5" />
+                            <img src={HexagonIcon} alt="Suggestion" className="w-4 h-4" />
                           </div>
-                          <span className="text-sm font-medium text-gray-700 whitespace-nowrap">ข้อเสนอแนะ</span>
-                          <span className="text-base font-bold text-[#EA580C] ml-1.5">100</span>
+                          <span className="text-xs font-medium text-gray-700 whitespace-nowrap">ข้อเสนอแนะ</span>
+                          <span className="text-sm font-bold text-black ml-1.5">100</span>
                         </div>
                       </div>
                     </div>
