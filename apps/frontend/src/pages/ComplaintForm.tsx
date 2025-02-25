@@ -67,11 +67,15 @@ const ComplaintForm = () => {
   const handleContinue = () => {
     console.log('Processing complaint:', complaint || complaintData);
     toast.success('ดำเนินการต่อ');
-    // Here you would typically submit the form or navigate to the next step
+    // Navigate to the StationCardEdit page with the complaint data
+    navigate('/station-card-edit', { state: complaint || complaintData });
   };
 
   const handleCancel = () => {
-    navigate(-1); // Go back to the previous page
+    console.log('Preparing document draft for:', complaint || complaintData);
+    toast.success('กำลังเตรียมร่างเอกสาร');
+    // Here you would typically implement document preparation logic
+    // For now, we'll just show a toast message
   };
 
   if (isLoading) {

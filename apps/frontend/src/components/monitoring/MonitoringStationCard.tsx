@@ -6,17 +6,21 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/h
 import { Info, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
+import { StationCardButtons } from "./StationCardButtons";
+import { toast } from "sonner";
 
 interface MonitoringStationCardProps {
   station: MonitoringStation;
   isLoading?: boolean;
   error?: Error | null;
+  showButtons?: boolean;
 }
 
 export const MonitoringStationCard = ({ 
   station, 
   isLoading = false,
-  error = null 
+  error = null,
+  showButtons = false
 }: MonitoringStationCardProps) => {
   const waterLevel = station.telemetry_data?.water_level ?? station.water_level;
   const flowRate = station.telemetry_data?.flow_rate ?? station.flow_rate;
@@ -30,6 +34,16 @@ export const MonitoringStationCard = ({
     waterLevel,
     flowRate
   });
+
+  const handleAddData = () => {
+    console.log('Adding data for station:', station.station_id);
+    toast.success(`เพิ่มข้อมูลสำหรับสถานี ${station.station_name}`);
+  };
+
+  const handleDeleteData = () => {
+    console.log('Deleting data for station:', station.station_id);
+    toast.success(`ลบข้อมูลสำหรับสถานี ${station.station_name}`);
+  };
 
   // Common content box styles (matching WaterLevelInfo)
   const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-md p-3 bg-white text-[#17254D] text-sm font-normal";
@@ -143,40 +157,54 @@ export const MonitoringStationCard = ({
       </Label>
       <div className={contentBoxStyle}>
         <div className={contentTextStyle}>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center whitespace-nowrap overflow-hidden">
-              <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">ระดับน้ำ</span>
-              <div className="flex items-center flex-shrink-0">
-                <Input 
-                  value={waterLevel?.toFixed(2) ?? ''} 
-                  readOnly 
-                  className={`w-[70px] h-8 ${hasRealTimeData ? 'border-primary' : ''} text-right`}
-                  data-testid="water-level-input"
-                />
-                <span className="text-sm whitespace-nowrap ml-1">ม.</span>
-                {hasRealTimeData && (
-                  <div data-testid="water-level-hover-trigger" className="ml-1">
-                    {renderTelemetryInfo('water_level')}
-                  </div>
-                )}
+          <div className="space-y-3">
+            <div className="text-[#17254D] text-sm font-normal mb-2">ระดับน้ำ</div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-center whitespace-nowrap overflow-hidden">
+                <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">ปัจจุบัน</span>
+                <div className="flex items-center flex-shrink-0">
+                  <Input 
+                    value={waterLevel ?? ''} 
+                    readOnly 
+                    className="w-[70px] h-8 text-right"
+                  />
+                  <span className="text-sm whitespace-nowrap ml-1">ม.รทก.</span>
+                </div>
+              </div>
+              <div className="flex items-center whitespace-nowrap overflow-hidden">
+                <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">ตลิ่ง</span>
+                <div className="flex items-center flex-shrink-0">
+                  <Input 
+                    value={station.bank_level_meters ?? ''} 
+                    readOnly 
+                    className="w-[70px] h-8 text-right"
+                  />
+                  <span className="text-sm whitespace-nowrap ml-1">ม.รทก.</span>
+                </div>
               </div>
             </div>
-            <div className="flex items-center whitespace-nowrap overflow-hidden">
-              <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">อัตราไหลน้ำ</span>
-              <div className="flex items-center ml-auto flex-shrink-0">
-                <Input 
-                  value={flowRate?.toFixed(2) ?? ''} 
-                  readOnly 
-                  className={`w-[70px] h-8 ${hasRealTimeData ? 'border-primary' : ''} text-right`}
-                />
-                <span className="text-sm whitespace-nowrap ml-1">ลบ.ม./วิ</span>
-                {hasRealTimeData && (
-                  <div className="ml-1">
-                    {renderTelemetryInfo('flow_rate')}
-                  </div>
-                )}
+            
+            <div className="text-[#17254D] text-sm font-normal mb-2 mt-4">อัตราการไหล</div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-center whitespace-nowrap overflow-hidden">
+                <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">ปัจจุบัน</span>
+                <div className="flex items-center flex-shrink-0">
+                  <Input 
+                    value={flowRate ?? ''} 
+                    readOnly 
+                    className="w-[70px] h-8 text-right"
+                  />
+                  <span className="text-sm whitespace-nowrap ml-1">ลบ.ม./วินาที</span>
+                </div>
               </div>
             </div>
+            
+            {showButtons && (
+              <StationCardButtons 
+                onAdd={handleAddData}
+                onDelete={handleDeleteData}
+              />
+            )}
           </div>
         </div>
       </div>

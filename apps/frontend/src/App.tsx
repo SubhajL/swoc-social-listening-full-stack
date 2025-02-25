@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/index";
 import ComplaintForm from "./pages/ComplaintForm";
+import StationCardEdit from "./pages/StationCardEdit";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/complaint/create" element={<ComplaintForm />} />
+              <Route path="/station-card-edit" element={<StationCardEdit />} />
             </Routes>
             <Toaster />
             <Sonner />

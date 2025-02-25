@@ -17,9 +17,14 @@ import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
 interface WaterLevelInfoProps {
   amphure?: string;
   province?: string;
+  showButtons?: boolean;
 }
 
-export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
+export const WaterLevelInfo = ({ 
+  amphure, 
+  province, 
+  showButtons = false 
+}: WaterLevelInfoProps) => {
   const { data: monitoringData, isLoading: isLoadingMonitoring, error: monitoringError } = useMonitoringStations(amphure, province);
   const { data: rainData, isLoading: isLoadingRain, error: rainError } = useRainStations(amphure, province);
   const { data: reservoirData, isLoading: isLoadingReservoir, error: reservoirError } = useReservoirs(amphure, province);
@@ -191,6 +196,7 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
                         station={station} 
                         isLoading={isLoadingMonitoring}
                         error={monitoringError}
+                        showButtons={showButtons}
                       />
                     );
                   })}
@@ -251,7 +257,8 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
                     return (
                       <RainStationCard 
                         key={station.id} 
-                        station={station} 
+                        station={station}
+                        showButtons={showButtons}
                       />
                     );
                   })}
@@ -312,7 +319,8 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
                     return (
                       <ReservoirCard 
                         key={reservoir.id} 
-                        reservoir={reservoir} 
+                        reservoir={reservoir}
+                        showButtons={showButtons}
                       />
                     );
                   })}

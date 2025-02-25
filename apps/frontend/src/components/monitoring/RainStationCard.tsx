@@ -4,9 +4,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useThaiWaterData } from "@/hooks/useThaiWaterData";
 import { useMemo, useEffect } from "react";
+import { StationCardButtons } from "./StationCardButtons";
+import { toast } from "sonner";
 
 interface RainStationCardProps {
   station: RainStation;
+  showButtons?: boolean;
 }
 
 // Station ID mapping (our station_id -> ThaiWater tele_station_id)
@@ -15,13 +18,23 @@ const STATION_ID_MAP: Record<string, number> = {
   '7013': 494       // อุตุสนามบิน
 };
 
-export const RainStationCard = ({ station }: RainStationCardProps) => {
+export const RainStationCard = ({ station, showButtons = false }: RainStationCardProps) => {
   const { data: thaiWaterData, isLoading, error } = useThaiWaterData();
 
   // Common content box styles (matching WaterLevelInfo)
   const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-md p-3 bg-white text-[#17254D] text-sm font-normal";
   const contentTextStyle = "px-4"; // Reduced horizontal padding for more compact layout
   const labelStyle = "text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10";
+
+  const handleAddData = () => {
+    console.log('Adding data for rain station:', station.station_id);
+    toast.success(`เพิ่มข้อมูลสำหรับสถานีวัดน้ำฝน ${station.station_name}`);
+  };
+
+  const handleDeleteData = () => {
+    console.log('Deleting data for rain station:', station.station_id);
+    toast.success(`ลบข้อมูลสำหรับสถานีวัดน้ำฝน ${station.station_name}`);
+  };
 
   useEffect(() => {
     console.log('[RainStationCard] Station:', {
@@ -50,62 +63,57 @@ export const RainStationCard = ({ station }: RainStationCardProps) => {
       return null;
     }
     
-    // Try to find the station by mapped ID
-    const matchedData = thaiWaterData.data.find(d => 
-      d.tele_station_id === mappedStationId
+    // Find the station data in the ThaiWater response
+    return thaiWaterData.data?.find(item => 
+      item.tele_station_id === mappedStationId
     );
-    
-    console.log('[RainStationCard] Matched Data:', {
-      stationId: station.station_id,
-      mappedId: mappedStationId,
-      stationCode: station.code,
-      matchedData
-    });
-    
-    return matchedData;
   }, [thaiWaterData, station.station_id]);
 
   return (
     <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-2">
       <Label className={labelStyle}>
         {station.station_name}
-        {(station.station_id || station.code) && (
+        {station.station_id && (
           <span className="text-sm text-gray-500 ml-2">
-            ({station.station_id && `ID: ${station.station_id}`}
-            {station.station_id && station.code && ', '}
-            {!station.station_id && station.code && `Code: ${station.code}`}
-            {station.station_id && station.code && `Code: ${station.code}`})
+            (ID: {station.station_id})
           </span>
         )}
       </Label>
       <div className={contentBoxStyle}>
         <div className={contentTextStyle}>
           <div className="space-y-3">
-            <div className="text-[#17254D] text-sm font-normal mb-2">ปริมาณฝนสะสม</div>
+            <div className="text-[#17254D] text-sm font-normal mb-2">ปริมาณน้ำฝน</div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-center whitespace-nowrap overflow-hidden">
-                <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">1 ชั่วโมง</span>
+                <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">วันนี้</span>
                 <div className="flex items-center flex-shrink-0">
                   <Input 
-                    value={stationData?.rainfall1h?.toFixed(2) ?? ''} 
+                    value={station.rainfall_3d ?? ''} 
                     readOnly 
-                    className={`w-[70px] h-8 ${isLoading ? 'animate-pulse' : ''} text-right`}
+                    className="w-[70px] h-8 text-right"
                   />
                   <span className="text-sm whitespace-nowrap ml-1">มม.</span>
                 </div>
               </div>
               <div className="flex items-center whitespace-nowrap overflow-hidden">
-                <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">24 ชั่วโมง</span>
+                <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">เมื่อวาน</span>
                 <div className="flex items-center flex-shrink-0">
                   <Input 
-                    value={stationData?.rainfall24h?.toFixed(2) ?? ''} 
+                    value={station.rainfall_7d ?? ''} 
                     readOnly 
-                    className={`w-[70px] h-8 ${isLoading ? 'animate-pulse' : ''} text-right`}
+                    className="w-[70px] h-8 text-right"
                   />
                   <span className="text-sm whitespace-nowrap ml-1">มม.</span>
                 </div>
               </div>
             </div>
+            
+            {showButtons && (
+              <StationCardButtons 
+                onAdd={handleAddData}
+                onDelete={handleDeleteData}
+              />
+            )}
           </div>
         </div>
       </div>

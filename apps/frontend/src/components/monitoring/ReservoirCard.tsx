@@ -2,16 +2,29 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Reservoir } from "@/types/reservoir";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { StationCardButtons } from "./StationCardButtons";
+import { toast } from "sonner";
 
 interface ReservoirCardProps {
   reservoir: Reservoir;
+  showButtons?: boolean;
 }
 
-export const ReservoirCard = ({ reservoir }: ReservoirCardProps) => {
+export const ReservoirCard = ({ reservoir, showButtons = false }: ReservoirCardProps) => {
   // Common content box styles (matching WaterLevelInfo)
   const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-md p-3 bg-white text-[#17254D] text-sm font-normal";
   const contentTextStyle = "px-4"; // Reduced horizontal padding for more compact layout
   const labelStyle = "text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10";
+
+  const handleAddData = () => {
+    console.log('Adding data for reservoir:', reservoir.id);
+    toast.success(`เพิ่มข้อมูลสำหรับอ่างเก็บน้ำ ${reservoir.reservoir_name}`);
+  };
+
+  const handleDeleteData = () => {
+    console.log('Deleting data for reservoir:', reservoir.id);
+    toast.success(`ลบข้อมูลสำหรับอ่างเก็บน้ำ ${reservoir.reservoir_name}`);
+  };
 
   return (
     <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-2">
@@ -51,6 +64,13 @@ export const ReservoirCard = ({ reservoir }: ReservoirCardProps) => {
                 </div>
               </div>
             </div>
+            
+            {showButtons && (
+              <StationCardButtons 
+                onAdd={handleAddData}
+                onDelete={handleDeleteData}
+              />
+            )}
           </div>
         </div>
       </div>
