@@ -100,7 +100,7 @@ export function MainPage() {
           <div className="bg-[#EBF5FF] min-h-[calc(100vh-80px)]">
             {/* Page Title */}
             <div className="px-12 pt-6 pb-6">
-              <h1 className="text-xl font-semibold text-[#17254D]">ระบบจัดการข้อมูลสื่อสังคมออนไลน์</h1>
+              <h1 className="text-2xl font-semibold text-[#17254D]">ระบบจัดการข้อมูลสื่อสังคมออนไลน์</h1>
             </div>
             
             <div className="px-12 pt-0 pb-6">
