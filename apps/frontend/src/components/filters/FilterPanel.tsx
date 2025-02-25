@@ -556,7 +556,7 @@ export function FilterPanel({
     <div className="bg-white rounded-lg border border-[#E2E8F0] p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-[20px] font-medium text-[#17254D]">กรองข้อมูล</h2>
+        <h2 className="text-lg font-medium text-[#17254D]">กรองข้อมูล</h2>
         <ChevronDown className="w-4 h-4 text-[#334155] rotate-180" />
       </div>
 
