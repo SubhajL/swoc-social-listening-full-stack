@@ -5,13 +5,35 @@
 ## Date: 2025-02-25
 
 ## Description
-This task involved completing the WaterLevelInfo component and ensuring that all station cards (MonitoringStationCard, RainStationCard, and ReservoirCard) display their data in a consistent, single-line format with proper alignment of field names and data boxes.
+This task involved completing the WaterLevelInfo component and ensuring that all station cards (MonitoringStationCard, RainStationCard, and ReservoirCard) display their data in a consistent, single-line format with proper alignment of field names and data boxes. The component displays water-related monitoring data for specific locations in Thailand, including water levels, flow rates, rainfall data, and reservoir capacities.
 
 ## Components Modified
 - `apps/frontend/src/components/complaint/WaterLevelInfo.tsx` (main container)
 - `apps/frontend/src/components/monitoring/MonitoringStationCard.tsx`
 - `apps/frontend/src/components/monitoring/RainStationCard.tsx`
 - `apps/frontend/src/components/monitoring/ReservoirCard.tsx`
+- `apps/frontend/src/components/monitoring/StationCardButtons.tsx` (new component)
+
+## Data Flow and API Endpoints
+### Monitoring Stations
+- **Frontend Hook**: `useMonitoringStations` - Fetches and caches monitoring station data
+- **Backend API Endpoint**: `/monitoring-stations` - Returns station information filtered by amphure/province
+- **External API Integration**: Royal Irrigation Department (RID) API for real-time telemetry data
+  - Endpoint: `http://hyd-app.rid.go.th/webservice/HydroAuthenticateService.svc/getHourlyTodayFromStationID`
+  - Authentication: OAuth 1.0a
+  - Data: Real-time water level and flow rate measurements
+
+### Rain Stations
+- **Frontend Hook**: `useRainStations` - Fetches and caches rain station data
+- **Backend API Endpoint**: `/rain-stations` - Returns station information filtered by amphure/province
+- **External API Integration**: ThaiWater API for rainfall data
+  - Maps station IDs between systems
+  - Provides rainfall measurements
+
+### Reservoirs
+- **Frontend Hook**: `useReservoirs` - Fetches and caches reservoir data
+- **Backend API Endpoint**: `/reservoirs` - Returns reservoir information filtered by amphure/province
+- **Data**: Storage capacities and reservoir metadata
 
 ## Changes Made
 1. Updated all station cards to display data in a single line
@@ -37,12 +59,29 @@ This task involved completing the WaterLevelInfo component and ensuring that all
    - Consistent error display across all station types
    - Proper fallback UI when data is unavailable
 
+6. Added StationCardButtons component
+   - Reusable component for add/delete actions
+   - Consistent button styling across all card types
+   - Conditional rendering based on showButtons prop
+
+## Data Display
+- **MonitoringStationCard**: Displays water level (ระดับน้ำ) in meters and flow rate (อัตราการไหล) in cubic meters per second
+- **RainStationCard**: Displays rainfall data for today and yesterday in millimeters
+- **ReservoirCard**: Displays normal and minimum storage capacities in million cubic meters
+
+## Database Structure
+The system uses three main database tables:
+- `telemetry_station` - Stores monitoring station information including riverbank levels
+- `rain_station` - Stores rain station information
+- `reservoir` - Stores reservoir/dam information
+
 ## Testing
 - Verified that all station cards display correctly in the WaterLevelInfo component
 - Confirmed that field names and data boxes are properly aligned
 - Tested loading states and error handling
 - Verified that all information stays within the card boundaries
 - Confirmed that the layout is responsive and works on different screen sizes
+- Verified that real-time data is fetched and displayed when available
 
 ## Documentation
 - Updated LOCKS.md to document the completed WaterLevelInfo component
@@ -51,6 +90,12 @@ This task involved completing the WaterLevelInfo component and ensuring that all
 
 ## Notes
 The WaterLevelInfo component is now considered locked and should not be modified without team approval. The component successfully displays all station data in a consistent, readable format with proper alignment and styling.
+
+## Future Improvements
+- Replace mock data with real-time measurements from telemetry systems
+- Enhance error handling and retry mechanisms
+- Implement caching strategies for external API data
+- Add more detailed information and historical data views
 
 ## Related Tasks
 - 2025-02-25_1_frontend_ui_improvements.md
