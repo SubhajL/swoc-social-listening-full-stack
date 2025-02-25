@@ -31,6 +31,11 @@ export const MonitoringStationCard = ({
     flowRate
   });
 
+  // Common content box styles (matching WaterLevelInfo)
+  const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-md p-3 bg-white text-[#17254D] text-sm font-normal";
+  const contentTextStyle = "px-4"; // Reduced horizontal padding for more compact layout
+  const labelStyle = "text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10";
+
   const renderTelemetryInfo = (type: 'water_level' | 'flow_rate') => {
     if (!station.telemetry_data) return null;
 
@@ -71,94 +76,110 @@ export const MonitoringStationCard = ({
 
   if (isLoading) {
     return (
-      <Card className="w-full">
-        <CardHeader className="pb-2">
-          <Skeleton className="h-6 w-3/4" />
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <div className="grid grid-cols-2 gap-2">
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-4 w-16" />
-              <Skeleton className="h-8 w-[100px]" />
-              <Skeleton className="h-4 w-4" />
-            </div>
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-4 w-16" />
-              <Skeleton className="h-8 w-[100px]" />
-              <Skeleton className="h-4 w-4" />
+      <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-2">
+        <Label className={labelStyle}>
+          <Skeleton className="h-6 w-32" />
+        </Label>
+        <div className={contentBoxStyle}>
+          <div className={contentTextStyle}>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-center whitespace-nowrap overflow-hidden">
+                <Skeleton className="h-4 w-16 mr-2 flex-shrink-0" />
+                <div className="flex items-center ml-auto flex-shrink-0">
+                  <Skeleton className="h-8 w-[70px]" />
+                  <Skeleton className="h-4 w-4 ml-1" />
+                  <Skeleton className="h-4 w-4 ml-1" />
+                </div>
+              </div>
+              <div className="flex items-center whitespace-nowrap overflow-hidden">
+                <Skeleton className="h-4 w-16 mr-2 flex-shrink-0" />
+                <div className="flex items-center ml-auto flex-shrink-0">
+                  <Skeleton className="h-8 w-[70px]" />
+                  <Skeleton className="h-4 w-4 ml-1" />
+                  <Skeleton className="h-4 w-4 ml-1" />
+                </div>
+              </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Card className="w-full">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">
-            {station.station_name}
-            {station.station_id && (
-              <span className="text-sm text-gray-500 ml-2">
-                (ID: {station.station_id})
-              </span>
-            )}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              ไม่สามารถโหลดข้อมูลจากสถานีตรวจวัดได้
-            </AlertDescription>
-          </Alert>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  return (
-    <Card className="w-full">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base">
+      <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-2">
+        <Label className={labelStyle}>
           {station.station_name}
           {station.station_id && (
             <span className="text-sm text-gray-500 ml-2">
               (ID: {station.station_id})
             </span>
           )}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        <div className="grid grid-cols-2 gap-2">
-          <div className="flex items-center gap-2">
-            <Label>ระดับน้ำ</Label>
-            <Input 
-              value={waterLevel?.toFixed(2) ?? ''} 
-              readOnly 
-              className={`max-w-[100px] h-8 ${hasRealTimeData ? 'border-primary' : ''}`}
-              data-testid="water-level-input"
-            />
-            <span className="text-sm">ม.</span>
-            {hasRealTimeData && (
-              <div data-testid="water-level-hover-trigger">
-                {renderTelemetryInfo('water_level')}
-              </div>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <Label>อัตราไหลน้ำ</Label>
-            <Input 
-              value={flowRate?.toFixed(2) ?? ''} 
-              readOnly 
-              className={`max-w-[100px] h-8 ${hasRealTimeData ? 'border-primary' : ''}`}
-            />
-            <span className="text-sm">ลบ.ม./วิ</span>
-            {hasRealTimeData && renderTelemetryInfo('flow_rate')}
+        </Label>
+        <div className={contentBoxStyle}>
+          <div className={contentTextStyle}>
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                ไม่สามารถโหลดข้อมูลจากสถานีตรวจวัดได้
+              </AlertDescription>
+            </Alert>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-2">
+      <Label className={labelStyle}>
+        {station.station_name}
+        {station.station_id && (
+          <span className="text-sm text-gray-500 ml-2">
+            (ID: {station.station_id})
+          </span>
+        )}
+      </Label>
+      <div className={contentBoxStyle}>
+        <div className={contentTextStyle}>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center whitespace-nowrap overflow-hidden">
+              <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">ระดับน้ำ</span>
+              <div className="flex items-center flex-shrink-0">
+                <Input 
+                  value={waterLevel?.toFixed(2) ?? ''} 
+                  readOnly 
+                  className={`w-[70px] h-8 ${hasRealTimeData ? 'border-primary' : ''} text-right`}
+                  data-testid="water-level-input"
+                />
+                <span className="text-sm whitespace-nowrap ml-1">ม.</span>
+                {hasRealTimeData && (
+                  <div data-testid="water-level-hover-trigger" className="ml-1">
+                    {renderTelemetryInfo('water_level')}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center whitespace-nowrap overflow-hidden">
+              <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">อัตราไหลน้ำ</span>
+              <div className="flex items-center ml-auto flex-shrink-0">
+                <Input 
+                  value={flowRate?.toFixed(2) ?? ''} 
+                  readOnly 
+                  className={`w-[70px] h-8 ${hasRealTimeData ? 'border-primary' : ''} text-right`}
+                />
+                <span className="text-sm whitespace-nowrap ml-1">ลบ.ม./วิ</span>
+                {hasRealTimeData && (
+                  <div className="ml-1">
+                    {renderTelemetryInfo('flow_rate')}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }; 

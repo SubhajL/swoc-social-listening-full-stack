@@ -18,6 +18,11 @@ const STATION_ID_MAP: Record<string, number> = {
 export const RainStationCard = ({ station }: RainStationCardProps) => {
   const { data: thaiWaterData, isLoading, error } = useThaiWaterData();
 
+  // Common content box styles (matching WaterLevelInfo)
+  const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-md p-3 bg-white text-[#17254D] text-sm font-normal";
+  const contentTextStyle = "px-4"; // Reduced horizontal padding for more compact layout
+  const labelStyle = "text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10";
+
   useEffect(() => {
     console.log('[RainStationCard] Station:', {
       stationId: station.station_id,
@@ -61,42 +66,49 @@ export const RainStationCard = ({ station }: RainStationCardProps) => {
   }, [thaiWaterData, station.station_id]);
 
   return (
-    <Card className="w-full">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base">
-          {station.station_name}
-          {(station.station_id || station.code) && (
-            <span className="text-sm text-gray-500 ml-2">
-              ({station.station_id && `ID: ${station.station_id}`}
-              {station.station_id && station.code && ', '}
-              {!station.station_id && station.code && `Code: ${station.code}`}
-              {station.station_id && station.code && `Code: ${station.code}`})
-            </span>
-          )}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        <div className="grid grid-cols-2 gap-2">
-          <div className="flex items-center gap-2">
-            <Label>ปริมาณฝนสะสม 1 ชม</Label>
-            <Input 
-              value={stationData?.rainfall1h?.toFixed(2) ?? ''} 
-              readOnly 
-              className={`max-w-[100px] h-8 ${isLoading ? 'animate-pulse' : ''}`}
-            />
-            <span className="text-sm">มม.</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Label>ปริมาณฝนสะสม 24 ชม</Label>
-            <Input 
-              value={stationData?.rainfall24h?.toFixed(2) ?? ''} 
-              readOnly 
-              className={`max-w-[100px] h-8 ${isLoading ? 'animate-pulse' : ''}`}
-            />
-            <span className="text-sm">มม.</span>
+    <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-2">
+      <Label className={labelStyle}>
+        {station.station_name}
+        {(station.station_id || station.code) && (
+          <span className="text-sm text-gray-500 ml-2">
+            ({station.station_id && `ID: ${station.station_id}`}
+            {station.station_id && station.code && ', '}
+            {!station.station_id && station.code && `Code: ${station.code}`}
+            {station.station_id && station.code && `Code: ${station.code}`})
+          </span>
+        )}
+      </Label>
+      <div className={contentBoxStyle}>
+        <div className={contentTextStyle}>
+          <div className="space-y-3">
+            <div className="text-[#17254D] text-sm font-normal mb-2">ปริมาณฝนสะสม</div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-center whitespace-nowrap overflow-hidden">
+                <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">1 ชั่วโมง</span>
+                <div className="flex items-center flex-shrink-0">
+                  <Input 
+                    value={stationData?.rainfall1h?.toFixed(2) ?? ''} 
+                    readOnly 
+                    className={`w-[70px] h-8 ${isLoading ? 'animate-pulse' : ''} text-right`}
+                  />
+                  <span className="text-sm whitespace-nowrap ml-1">มม.</span>
+                </div>
+              </div>
+              <div className="flex items-center whitespace-nowrap overflow-hidden">
+                <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">24 ชั่วโมง</span>
+                <div className="flex items-center flex-shrink-0">
+                  <Input 
+                    value={stationData?.rainfall24h?.toFixed(2) ?? ''} 
+                    readOnly 
+                    className={`w-[70px] h-8 ${isLoading ? 'animate-pulse' : ''} text-right`}
+                  />
+                  <span className="text-sm whitespace-nowrap ml-1">มม.</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };

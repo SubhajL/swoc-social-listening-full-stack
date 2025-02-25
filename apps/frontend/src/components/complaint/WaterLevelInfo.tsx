@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
 
 interface WaterLevelInfoProps {
   amphure?: string;
@@ -106,166 +107,221 @@ export const WaterLevelInfo = ({ amphure, province }: WaterLevelInfoProps) => {
     };
   }, [monitoringData?.total, rainData?.total, reservoirData?.total, amphure, province]);
 
+  // Common content box styles
+  const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-md p-4 bg-white text-[#17254D] text-sm font-normal";
+  const contentTextStyle = "px-4"; // Reduced horizontal padding for more compact layout
+  const labelStyle = "text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10";
+
   // Early return if no location data
   if (!amphure && !province) {
     console.info("[WaterLevelInfo] ⚠️ No location data provided", {
       timestamp: new Date().toISOString()
     });
     return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-2">
-          <Info className="w-5 h-5 text-primary" />
-          <h2 className="font-semibold text-lg">ข้อมูลสนับสนุน</h2>
+      <div className="space-y-8 px-4">
+        <h2 className="text-xl font-semibold text-[#17254D] mb-6">ข้อมูลสนับสนุน</h2>
+        <div className="flex flex-col relative mt-10 mx-auto max-w-full w-full">
+          <Alert>
+            <AlertDescription>
+              ไม่พบข้อมูลพื้นที่สำหรับค้นหาสถานี
+            </AlertDescription>
+          </Alert>
         </div>
-        <Alert>
-          <AlertDescription>
-            ไม่พบข้อมูลพื้นที่สำหรับค้นหาสถานี
-          </AlertDescription>
-        </Alert>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-2">
-        <Info className="w-5 h-5 text-primary" />
-        <h2 className="font-semibold text-lg">ข้อมูลสนับสนุน</h2>
-      </div>
-
-      {/* Monitoring Stations Section */}
-      <div className="space-y-4">
-        <h3 className="font-medium">
-          สถานีเฝ้าระวัง {amphure && `ใน${amphure}`}
-          {!amphure && province && `ใน${province}`}
-        </h3>
+    <ErrorBoundary component="WaterLevelInfo">
+      <div className="space-y-10 px-4">
+        {/* Main Heading */}
+        <h2 className="text-xl font-semibold text-[#17254D] mb-6">ข้อมูลสนับสนุน</h2>
         
-        {isLoadingMonitoring && (
-          <div className="space-y-4">
-            <Skeleton className="h-[300px] w-full" />
-            <Skeleton className="h-[300px] w-full" />
-          </div>
-        )}
+        {/* Monitoring Stations Section */}
+        <div className="flex flex-col relative mt-10 mx-auto max-w-full w-full">
+          <Label className={labelStyle}>
+            สถานีเฝ้าระวัง {amphure && `ใน${amphure}`}{!amphure && province && `ใน${province}`}
+          </Label>
+          
+          {isLoadingMonitoring && (
+            <div className={contentBoxStyle}>
+              <div className={contentTextStyle}>
+                <div className="space-y-4">
+                  <Skeleton className="h-[100px] w-full" />
+                  <Skeleton className="h-[100px] w-full" />
+                </div>
+              </div>
+            </div>
+          )}
 
-        {monitoringError && (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              ไม่สามารถโหลดข้อมูลสถานีเฝ้าระวังได้
-            </AlertDescription>
-          </Alert>
-        )}
+          {monitoringError && (
+            <div className={contentBoxStyle}>
+              <div className={contentTextStyle}>
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    ไม่สามารถโหลดข้อมูลสถานีเฝ้าระวังได้
+                  </AlertDescription>
+                </Alert>
+              </div>
+            </div>
+          )}
 
-        {monitoringData?.stations.length === 0 && (
-          <Alert>
-            <AlertDescription>
-              ไม่พบสถานีเฝ้าระวังในพื้นที่นี้
-            </AlertDescription>
-          </Alert>
-        )}
+          {!isLoadingMonitoring && !monitoringError && (monitoringData?.stations ?? []).length === 0 && (
+            <div className={contentBoxStyle}>
+              <div className={contentTextStyle}>
+                <Alert>
+                  <AlertDescription>
+                    ไม่พบสถานีเฝ้าระวังในพื้นที่นี้
+                  </AlertDescription>
+                </Alert>
+              </div>
+            </div>
+          )}
 
-        <div className="space-y-4">
-          {monitoringData?.stations.map((station, index) => {
-            logCardCreation(station, index, monitoringData.total, 'monitoring');
-            return (
-              <MonitoringStationCard 
-                key={station.id} 
-                station={station} 
-                isLoading={isLoadingMonitoring}
-                error={monitoringError}
-              />
-            );
-          })}
+          {!isLoadingMonitoring && !monitoringError && (monitoringData?.stations ?? []).length > 0 && (
+            <div className={contentBoxStyle}>
+              <div className={contentTextStyle}>
+                <div className="space-y-4">
+                  {(monitoringData?.stations ?? []).map((station, index) => {
+                    logCardCreation(station, index, monitoringData?.total ?? 0, 'monitoring');
+                    return (
+                      <MonitoringStationCard 
+                        key={station.id} 
+                        station={station} 
+                        isLoading={isLoadingMonitoring}
+                        error={monitoringError}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Rain Stations Section */}
+        <div className="flex flex-col relative mt-10 mx-auto max-w-full w-full">
+          <Label className={labelStyle}>
+            สถานีน้ำฝน {amphure && `ใน${amphure}`}{!amphure && province && `ใน${province}`}
+          </Label>
+          
+          {isLoadingRain && (
+            <div className={contentBoxStyle}>
+              <div className={contentTextStyle}>
+                <div className="space-y-4">
+                  <Skeleton className="h-[100px] w-full" />
+                  <Skeleton className="h-[100px] w-full" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {rainError && (
+            <div className={contentBoxStyle}>
+              <div className={contentTextStyle}>
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    ไม่สามารถโหลดข้อมูลสถานีน้ำฝนได้
+                  </AlertDescription>
+                </Alert>
+              </div>
+            </div>
+          )}
+
+          {!isLoadingRain && !rainError && (rainData?.stations ?? []).length === 0 && (
+            <div className={contentBoxStyle}>
+              <div className={contentTextStyle}>
+                <Alert>
+                  <AlertDescription>
+                    ไม่พบสถานีน้ำฝนในพื้นที่นี้
+                  </AlertDescription>
+                </Alert>
+              </div>
+            </div>
+          )}
+
+          {!isLoadingRain && !rainError && (rainData?.stations ?? []).length > 0 && (
+            <div className={contentBoxStyle}>
+              <div className={contentTextStyle}>
+                <div className="space-y-4">
+                  {(rainData?.stations ?? []).map((station, index) => {
+                    logCardCreation(station, index, rainData?.total ?? 0, 'rain');
+                    return (
+                      <RainStationCard 
+                        key={station.id} 
+                        station={station} 
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Reservoirs Section */}
+        <div className="flex flex-col relative mt-10 mx-auto max-w-full w-full">
+          <Label className={labelStyle}>
+            เขื่อน/อ่างเก็บน้ำ {amphure && `ใน${amphure}`}{!amphure && province && `ใน${province}`}
+          </Label>
+          
+          {isLoadingReservoir && (
+            <div className={contentBoxStyle}>
+              <div className={contentTextStyle}>
+                <div className="space-y-4">
+                  <Skeleton className="h-[100px] w-full" />
+                  <Skeleton className="h-[100px] w-full" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {reservoirError && (
+            <div className={contentBoxStyle}>
+              <div className={contentTextStyle}>
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    ไม่สามารถโหลดข้อมูลเขื่อน/อ่างเก็บน้ำได้
+                  </AlertDescription>
+                </Alert>
+              </div>
+            </div>
+          )}
+
+          {!isLoadingReservoir && !reservoirError && (reservoirData?.reservoirs ?? []).length === 0 && (
+            <div className={contentBoxStyle}>
+              <div className={contentTextStyle}>
+                <Alert>
+                  <AlertDescription>
+                    ไม่พบเขื่อน/อ่างเก็บน้ำในพื้นที่นี้
+                  </AlertDescription>
+                </Alert>
+              </div>
+            </div>
+          )}
+
+          {!isLoadingReservoir && !reservoirError && (reservoirData?.reservoirs ?? []).length > 0 && (
+            <div className={contentBoxStyle}>
+              <div className={contentTextStyle}>
+                <div className="space-y-4">
+                  {(reservoirData?.reservoirs ?? []).map((reservoir, index) => {
+                    logCardCreation(reservoir, index, reservoirData?.total ?? 0, 'reservoir');
+                    return (
+                      <ReservoirCard 
+                        key={reservoir.id} 
+                        reservoir={reservoir} 
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Rain Stations Section */}
-      <div className="space-y-4">
-        <h3 className="font-medium">
-          สถานีน้ำฝน {amphure && `ใน${amphure}`}
-          {!amphure && province && `ใน${province}`}
-        </h3>
-        
-        {isLoadingRain && (
-          <div className="space-y-4">
-            <Skeleton className="h-[300px] w-full" />
-            <Skeleton className="h-[300px] w-full" />
-          </div>
-        )}
-
-        {rainError && (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              ไม่สามารถโหลดข้อมูลสถานีน้ำฝนได้
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {rainData?.stations.length === 0 && (
-          <Alert>
-            <AlertDescription>
-              ไม่พบสถานีน้ำฝนในพื้นที่นี้
-            </AlertDescription>
-          </Alert>
-        )}
-
-        <div className="space-y-4">
-          {rainData?.stations.map((station, index) => {
-            logCardCreation(station, index, rainData.total, 'rain');
-            return (
-              <RainStationCard 
-                key={station.id} 
-                station={station} 
-              />
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Reservoirs Section */}
-      <div className="space-y-4">
-        <h3 className="font-medium">
-          เขื่อน/อ่างเก็บน้ำ {amphure && `ใน${amphure}`}
-          {!amphure && province && `ใน${province}`}
-        </h3>
-        
-        {isLoadingReservoir && (
-          <div className="space-y-4">
-            <Skeleton className="h-[300px] w-full" />
-            <Skeleton className="h-[300px] w-full" />
-          </div>
-        )}
-
-        {reservoirError && (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              ไม่สามารถโหลดข้อมูลเขื่อน/อ่างเก็บน้ำได้
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {reservoirData?.reservoirs.length === 0 && (
-          <Alert>
-            <AlertDescription>
-              ไม่พบเขื่อน/อ่างเก็บน้ำในพื้นที่นี้
-            </AlertDescription>
-          </Alert>
-        )}
-
-        <div className="space-y-4">
-          {reservoirData?.reservoirs.map((reservoir, index) => {
-            logCardCreation(reservoir, index, reservoirData.total, 'reservoir');
-            return (
-              <ReservoirCard 
-                key={reservoir.id} 
-                reservoir={reservoir} 
-              />
-            );
-          })}
-        </div>
-      </div>
-    </div>
+    </ErrorBoundary>
   );
 };
