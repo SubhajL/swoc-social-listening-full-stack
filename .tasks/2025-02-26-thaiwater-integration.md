@@ -19,8 +19,8 @@ This task involves integrating the ThaiWater API into our application to fetch r
 ## Pending Tasks
 
 - [ ] Install PostGIS extension (requires superuser privileges)
-- [ ] Execute the `create_amphure_table.ts` script to create the amphure table
-- [ ] Verify the ThaiWater service with the new amphure table
+- [x] Execute the `create_amphure_table.ts` script to create the amphure table
+- [x] Verify the ThaiWater service with the new amphure table
 
 ## Technical Details
 
@@ -30,7 +30,7 @@ This task involves integrating the ThaiWater API into our application to fetch r
    - Created SQL script for `amphure` table with PostGIS geometry column
    - Implemented migration logic from existing `amphures` table
    - Added spatial indexes for efficient geographic queries
-   - **Note: Actual table creation is pending due to PostGIS installation requirements**
+   - **Note: Table created with fallback mechanism for geometry data**
 
 2. **ThaiWater Service**
    - Implemented `getGeographicBoundaries` function to calculate location boundaries
@@ -77,8 +77,8 @@ This task involves integrating the ThaiWater API into our application to fetch r
 
 ## Known Issues
 
-1. The PostGIS extension is not installed, which prevents the creation of the `amphure` table
-2. The ThaiWater service code assumes the existence of an `amphure` table, but it's using fallback coordinates
+1. The PostGIS extension is not installed, but the `amphure` table has been created with a fallback mechanism
+2. The ThaiWater service is now using the `amphure` table with simplified geometry data
 3. Current database user (`swoc-uat-ssl-user`) does not have superuser privileges required to install PostGIS
 
 ## Future Improvements
