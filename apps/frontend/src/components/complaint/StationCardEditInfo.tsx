@@ -1,7 +1,4 @@
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
-import { Info } from "lucide-react";
 import { MonitoringStationCard } from "@/components/monitoring/MonitoringStationCard";
 import { RainStationCard } from "@/components/monitoring/RainStationCard";
 import { ReservoirCard } from "@/components/monitoring/ReservoirCard";
@@ -10,27 +7,21 @@ import { useRainStations } from "@/hooks/useRainStations";
 import { useReservoirs } from "@/hooks/useReservoirs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Plus, Trash2, Save } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-// Import the save icon
-import SaveIcon from "@/assets/icon/save.svg";
-
-interface WaterLevelInfoProps {
+interface StationCardEditInfoProps {
   amphure?: string;
   province?: string;
-  showButtons?: boolean;
 }
 
-export const WaterLevelInfo = ({ 
+export const StationCardEditInfo = ({ 
   amphure, 
-  province, 
-  showButtons = false 
-}: WaterLevelInfoProps) => {
+  province
+}: StationCardEditInfoProps) => {
   const { data: monitoringData, isLoading: isLoadingMonitoring, error: monitoringError } = useMonitoringStations(amphure, province);
   const { data: rainData, isLoading: isLoadingRain, error: rainError } = useRainStations(amphure, province);
   const { data: reservoirData, isLoading: isLoadingReservoir, error: reservoirError } = useReservoirs(amphure, province);
@@ -38,7 +29,7 @@ export const WaterLevelInfo = ({
 
   // Log when component mounts and when location changes
   useEffect(() => {
-    console.info("[WaterLevelInfo] Component initialized", {
+    console.info("[StationCardEditInfo] Component initialized", {
       amphure,
       province,
       timestamp: new Date().toISOString()
@@ -50,7 +41,7 @@ export const WaterLevelInfo = ({
   // Log when data changes
   useEffect(() => {
     if (monitoringData) {
-      console.info("[WaterLevelInfo] 📊 Monitoring stations data received", {
+      console.info("[StationCardEditInfo] 📊 Monitoring stations data received", {
         totalStations: monitoringData.total,
         location: {
           amphure,
@@ -61,7 +52,7 @@ export const WaterLevelInfo = ({
       });
     }
     if (rainData) {
-      console.info("[WaterLevelInfo] 🌧️ Rain stations data received", {
+      console.info("[StationCardEditInfo] 🌧️ Rain stations data received", {
         totalStations: rainData.total,
         location: {
           amphure,
@@ -72,7 +63,7 @@ export const WaterLevelInfo = ({
       });
     }
     if (reservoirData) {
-      console.info("[WaterLevelInfo] 💧 Reservoir data received", {
+      console.info("[StationCardEditInfo] 💧 Reservoir data received", {
         totalReservoirs: reservoirData.total,
         location: {
           amphure,
@@ -89,7 +80,7 @@ export const WaterLevelInfo = ({
   // Function to log card creation
   const logCardCreation = (item: any, index: number, total: number, type: 'monitoring' | 'rain' | 'reservoir') => {
     cardCreationCount.current++;
-    console.info(`[WaterLevelInfo] 🔄 Creating ${type} ${type === 'reservoir' ? 'card' : 'station card'} ${index + 1}/${total}`, {
+    console.info(`[StationCardEditInfo] 🔄 Creating ${type} ${type === 'reservoir' ? 'card' : 'station card'} ${index + 1}/${total}`, {
       id: item.id,
       name: type === 'reservoir' ? item.reservoir_name : item.station_name,
       location: `${item.amphure}, ${item.province}`,
@@ -103,7 +94,7 @@ export const WaterLevelInfo = ({
   useEffect(() => {
     return () => {
       if (cardCreationCount.current > 0) {
-        console.info("[WaterLevelInfo] 📋 Final card creation count", {
+        console.info("[StationCardEditInfo] 📋 Final card creation count", {
           createdCards: cardCreationCount.current,
           expectedTotalMonitoring: monitoringData?.total || 0,
           expectedTotalRain: rainData?.total || 0,
@@ -150,7 +141,7 @@ export const WaterLevelInfo = ({
 
   // Early return if no location data
   if (!amphure && !province) {
-    console.info("[WaterLevelInfo] ⚠️ No location data provided", {
+    console.info("[StationCardEditInfo] ⚠️ No location data provided", {
       timestamp: new Date().toISOString()
     });
     return (
@@ -168,7 +159,7 @@ export const WaterLevelInfo = ({
   }
 
   return (
-    <ErrorBoundary component="WaterLevelInfo">
+    <ErrorBoundary component="StationCardEditInfo">
       <div className="space-y-10 px-4">
         {/* Main Heading */}
         <h2 className="text-xl font-semibold text-[#17254D] mb-6">ข้อมูลสนับสนุน</h2>
@@ -179,14 +170,12 @@ export const WaterLevelInfo = ({
             <Label className={labelStyle}>
               สถานีเฝ้าระวัง {amphure && `ใน${amphure}`}{!amphure && province && `ใน${province}`}
             </Label>
-            {showButtons && (
-              <Button 
-                className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] border-none text-sm py-1.5 px-4 rounded-md ml-4 text-base"
-                onClick={() => handleAddData("สถานีเฝ้าระวัง")}
-              >
-                <Plus className="h-5 w-5 mr-1.5" /> เพิ่มข้อมูล
-              </Button>
-            )}
+            <Button 
+              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center"
+              onClick={() => handleAddData("สถานีเฝ้าระวัง")}
+            >
+              <Plus className="h-5 w-5 mr-2" /> เพิ่มข้อมูล
+            </Button>
           </div>
           
           {isLoadingMonitoring && (
@@ -237,8 +226,7 @@ export const WaterLevelInfo = ({
                         station={station} 
                         isLoading={isLoadingMonitoring}
                         error={monitoringError}
-                        showButtons={showButtons}
-                        onAddData={() => handleAddData(`สถานีเฝ้าระวัง ${station.station_name}`)}
+                        showButtons={true}
                         onDeleteData={() => handleDeleteData(`สถานีเฝ้าระวัง ${station.station_name}`)}
                       />
                     );
@@ -255,14 +243,12 @@ export const WaterLevelInfo = ({
             <Label className={labelStyle}>
               สถานีน้ำฝน {amphure && `ใน${amphure}`}{!amphure && province && `ใน${province}`}
             </Label>
-            {showButtons && (
-              <Button 
-                className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] border-none text-sm py-1.5 px-4 rounded-md ml-4 text-base"
-                onClick={() => handleAddData("สถานีน้ำฝน")}
-              >
-                <Plus className="h-5 w-5 mr-1.5" /> เพิ่มข้อมูล
-              </Button>
-            )}
+            <Button 
+              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center"
+              onClick={() => handleAddData("สถานีน้ำฝน")}
+            >
+              <Plus className="h-5 w-5 mr-2" /> เพิ่มข้อมูล
+            </Button>
           </div>
           
           {isLoadingRain && (
@@ -311,8 +297,7 @@ export const WaterLevelInfo = ({
                       <RainStationCard 
                         key={station.id} 
                         station={station}
-                        showButtons={showButtons}
-                        onAddData={() => handleAddData(`สถานีน้ำฝน ${station.station_name}`)}
+                        showButtons={true}
                         onDeleteData={() => handleDeleteData(`สถานีน้ำฝน ${station.station_name}`)}
                       />
                     );
@@ -329,14 +314,12 @@ export const WaterLevelInfo = ({
             <Label className={labelStyle}>
               เขื่อน/อ่างเก็บน้ำ {amphure && `ใน${amphure}`}{!amphure && province && `ใน${province}`}
             </Label>
-            {showButtons && (
-              <Button 
-                className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] border-none text-sm py-1.5 px-4 rounded-md ml-4 text-base"
-                onClick={() => handleAddData("เขื่อน/อ่างเก็บน้ำ")}
-              >
-                <Plus className="h-5 w-5 mr-1.5" /> เพิ่มข้อมูล
-              </Button>
-            )}
+            <Button 
+              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center"
+              onClick={() => handleAddData("เขื่อน/อ่างเก็บน้ำ")}
+            >
+              <Plus className="h-5 w-5 mr-2" /> เพิ่มข้อมูล
+            </Button>
           </div>
           
           {isLoadingReservoir && (
@@ -385,8 +368,7 @@ export const WaterLevelInfo = ({
                       <ReservoirCard 
                         key={reservoir.id} 
                         reservoir={reservoir}
-                        showButtons={showButtons}
-                        onAddData={() => handleAddData(`เขื่อน/อ่างเก็บน้ำ ${reservoir.reservoir_name}`)}
+                        showButtons={true}
                         onDeleteData={() => handleDeleteData(`เขื่อน/อ่างเก็บน้ำ ${reservoir.reservoir_name}`)}
                       />
                     );
@@ -396,20 +378,18 @@ export const WaterLevelInfo = ({
             </div>
           )}
           
-          {/* Save Button below Reservoir Frame - only show when showButtons is true */}
-          {showButtons && (
-            <div className="flex justify-center mt-6">
-              <Button 
-                onClick={handleSave}
-                className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] px-8 py-3 rounded-md flex items-center justify-center text-lg"
-              >
-                <img src={SaveIcon} alt="Save" className="h-6 w-6 mr-3" />
-                บันทึก
-              </Button>
-            </div>
-          )}
+          {/* Save Button below Reservoir Frame */}
+          <div className="flex justify-center mt-6">
+            <Button 
+              onClick={handleSave}
+              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-12 px-8 text-base font-medium rounded-md flex items-center"
+            >
+              <Save className="h-5 w-5 mr-2" />
+              บันทึก
+            </Button>
+          </div>
         </div>
       </div>
     </ErrorBoundary>
   );
-};
+}; 

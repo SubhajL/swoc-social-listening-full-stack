@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Complaint } from "@/types/complaint";
 import { ProcessedPost } from "@/types/processed-post";
 import { SocialPostInfo } from "@/components/complaint/SocialPostInfo";
-import { WaterLevelInfo } from "@/components/complaint/WaterLevelInfo";
+import { StationCardEditInfo } from "@/components/complaint/StationCardEditInfo";
 import logo1 from "@/assets/logo1.png";
 import logo2 from "@/assets/logo2.png";
 import { Link } from "react-router-dom";
@@ -123,10 +123,9 @@ const StationCardEdit = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 mt-6">
           <Card className="p-6">
-            <WaterLevelInfo 
+            <StationCardEditInfo 
               amphure={firstAmphure}
               province={firstProvince}
-              showButtons={true}
             />
           </Card>
         </div>

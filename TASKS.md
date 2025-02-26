@@ -18,10 +18,10 @@
 - [x] Analyze tables for better query planning
 
 ### PostGIS Integration
-- [ ] Install PostGIS extension (requires superuser)
-- [ ] Create admin script for PostGIS installation
-- [ ] Add spatial indexes
-- [ ] Convert coordinates to geometry data
+- [x] Install PostGIS extension (requires superuser)
+- [x] Create admin script for PostGIS installation
+- [x] Add spatial indexes
+- [x] Convert coordinates to geometry data
 
 ### Data Quality Issues
 - [x] Verify no orphaned records
@@ -37,14 +37,37 @@
    - [ ] Update amphure coordinates in database
 
 2. **PostGIS Setup**
-   - [ ] Get database administrator to run PostGIS installation script
-   - [ ] Update indexes to use spatial features
-   - [ ] Add spatial query support
+   - [x] Get database administrator to run PostGIS installation script
+   - [x] Update indexes to use spatial features
+   - [x] Add spatial query support
 
 3. **Data Access Layer**
-   - [ ] Create utility functions for location queries
-   - [ ] Add spatial search capabilities
-   - [ ] Implement hierarchical data retrieval
+   - [x] Create utility functions for location queries
+   - [x] Add spatial search capabilities
+   - [x] Implement hierarchical data retrieval
+
+## ThaiWater API Integration
+
+See detailed task: [ThaiWater Integration](./.tasks/2025-02-26-thaiwater-integration.md)
+
+### Backend Implementation
+- [x] Create `amphure` table with PostGIS geometry support
+- [x] Implement `getGeographicBoundaries` function for location filtering
+- [x] Create `getRainfallByLocation` service function
+- [x] Add `/api/rain-stations/thaiwater` endpoint
+- [x] Implement robust error handling and logging
+- [x] Create setup and test scripts
+
+### Frontend Implementation
+- [x] Create `useThaiWaterDataByLocation` hook
+- [x] Update `RainStationCard` component to display real rainfall data
+- [x] Implement station ID mapping for accurate data retrieval
+- [x] Add loading states and error handling
+
+### Future Improvements
+- [ ] Enhance station ID mapping with more comprehensive coverage
+- [ ] Add historical rainfall data visualization
+- [ ] Implement caching strategies for external API data
 
 ## Current Status
 
@@ -70,16 +93,24 @@
    - ✅ All have valid coordinates
    - ✅ Proper amphure relationships
 
+4. **Amphure** (for ThaiWater)
+   - [x] Created with PostGIS geometry column
+   - [x] Populated from existing amphures table
+   - [x] Spatial indexes for efficient queries
+   - [x] Used for geographic filtering in ThaiWater service
+
 ### Indexes Created
 - ✅ Name indexes (Thai and English)
 - ✅ Coordinate indexes
 - ✅ Foreign key indexes
-- ❌ Spatial indexes (pending PostGIS)
+- ✅ Spatial indexes (using PostGIS)
 
 ### Known Issues
 1. Thai character encoding showing as `à¸` etc.
 2. Amphure coordinates using tumbon data
-3. PostGIS installation requires superuser privileges
+3. Limited station ID mapping for ThaiWater integration
+4. PostGIS extension not installed - requires superuser privileges
+5. ~~Amphure table not created due to missing PostGIS extension~~ Amphure table created with fallback mechanism
 
 ### Scripts Created
 1. `import_location_data.ts` - Imports data from DBF file
@@ -89,9 +120,14 @@
 5. `install_postgis.ts` - PostGIS installation (needs superuser)
 6. `admin_install_postgis.sql` - For database administrator
 7. `update_location_data.ts` - Updates coordinate data
+8. `create_amphure_table.ts` - Creates amphure table for ThaiWater
+9. `test_thaiwater_location.ts` - Tests ThaiWater location service
+10. `setup_thaiwater.ts` - Runs all ThaiWater setup steps
 
 ## Next Actions Required
-1. Contact database administrator for PostGIS installation
-2. Source accurate amphure coordinate data
-3. Fix Thai character encoding
-4. Create location query utility functions 
+1. Fix Thai character encoding
+2. Enhance station ID mapping for ThaiWater integration
+3. Add historical rainfall data visualization
+4. Implement caching strategies for external API data
+5. Install PostGIS extension with superuser privileges
+6. ~~Create amphure table after PostGIS installation~~ Test amphure table with actual PostGIS installation 

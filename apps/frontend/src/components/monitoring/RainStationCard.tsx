@@ -4,12 +4,14 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useThaiWaterData } from "@/hooks/useThaiWaterData";
 import { useMemo, useEffect } from "react";
-import { StationCardButtons } from "./StationCardButtons";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Plus, Trash2 } from "lucide-react";
 
 interface RainStationCardProps {
   station: RainStation;
   showButtons?: boolean;
+  onAddData?: () => void;
+  onDeleteData?: () => void;
 }
 
 // Station ID mapping (our station_id -> ThaiWater tele_station_id)
@@ -18,23 +20,18 @@ const STATION_ID_MAP: Record<string, number> = {
   '7013': 494       // อุตุสนามบิน
 };
 
-export const RainStationCard = ({ station, showButtons = false }: RainStationCardProps) => {
+export const RainStationCard = ({ 
+  station,
+  showButtons = false,
+  onAddData,
+  onDeleteData
+}: RainStationCardProps) => {
   const { data: thaiWaterData, isLoading, error } = useThaiWaterData();
 
   // Common content box styles (matching WaterLevelInfo)
   const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-md p-3 bg-white text-[#17254D] text-sm font-normal";
-  const contentTextStyle = "px-4"; // Reduced horizontal padding for more compact layout
+  const contentTextStyle = "px-3"; // Consistent horizontal padding for balanced layout
   const labelStyle = "text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10";
-
-  const handleAddData = () => {
-    console.log('Adding data for rain station:', station.station_id);
-    toast.success(`เพิ่มข้อมูลสำหรับสถานีวัดน้ำฝน ${station.station_name}`);
-  };
-
-  const handleDeleteData = () => {
-    console.log('Deleting data for rain station:', station.station_id);
-    toast.success(`ลบข้อมูลสำหรับสถานีวัดน้ำฝน ${station.station_name}`);
-  };
 
   useEffect(() => {
     console.log('[RainStationCard] Station:', {
@@ -70,7 +67,7 @@ export const RainStationCard = ({ station, showButtons = false }: RainStationCar
   }, [thaiWaterData, station.station_id]);
 
   return (
-    <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-2">
+    <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-3">
       <Label className={labelStyle}>
         {station.station_name}
         {station.station_id && (
@@ -79,42 +76,52 @@ export const RainStationCard = ({ station, showButtons = false }: RainStationCar
           </span>
         )}
       </Label>
+      
       <div className={contentBoxStyle}>
-        <div className={contentTextStyle}>
-          <div className="space-y-3">
-            <div className="text-[#17254D] text-sm font-normal mb-2">ปริมาณน้ำฝน</div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center whitespace-nowrap overflow-hidden">
-                <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">วันนี้</span>
-                <div className="flex items-center flex-shrink-0">
-                  <Input 
-                    value={station.rainfall_3d ?? ''} 
-                    readOnly 
-                    className="w-[70px] h-8 text-right"
-                  />
-                  <span className="text-sm whitespace-nowrap ml-1">มม.</span>
-                </div>
-              </div>
-              <div className="flex items-center whitespace-nowrap overflow-hidden">
-                <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">เมื่อวาน</span>
-                <div className="flex items-center flex-shrink-0">
-                  <Input 
-                    value={station.rainfall_7d ?? ''} 
-                    readOnly 
-                    className="w-[70px] h-8 text-right"
-                  />
-                  <span className="text-sm whitespace-nowrap ml-1">มม.</span>
+        <div className="flex justify-between items-center">
+          <div className="flex-grow">
+            <div className={contentTextStyle}>
+              <div className="space-y-3">
+                <div className="text-[#17254D] text-sm font-normal mb-2">ปริมาณน้ำฝน</div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center whitespace-nowrap overflow-hidden">
+                    <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">วันนี้</span>
+                    <div className="flex items-center flex-shrink-0">
+                      <Input 
+                        value={station.rainfall_3d !== undefined && station.rainfall_3d !== null ? station.rainfall_3d.toFixed(2) : ''} 
+                        readOnly 
+                        className="w-[70px] h-8 text-right"
+                      />
+                      <span className="text-sm whitespace-nowrap ml-1">มม.</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center whitespace-nowrap overflow-hidden">
+                    <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">เมื่อวาน</span>
+                    <div className="flex items-center flex-shrink-0">
+                      <Input 
+                        value={station.rainfall_7d !== undefined && station.rainfall_7d !== null ? station.rainfall_7d.toFixed(2) : ''} 
+                        readOnly 
+                        className="w-[70px] h-8 text-right"
+                      />
+                      <span className="text-sm whitespace-nowrap ml-1">มม.</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            
-            {showButtons && (
-              <StationCardButtons 
-                onAdd={handleAddData}
-                onDelete={handleDeleteData}
-              />
-            )}
           </div>
+          
+          {showButtons && (
+            <div className="flex space-x-2 ml-4">
+              <Button
+                className="bg-[#EF5350] text-white hover:bg-[#E53935] h-10 px-4 text-base flex items-center"
+                onClick={onDeleteData}
+              >
+                <Trash2 className="h-5 w-5 mr-2" />
+                ลบข้อมูล
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
