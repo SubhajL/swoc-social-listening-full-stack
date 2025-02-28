@@ -473,7 +473,7 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
 
 ### 10. StationEdit UI System
 - Status: ✅ LOCKED
-- Last Lock Date: 2024-02-26
+- Last Lock Date: 2025-02-28
 - Components:
   - StationCardEditInfo.tsx (main edit component)
   - MonitoringStationCard.tsx (with delete button)
@@ -486,6 +486,7 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
   - Delete data button functionality
   - Save button with icon
   - Conditional button display
+  - Navigation with data preservation
 - Features: ✅ Complete
   - "เพิ่มข้อมูล" (Add Data) buttons for each station type
   - Delete buttons with Trash2 icon for each station card
@@ -493,6 +494,9 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
   - Toast notifications for user actions
   - Proper error handling and loading states
   - Responsive layout and consistent styling
+  - Navigation with complaint data preservation
+- Known Issues: ⚠️
+  - "ไม่บันทึก" (Don't Save) button functionality needs improvement
 - Safety Measures: ✅ Complete
   - Feature Management: Implemented
   - Error Handling: Comprehensive
@@ -504,12 +508,15 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
   - useReservoirs hook
   - Lucide React icons (Plus, Trash2, Save)
   - Toast notifications system
+  - SessionStorage for data preservation
 - Testing Status:
   - UI Rendering: ✅ Passing
-  - Button Functionality: ✅ Passing
+  - Button Functionality: ✅ Passing (except "ไม่บันทึก")
   - Conditional Display: ✅ Passing
   - Error Handling: ✅ Working
   - Loading States: ✅ Working
+  - Navigation: ✅ Working
+  - Data Preservation: ✅ Working
 
 DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
 
@@ -592,11 +599,14 @@ Contact the relevant feature owner before attempting any modifications to locked
 - **Last Updated**: 2025-02-24
 
 ### task/frontend-development
-- **Status**: 🆕 New
+- **Status**: 🔄 In Progress
 - **Owner**: Current Developer
-- **Description**: New frontend development branch from integration-post
-- **Features**: TBD
-- **Last Updated**: 2025-02-24
+- **Description**: Frontend development branch with StationCardEdit improvements
+- **Features**: 
+  - StationCardEdit navigation with data preservation
+  - Complaint data handling improvements
+  - UI enhancements and bug fixes
+- **Last Updated**: 2025-02-28
 
 ## Base Branches
 
