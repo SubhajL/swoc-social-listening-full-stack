@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { 
   Dialog, 
   DialogContent, 
@@ -8,19 +8,32 @@ import {
   DialogClose
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Loader2 } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useMonitoringStations } from "@/hooks/useMonitoringStations";
 import { useRainStations } from "@/hooks/useRainStations";
 import { useReservoirs } from "@/hooks/useReservoirs";
 import { MonitoringStation } from "@/types/monitoring-station";
 import { RainStation } from "@/types/rain-station";
 import { Reservoir } from "@/types/reservoir";
-import { getAdjacentAmphures } from "@/utils/adjacent-amphures";
+
+/**
+ * CODE LOCK: 2025-02-28
+ * 
+ * The StationSelectionDialog component UI and interaction are now working correctly:
+ * - Dialog layout and styling are finalized
+ * - Station list display with checkboxes is working
+ * - Pagination with blue arrows below the station list is functioning
+ * - Footer with station count and buttons is properly positioned
+ * - Selection functionality works as expected
+ * 
+ * PENDING: Data querying functionality still needs improvement
+ * - Current implementation fetches all stations by province
+ * - Filtering logic may need optimization
+ * 
+ * DO NOT modify the UI layout or styling without approval.
+ */
 
 export type StationType = 'monitoring' | 'rain' | 'reservoir';
 
@@ -31,6 +44,7 @@ interface StationSelectionDialogProps {
   currentProvince?: string;
   currentAmphure?: string;
   onStationSelect: (stations: any[]) => void;
+  currentStations?: any[]; // Stations already selected in the ComplaintForm
 }
 
 export const StationSelectionDialog = ({
@@ -39,111 +53,34 @@ export const StationSelectionDialog = ({
   stationType,
   currentProvince,
   currentAmphure,
-  onStationSelect
+  onStationSelect,
+  currentStations = [] // Default to empty array if not provided
 }: StationSelectionDialogProps) => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedStations, setSelectedStations] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState<string>("current");
-  const [adjacentLocations, setAdjacentLocations] = useState<Array<{ province: string; amphure: string }>>([]);
+  const [startIndex, setStartIndex] = useState(0);
+  const stationsContainerRef = useRef<HTMLDivElement>(null);
   
   // Fetch stations for current location
   const { 
     data: monitoringData, 
     isLoading: isLoadingMonitoring 
-  } = useMonitoringStations(
-    activeTab === "current" ? currentAmphure : undefined,
-    activeTab === "current" ? currentProvince : undefined
-  );
+  } = useMonitoringStations(undefined, currentProvince); // Only filter by province, not amphure
   
   const { 
     data: rainData, 
     isLoading: isLoadingRain 
-  } = useRainStations(
-    activeTab === "current" ? currentAmphure : undefined,
-    activeTab === "current" ? currentProvince : undefined
-  );
+  } = useRainStations(undefined, currentProvince); // Only filter by province, not amphure
   
   const { 
     data: reservoirData, 
     isLoading: isLoadingReservoir 
-  } = useReservoirs(
-    activeTab === "current" ? currentAmphure : undefined,
-    activeTab === "current" ? currentProvince : undefined
-  );
-
-  // Fetch stations for adjacent locations
-  const [adjacentStations, setAdjacentStations] = useState<any[]>([]);
-  const [isLoadingAdjacent, setIsLoadingAdjacent] = useState(false);
-
-  // Get adjacent amphures when component mounts
-  useEffect(() => {
-    if (currentProvince && currentAmphure) {
-      const adjacent = getAdjacentAmphures(currentProvince, currentAmphure);
-      setAdjacentLocations(adjacent);
-    }
-  }, [currentProvince, currentAmphure]);
-
-  // Fetch stations from adjacent amphures when tab changes
-  useEffect(() => {
-    if (activeTab === "adjacent" && adjacentLocations.length > 0) {
-      setIsLoadingAdjacent(true);
-      
-      const fetchAdjacentStations = async () => {
-        try {
-          const stations: any[] = [];
-          
-          // Fetch stations for each adjacent location
-          for (const location of adjacentLocations) {
-            if (stationType === 'monitoring') {
-              const response = await fetch(
-                `/api/monitoring-stations?province=${encodeURIComponent(location.province)}&amphure=${encodeURIComponent(location.amphure)}`
-              );
-              if (response.ok) {
-                const data = await response.json();
-                stations.push(...data.stations);
-              }
-            } else if (stationType === 'rain') {
-              const response = await fetch(
-                `/api/rain-stations?province=${encodeURIComponent(location.province)}&amphure=${encodeURIComponent(location.amphure)}`
-              );
-              if (response.ok) {
-                const data = await response.json();
-                stations.push(...data.stations);
-              }
-            } else if (stationType === 'reservoir') {
-              const response = await fetch(
-                `/api/reservoirs?province=${encodeURIComponent(location.province)}&amphure=${encodeURIComponent(location.amphure)}`
-              );
-              if (response.ok) {
-                const data = await response.json();
-                stations.push(...data.reservoirs);
-              }
-            }
-          }
-          
-          // Remove duplicates based on id
-          const uniqueStations = stations.filter((station, index, self) =>
-            index === self.findIndex((s) => s.id === station.id)
-          );
-          
-          setAdjacentStations(uniqueStations);
-        } catch (error) {
-          console.error("Error fetching adjacent stations:", error);
-        } finally {
-          setIsLoadingAdjacent(false);
-        }
-      };
-      
-      fetchAdjacentStations();
-    }
-  }, [activeTab, adjacentLocations, stationType]);
+  } = useReservoirs(undefined, currentProvince); // Only filter by province, not amphure
 
   // Reset state when dialog opens
   useEffect(() => {
     if (open) {
       setSelectedStations([]);
-      setSearchTerm("");
-      setActiveTab("current");
+      setStartIndex(0);
     }
   }, [open]);
 
@@ -160,43 +97,34 @@ export const StationSelectionDialog = ({
     });
   };
 
-  // Filter stations based on search term
-  const filterStations = (stations: any[]) => {
-    if (!searchTerm) return stations;
-    
-    return stations.filter(station => {
-      const stationName = stationType === 'reservoir' 
-        ? station.reservoir_name 
-        : station.station_name;
-      
-      return stationName.toLowerCase().includes(searchTerm.toLowerCase());
-    });
-  };
-
-  // Get stations based on active tab and station type
+  // Get stations based on station type and filter out current stations
   const getStations = () => {
-    if (activeTab === "adjacent") {
-      return filterStations(adjacentStations);
-    }
+    let stations: any[] = [];
     
     switch (stationType) {
       case 'monitoring':
-        return filterStations(monitoringData?.stations || []);
+        stations = monitoringData?.stations || [];
+        break;
       case 'rain':
-        return filterStations(rainData?.stations || []);
+        stations = rainData?.stations || [];
+        break;
       case 'reservoir':
-        return filterStations(reservoirData?.reservoirs || []);
+        stations = reservoirData?.reservoirs || [];
+        break;
       default:
-        return [];
-    }
-  };
-
-  // Check if loading based on active tab and station type
-  const isLoading = () => {
-    if (activeTab === "adjacent") {
-      return isLoadingAdjacent;
+        stations = [];
     }
     
+    // Filter out all stations that are already in the StationCardEditInfo
+    // This includes both user-selected stations and stations from the current location
+    // regardless of whether they are enabled or disabled
+    return stations.filter(station => 
+      !currentStations.some(currentStation => currentStation.id === station.id)
+    );
+  };
+
+  // Check if loading based on station type
+  const isLoading = () => {
     switch (stationType) {
       case 'monitoring':
         return isLoadingMonitoring;
@@ -213,14 +141,40 @@ export const StationSelectionDialog = ({
   const getDialogTitle = () => {
     switch (stationType) {
       case 'monitoring':
-        return "เลือกสถานีเฝ้าระวัง";
+        return "เพิ่มสถานีเฝ้าระวัง";
       case 'rain':
-        return "เลือกสถานีน้ำฝน";
+        return "เพิ่มสถานีน้ำฝน";
       case 'reservoir':
-        return "เลือกเขื่อน/อ่างเก็บน้ำ";
+        return "เพิ่มเขื่อน/อ่างเก็บน้ำ";
       default:
-        return "เลือกสถานี";
+        return "เพิ่มสถานี";
     }
+  };
+
+  // Get station name based on station type
+  const getStationName = (station: MonitoringStation | RainStation | Reservoir) => {
+    if (stationType === 'reservoir' && 'reservoir_name' in station) {
+      return station.reservoir_name;
+    } else if ((stationType === 'monitoring' || stationType === 'rain') && 'station_name' in station) {
+      return station.station_name;
+    }
+    return "Unknown Station";
+  };
+
+  // Check if station has station_id
+  const hasStationId = (station: MonitoringStation | RainStation | Reservoir): boolean => {
+    return (stationType === 'monitoring' || stationType === 'rain') && 
+           'station_id' in station && 
+           station.station_id !== undefined && 
+           station.station_id !== null;
+  };
+
+  // Get station_id if available
+  const getStationId = (station: MonitoringStation | RainStation | Reservoir): string => {
+    if (hasStationId(station) && 'station_id' in station && station.station_id) {
+      return station.station_id;
+    }
+    return "";
   };
 
   // Handle confirm button click
@@ -229,128 +183,130 @@ export const StationSelectionDialog = ({
     onOpenChange(false);
   };
 
+  // Handle navigation
+  const handleScrollLeft = () => {
+    if (startIndex > 0) {
+      setStartIndex(startIndex - 5); // Move by 5 stations at a time
+    }
+  };
+
+  const handleScrollRight = () => {
+    const stations = getStations();
+    if (startIndex + 5 < stations.length) {
+      setStartIndex(startIndex + 5); // Move by 5 stations at a time
+    }
+  };
+
   const stations = getStations();
+  const visibleStations = stations.slice(startIndex, startIndex + 5);
+  const canScrollLeft = startIndex > 0;
+  const canScrollRight = startIndex + 5 < stations.length;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle>{getDialogTitle()}</DialogTitle>
+      <DialogContent className="sm:max-w-[600px] max-h-[85vh] flex flex-col bg-white p-0 overflow-hidden">
+        <DialogHeader className="p-6 pb-0">
+          <DialogTitle className="text-xl font-semibold text-[#17254D]">{getDialogTitle()}</DialogTitle>
         </DialogHeader>
         
-        <div className="flex items-center space-x-2 mb-4">
-          <Search className="w-4 h-4 text-gray-500" />
-          <Input
-            placeholder="ค้นหาสถานี..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1"
-          />
+        <div className="p-6 pt-4">
+          <div className="border border-[#E2E8F0] rounded-md bg-white p-0">
+            {isLoading() ? (
+              <div className="flex justify-center items-center py-8">
+                <Loader2 className="w-8 h-8 animate-spin text-[#42A5F5]" />
+              </div>
+            ) : stations.length === 0 ? (
+              <div className="text-center py-8 text-[#64748B]">
+                {currentStations.length > 0 
+                  ? "ไม่พบสถานีเพิ่มเติมในจังหวัดนี้" 
+                  : "ไม่พบสถานีในจังหวัดนี้"}
+              </div>
+            ) : (
+              <div className="relative">
+                <div 
+                  ref={stationsContainerRef}
+                  className="py-4 px-12"
+                >
+                  <div className="space-y-2">
+                    {visibleStations.map((station) => (
+                      <div
+                        key={station.id}
+                        className="flex items-center space-x-3 p-3 rounded-md border border-[#E2E8F0] bg-white"
+                      >
+                        <Checkbox
+                          id={`station-${station.id}`}
+                          checked={selectedStations.some(s => s.id === station.id)}
+                          onCheckedChange={() => handleStationToggle(station)}
+                          className="border-[#42A5F5] data-[state=checked]:bg-[#42A5F5] data-[state=checked]:text-white h-5 w-5"
+                        />
+                        <Label
+                          htmlFor={`station-${station.id}`}
+                          className="flex-1 cursor-pointer font-medium text-[#17254D]"
+                        >
+                          {getStationName(station)}
+                          <div className="text-xs text-[#64748B] mt-1">
+                            {station.amphure}, {station.province}
+                            {hasStationId(station) && (
+                              <span className="ml-2 text-[#94A3B8]">รหัสสถานี: {getStationId(station)}</span>
+                            )}
+                          </div>
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Pagination buttons below the station list */}
+          {stations.length > 0 && !isLoading() && (
+            <div className="flex justify-center mt-4 mb-0">
+              <div className="flex items-center justify-center space-x-4">
+                <button 
+                  onClick={handleScrollLeft}
+                  className={`w-8 h-8 flex items-center justify-center bg-white border border-[#E2E8F0] rounded-full shadow-sm ${!canScrollLeft ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  aria-label="Scroll left"
+                  disabled={!canScrollLeft}
+                >
+                  <div className="w-0 h-0 border-t-[8px] border-t-transparent border-r-[12px] border-r-[#42A5F5] border-b-[8px] border-b-transparent" />
+                </button>
+                
+                <button 
+                  onClick={handleScrollRight}
+                  className={`w-8 h-8 flex items-center justify-center bg-white border border-[#E2E8F0] rounded-full shadow-sm ${!canScrollRight ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  aria-label="Scroll right"
+                  disabled={!canScrollRight}
+                >
+                  <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[12px] border-l-[#42A5F5] border-b-[8px] border-b-transparent" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
         
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="current">
-              {currentAmphure ? `${currentAmphure}` : currentProvince ? `${currentProvince}` : "พื้นที่ปัจจุบัน"}
-            </TabsTrigger>
-            <TabsTrigger value="adjacent" disabled={adjacentLocations.length === 0}>
-              พื้นที่ใกล้เคียง ({adjacentLocations.length})
-            </TabsTrigger>
-          </TabsList>
+        <DialogFooter className="px-6 py-4 flex justify-between items-center w-full">
+          {/* Station count on the left */}
+          <div className="text-[#64748B] text-sm">
+            เลือก {selectedStations.length} สถานี
+          </div>
           
-          <TabsContent value="current" className="mt-4">
-            {isLoading() ? (
-              <div className="flex justify-center items-center py-8">
-                <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              </div>
-            ) : stations.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                ไม่พบสถานีในพื้นที่นี้
-              </div>
-            ) : (
-              <ScrollArea className="h-[300px] pr-4">
-                <div className="space-y-2">
-                  {stations.map((station) => (
-                    <div
-                      key={station.id}
-                      className="flex items-center space-x-2 p-2 rounded hover:bg-gray-100"
-                    >
-                      <Checkbox
-                        id={`station-${station.id}`}
-                        checked={selectedStations.some(s => s.id === station.id)}
-                        onCheckedChange={() => handleStationToggle(station)}
-                      />
-                      <Label
-                        htmlFor={`station-${station.id}`}
-                        className="flex-1 cursor-pointer"
-                      >
-                        {stationType === 'reservoir' ? station.reservoir_name : station.station_name}
-                        <div className="text-xs text-gray-500">
-                          {station.amphure}, {station.province}
-                        </div>
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </ScrollArea>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="adjacent" className="mt-4">
-            {isLoading() ? (
-              <div className="flex justify-center items-center py-8">
-                <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              </div>
-            ) : stations.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                ไม่พบสถานีในพื้นที่ใกล้เคียง
-              </div>
-            ) : (
-              <ScrollArea className="h-[300px] pr-4">
-                <div className="space-y-2">
-                  {stations.map((station) => (
-                    <div
-                      key={station.id}
-                      className="flex items-center space-x-2 p-2 rounded hover:bg-gray-100"
-                    >
-                      <Checkbox
-                        id={`station-${station.id}`}
-                        checked={selectedStations.some(s => s.id === station.id)}
-                        onCheckedChange={() => handleStationToggle(station)}
-                      />
-                      <Label
-                        htmlFor={`station-${station.id}`}
-                        className="flex-1 cursor-pointer"
-                      >
-                        {stationType === 'reservoir' ? station.reservoir_name : station.station_name}
-                        <div className="text-xs text-gray-500">
-                          {station.amphure}, {station.province}
-                        </div>
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </ScrollArea>
-            )}
-          </TabsContent>
-        </Tabs>
-        
-        <DialogFooter className="mt-4">
-          <div className="flex justify-between w-full">
-            <div className="text-sm text-gray-500">
-              เลือก {selectedStations.length} สถานี
-            </div>
-            <div className="space-x-2">
-              <DialogClose asChild>
-                <Button variant="outline">ยกเลิก</Button>
-              </DialogClose>
+          <div className="flex items-center space-x-3">
+            <DialogClose asChild>
               <Button 
-                onClick={handleConfirm}
-                disabled={selectedStations.length === 0}
+                variant="outline" 
+                className="border-[#42A5F5] text-[#42A5F5] hover:bg-[#F1F5F9] h-10 px-6"
               >
-                เพิ่มสถานี
+                ยกเลิก
               </Button>
-            </div>
+            </DialogClose>
+            <Button 
+              onClick={handleConfirm}
+              disabled={selectedStations.length === 0}
+              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-6 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              เพิ่มสถานี
+            </Button>
           </div>
         </DialogFooter>
       </DialogContent>

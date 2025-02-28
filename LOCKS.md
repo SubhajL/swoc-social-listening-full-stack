@@ -632,4 +632,33 @@ Contact the relevant feature owner before attempting any modifications to locked
 ## Notes
 - Filter logic implementation is temporarily paused
 - Frontend development will proceed independently
-- Known issues in filter logic are documented and will be addressed later 
+- Known issues in filter logic are documented and will be addressed later
+
+### 10. Station Selection Dialog
+- Status: 🔒 LOCKED (UI/UX) / ⚠️ PENDING (Data Querying)
+- Last Lock Date: 2025-02-28
+- Components:
+  - StationSelectionDialog.tsx
+- Critical Paths:
+  - Dialog layout and styling
+  - Station list display with checkboxes
+  - Pagination with blue arrows
+  - Footer positioning and button alignment
+  - Station selection functionality
+- Working Features: ✅
+  - Dialog layout and styling are finalized
+  - Station list display with checkboxes is working
+  - Pagination with blue arrows below the station list is functioning
+  - Footer with station count and buttons is properly positioned
+  - Selection functionality works as expected
+- Pending Improvements: ⚠️
+  - Data querying functionality still needs improvement
+  - Current implementation fetches all stations by province
+  - Filtering logic may need optimization
+- Safety Measures: ✅ Partial
+  - UI/UX: ✅ Complete
+  - Data Handling: ⚠️ In Progress
+  - Type Safety: ✅ Complete
+  - Error Handling: ✅ Complete
+
+DO NOT modify the UI layout or styling of StationSelectionDialog without approval. 
