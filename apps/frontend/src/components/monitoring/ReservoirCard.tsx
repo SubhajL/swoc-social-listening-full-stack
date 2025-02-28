@@ -97,7 +97,7 @@ export const ReservoirCard = ({
             <div className="flex space-x-2 ml-4">
               {disabled ? (
                 <Button
-                  className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center"
+                  className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center justify-center"
                   onClick={onToggleDisabled}
                 >
                   <Plus className="h-5 w-5 mr-2" />
@@ -105,8 +105,8 @@ export const ReservoirCard = ({
                 </Button>
               ) : (
                 <Button
-                  className="bg-[#EF5350] text-white hover:bg-[#E53935] h-10 px-4 text-base flex items-center"
-                  onClick={onToggleDisabled || onDeleteData}
+                  className="bg-[#EF5350] text-white hover:bg-[#E53935] h-10 px-4 text-base flex items-center justify-center"
+                  onClick={isUserSelected ? onDeleteData : onToggleDisabled}
                 >
                   <Trash2 className="h-5 w-5 mr-2" />
                   ลบข้อมูล

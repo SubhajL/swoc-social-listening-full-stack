@@ -378,10 +378,67 @@ export const StationCardEditInfo = ({
     setDialogOpen(false);
   };
 
-  // Handle removing a station
-  const handleRemoveStationClick = (type: StationType, stationId: number) => {
-    // Use our new handler to ensure changes are tracked
-    handleRemoveStation(type, stationId);
+  // Handle removing a user-selected station
+  const handleRemoveUserSelected = (type: 'monitoring' | 'rain' | 'reservoir', id: number) => {
+    console.log(`[StationCardEditInfo] Removing user-selected ${type} station with ID: ${id}`);
+    
+    // Check if the station exists in user-selected stations
+    let stationExists = false;
+    
+    switch (type) {
+      case 'monitoring':
+        stationExists = stationData?.userSelectedMonitoringStations?.some(s => s.id === id) || false;
+        break;
+      case 'rain':
+        stationExists = stationData?.userSelectedRainStations?.some(s => s.id === id) || false;
+        break;
+      case 'reservoir':
+        stationExists = stationData?.userSelectedReservoirs?.some(s => s.id === id) || false;
+        break;
+    }
+    
+    if (!stationExists) {
+      console.warn(`[StationCardEditInfo] Station ${id} not found in user-selected ${type} stations`);
+      return;
+    }
+    
+    // Remove the station from user-selected stations
+    complaintStore.removeUserSelectedStation(type, id);
+    
+    // Mark that changes have been made
+    setHasChanges(true);
+    
+    // Notify parent component of changes
+    if (onChangesMade) {
+      onChangesMade();
+    }
+    
+    // Show success toast
+    let stationTypeText = '';
+    switch (type) {
+      case 'monitoring':
+        stationTypeText = 'สถานีเฝ้าระวัง';
+        break;
+      case 'rain':
+        stationTypeText = 'สถานีน้ำฝน';
+        break;
+      case 'reservoir':
+        stationTypeText = 'เขื่อน/อ่างเก็บน้ำ';
+        break;
+    }
+    
+    toast.success(`ลบ${stationTypeText}`, {
+      description: `ลบ${stationTypeText}เรียบร้อยแล้ว`,
+      duration: 3000,
+    });
+  };
+
+  // Create station-specific delete handlers that match the expected function signature
+  const createDeleteHandler = (type: StationType, stationId: number) => {
+    return () => {
+      console.log(`[StationCardEditInfo] Delete handler called for ${type} station ${stationId}`);
+      handleRemoveUserSelected(type, stationId);
+    };
   };
 
   // Handle toggling a station's disabled state
@@ -394,6 +451,12 @@ export const StationCardEditInfo = ({
     } else {
       handleDisableStation(type, stationId);
     }
+  };
+
+  // Handle removing a station
+  const handleRemoveStationClick = (type: StationType, stationId: number) => {
+    // Use our new handler to ensure changes are tracked
+    handleRemoveStation(type, stationId);
   };
 
   // Create station-specific toggle handlers that match the expected function signature
@@ -453,20 +516,6 @@ export const StationCardEditInfo = ({
     }
   };
 
-  // Handle removing a user-selected station
-  const handleRemoveUserSelected = (type: 'monitoring' | 'rain' | 'reservoir', id: number) => {
-    // Use our new handler to ensure changes are tracked
-    handleRemoveStationClick(type, id);
-  };
-
-  // Create station-specific delete handlers that match the expected function signature
-  const createDeleteHandler = (type: StationType, stationId: number) => {
-    return () => {
-      console.log(`[StationCardEditInfo] Delete handler called for ${type} station ${stationId}`);
-      handleRemoveUserSelected(type, stationId);
-    };
-  };
-
   // Early return if no location data
   if (!amphure && !province) {
     console.info("[StationCardEditInfo] ⚠️ No location data provided", {
@@ -499,7 +548,7 @@ export const StationCardEditInfo = ({
               สถานีเฝ้าระวัง {amphure && `ใน${amphure}`}{!amphure && province && `ใน${province}`}
             </Label>
             <Button 
-              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center ml-auto"
+              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center justify-center ml-auto"
               onClick={() => handleAddData('monitoring')}
             >
               <Plus className="h-5 w-5 mr-2" /> เพิ่มข้อมูล
@@ -600,7 +649,7 @@ export const StationCardEditInfo = ({
               สถานีน้ำฝน {amphure && `ใน${amphure}`}{!amphure && province && `ใน${province}`}
             </Label>
             <Button 
-              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center ml-auto"
+              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center justify-center ml-auto"
               onClick={() => handleAddData('rain')}
             >
               <Plus className="h-5 w-5 mr-2" /> เพิ่มข้อมูล
@@ -699,7 +748,7 @@ export const StationCardEditInfo = ({
               เขื่อน/อ่างเก็บน้ำ {amphure && `ใน${amphure}`}{!amphure && province && `ใน${province}`}
             </Label>
             <Button 
-              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center ml-auto"
+              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center justify-center ml-auto"
               onClick={() => handleAddData('reservoir')}
             >
               <Plus className="h-5 w-5 mr-2" /> เพิ่มข้อมูล
@@ -795,14 +844,14 @@ export const StationCardEditInfo = ({
             <Button 
               onClick={handleDiscard}
               disabled={!hasChanges}
-              className="bg-white text-[#42A5F5] hover:bg-gray-50 border border-[#42A5F5] h-12 px-16 text-base font-medium rounded-md flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-white text-[#42A5F5] hover:bg-gray-50 border border-[#42A5F5] h-12 px-16 text-base font-medium rounded-md flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
               ไม่บันทึก
             </Button>
             <Button 
               onClick={handleSave}
               disabled={!hasChanges}
-              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-12 px-16 text-base font-medium rounded-md flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-12 px-16 text-base font-medium rounded-md flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save className="h-5 w-5 mr-2" />
               บันทึก
@@ -818,6 +867,14 @@ export const StationCardEditInfo = ({
           currentProvince={province}
           currentAmphure={amphure}
           onStationSelect={handleStationSelect}
+          currentStations={[
+            ...(stationData?.monitoringStations || []),
+            ...(stationData?.rainStations || []),
+            ...(stationData?.reservoirs || []),
+            ...(stationData?.userSelectedMonitoringStations || []),
+            ...(stationData?.userSelectedRainStations || []),
+            ...(stationData?.userSelectedReservoirs || [])
+          ]}
         />
       </div>
     </ErrorBoundary>

@@ -194,6 +194,20 @@ export const useComplaintStore = create<ComplaintStore>()(
         
         const stationIdStr = stationId.toString();
         
+        // Log the current state before toggling
+        console.log(`[ComplaintStore] Toggling ${stationType} station ${stationId}:`, {
+          currentValue: stationType === 'monitoring' 
+            ? stationData.disabledMonitoringStations[stationIdStr]
+            : stationType === 'rain'
+              ? stationData.disabledRainStations[stationIdStr]
+              : stationData.disabledReservoirs[stationIdStr],
+          newValue: stationType === 'monitoring' 
+            ? !stationData.disabledMonitoringStations[stationIdStr]
+            : stationType === 'rain'
+              ? !stationData.disabledRainStations[stationIdStr]
+              : !stationData.disabledReservoirs[stationIdStr]
+        });
+        
         set({
           stationData: {
             ...stationData,
