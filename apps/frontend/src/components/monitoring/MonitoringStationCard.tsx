@@ -3,7 +3,7 @@ import { MonitoringStation } from "@/types/monitoring-station";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
-import { Info, AlertCircle, Plus, Trash2 } from "lucide-react";
+import { Info, AlertCircle, Plus, Trash2, UserCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -13,8 +13,11 @@ interface MonitoringStationCardProps {
   isLoading?: boolean;
   error?: Error | null;
   showButtons?: boolean;
+  disabled?: boolean;
+  isUserSelected?: boolean;
   onAddData?: () => void;
   onDeleteData?: () => void;
+  onToggleDisabled?: () => void;
 }
 
 export const MonitoringStationCard = ({ 
@@ -22,8 +25,11 @@ export const MonitoringStationCard = ({
   isLoading = false,
   error = null,
   showButtons = false,
+  disabled = false,
+  isUserSelected = false,
   onAddData,
-  onDeleteData
+  onDeleteData,
+  onToggleDisabled
 }: MonitoringStationCardProps) => {
   const waterLevel = station.telemetry_data?.water_level ?? station.water_level;
   const flowRate = station.telemetry_data?.flow_rate ?? station.flow_rate;
@@ -35,13 +41,15 @@ export const MonitoringStationCard = ({
     telemetryData: station.telemetry_data,
     hasRealTimeData,
     waterLevel,
-    flowRate
+    flowRate,
+    disabled,
+    isUserSelected
   });
 
   // Common content box styles (matching WaterLevelInfo)
-  const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-md p-3 bg-white text-[#17254D] text-sm font-normal";
+  const contentBoxStyle = `w-full border border-[#E2E8F0] rounded-md p-3 bg-white text-[#17254D] text-sm font-normal ${disabled ? 'opacity-60' : ''}`;
   const contentTextStyle = "px-3"; // Consistent horizontal padding for balanced layout
-  const labelStyle = "text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10";
+  const labelStyle = `text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10 ${disabled ? 'opacity-60' : ''}`;
 
   const renderTelemetryInfo = (type: 'water_level' | 'flow_rate') => {
     if (!station.telemetry_data) return null;
@@ -52,6 +60,7 @@ export const MonitoringStationCard = ({
           <button 
             type="button" 
             className="inline-flex items-center justify-center w-6 h-6 ml-1 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+            disabled={disabled}
           >
             <Info className="w-4 h-4 text-primary" />
           </button>
@@ -141,6 +150,9 @@ export const MonitoringStationCard = ({
   return (
     <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-3">
       <Label className={labelStyle}>
+        {isUserSelected && (
+          <UserCircle className="inline-block h-5 w-5 mr-1 text-blue-500" />
+        )}
         {station.station_name}
         {station.station_id && (
           <span className="text-sm text-gray-500 ml-2">
@@ -163,6 +175,7 @@ export const MonitoringStationCard = ({
                         <Input 
                           value={waterLevel !== undefined && waterLevel !== null ? waterLevel.toFixed(2) : ''} 
                           readOnly 
+                          disabled={disabled}
                           className="w-[70px] h-8 text-right"
                         />
                         <span className="text-sm whitespace-nowrap ml-1">ม.รทก.</span>
@@ -178,6 +191,7 @@ export const MonitoringStationCard = ({
                         <Input 
                           value={flowRate !== undefined && flowRate !== null ? flowRate.toFixed(2) : ''} 
                           readOnly 
+                          disabled={disabled}
                           className="w-[70px] h-8 text-right"
                         />
                         <span className="text-sm whitespace-nowrap ml-1">ลบ.ม./วินาที</span>
@@ -191,13 +205,23 @@ export const MonitoringStationCard = ({
           
           {showButtons && (
             <div className="flex space-x-2 ml-4">
-              <Button
-                className="bg-[#EF5350] text-white hover:bg-[#E53935] h-10 px-4 text-base flex items-center"
-                onClick={onDeleteData}
-              >
-                <Trash2 className="h-5 w-5 mr-2" />
-                ลบข้อมูล
-              </Button>
+              {disabled ? (
+                <Button
+                  className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center"
+                  onClick={onToggleDisabled}
+                >
+                  <Plus className="h-5 w-5 mr-2" />
+                  เพิ่มข้อมูล
+                </Button>
+              ) : (
+                <Button
+                  className="bg-[#EF5350] text-white hover:bg-[#E53935] h-10 px-4 text-base flex items-center"
+                  onClick={onToggleDisabled || onDeleteData}
+                >
+                  <Trash2 className="h-5 w-5 mr-2" />
+                  ลบข้อมูล
+                </Button>
+              )}
             </div>
           )}
         </div>

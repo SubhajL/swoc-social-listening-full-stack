@@ -1,9 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import type { ThaiWaterResponse, ThaiWaterStationData } from '../types/api';
+import type { ThaiWaterResponse } from '../types/api';
 
 // Use the main API URL for Thaiwater endpoints
 const THAIWATER_API_URL = `${import.meta.env.VITE_API_URL}/thaiwater/rainfall`;
+
+// Mock data to use when the API is not available
+const MOCK_THAIWATER_RESPONSE: ThaiWaterResponse = {
+  success: true,
+  data: [],
+  debug: { mock: true, reason: 'API endpoint not available' }
+};
 
 export function useThaiWaterData() {
   return useQuery<ThaiWaterResponse>({
@@ -27,10 +34,14 @@ export function useThaiWaterData() {
           error: error instanceof Error ? error.message : String(error),
           url: THAIWATER_API_URL
         });
-        throw error;
+        
+        // Return mock data instead of throwing an error
+        console.log('[useThaiWaterData] Returning mock data due to API error');
+        return MOCK_THAIWATER_RESPONSE;
       }
     },
     staleTime: 5 * 60 * 1000, // Consider data stale after 5 minutes
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+    retry: 1, // Only retry once to avoid excessive failed requests
   });
 } 
