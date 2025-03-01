@@ -41,6 +41,12 @@
   - Water level and flow rate data
   - Consistent styling with rain station cards
 
+## Latest Updates (2024-02-15)
+- Migrating from Zustand to Jotai for state management
+- Implementing atomic state model for better performance and reliability
+- Addressing hydration issues with built-in persistence
+- Improving type safety across the application
+
 ## Latest Updates (2024-02-08)
 - Added station ID and code display for rain stations
 - Added station ID display for telemetry stations
@@ -472,8 +478,8 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
 - Event Handling: Secured
 
 ### 10. StationEdit UI System
-- Status: ✅ LOCKED
-- Last Lock Date: 2025-02-28
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-03-01
 - Components:
   - StationCardEditInfo.tsx (main edit component)
   - MonitoringStationCard.tsx (with delete button)
@@ -487,6 +493,7 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
   - Save button with icon
   - Conditional button display
   - Navigation with data preservation
+  - Data persistence between page navigations
 - Features: ✅ Complete
   - "เพิ่มข้อมูล" (Add Data) buttons for each station type
   - Delete buttons with Trash2 icon for each station card
@@ -495,13 +502,16 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
   - Proper error handling and loading states
   - Responsive layout and consistent styling
   - Navigation with complaint data preservation
-- Known Issues: ⚠️
-  - "ไม่บันทึก" (Don't Save) button functionality needs improvement
+  - "บันทึก" (Save) button properly saves changes to the persistent store
+  - "ไม่บันทึก" (Don't Save) button properly resets station data to original state
+  - Enhanced store persistence to ensure data is saved to localStorage
+  - Verification step to confirm data is saved before navigation
 - Safety Measures: ✅ Complete
   - Feature Management: Implemented
   - Error Handling: Comprehensive
   - Logging: Enhanced
   - Type Safety: Enforced
+  - Data Persistence: Improved
 - Dependencies:
   - useMonitoringStations hook
   - useRainStations hook
@@ -509,14 +519,16 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
   - Lucide React icons (Plus, Trash2, Save)
   - Toast notifications system
   - SessionStorage for data preservation
+  - LocalStorage for persistent data storage
 - Testing Status:
   - UI Rendering: ✅ Passing
-  - Button Functionality: ✅ Passing (except "ไม่บันทึก")
+  - Button Functionality: ✅ Passing
   - Conditional Display: ✅ Passing
   - Error Handling: ✅ Working
   - Loading States: ✅ Working
   - Navigation: ✅ Working
-  - Data Preservation: ✅ Working
+  - Data Persistence: ✅ Working
+  - Data Reset on Discard: ✅ Working
 
 DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
 
@@ -661,4 +673,187 @@ Contact the relevant feature owner before attempting any modifications to locked
   - Type Safety: ✅ Complete
   - Error Handling: ✅ Complete
 
-DO NOT modify the UI layout or styling of StationSelectionDialog without approval. 
+DO NOT modify the UI layout or styling of StationSelectionDialog without approval.
+
+### 16. ComplaintForm - Station Fetching from Administrative Location
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-02-28
+- Components:
+  - ComplaintForm.tsx (main page component)
+  - WaterLevelInfo.tsx (station display component)
+- Critical Paths:
+  - Location data extraction from complaint data
+  - Handling of different location data formats (string, array)
+  - Passing location data to WaterLevelInfo component
+  - Preserving location data when navigating between pages
+- Working Features: ✅
+  - Extraction of amphure and province from complaint data
+  - Handling of location data in different formats
+  - Proper cleaning and formatting of location strings
+  - Passing location data to WaterLevelInfo for station fetching
+  - Preserving location data when returning from StationCardEdit
+- Safety Measures: ✅ Complete
+  - Feature Management: Implemented
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
+- Dependencies:
+  - useComplaintStore for data persistence
+  - WaterLevelInfo component for station display
+  - location-utils for string cleaning and formatting
+  - SessionStorage for data preservation during navigation
+
+### 17. DocumentPreparation - Partial Implementation
+- Status: 🔒 PARTIALLY LOCKED
+- Last Lock Date: 2025-03-01
+- Components:
+  - DocumentPreparation.tsx (main page component)
+  - DocumentPreparationHeader.tsx (navigation component)
+  - SuccessPopup.tsx (notification component)
+- Working Features: ✅
+  - UI Layout and Components:
+    - Document preparation header with navigation
+    - Social post information display
+    - Supporting data section with WaterLevelInfo and WaterManagementPlan
+    - Document draft section with textarea
+    - Action buttons (Save, Approve, Submit)
+    - Success popups for save and approve actions
+  - Zustand Integration:
+    - complaintStore for complaint data
+    - documentPreparationStore for document content and state
+  - Location Data Handling:
+    - Extraction of location data from complaint data
+    - Passing location data to supporting components
+  - Data Validation:
+    - Improved validation of complaint data
+    - Better error handling for missing data
+    - Automatic redirection on invalid data
+- Pending Features: ⚠️
+  - 'เอกสารตอบ' Functionality:
+    - Template selection and management
+    - Document versioning
+    - Document history
+  - Sharing and Printing:
+    - Line integration for sharing
+    - Print formatting and options
+    - PDF generation
+- Safety Measures: ✅ Partial
+  - UI/UX: ✅ Complete
+  - Data Handling: ✅ Complete
+  - Store Integration: ✅ Complete
+  - Data Validation: ✅ Complete
+  - Sharing/Printing: ⚠️ Pending
+
+### 18. Navigation Flow Cleanup
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-03-01
+- Changes:
+  - Removed unused ComplaintFooter component
+  - Updated navigation between ComplaintForm and DocumentPreparation
+  - Ensured direct data passing through location state
+  - Removed references to ComplaintFooter in alternative implementations
+- Critical Paths:
+  - Direct navigation from ComplaintForm to DocumentPreparation
+  - Proper data passing through location state
+  - Consistent data handling in DocumentPreparation
+- Working Features: ✅
+  - Clean navigation between components
+  - Proper data passing through location state
+  - Improved error handling for missing data
+  - Automatic redirection on invalid data
+- Safety Measures: ✅ Complete
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
+
+## Latest Updates (2024-03-01)
+- Removed unused ComplaintFooter component
+- Enhanced DocumentPreparation with improved data validation
+- Updated navigation flow between ComplaintForm and DocumentPreparation
+- Ensured consistent data handling across components
+- Fixed StationCardEdit save functionality:
+  - Improved "บันทึก" button to properly save changes to the persistent store
+  - Enhanced store persistence mechanism to ensure data is saved to localStorage
+  - Added verification step to confirm data is saved before navigation
+  - Increased timeout duration to ensure store updates are complete before navigation
+  - Enhanced ComplaintForm to properly verify and load saved station data when returning from StationCardEdit
+  - Made handleSave function async to properly await persistence operations
+  - Added retry mechanism if initial save to localStorage fails
+  - Improved error handling with user-friendly toast notifications
+  - Enhanced store hydration to ensure proper loading of persisted data
+  - Added loading state during store hydration to prevent race conditions
+  - Added multiple verification steps to confirm data persistence before navigation
+  - Implemented robust error handling with clear user feedback
+  - Added loading state during save operation with toast notifications
+  - Enhanced ComplaintForm to force reload data from localStorage after successful save
+  - Added session flags to track navigation after successful save
+  - Improved store hydration with retry mechanism and better error handling
+  - Added verification that hydrated data matches what was saved
+- Fixed StationCardEdit "ไม่บันทึก" button to properly reset station data to original state
+- Added ApprovalDashboard component with filterable and sortable table
+
+DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
+
+### 19. ApprovalDashboard Component
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-03-01
+- Components:
+  - ApprovalDashboard.tsx (main page component)
+  - ApprovalDashboardHeader.tsx (navigation component)
+- Working Features: ✅
+  - UI Layout and Components:
+    - Dashboard header with navigation tabs
+    - Page title "ระบบตอบประเด็นข้อร้องเรียน"
+    - Top line with post count and search functionality
+    - Table with filterable and sortable columns:
+      - ประเภทข้อความ
+      - ช่องทางการสื่อสาร
+      - จังหวัด
+      - สำนักงานชลประทาน
+      - ประเภทเอกสารตอบ
+      - สถานะ
+      - ผู้รับผิดชอบ
+      - รายละเอียด
+    - Pagination showing 9 records per page by default
+    - Navigation controls at the bottom
+  - Data Management:
+    - Filtering by column values
+    - Global search across all fields
+    - Sorting by column
+    - Pagination with configurable records per page
+  - Navigation:
+    - Detail view navigation
+    - Back navigation with data preservation
+- Safety Measures: ✅ Complete
+  - UI/UX: ✅ Complete
+  - Data Handling: ✅ Complete
+  - Store Integration: ✅ Complete
+  - Navigation: ✅ Complete
+
+## Latest Updates (2024-03-01)
+- Removed unused ComplaintFooter component
+- Enhanced DocumentPreparation with improved data validation
+- Updated navigation flow between ComplaintForm and DocumentPreparation
+- Ensured consistent data handling across components
+- Fixed StationCardEdit save functionality:
+  - Improved "บันทึก" button to properly save changes to the persistent store
+  - Enhanced store persistence mechanism to ensure data is saved to localStorage
+  - Added verification step to confirm data is saved before navigation
+  - Increased timeout duration to ensure store updates are complete before navigation
+  - Enhanced ComplaintForm to properly verify and load saved station data when returning from StationCardEdit
+  - Made handleSave function async to properly await persistence operations
+  - Added retry mechanism if initial save to localStorage fails
+  - Improved error handling with user-friendly toast notifications
+  - Enhanced store hydration to ensure proper loading of persisted data
+  - Added loading state during store hydration to prevent race conditions
+  - Added multiple verification steps to confirm data persistence before navigation
+  - Implemented robust error handling with clear user feedback
+  - Added loading state during save operation with toast notifications
+  - Enhanced ComplaintForm to force reload data from localStorage after successful save
+  - Added session flags to track navigation after successful save
+  - Improved store hydration with retry mechanism and better error handling
+  - Added verification that hydrated data matches what was saved
+- Fixed StationCardEdit "ไม่บันทึก" button to properly reset station data to original state
+- Added ApprovalDashboard component with filterable and sortable table
+
+DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL 
