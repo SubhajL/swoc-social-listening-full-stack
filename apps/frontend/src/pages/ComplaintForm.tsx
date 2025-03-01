@@ -208,6 +208,66 @@ const ComplaintForm = () => {
       console.log("🔍 [DEBUG-ComplaintForm] No navigatingAfterSave flag found");
     }
     
+    // Check for temp station data from StationCardEdit
+    const tempStationData = localStorage.getItem('tempStationData');
+    if (tempStationData) {
+      console.log("[ComplaintForm] Found temp station data from StationCardEdit");
+      
+      try {
+        // Mark the update as intentional to prevent triggering side effects
+        setStationDataUpdateIntentional(true);
+        
+        const parsedData = JSON.parse(tempStationData);
+        
+        // Update all station data with the temp data
+        if (parsedData.monitoringStations) {
+          updateMonitoringStations(parsedData.monitoringStations);
+        }
+        
+        if (parsedData.rainStations) {
+          updateRainStations(parsedData.rainStations);
+        }
+        
+        if (parsedData.reservoirs) {
+          updateReservoirs(parsedData.reservoirs);
+        }
+        
+        if (parsedData.userSelectedMonitoringStations) {
+          setUserSelectedMonitoringStations(parsedData.userSelectedMonitoringStations);
+        }
+        
+        if (parsedData.userSelectedRainStations) {
+          setUserSelectedRainStations(parsedData.userSelectedRainStations);
+        }
+        
+        if (parsedData.userSelectedReservoirs) {
+          setUserSelectedReservoirs(parsedData.userSelectedReservoirs);
+        }
+        
+        if (parsedData.disabledMonitoringStations) {
+          setDisabledMonitoringStations(parsedData.disabledMonitoringStations);
+        }
+        
+        if (parsedData.disabledRainStations) {
+          setDisabledRainStations(parsedData.disabledRainStations);
+        }
+        
+        if (parsedData.disabledReservoirs) {
+          setDisabledReservoirs(parsedData.disabledReservoirs);
+        }
+        
+        console.log("[ComplaintForm] Successfully loaded temp station data");
+        
+        // Remove the temp data to avoid reloading it on refresh
+        localStorage.removeItem('tempStationData');
+      } catch (error) {
+        console.error("[ComplaintForm] Error parsing temp station data:", error);
+      } finally {
+        // Reset the update flag
+        setStationDataUpdateIntentional(false);
+      }
+    }
+    
     // Check if we have state in location.state (normal navigation)
     if (location.state && location.state.from === 'StationCardEdit') {
       console.log("[ComplaintForm] Returned from StationCardEdit", location.state);
