@@ -1,142 +1,134 @@
 import { Card } from "@/components/ui/card";
-import { useLocation, useNavigate, useBlocker } from "react-router-dom";
-import { Complaint } from "@/types/complaint";
-import { ProcessedPost } from "@/types/processed-post";
+import { ComplaintHeader } from "@/components/complaint/ComplaintHeader";
 import { SocialPostInfo } from "@/components/complaint/SocialPostInfo";
 import { StationCardEditInfo } from "@/components/complaint/StationCardEditInfo";
-import { useStationData, useComplaintData } from "@/atoms/hooks";
-import { useEffect, useRef, useState, useCallback } from "react";
-import logo1 from "@/assets/logo1.png";
-import logo2 from "@/assets/logo2.png";
-import { Link } from "react-router-dom";
 import { UnsavedChangesDialog } from "@/components/complaint/UnsavedChangesDialog";
+import { useLocation, useNavigate, useBlocker } from "react-router-dom";
+import { ProcessedPost } from "@/types/processed-post";
+import { Complaint } from "@/types/complaint";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Save } from "lucide-react";
-import { MonitoringStation } from "@/types/monitoring-station";
-import { RainStation } from "@/types/rain-station";
-import { Reservoir } from "@/types/reservoir";
+import { useEffect, useState, useCallback, useMemo } from "react";
+// Import Jotai hooks
+import { useStationData, useComplaintData } from "@/atoms/hooks";
 
-// Type guard to check if data is ProcessedPost
+// Type guard to check if data is a ProcessedPost
 const isProcessedPost = (data: any): data is ProcessedPost => {
-  return 'processed_post_id' in data && 'text' in data && 'category_name' in data;
+  return data !== null && typeof data === 'object' && 'processed_post_id' in data;
 };
 
-// Custom header component for the StationCardEdit page
+// Custom header component for StationCardEdit
 const StationCardEditHeader = () => {
   return (
-    <header className="bg-white shadow-sm">
-      <div className="container mx-auto px-6">
-        <div className="flex items-center justify-between pt-3">
-          {/* Left section - Logos */}
-          <div className="flex items-center gap-4">
-            <img 
-              src={logo1} 
-              alt="Royal Irrigation Department Logo" 
-              className="h-20 w-auto object-contain"
-            />
-            <img 
-              src={logo2} 
-              alt="SWOC Logo" 
-              className="h-20 w-auto object-contain"
-            />
-          </div>
-        </div>
-
-        {/* Navigation tabs - aligned with map and pushed up */}
-        <div className="px-6 -mt-6 pb-0">
-          <div className="flex">
-            {/* This space accounts for the filter panel width and gap */}
-            <div className="w-[450px]"></div>
-            {/* Navigation tabs aligned with the Map */}
-            <nav className="flex items-center border-b border-[#E2E8F0] whitespace-nowrap">
-              <Link 
-                to="/" 
-                className="px-4 py-1 text-[#6B7280] hover:text-[#17254D] text-base whitespace-nowrap"
-              >
-                ระบบจัดการข้อมูลสื่อสังคมออนไลน์
-              </Link>
-              <Link 
-                to="/response" 
-                className="px-4 py-1 text-[#17254D] border-b-2 border-[#42A5F5] font-medium text-base -mb-[0px] whitespace-nowrap"
-              >
-                ระบบตอบประเด็นข้อร้องเรียน
-              </Link>
-              <Link 
-                to="/dashboard" 
-                className="px-4 py-1 text-[#6B7280] hover:text-[#17254D] text-base whitespace-nowrap"
-              >
-                ระบบแสดงผลข้อมูลและสรุปผลผู้บริหาร
-              </Link>
-            </nav>
-          </div>
+    <div className="flex flex-col md:flex-row justify-between items-center p-4 md:p-6 bg-white border-b">
+      {/* Logo and title section */}
+      <div className="flex items-center gap-3 mb-4 md:mb-0">
+        <img 
+          src="/assets/logo.png" 
+          alt="Logo" 
+          className="h-12 w-auto"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = '/assets/fallback-logo.png';
+          }}
+        />
+        <div>
+          <h1 className="text-xl font-bold text-[#17254D]">ระบบติดตามข้อร้องเรียน</h1>
+          <p className="text-[#64748B] text-sm">สำนักงานชลประทานที่ 11</p>
         </div>
       </div>
-    </header>
+      
+      {/* Navigation links */}
+      <div className="flex items-center gap-4">
+        <a 
+          href="#"
+          className="text-[#64748B] hover:text-[#42A5F5] text-sm font-medium"
+        >
+          หน้าหลัก
+        </a>
+        <a 
+          href="#"
+          className="text-[#42A5F5] text-sm font-medium"
+        >
+          ข้อร้องเรียน
+        </a>
+        <a 
+          href="#"
+          className="text-[#64748B] hover:text-[#42A5F5] text-sm font-medium"
+        >
+          รายงาน
+        </a>
+        <a 
+          href="#"
+          className="text-[#64748B] hover:text-[#42A5F5] text-sm font-medium"
+        >
+          เอกสาร
+        </a>
+      </div>
+    </div>
   );
 };
 
 const StationCardEdit = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Get Jotai state and actions
   const { 
-    monitoringStations,
-    rainStations,
-    reservoirs,
-    userSelectedMonitoringStations,
-    userSelectedRainStations,
-    userSelectedReservoirs,
-    disabledMonitoringStations,
-    disabledRainStations,
-    disabledReservoirs,
-    setMonitoringStations,
-    setRainStations,
-    setReservoirs,
-    setUserSelectedMonitoringStations,
-    setUserSelectedRainStations,
-    setUserSelectedReservoirs,
-    setDisabledMonitoringStations,
-    setDisabledRainStations,
-    setDisabledReservoirs,
-    setNavigatingAfterSave
+    monitoringStations, setMonitoringStations,
+    rainStations, setRainStations,
+    reservoirs, setReservoirs,
+    userSelectedMonitoringStations, setUserSelectedMonitoringStations,
+    userSelectedRainStations, setUserSelectedRainStations,
+    userSelectedReservoirs, setUserSelectedReservoirs,
+    disabledMonitoringStations, setDisabledMonitoringStations,
+    disabledRainStations, setDisabledRainStations,
+    disabledReservoirs, setDisabledReservoirs,
+    navigatingAfterSave, setNavigatingAfterSave
   } = useStationData();
   
   const {
     processedPosts,
-    selectedPostIds,
-    title,
-    description,
-    location: complaintLocation,
-    coordinates
+    selectedPostIds
   } = useComplaintData();
   
-  const getCurrentComplaintData = useCallback(() => {
+  // Local state
+  const [hasChanges, setHasChanges] = useState(false);
+  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  
+  // Local state for station data management
+  const [stationData, setStationData] = useState({
+    monitoringStations: [] as any[],
+    rainStations: [] as any[],
+    reservoirs: [] as any[],
+    userSelectedMonitoringStations: [] as any[],
+    userSelectedRainStations: [] as any[],
+    userSelectedReservoirs: [] as any[],
+    disabledMonitoringStations: {} as Record<string, boolean>,
+    disabledRainStations: {} as Record<string, boolean>,
+    disabledReservoirs: {} as Record<string, boolean>
+  });
+  
+  // Get the current complaint data from processed posts
+  const currentComplaintData = useMemo(() => {
     if (selectedPostIds.length > 0) {
       const selectedPostId = selectedPostIds[0];
-      return processedPosts.find(post => post.processed_post_id === selectedPostId) || null;
+      // Convert to string for comparison if needed
+      return processedPosts.find(post => String(post.processed_post_id) === String(selectedPostId)) || null;
     }
     return null;
   }, [processedPosts, selectedPostIds]);
-  
-  const currentComplaintData = getCurrentComplaintData();
-  
-  const [hasChanges, setHasChanges] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
-  const unsavedDestination = useRef('');
 
-  const [stationData, setStationData] = useState({
-    monitoringStations: [] as MonitoringStation[],
-    rainStations: [] as RainStation[],
-    reservoirs: [] as Reservoir[],
-    userSelectedMonitoringStations: [] as MonitoringStation[],
-    userSelectedRainStations: [] as RainStation[],
-    userSelectedReservoirs: [] as Reservoir[],
-    disabledMonitoringStations: {} as Record<string, boolean>,
-    disabledRainStations: {} as Record<string, boolean>,
-    disabledReservoirs: {} as Record<string, boolean>,
-  });
-
+  // Extract amphure and province for components
+  const firstAmphure = currentComplaintData && isProcessedPost(currentComplaintData) 
+    ? currentComplaintData.amphure?.[0] 
+    : (currentComplaintData as any)?.amphure?.[0];
+  
+  const firstProvince = currentComplaintData && isProcessedPost(currentComplaintData) 
+    ? currentComplaintData.province?.[0] 
+    : (currentComplaintData as any)?.province?.[0];
+  
+  // Format station data from Jotai atoms for local state
   const formatStationData = useCallback(() => {
     return {
       monitoringStations,
@@ -152,17 +144,18 @@ const StationCardEdit = () => {
   }, [
     monitoringStations, 
     rainStations, 
-    reservoirs, 
-    userSelectedMonitoringStations, 
-    userSelectedRainStations, 
-    userSelectedReservoirs, 
-    disabledMonitoringStations, 
-    disabledRainStations, 
+    reservoirs,
+    userSelectedMonitoringStations,
+    userSelectedRainStations,
+    userSelectedReservoirs,
+    disabledMonitoringStations,
+    disabledRainStations,
     disabledReservoirs
   ]);
   
   useEffect(() => {
-    setStationData(formatStationData());
+    // Type assertion to avoid type mismatch
+    setStationData(formatStationData() as any);
     console.log("[StationCardEdit] Current data loaded from Jotai atoms:", formatStationData());
   }, [formatStationData]);
   
@@ -179,6 +172,7 @@ const StationCardEdit = () => {
   const handleDiscardFromInfo = () => {
     console.log("[StationCardEdit] Discard action triggered from info panel");
     setHasChanges(false);
+    
     navigate('/complaint/create');
   };
   
@@ -205,147 +199,115 @@ const StationCardEdit = () => {
       userSelectedReservoirs: userSelectedReservoirs.length,
     });
     
-    const stationDataCopy = {
-      monitoringStations: [...monitoringStations],
-      rainStations: [...rainStations],
-      reservoirs: [...reservoirs],
-      userSelectedMonitoringStations: [...userSelectedMonitoringStations],
-      userSelectedRainStations: [...userSelectedRainStations],
-      userSelectedReservoirs: [...userSelectedReservoirs],
-      disabledMonitoringStations: {...disabledMonitoringStations},
-      disabledRainStations: {...disabledRainStations},
-      disabledReservoirs: {...disabledReservoirs}
-    };
-    
-    console.log("🔍 [DEBUG] Created deep copy of station data:", stationDataCopy);
-    
-    setMonitoringStations(stationDataCopy.monitoringStations);
-    setRainStations(stationDataCopy.rainStations);
-    setReservoirs(stationDataCopy.reservoirs);
-    setUserSelectedMonitoringStations(stationDataCopy.userSelectedMonitoringStations);
-    setUserSelectedRainStations(stationDataCopy.userSelectedRainStations);
-    setUserSelectedReservoirs(stationDataCopy.userSelectedReservoirs);
-    setDisabledMonitoringStations(stationDataCopy.disabledMonitoringStations);
-    setDisabledRainStations(stationDataCopy.disabledRainStations);
-    setDisabledReservoirs(stationDataCopy.disabledReservoirs);
-    
-    console.log("🔍 [DEBUG] Updated Jotai atoms with station data");
-    
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    toast.dismiss(loadingToast);
-    
-    toast.success("บันทึกข้อมูล", {
-      description: "บันทึกข้อมูลเรียบร้อยแล้ว",
-      duration: 3000,
-    });
-    
-    const complaintData = currentComplaintData;
-    
-    setShowUnsavedDialog(false);
-    
-    setHasChanges(false);
-    
-    console.log("[StationCardEdit] Navigating back to complaint form with data:", complaintData);
-    console.log("🔍 [DEBUG] Preparing for navigation");
-    
     try {
-      const essentialData = {
-        from: 'StationCardEdit',
-        returnFromStationEdit: true,
-        timestamp: new Date().getTime(),
-        complaintData: complaintData,
-        stationDataSaved: true
-      };
+      // Save to Jotai atoms
+      setMonitoringStations(stationData.monitoringStations);
+      setRainStations(stationData.rainStations);
+      setReservoirs(stationData.reservoirs);
+      setUserSelectedMonitoringStations(stationData.userSelectedMonitoringStations);
+      setUserSelectedRainStations(stationData.userSelectedRainStations);
+      setUserSelectedReservoirs(stationData.userSelectedReservoirs);
+      setDisabledMonitoringStations(stationData.disabledMonitoringStations);
+      setDisabledRainStations(stationData.disabledRainStations);
+      setDisabledReservoirs(stationData.disabledReservoirs);
       
-      console.log("🔍 [DEBUG] Storing essential data in sessionStorage:", essentialData);
+      // Set flags for navigating after save
+      window._stationDataUpdateIntentional = true;
+      sessionStorage.setItem('navigatingAfterSave', 'true');
       
-      sessionStorage.setItem('complaintFormState', JSON.stringify(essentialData));
+      // Update Jotai atom for navigation state
+      setNavigatingAfterSave(true);
+      
+      // Save current complaint data to sessionStorage for the complaint form
+      const complaintData = currentComplaintData;
       
       if (complaintData) {
-        if ('processed_post_id' in complaintData) {
+        console.log("[StationCardEdit] Saving complaint data to session storage:", complaintData);
+        
+        if (isProcessedPost(complaintData)) {
           sessionStorage.setItem('complaintId', String(complaintData.processed_post_id));
         } else if ('id' in complaintData) {
-          sessionStorage.setItem('complaintId', String(complaintData.id));
+          sessionStorage.setItem('complaintId', String((complaintData as any).id));
         }
         
         if (complaintData.amphure) {
-          const amphure = Array.isArray(complaintData.amphure) 
+          // Ensure amphure is stored as a string
+          const amphureStr = Array.isArray(complaintData.amphure) 
             ? complaintData.amphure[0] 
-            : complaintData.amphure;
-          sessionStorage.setItem('complaintAmphure', amphure);
+            : String(complaintData.amphure);
+          
+          sessionStorage.setItem('complaintAmphure', amphureStr);
         }
         
         if (complaintData.province) {
-          const province = Array.isArray(complaintData.province) 
+          // Ensure province is stored as a string
+          const provinceStr = Array.isArray(complaintData.province) 
             ? complaintData.province[0] 
-            : complaintData.province;
-          sessionStorage.setItem('complaintProvince', province);
+            : String(complaintData.province);
+          
+          sessionStorage.setItem('complaintProvince', provinceStr);
         }
         
-        if ('text' in complaintData) {
+        if (isProcessedPost(complaintData) && complaintData.text) {
           sessionStorage.setItem('complaintIssue', complaintData.text);
         } else if ('issue' in complaintData) {
-          sessionStorage.setItem('complaintIssue', complaintData.issue);
+          sessionStorage.setItem('complaintIssue', (complaintData as any).issue);
         }
         
         if ('category_name' in complaintData) {
           sessionStorage.setItem('complaintCategory', complaintData.category_name);
         } else if ('category' in complaintData) {
-          sessionStorage.setItem('complaintCategory', complaintData.category);
+          sessionStorage.setItem('complaintCategory', (complaintData as any).category);
         }
         
         if ('profile_name' in complaintData) {
           sessionStorage.setItem('complaintReporter', complaintData.profile_name);
         } else if ('reporter' in complaintData) {
-          sessionStorage.setItem('complaintReporter', complaintData.reporter);
+          sessionStorage.setItem('complaintReporter', (complaintData as any).reporter);
         }
         
         if ('post_date' in complaintData) {
-          const dateStr = complaintData.post_date instanceof Date 
-            ? complaintData.post_date.toISOString().split('T')[0]
-            : new Date(complaintData.post_date).toISOString().split('T')[0];
+          const date = new Date(complaintData.post_date);
+          const dateStr = date.toISOString().split('T')[0];
           sessionStorage.setItem('complaintDate', dateStr);
         } else if ('date' in complaintData) {
-          sessionStorage.setItem('complaintDate', complaintData.date);
+          sessionStorage.setItem('complaintDate', (complaintData as any).date);
         }
       }
       
-      console.log("🔍 [DEBUG] Setting navigatingAfterSave flag in sessionStorage");
-      sessionStorage.setItem('navigatingAfterSave', 'true');
+      // Mark as saved
+      setHasChanges(false);
+      setShowUnsavedDialog(false);
       
-      setNavigatingAfterSave(true);
-      
-      const flagVerification = sessionStorage.getItem('navigatingAfterSave');
-      console.log("🔍 [DEBUG] Verified navigatingAfterSave flag in sessionStorage:", flagVerification);
-      
-      console.log("�� [DEBUG] All checks passed, proceeding with navigation");
-      console.log("🔍 [DEBUG] Navigation timestamp:", new Date().toISOString());
-      
-      console.log("🔍 [DEBUG] Using window.location.href for navigation");
-      window.location.href = '/complaint/create';
+      // Navigate back to the complaint form
+      navigate('/complaint/create');
+        
+      toast.success("บันทึกข้อมูลสำเร็จ", {
+        description: "บันทึกข้อมูลเรียบร้อยแล้ว",
+        duration: 3000,
+      });
     } catch (error) {
-      console.error("[StationCardEdit] Error during navigation:", error);
-      console.log("🔍 [DEBUG] Navigation error:", error);
-      toast.error("เกิดข้อผิดพลาดในการนำทาง", {
-        description: "กรุณาลองใหม่อีกครั้ง",
+      console.error("[StationCardEdit] Error during save operation:", error);
+      
+      toast.error("เกิดข้อผิดพลาด", {
+        description: "ไม่สามารถบันทึกข้อมูลได้ โปรดลองอีกครั้ง",
         duration: 5000,
       });
+    } finally {
+      toast.dismiss(loadingToast);
       setIsSaving(false);
     }
   }, [
     isSaving, 
-    monitoringStations, 
-    rainStations, 
-    reservoirs, 
-    userSelectedMonitoringStations, 
-    userSelectedRainStations, 
-    userSelectedReservoirs, 
-    disabledMonitoringStations, 
-    disabledRainStations, 
-    disabledReservoirs,
+    stationData, 
+    navigate, 
     currentComplaintData,
-    navigate,
+    monitoringStations,
+    rainStations,
+    reservoirs,
+    userSelectedMonitoringStations,
+    userSelectedRainStations,
+    userSelectedReservoirs,
     setMonitoringStations,
     setRainStations,
     setReservoirs,
@@ -357,94 +319,84 @@ const StationCardEdit = () => {
     setDisabledReservoirs,
     setNavigatingAfterSave
   ]);
-
-  useBlocker(
-    ({ currentLocation, nextLocation }) => {
-      if (
-        hasChanges && 
-        !isSaving && 
-        nextLocation.pathname !== location.pathname
-      ) {
-        unsavedDestination.current = nextLocation.pathname;
-        setShowUnsavedDialog(true);
-        return true;
-      }
-      return false;
-    }
-  );
-
-  const updateStationData = useCallback((newStationData: any) => {
-    console.log("[StationCardEdit] Updating station data:", newStationData);
-    setStationData(newStationData);
+  
+  // Update station data in local state
+  const updateStationData = useCallback((updatedData: any) => {
+    console.log("[StationCardEdit] Received updated station data:", updatedData);
+    setStationData(updatedData);
     setHasChanges(true);
   }, []);
-
-  if (!currentComplaintData) {
-    return <div>No data available</div>;
-  }
-
-  const firstAmphure = isProcessedPost(currentComplaintData) 
-    ? currentComplaintData.amphure?.[0] 
-    : currentComplaintData.amphure?.[0];
   
-  const firstProvince = isProcessedPost(currentComplaintData) 
-    ? currentComplaintData.province?.[0] 
-    : currentComplaintData.province?.[0];
+  // Handle navigation blocking
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) => 
+      hasChanges && 
+      !nextLocation.pathname.includes('/station-card-edit') &&
+      currentLocation.pathname !== nextLocation.pathname
+  );
+  
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      setShowUnsavedDialog(true);
+    }
+  }, [blocker]);
 
   return (
     <div className="min-h-screen bg-[#F7FAFC] flex flex-col">
       <StationCardEditHeader />
       
-      <main className="flex-grow container mx-auto px-6 py-8">
-        <div className="flex gap-8 items-start">
-          <div className="w-[380px] flex-shrink-0">
-            <Card className="shadow-lg overflow-hidden">
-              {currentComplaintData && (
-                <SocialPostInfo 
-                  data={currentComplaintData} 
-                  onSave={handleSaveFromInfo}
-                  onDiscard={handleDiscardFromInfo}
-                />
-              )}
+      <div className="flex-1 p-4 md:p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+          {/* Left column - Social post info */}
+          <div className="lg:col-span-1">
+            <Card className="overflow-hidden h-full">
+              <div className="p-4">
+                {currentComplaintData && (
+                  <SocialPostInfo 
+                    complaint={currentComplaintData as ProcessedPost | Complaint} 
+                    onSave={handleSaveFromInfo}
+                    onDiscard={handleDiscardFromInfo}
+                  />
+                )}
+                {!currentComplaintData && (
+                  <div className="flex flex-col items-center justify-center h-64">
+                    <p className="text-gray-500">No complaint data available</p>
+                  </div>
+                )}
+              </div>
             </Card>
           </div>
           
-          <div className="flex-grow">
-            <Card className="shadow-lg">
-              <div className="flex justify-between items-center p-4 border-b">
-                <h2 className="text-xl font-semibold">เลือกสถานี</h2>
-                <Button 
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  className="bg-[#1976D2] hover:bg-[#1565C0]"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  บันทึก
-                </Button>
-              </div>
-              
+          {/* Right column - Station card edit info */}
+          <div className="lg:col-span-2">
+            <Card className="overflow-hidden h-full">
               <div className="p-4">
                 <StationCardEditInfo 
-                  stationData={stationData}
-                  onStationDataChange={updateStationData}
-                  complaintData={currentComplaintData}
+                  amphure={firstAmphure}
+                  province={firstProvince}
+                  onChangesMade={() => setHasChanges(true)}
+                  onSave={handleSaveFromInfo}
+                  onDiscard={handleDiscardFromInfo}
                 />
               </div>
             </Card>
           </div>
         </div>
-      </main>
+      </div>
       
+      {/* Unsaved changes dialog */}
       <UnsavedChangesDialog 
         open={showUnsavedDialog} 
-        onClose={() => setShowUnsavedDialog(false)}
+        onOpenChange={setShowUnsavedDialog}
+        onSave={handleSave}
         onDiscard={() => {
           setHasChanges(false);
           setShowUnsavedDialog(false);
-          navigate(unsavedDestination.current);
+          blocker.proceed?.();
         }}
-        onSave={() => {
-          handleSave();
+        onCancel={() => {
+          setShowUnsavedDialog(false);
+          blocker.reset?.();
         }}
       />
     </div>
