@@ -1,106 +1,113 @@
 # ThaiWater API Integration
 
-This service integrates with the ThaiWater API to fetch rainfall data from stations across Thailand. The service provides functionality to filter stations by geographic location (amphure and province).
+This service integrates with the ThaiWater API to fetch and store rainfall data from multiple sources.
 
-## Setup Requirements
+## Database Schema
 
-1. PostgreSQL database with PostGIS extension
-2. Amphure table with geometry data for spatial queries
+The service uses two main tables:
 
-## Installation Steps
+1. `thaiwater_tele_stations` - Stores information about telemetry stations
+   - `tele_station_id` (Primary Key)
+   - `tele_station_name`
+   - `tele_station_name_th`
+   - `tele_station_oldcode`
+   - `tele_station_lat`
+   - `tele_station_long`
+   - `agency_id`
+   - `data_source` - Indicates the data source ('HII' or 'TMD')
+   - `province`
+   - `amphoe`
+   - `tambon`
+   - Other metadata fields
 
-### 1. Install PostGIS Extension
+2. `thaiwater_rainfall_data` - Stores rainfall measurements
+   - `id` (Primary Key)
+   - `tele_station_id` (Foreign Key to thaiwater_tele_stations)
+   - `rainfall24h` - Rainfall in the last 24 hours (mm)
+   - `rainfall3h` - Rainfall in the last 3 hours (mm, TMD data only)
+   - `rainfall_datetime` - Timestamp of the measurement
+   - `data_source` - Indicates the data source ('HII' or 'TMD')
+   - Other measurement fields
 
-Run the following command to install the PostGIS extension in your database:
+## Current Data Status
 
-```bash
-npm run install-postgis
-```
+As of February 28, 2025:
 
-This script will:
-- Check if PostGIS is already installed
-- Install the PostGIS extension if needed
-- Add geometry columns to the location tables
+### Telemetry Stations
+- Total stations: 2646
+  - HII stations: 1352
+  - TMD stations: 1294
 
-### 2. Create the Amphure Table
+### Rainfall Data
+- Total rainfall records: 695
+  - HII records: 572
+  - TMD records: 123
 
-Run the following command to create the amphure table with geometry data:
-
-```bash
-npm run create-amphure-table
-```
-
-This script will:
-- Create a new table called `amphure` with the necessary columns
-- Add a geometry column for spatial queries
-- Migrate data from the existing `amphures` table if available
-- Create buffer polygons around points to enable spatial filtering
-
-### 3. Test the ThaiWater Location Service
-
-After setting up the database, you can test the ThaiWater location service with:
-
-```bash
-npm run test-thaiwater-location
-```
-
-This script will:
-- Verify that the amphure table exists and has data
-- Check that the geom column is present
-- Test fetching rainfall data by amphure
-- Test fetching rainfall data by province
-- Test fetching rainfall data by both amphure and province
+### Highest Rainfall Measurements
+- HII: Sato (อบต.สะตอ) - 85.60 mm/24h
+- TMD: Umphang - 13.60 mm/24h
 
 ## API Endpoints
 
-### Get Rainfall Data by Location
+- `GET /api/thaiwater/stations` - Get all telemetry stations
+  - Query parameters:
+    - `data_source` - Filter by data source ('HII' or 'TMD')
+    - `province` - Filter by province
+    - `limit` - Limit the number of results
+    - `offset` - Offset for pagination
 
-```
-GET /api/rain-stations/thaiwater?amphure=<amphure_name>&province=<province_name>
-```
+- `GET /api/thaiwater/rainfall` - Get rainfall data
+  - Query parameters:
+    - `data_source` - Filter by data source ('HII' or 'TMD')
+    - `date` - Filter by date (YYYY-MM-DD)
+    - `min_rainfall` - Filter by minimum rainfall amount
+    - `limit` - Limit the number of results
+    - `offset` - Offset for pagination
 
-Query Parameters:
-- `amphure`: (Optional) Name of the amphure to filter by
-- `province`: (Optional) Name of the province to filter by
+## Scripts
 
-At least one of `amphure` or `province` must be provided.
+The following scripts are available for managing ThaiWater data:
 
-## Service Functions
+### HII Data
+- `src/scripts/fetch-thaiwater-rainfall.mjs` - Fetch rainfall data from HII API
+- `src/scripts/insert-thaiwater-rainfall-data.mjs` - Insert HII rainfall data into database
 
-### `getRainfallByLocation(amphure, province)`
+### TMD Data
+- `src/scripts/sync-tmd-data.mjs` - Fetch and sync TMD station and rainfall data
+- `src/scripts/check-tmd-data.mjs` - Check TMD data in the database
 
-Fetches rainfall data for stations in a specific amphure or province.
+### Analysis
+- `src/scripts/analyze-rainfall-data.mjs` - Analyze rainfall data distribution
 
-Parameters:
-- `amphure`: (Optional) Name of the amphure to filter by
-- `province`: (Optional) Name of the province to filter by
+## Scheduled Tasks
 
-Returns:
-- A response object containing station information and rainfall data for stations within the specified geographic boundaries.
+- Daily sync of HII rainfall data at 12:00 UTC
+- Daily sync of TMD rainfall data at 12:30 UTC
 
-## Troubleshooting
+## Setup
 
-If you encounter issues with the geographic filtering:
-
-1. Verify that PostGIS is installed:
-   ```sql
-   SELECT PostGIS_version();
+1. Ensure the database tables are created (see `src/db/migrations`)
+2. Run the migration script to add TMD support:
+   ```
+   node src/scripts/modify-thaiwater-tables-for-tmd.mjs
+   ```
+3. Run the initial data sync:
+   ```
+   node src/scripts/insert-thaiwater-rainfall-data.mjs
+   node src/scripts/sync-tmd-data.mjs
    ```
 
-2. Check that the amphure table has geometry data:
-   ```sql
-   SELECT COUNT(*) FROM amphure WHERE geom IS NOT NULL;
-   ```
+## Usage Example
 
-3. Verify that the boundaries are being calculated correctly:
-   ```sql
-   SELECT 
-     MIN(ST_Y(ST_Centroid(geom))) as min_lat,
-     MAX(ST_Y(ST_Centroid(geom))) as max_lat,
-     MIN(ST_X(ST_Centroid(geom))) as min_long,
-     MAX(ST_X(ST_Centroid(geom))) as max_long
-   FROM amphure
-   WHERE amphure_name = 'your_amphure_name';
-   ```
+```javascript
+import { getRainfallData } from '../services/thaiwater/rainfall.service';
 
-4. If no stations are found, the service will fall back to using province-level boundaries or default to the entire country of Thailand. 
+// Get rainfall data
+const rainfallData = await getRainfallData({
+  date: '2025-02-28',
+  minRainfall: 10,
+  dataSource: 'HII'
+});
+
+console.log(`Found ${rainfallData.length} stations with rainfall > 10mm`);
+``` 

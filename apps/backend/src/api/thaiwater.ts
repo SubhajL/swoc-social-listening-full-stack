@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { logger } from '../utils/logger';
 import { getRainfallData } from '../services/thaiwater/thaiwater.service';
+import { pool } from '../lib/db';
+import { initThaiWaterRoutes } from '../routes/thaiwater.routes';
 
 const router = Router();
 
@@ -20,7 +22,7 @@ router.use((req, res, next) => {
  * 
  * Fetches rainfall data from ThaiWater API
  */
-router.get('/rainfall', async (req, res) => {
+router.get('/api/rainfall', async (req, res) => {
   try {
     logger.info('[ThaiWater Route] Handling rainfall data request', {
       timestamp: new Date().toISOString()
@@ -67,6 +69,35 @@ router.get('/rainfall', async (req, res) => {
       }
     });
   }
+});
+
+// Initialize the new ThaiWater routes
+const thaiWaterRoutes = initThaiWaterRoutes(pool);
+
+// Mount the new routes
+router.use('/', thaiWaterRoutes);
+
+// Legacy routes - redirect to new endpoints
+router.get('/db/rainfall', (req, res) => {
+  logger.info('[ThaiWater Route] Redirecting legacy rainfall endpoint to new endpoint', {
+    originalUrl: req.originalUrl,
+    newUrl: '/api/thaiwater/rainfall',
+    timestamp: new Date().toISOString()
+  });
+  
+  // Forward the request to the new endpoint
+  res.redirect(307, `/api/thaiwater/rainfall${req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : ''}`);
+});
+
+router.get('/db/stations', (req, res) => {
+  logger.info('[ThaiWater Route] Redirecting legacy stations endpoint to new endpoint', {
+    originalUrl: req.originalUrl,
+    newUrl: '/api/thaiwater/stations',
+    timestamp: new Date().toISOString()
+  });
+  
+  // Forward the request to the new endpoint
+  res.redirect(307, `/api/thaiwater/stations${req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : ''}`);
 });
 
 export default router; 
