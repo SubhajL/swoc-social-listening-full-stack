@@ -1,0 +1,62 @@
+[
+  {
+    "agency_id": 13,
+    "id": 2183,
+    "tele_station_lat": "13.136000",
+    "tele_station_long": "100.850000",
+    "tele_station_name": {
+      "en": " ",
+      "jp": " ",
+      "th": "เกาะสีชัง"
+    },
+    "tele_station_oldcode": "459202"
+  },
+  {
+    "agency_id": 13,
+    "id": 2184,
+    "tele_station_lat": "6.992900",
+    "tele_station_long": "100.489000",
+    "tele_station_name": {
+      "en": " ",
+      "jp": " ",
+      "th": "หาดใหญ่"
+    },
+    "tele_station_oldcode": "568502"
+  },
+  {
+    "agency_id": 13,
+    "id": 2185,
+    "tele_station_lat": "10.467500",
+    "tele_station_long": "99.240300",
+    "tele_station_name": {
+      "en": " ",
+      "jp": " ",
+      "th": "ชุมพร"
+    },
+    "tele_station_oldcode": "517201"
+  },
+  {
+    "agency_id": 13,
+    "id": 2186,
+    "tele_station_lat": "18.612101",
+    "tele_station_long": "99.961998",
+    "tele_station_name": {
+      "en": " ",
+      "jp": " ",
+      "th": "ลำปาง"
+    },
+    "tele_station_oldcode": "328201"
+  },
+  {
+    "agency_id": 13,
+    "id": 2187,
+    "tele_station_lat": "11.968600",
+    "tele_station_long": "102.821000",
+    "tele_station_name": {
+      "en": " ",
+      "jp": " ",
+      "th": "คลองใหญ่"
+    },
+    "tele_station_oldcode": "501201"
+  }
+]
