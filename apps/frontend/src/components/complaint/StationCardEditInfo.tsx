@@ -19,6 +19,9 @@ import { useComplaintStore } from "@/stores/complaintStore";
 import { MonitoringStation } from "@/types/monitoring-station";
 import { RainStation } from "@/types/rain-station";
 import { Reservoir } from "@/types/reservoir";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface StationCardEditInfoProps {
   amphure?: string;
@@ -131,7 +134,7 @@ export const StationCardEditInfo = ({
         console.log("[StationCardEditInfo] Updating rain stations in store");
         complaintStore.setStationData({
           ...stationData,
-          rainStations: rainData.stations || []
+          rainStations: (rainData.stations || []) as unknown as RainStation[]
         });
       }
     } catch (error) {
@@ -149,7 +152,7 @@ export const StationCardEditInfo = ({
         console.log("[StationCardEditInfo] Updating reservoirs in store");
         complaintStore.setStationData({
           ...stationData,
-          reservoirs: reservoirData.reservoirs || []
+          reservoirs: (reservoirData.reservoirs || []) as unknown as Reservoir[]
         });
       }
     } catch (error) {
@@ -233,7 +236,7 @@ export const StationCardEditInfo = ({
   };
 
   // Common content box styles
-  const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-md p-4 bg-white text-[#17254D] text-sm font-normal";
+  const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-xl p-4 bg-white text-[#17254D] text-sm font-normal";
   const contentTextStyle = "px-4"; // Reduced horizontal padding for more compact layout
   const labelStyle = "text-[#64748B] font-medium text-base bg-white px-2 z-10";
   const labelContainerStyle = "flex justify-between items-center absolute -top-4 left-3 z-10";
@@ -548,7 +551,7 @@ export const StationCardEditInfo = ({
               สถานีเฝ้าระวัง {amphure && `ใน${amphure}`}{!amphure && province && `ใน${province}`}
             </Label>
             <Button 
-              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center justify-center ml-auto"
+              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center justify-center ml-auto rounded-xl"
               onClick={() => handleAddData('monitoring')}
             >
               <Plus className="h-5 w-5 mr-2" /> เพิ่มข้อมูล
@@ -649,7 +652,7 @@ export const StationCardEditInfo = ({
               สถานีน้ำฝน {amphure && `ใน${amphure}`}{!amphure && province && `ใน${province}`}
             </Label>
             <Button 
-              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center justify-center ml-auto"
+              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center justify-center ml-auto rounded-xl"
               onClick={() => handleAddData('rain')}
             >
               <Plus className="h-5 w-5 mr-2" /> เพิ่มข้อมูล
@@ -748,7 +751,7 @@ export const StationCardEditInfo = ({
               เขื่อน/อ่างเก็บน้ำ {amphure && `ใน${amphure}`}{!amphure && province && `ใน${province}`}
             </Label>
             <Button 
-              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center justify-center ml-auto"
+              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center justify-center ml-auto rounded-xl"
               onClick={() => handleAddData('reservoir')}
             >
               <Plus className="h-5 w-5 mr-2" /> เพิ่มข้อมูล
@@ -844,14 +847,14 @@ export const StationCardEditInfo = ({
             <Button 
               onClick={handleDiscard}
               disabled={!hasChanges}
-              className="bg-white text-[#42A5F5] hover:bg-gray-50 border border-[#42A5F5] h-12 px-16 text-base font-medium rounded-md flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-white text-[#42A5F5] hover:bg-gray-50 border border-[#42A5F5] h-12 px-16 text-base font-medium flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed rounded-xl"
             >
               ไม่บันทึก
             </Button>
             <Button 
               onClick={handleSave}
               disabled={!hasChanges}
-              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-12 px-16 text-base font-medium rounded-md flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-12 px-16 text-base font-medium flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed rounded-xl"
             >
               <Save className="h-5 w-5 mr-2" />
               บันทึก

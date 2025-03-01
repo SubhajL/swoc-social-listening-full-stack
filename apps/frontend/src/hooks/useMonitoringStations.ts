@@ -2,84 +2,99 @@ import { useQuery } from "@tanstack/react-query";
 import { MonitoringStationResponse, MonitoringStation } from "@/types/monitoring-station";
 import { API_ENDPOINTS, buildUrl, createApiError } from "@/lib/api";
 import { ridTelemetryService } from "@/services/rid-telemetry.service";
+import { cleanLocationString } from "@/lib/location-utils";
 
-const fetchMonitoringStations = async (
+export interface MonitoringStationsResponse {
+  stations: MonitoringStation[];
+  error?: string;
+}
+
+export const fetchMonitoringStations = async (
   amphure?: string,
   province?: string
-): Promise<MonitoringStationResponse> => {
-  // Log the request attempt
-  console.info("[useMonitoringStations] Fetching stations", {
-    amphure,
-    province,
-    url: buildUrl(API_ENDPOINTS.MONITORING_STATIONS, { amphure, province }),
-    timestamp: new Date().toISOString()
-  });
+): Promise<MonitoringStationsResponse> => {
+  console.log(
+    `[fetchMonitoringStations] Attempting to fetch monitoring stations for:`,
+    { amphure, province }
+  );
+  
+  // Clean location strings for API request
+  const cleanedAmphure = cleanLocationString(amphure);
+  const cleanedProvince = cleanLocationString(province);
+  
+  console.log(
+    `[fetchMonitoringStations] Using cleaned location values:`,
+    { cleanedAmphure, cleanedProvince }
+  );
 
   try {
-    const response = await fetch(
-      buildUrl(API_ENDPOINTS.MONITORING_STATIONS, { amphure, province })
-    );
+    // Construct URL with query parameters
+    const url = new URL(`${import.meta.env.VITE_API_URL}/api/monitoring-stations`);
     
-    if (!response.ok) {
-      console.error("[useMonitoringStations] API request failed", {
-        status: response.status,
-        statusText: response.statusText,
-        url: response.url,
-        timestamp: new Date().toISOString()
-      });
-      throw createApiError(`Failed to fetch monitoring stations: ${response.statusText}`, response);
+    if (cleanedAmphure) {
+      url.searchParams.append("amphure", cleanedAmphure);
     }
     
-    const data = await response.json();
+    if (cleanedProvince) {
+      url.searchParams.append("province", cleanedProvince);
+    }
 
-    // Fetch real-time data for each station
+    const response = await fetch(url.toString());
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch monitoring stations: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    
+    // Fetch telemetry data for each station
     const stationsWithTelemetry = await Promise.all(
       data.stations.map(async (station: MonitoringStation) => {
         try {
-          if (!station.station_id) return station;
-
-          const telemetryData = await ridTelemetryService.getHourlyData(station.station_id);
-          if (!telemetryData || telemetryData.length === 0) return station;
-
-          const latestData = telemetryData[telemetryData.length - 1];
-          return {
-            ...station,
-            telemetry_data: {
-              timestamp: latestData.hourlytime,
-              water_level: latestData.wlvalues,
-              flow_rate: latestData.qvalues,
-              notation: latestData.notationString
-            }
-          };
+          const telemetryUrl = new URL(
+            `${import.meta.env.VITE_API_URL}/api/telemetry/${station.id}`
+          );
+          const telemetryResponse = await fetch(telemetryUrl.toString());
+          
+          if (telemetryResponse.ok) {
+            const telemetryData = await telemetryResponse.json();
+            return {
+              ...station,
+              telemetry: telemetryData,
+            };
+          }
+          
+          return station;
         } catch (error) {
-          console.warn("[useMonitoringStations] Failed to fetch telemetry data", {
-            stationId: station.station_id,
-            error: error instanceof Error ? error.message : "Unknown error"
-          });
+          console.error(`Error fetching telemetry for station ${station.id}:`, error);
           return station;
         }
       })
     );
 
+    console.log(
+      `[fetchMonitoringStations] Successfully fetched ${stationsWithTelemetry.length} stations for:`,
+      { cleanedAmphure, cleanedProvince }
+    );
+
     return {
-      ...data,
-      stations: stationsWithTelemetry
+      stations: stationsWithTelemetry,
     };
   } catch (error) {
-    console.error("[useMonitoringStations] Error fetching data", {
+    console.error("Error fetching monitoring stations:", error);
+    return {
+      stations: [],
       error: error instanceof Error ? error.message : "Unknown error",
-      timestamp: new Date().toISOString()
-    });
-    throw error;
+    };
   }
 };
 
 export const useMonitoringStations = (amphure?: string, province?: string) => {
   return useQuery({
-    queryKey: ["monitoring-stations", amphure, province],
+    queryKey: ["monitoringStations", cleanLocationString(amphure), cleanLocationString(province)],
     queryFn: () => fetchMonitoringStations(amphure, province),
-    enabled: !!(amphure || province),
+    enabled: Boolean(amphure || province),
     retry: 2,
-    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }; 

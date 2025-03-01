@@ -7,7 +7,7 @@ import { RainStationCard } from "@/components/monitoring/RainStationCard";
 import { ReservoirCard } from "@/components/monitoring/ReservoirCard";
 import { useMonitoringStations } from "@/hooks/useMonitoringStations";
 import { useRainStations } from "@/hooks/useRainStations";
-import { useReservoirs } from "@/hooks/useReservoirs";
+import { useReservoirs, Reservoir as APIReservoir } from "@/hooks/useReservoirs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, InfoIcon } from "lucide-react";
@@ -24,6 +24,39 @@ import { Reservoir } from "@/types/reservoir";
 
 // Import the save icon
 import SaveIcon from "@/assets/icon/save.svg";
+
+// Add adapter helpers for Reservoir type conversion
+// This function adapts any reservoir-like object to the format expected by ReservoirCard
+const adaptReservoir = (reservoir: unknown): Reservoir => {
+  // Check if this is an API reservoir (with name property) or a DB reservoir (with reservoir_name property)
+  const apiReservoir = reservoir as APIReservoir;
+  const dbReservoir = reservoir as Reservoir;
+  
+  // Create a properly typed Reservoir object with all required properties
+  return {
+    id: typeof dbReservoir.id === 'number' ? dbReservoir.id : 
+         apiReservoir.id ? parseInt(apiReservoir.id, 10) : 0,
+    sequence_number: dbReservoir.sequence_number || null,
+    irrigation_office: dbReservoir.irrigation_office || null,
+    reservoir_name: dbReservoir.reservoir_name || apiReservoir.name || `Reservoir ${dbReservoir.id || apiReservoir.id}`,
+    river_basin: dbReservoir.river_basin || null,
+    river_name: dbReservoir.river_name || null,
+    amphure: dbReservoir.amphure || null,
+    province: dbReservoir.province || null,
+    normal_storage_capacity: dbReservoir.normal_storage_capacity || 
+                           (apiReservoir.capacity ? apiReservoir.capacity.toString() : null),
+    minimum_storage_capacity: dbReservoir.minimum_storage_capacity || '0',
+    type: dbReservoir.type || null,
+    station_id: dbReservoir.station_id || apiReservoir.id?.toString() || null
+  };
+};
+
+// Helper to get a display name for any reservoir-like object
+const getReservoirDisplayName = (reservoir: unknown): string => {
+  const apiReservoir = reservoir as APIReservoir;
+  const dbReservoir = reservoir as Reservoir;
+  return dbReservoir.reservoir_name || apiReservoir.name || `Reservoir ${dbReservoir.id || apiReservoir.id}`;
+};
 
 interface WaterLevelInfoProps {
   amphure?: string;
@@ -274,10 +307,26 @@ export const WaterLevelInfo = ({
       // Generate a unique key for the current data set to detect changes
       const dataKey = `${amphure || ''}-${province || ''}-${monitoringData.stations.length}-${rainData.stations.length}-${reservoirData.reservoirs.length}`;
       
-      // Check if we need to initialize the store
-      const shouldInitialize = (!returnedFromStationEdit || !includesStationData) && 
-                              storeIsEmpty && 
+      // Check if we should initialize the store based on conditions
+      const shouldInitialize = storeIsEmpty && 
+                               (!returnedFromStationEdit || !includesStationData) &&
                               !hasInitializedStoreWithCurrentData.current;
+                          
+      // 🔍 DEBUG: Log detailed information about initialization conditions
+      console.info("🔍 [DEBUG-WaterLevelInfo] Initialization condition check:", {
+        storeIsEmpty,
+        returnedFromStationEdit,
+        includesStationData,
+        hasInitializedWithCurrentData: hasInitializedStoreWithCurrentData.current,
+        shouldInitialize,
+        storeHasData: complaintStore.stationData ? 'yes' : 'no',
+        stationDataCounts: complaintStore.stationData ? {
+          monitoringStationsCount: complaintStore.stationData.monitoringStations?.length || 0,
+          rainStationsCount: complaintStore.stationData.rainStations?.length || 0,
+          reservoirsCount: complaintStore.stationData.reservoirs?.length || 0
+        } : 'no data',
+        timestamp: new Date().toISOString()
+      });
                           
       if (shouldInitialize) {
         console.info("[WaterLevelInfo] 🔄 Initializing store with API data", {
@@ -304,6 +353,26 @@ export const WaterLevelInfo = ({
           disabledReservoirs: {}
         });
       } else if (!shouldInitialize) {
+        // 🔍 DEBUG: Log the precise values that contributed to skipping
+        console.info("🔍 [DEBUG-WaterLevelInfo] Detailed skip condition values:", {
+          storeIsEmpty,
+          returnedFromStationEdit,
+          includesStationData,
+          hasInitializedWithCurrentData: hasInitializedStoreWithCurrentData.current,
+          storeHasData: complaintStore.stationData ? 'yes' : 'no',
+          stationDataFromStore: complaintStore.stationData ? {
+            monitoringStationsCount: complaintStore.stationData.monitoringStations?.length || 0,
+            rainStationsCount: complaintStore.stationData.rainStations?.length || 0,
+            reservoirsCount: complaintStore.stationData.reservoirs?.length || 0,
+            userSelectedMonitoringCount: complaintStore.stationData.userSelectedMonitoringStations?.length || 0,
+            userSelectedRainCount: complaintStore.stationData.userSelectedRainStations?.length || 0,
+            userSelectedReservoirsCount: complaintStore.stationData.userSelectedReservoirs?.length || 0
+          } : 'no data',
+          complaintFormState: sessionStorage.getItem('complaintFormState') ? 
+            JSON.parse(sessionStorage.getItem('complaintFormState') || '{}') : null,
+          timestamp: new Date().toISOString()
+        });
+        
         console.info("[WaterLevelInfo] Skipping store initialization", {
           reason: returnedFromStationEdit && includesStationData ? "returned from station edit with data" : 
                  returnedFromStationEdit ? "returned from station edit" : 
@@ -384,7 +453,7 @@ export const WaterLevelInfo = ({
       name = item.name || item.station_name || 'Unknown';
       location = `${item.amphure || ''}, ${item.province || ''}`;
     } else if (type === 'reservoir') {
-      name = item.name || item.reservoir_name || 'Unknown';
+      name = getReservoirDisplayName(item);
       location = `${item.amphure || ''}, ${item.province || ''}`;
     }
     
@@ -889,10 +958,10 @@ export const WaterLevelInfo = ({
                         {stationData.userSelectedReservoirs.map((reservoir, index) => (
                           <ReservoirCard 
                             key={`selected-${reservoir.id}`} 
-                            reservoir={reservoir} 
+                            reservoir={adaptReservoir(reservoir)} 
                             showButtons={showButtons}
                             isUserSelected={true}
-                            onDeleteData={showButtons ? () => handleDeleteData(`เขื่อน/อ่างเก็บน้ำ ${reservoir.reservoir_name}`) : undefined}
+                            onDeleteData={showButtons ? () => handleDeleteData(`เขื่อน/อ่างเก็บน้ำ ${getReservoirDisplayName(reservoir)}`) : undefined}
                           />
                         ))}
                       </div>
@@ -914,7 +983,9 @@ export const WaterLevelInfo = ({
                           // Enhanced logging for debugging
                           console.debug(`[WaterLevelInfo] Rendering reservoir ${index + 1}/${stationData.reservoirs.length}`, {
                             id: reservoir.id,
-                            name: (reservoir as any).name || reservoir.reservoir_name,
+                            reservoirId: typeof reservoir === 'object' && reservoir ? 
+                              (reservoir as any).station_id || (reservoir as any).id || 'unknown-id' : 'unknown',
+                            name: getReservoirDisplayName(reservoir),
                             isDisabled,
                             showButtons,
                             timestamp: new Date().toISOString()
@@ -922,19 +993,13 @@ export const WaterLevelInfo = ({
                           
                           logCardCreation(reservoir, index, stationData.reservoirs.length, 'reservoir');
                           
-                          // Create a compatible reservoir object with required properties
-                          const compatibleReservoir = {
-                            ...reservoir,
-                            reservoir_name: (reservoir as any).name || reservoir.reservoir_name || `Reservoir ${reservoir.id}`
-                          };
-                          
                           return (
                             <ReservoirCard 
                               key={reservoir.id} 
-                              reservoir={compatibleReservoir as unknown as Reservoir} 
+                              reservoir={adaptReservoir(reservoir)} 
                               showButtons={showButtons}
                               disabled={isDisabled}
-                              onDeleteData={showButtons ? () => handleDeleteData(`เขื่อน/อ่างเก็บน้ำ ${compatibleReservoir.reservoir_name}`) : undefined}
+                              onDeleteData={showButtons ? () => handleDeleteData(`เขื่อน/อ่างเก็บน้ำ ${getReservoirDisplayName(reservoir)}`) : undefined}
                             />
                           );
                         })}
@@ -985,19 +1050,12 @@ export const WaterLevelInfo = ({
                 <div className="space-y-8">
                   {reservoirData.reservoirs.map((reservoir, index) => {
                     logCardCreation(reservoir, index, reservoirData.reservoirs.length, 'reservoir');
-                    
-                    // Create a compatible reservoir object with required properties
-                    const compatibleReservoir = {
-                      ...reservoir,
-                      reservoir_name: (reservoir as any).name || `Reservoir ${reservoir.id}`
-                    };
-                    
                     return (
                       <ReservoirCard 
                         key={reservoir.id} 
-                        reservoir={compatibleReservoir as unknown as Reservoir} 
+                        reservoir={adaptReservoir(reservoir)} 
                         showButtons={showButtons}
-                        onDeleteData={showButtons ? () => handleDeleteData(`เขื่อน/อ่างเก็บน้ำ ${compatibleReservoir.reservoir_name}`) : undefined}
+                        onDeleteData={showButtons ? () => handleDeleteData(`เขื่อน/อ่างเก็บน้ำ ${getReservoirDisplayName(reservoir)}`) : undefined}
                       />
                     );
                   })}
@@ -1006,19 +1064,6 @@ export const WaterLevelInfo = ({
             </div>
           )}
         </div>
-        
-        {/* Save Button */}
-        {showButtons && (
-          <div className="flex justify-center mt-6">
-            <Button 
-              onClick={handleSave}
-              className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-12 px-8 text-base font-medium rounded-md flex items-center"
-            >
-              <img src={SaveIcon} alt="Save" className="h-5 w-5 mr-2" />
-              บันทึก
-            </Button>
-          </div>
-        )}
       </div>
     </ErrorBoundary>
   );
