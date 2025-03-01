@@ -8,6 +8,8 @@ import { AlertCircle } from "lucide-react";
 
 interface SocialPostInfoProps {
   complaint: ProcessedPost | Complaint | null;
+  onSave?: () => void;
+  onDiscard?: () => void;
 }
 
 const isProcessedPost = (data: any): data is ProcessedPost => {
@@ -132,16 +134,16 @@ export const SocialPostInfo = ({ complaint }: SocialPostInfoProps) => {
   const mainCategory = getCategory(complaint);
 
   // Common content box styles
-  const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-md p-3 bg-white text-[#17254D] text-sm font-normal";
+  const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-xl p-3 bg-white text-[#17254D] text-sm font-normal";
   const contentTextStyle = "pl-8"; // Increased left padding from pl-3 to pl-8
-  const labelStyle = "text-[#64748B] font-medium text-lg absolute -top-4 left-3 bg-white px-2 z-10";
+  const labelStyle = "text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10";
 
   return (
     <ErrorBoundary component="SocialPostInfo">
       {/* Reduce horizontal padding to create less spacing from borders */}
       <div className="space-y-8 px-4">
         {/* Main Heading - Selected message type */}
-        <h2 className="text-2xl font-semibold text-[#17254D] mb-6">{mainCategory}</h2>
+        <h2 className="text-xl font-semibold text-[#17254D] mb-6">{mainCategory}</h2>
         
         {/* ประเด็นข้อความ */}
         <div className="flex flex-col relative mt-10 mx-auto max-w-full w-[95%]">

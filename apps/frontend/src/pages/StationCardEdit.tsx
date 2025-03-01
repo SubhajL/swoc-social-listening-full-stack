@@ -4,13 +4,14 @@ import { Complaint } from "@/types/complaint";
 import { ProcessedPost } from "@/types/processed-post";
 import { SocialPostInfo } from "@/components/complaint/SocialPostInfo";
 import { StationCardEditInfo } from "@/components/complaint/StationCardEditInfo";
-import { useComplaintStore } from "@/stores/complaintStore";
 import { useEffect, useRef, useState, useCallback } from "react";
 import logo1 from "@/assets/logo1.png";
 import logo2 from "@/assets/logo2.png";
 import { Link } from "react-router-dom";
 import { UnsavedChangesDialog } from "@/components/complaint/UnsavedChangesDialog";
 import { toast } from "sonner";
+// Import Jotai hooks instead of Zustand
+import { useComplaintData, useStationData } from "@/atoms/hooks";
 
 // Type guard to check if data is ProcessedPost
 const isProcessedPost = (data: any): data is ProcessedPost => {
@@ -74,8 +75,12 @@ const StationCardEditHeader = () => {
 const StationCardEdit = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const complaintStore = useComplaintStore();
+  
+  // Use Jotai hooks instead of Zustand store
   const complaintData = location.state as ProcessedPost | Complaint | undefined;
+  const stationData = useStationData();
+  const complaintDataJotai = useComplaintData();
+  
   const hasSetComplaintData = useRef(false);
   
   // State for tracking unsaved changes and dialog visibility
@@ -92,11 +97,21 @@ const StationCardEdit = () => {
   // Add a ref to track if this is the initial mount
   const isInitialMount = useRef(true);
 
-  // Store the complaint data in the store when the component mounts
+  // Store the complaint data when the component mounts
   useEffect(() => {
     if (complaintData && !hasSetComplaintData.current) {
-      console.log("[StationCardEdit] Storing complaint data in store:", complaintData);
-      complaintStore.setComplaintData(complaintData);
+      console.log("[StationCardEdit] Storing complaint data:", complaintData);
+      
+      // Update Jotai store with ProcessedPost data
+      if (isProcessedPost(complaintData)) {
+        complaintDataJotai.updateProcessedPosts([complaintData]);
+        
+        // If it's a processed post, add it to selected posts
+        if (complaintData.processed_post_id) {
+          complaintDataJotai.togglePostSelection(complaintData.processed_post_id.toString());
+        }
+      }
+      
       hasSetComplaintData.current = true;
     }
     
@@ -108,7 +123,7 @@ const StationCardEdit = () => {
       // Set isInitialMount to false after the initial mount
       isInitialMount.current = false;
     }
-  }, [complaintData, complaintStore.setComplaintData]);
+  }, [complaintData, complaintDataJotai]);
 
   // Listen for changes in the station data, but don't set hasChanges on initial load
   useEffect(() => {
@@ -116,17 +131,16 @@ const StationCardEdit = () => {
     if (isInitialMount.current) return;
     
     // Only check for changes if we're not in the initial mount
-    const currentStationData = complaintStore.stationData;
-    if (currentStationData) {
+    if (stationData) {
       const hasUserSelectedStations = 
-        currentStationData.userSelectedMonitoringStations.length > 0 ||
-        currentStationData.userSelectedRainStations.length > 0 ||
-        currentStationData.userSelectedReservoirs.length > 0;
+        stationData.userSelectedMonitoringStations.length > 0 ||
+        stationData.userSelectedRainStations.length > 0 ||
+        stationData.userSelectedReservoirs.length > 0;
         
       const hasDisabledStations =
-        Object.keys(currentStationData.disabledMonitoringStations).length > 0 ||
-        Object.keys(currentStationData.disabledRainStations).length > 0 ||
-        Object.keys(currentStationData.disabledReservoirs).length > 0;
+        Object.keys(stationData.disabledMonitoringStations).length > 0 ||
+        Object.keys(stationData.disabledRainStations).length > 0 ||
+        Object.keys(stationData.disabledReservoirs).length > 0;
       
       console.log("[StationCardEdit] Checking for changes during current session:", { 
         hasUserSelectedStations, 
@@ -137,7 +151,7 @@ const StationCardEdit = () => {
       // Changes will be tracked by the StationCardEditInfo component
       // This is just for debugging purposes
     }
-  }, [complaintStore.stationData]);
+  }, [stationData]);
 
   // Block navigation when there are unsaved changes
   const blocker = useBlocker(
@@ -203,17 +217,23 @@ const StationCardEdit = () => {
     // Mark navigation as intentional
     intentionalNavigation.current = true;
     
-    // Ensure we have the latest station data
-    const currentStationData = complaintStore.stationData;
+    // Set the navigatingAfterSave flag in Jotai
+    stationData.setNavigatingAfterSave(true);
+    
+    // Use the new helper function to save station data consistently across storage mechanisms
+    const saveResult = stationData.saveStationDataForNavigation();
+    
+    // 🔍 DEBUG: Log the save result
+    console.log("🔍 [DEBUG-StationCardEdit] saveStationDataForNavigation result:", saveResult);
     
     // Log the data being saved
     console.log("[StationCardEdit] Saving station data:", {
-      monitoringStations: currentStationData?.monitoringStations?.length || 0,
-      rainStations: currentStationData?.rainStations?.length || 0,
-      reservoirs: currentStationData?.reservoirs?.length || 0,
-      userSelectedMonitoring: currentStationData?.userSelectedMonitoringStations?.length || 0,
-      userSelectedRain: currentStationData?.userSelectedRainStations?.length || 0,
-      userSelectedReservoirs: currentStationData?.userSelectedReservoirs?.length || 0,
+      monitoringStations: stationData.monitoringStations.length || 0,
+      rainStations: stationData.rainStations.length || 0,
+      reservoirs: stationData.reservoirs.length || 0,
+      userSelectedMonitoring: stationData.userSelectedMonitoringStations.length || 0,
+      userSelectedRain: stationData.userSelectedRainStations.length || 0,
+      userSelectedReservoirs: stationData.userSelectedReservoirs.length || 0,
     });
     
     toast.success("บันทึกข้อมูล", {
@@ -221,8 +241,8 @@ const StationCardEdit = () => {
       duration: 3000,
     });
     
-    // Get the current complaint data from the store
-    const complaintData = complaintStore.complaintData;
+    // Get the current complaint data 
+    const currentComplaintData = complaintDataJotai.processedPosts[0] || complaintData;
     
     // Close the dialog if it's open
     setShowUnsavedDialog(false);
@@ -230,7 +250,7 @@ const StationCardEdit = () => {
     // Reset the changes flag to disable the navigation blocker
     setHasChanges(false);
     
-    console.log("[StationCardEdit] Navigating back to complaint form with data:", complaintData);
+    console.log("[StationCardEdit] Navigating back to complaint form with data:", currentComplaintData);
     
     try {
       // Store essential complaint data fields to ensure validation passes
@@ -238,67 +258,81 @@ const StationCardEdit = () => {
         from: 'StationCardEdit',
         returnFromStationEdit: true,
         timestamp: new Date().getTime(),
-        complaintData: complaintData // Include the full complaint data
+        complaintData: currentComplaintData, // Include the full complaint data
+        includesStationData: true, // Add a flag to indicate that station data is available
+        stationDataSaved: true,  // Add a new flag to explicitly indicate we saved station data
+        saveMethodUsed: 'saveStationDataForNavigation', // Track which save method was used
+        saveTimestamp: new Date().toISOString() // Track when the save happened
       };
       
       // Store the state in sessionStorage to retrieve it on the target page
       sessionStorage.setItem('complaintFormState', JSON.stringify(essentialData));
       
+      // 🔍 DEBUG: Log the session storage state before navigation
+      console.log("🔍 [DEBUG-StationCardEdit] Stored in sessionStorage with key 'complaintFormState':", essentialData);
+      console.log("🔍 [DEBUG-StationCardEdit] All sessionStorage keys before navigation:", Object.keys(sessionStorage));
+      
       // Store complaint ID separately if available
-      if (complaintData) {
+      if (currentComplaintData) {
         // Store ID
-        if ('processed_post_id' in complaintData) {
-          sessionStorage.setItem('complaintId', String(complaintData.processed_post_id));
-        } else if ('id' in complaintData) {
-          sessionStorage.setItem('complaintId', String(complaintData.id));
+        if (isProcessedPost(currentComplaintData) && currentComplaintData.processed_post_id) {
+          sessionStorage.setItem('complaintId', String(currentComplaintData.processed_post_id));
+        } else if ('id' in currentComplaintData && currentComplaintData.id) {
+          // Type assertion to handle potential extra properties
+          sessionStorage.setItem('complaintId', String((currentComplaintData as any).id));
         }
         
         // Store location data
-        if (complaintData.amphure) {
-          const amphure = Array.isArray(complaintData.amphure) 
-            ? complaintData.amphure[0] 
-            : complaintData.amphure;
+        if (currentComplaintData.amphure) {
+          const amphure = Array.isArray(currentComplaintData.amphure) 
+            ? currentComplaintData.amphure[0] 
+            : currentComplaintData.amphure;
           sessionStorage.setItem('complaintAmphure', amphure);
         }
         
-        if (complaintData.province) {
-          const province = Array.isArray(complaintData.province) 
-            ? complaintData.province[0] 
-            : complaintData.province;
+        if (currentComplaintData.province) {
+          const province = Array.isArray(currentComplaintData.province) 
+            ? currentComplaintData.province[0] 
+            : currentComplaintData.province;
           sessionStorage.setItem('complaintProvince', province);
         }
         
         // Store essential fields for validation
-        if ('text' in complaintData) {
-          sessionStorage.setItem('complaintIssue', complaintData.text);
-        } else if ('issue' in complaintData) {
-          sessionStorage.setItem('complaintIssue', complaintData.issue);
+        if (isProcessedPost(currentComplaintData) && currentComplaintData.text) {
+          sessionStorage.setItem('complaintIssue', currentComplaintData.text);
+        } else if ('issue' in currentComplaintData && (currentComplaintData as any).issue) {
+          sessionStorage.setItem('complaintIssue', (currentComplaintData as any).issue);
         }
         
-        if ('category_name' in complaintData) {
-          sessionStorage.setItem('complaintCategory', complaintData.category_name);
-        } else if ('category' in complaintData) {
-          sessionStorage.setItem('complaintCategory', complaintData.category);
+        if (isProcessedPost(currentComplaintData) && currentComplaintData.category_name) {
+          sessionStorage.setItem('complaintCategory', currentComplaintData.category_name);
+        } else if ('category' in currentComplaintData && (currentComplaintData as any).category) {
+          sessionStorage.setItem('complaintCategory', (currentComplaintData as any).category);
         }
         
-        if ('profile_name' in complaintData) {
-          sessionStorage.setItem('complaintReporter', complaintData.profile_name);
-        } else if ('reporter' in complaintData) {
-          sessionStorage.setItem('complaintReporter', complaintData.reporter);
+        if (isProcessedPost(currentComplaintData) && currentComplaintData.profile_name) {
+          sessionStorage.setItem('complaintReporter', currentComplaintData.profile_name);
+        } else if ('reporter' in currentComplaintData && (currentComplaintData as any).reporter) {
+          sessionStorage.setItem('complaintReporter', (currentComplaintData as any).reporter);
         }
         
-        if ('post_date' in complaintData) {
-          const dateStr = complaintData.post_date instanceof Date 
-            ? complaintData.post_date.toISOString().split('T')[0]
-            : new Date(complaintData.post_date).toISOString().split('T')[0];
+        if (isProcessedPost(currentComplaintData) && currentComplaintData.post_date) {
+          const dateStr = currentComplaintData.post_date instanceof Date 
+            ? currentComplaintData.post_date.toISOString().split('T')[0]
+            : new Date(currentComplaintData.post_date).toISOString().split('T')[0];
           sessionStorage.setItem('complaintDate', dateStr);
-        } else if ('date' in complaintData) {
-          sessionStorage.setItem('complaintDate', complaintData.date);
+        } else if ('date' in currentComplaintData && (currentComplaintData as any).date) {
+          sessionStorage.setItem('complaintDate', (currentComplaintData as any).date);
         }
       }
       
+      // Add a special flag to detect page loads
+      sessionStorage.setItem('exitingStationCardEdit', new Date().toISOString());
+      console.log("🔍 [DEBUG-StationCardEdit] Set exitingStationCardEdit flag in sessionStorage");
+      
       // Use a small timeout to ensure the hasChanges state update has been processed
       setTimeout(() => {
+        console.log("🔍 [DEBUG-StationCardEdit] ABOUT TO NAVIGATE via window.location.href");
         // Use window.location.href to bypass React Router's navigation blocker
         window.location.href = '/complaint/create';
       }, 100);
@@ -307,17 +341,23 @@ const StationCardEdit = () => {
       // Fallback navigation if serialization fails
       navigate('/complaint/create');
     }
-  }, [complaintStore, setHasChanges, setShowUnsavedDialog, navigate]);
+  }, [stationData, complaintDataJotai, complaintData, setHasChanges, setShowUnsavedDialog, navigate]);
 
   // Handle discard action
   const handleDiscard = useCallback(() => {
     // Mark navigation as intentional
     intentionalNavigation.current = true;
     
+    // Set the navigatingAfterSave flag in Jotai
+    stationData.setNavigatingAfterSave(true);
+    
     // We're intentionally NOT saving any changes made in the current session
-    // Get the original station data from the store before any changes were made
-    const originalStationData = complaintStore.stationData;
-    console.log("[StationCardEdit] Discarding changes, original station data:", originalStationData);
+    console.log("[StationCardEdit] Discarding changes and returning to complaint form");
+    
+    // Use the saveStationDataForNavigation function but log that we're discarding current session changes
+    console.log("[StationCardEdit] Saving original station data (not current session changes)");
+    const saveResult = stationData.saveStationDataForNavigation();
+    console.log("🔍 [DEBUG-StationCardEdit] saveStationDataForNavigation result in discard:", saveResult);
     
     // Close the dialog
     setShowUnsavedDialog(false);
@@ -325,8 +365,8 @@ const StationCardEdit = () => {
     // Reset the changes flag to disable the navigation blocker
     setHasChanges(false);
     
-    // Get the current complaint data from the store
-    const complaintData = complaintStore.complaintData;
+    // Get the current complaint data
+    const currentComplaintData = complaintDataJotai.processedPosts[0] || complaintData;
     
     console.log("[StationCardEdit] Navigating back to complaint form without saving current session changes");
     
@@ -337,67 +377,29 @@ const StationCardEdit = () => {
         returnFromStationEdit: true,
         discardCurrentChanges: true,
         timestamp: new Date().getTime(),
-        complaintData: complaintData // Include the full complaint data
+        complaintData: currentComplaintData, // Include the full complaint data
+        includesStationData: true, // Add a flag to indicate that station data is available
+        stationDataSaved: true, // We've technically saved the original data
+        saveMethodUsed: 'saveStationDataForNavigation',
+        saveTimestamp: new Date().toISOString(),
+        saveId: saveResult.saveId, // Include the save ID for tracking
+        discardFlag: true // Flag to indicate we're discarding current changes
       };
       
       // Store the state in sessionStorage to retrieve it on the target page
       sessionStorage.setItem('complaintFormState', JSON.stringify(essentialData));
       
-      // Store complaint ID separately if available
-      if (complaintData) {
-        // Store ID
-        if ('processed_post_id' in complaintData) {
-          sessionStorage.setItem('complaintId', String(complaintData.processed_post_id));
-        } else if ('id' in complaintData) {
-          sessionStorage.setItem('complaintId', String(complaintData.id));
-        }
-        
-        // Store location data
-        if (complaintData.amphure) {
-          const amphure = Array.isArray(complaintData.amphure) 
-            ? complaintData.amphure[0] 
-            : complaintData.amphure;
-          sessionStorage.setItem('complaintAmphure', amphure);
-        }
-        
-        if (complaintData.province) {
-          const province = Array.isArray(complaintData.province) 
-            ? complaintData.province[0] 
-            : complaintData.province;
-          sessionStorage.setItem('complaintProvince', province);
-        }
-        
-        // Store essential fields for validation
-        if ('text' in complaintData) {
-          sessionStorage.setItem('complaintIssue', complaintData.text);
-        } else if ('issue' in complaintData) {
-          sessionStorage.setItem('complaintIssue', complaintData.issue);
-        }
-        
-        if ('category_name' in complaintData) {
-          sessionStorage.setItem('complaintCategory', complaintData.category_name);
-        } else if ('category' in complaintData) {
-          sessionStorage.setItem('complaintCategory', complaintData.category);
-        }
-        
-        if ('profile_name' in complaintData) {
-          sessionStorage.setItem('complaintReporter', complaintData.profile_name);
-        } else if ('reporter' in complaintData) {
-          sessionStorage.setItem('complaintReporter', complaintData.reporter);
-        }
-        
-        if ('post_date' in complaintData) {
-          const dateStr = complaintData.post_date instanceof Date 
-            ? complaintData.post_date.toISOString().split('T')[0]
-            : new Date(complaintData.post_date).toISOString().split('T')[0];
-          sessionStorage.setItem('complaintDate', dateStr);
-        } else if ('date' in complaintData) {
-          sessionStorage.setItem('complaintDate', complaintData.date);
-        }
-      }
+      // 🔍 DEBUG: Log the session storage state before navigation
+      console.log("🔍 [DEBUG-StationCardEdit] Stored in sessionStorage with key 'complaintFormState':", essentialData);
+      
+      // Add a special flag to detect page loads
+      sessionStorage.setItem('exitingStationCardEdit', new Date().toISOString());
+      sessionStorage.setItem('exitSourceAction', 'discard');
+      console.log("🔍 [DEBUG-StationCardEdit] Set exitingStationCardEdit flag in sessionStorage");
       
       // Use a small timeout to ensure the hasChanges state update has been processed
       setTimeout(() => {
+        console.log("🔍 [DEBUG-StationCardEdit] ABOUT TO NAVIGATE via window.location.href");
         // Use window.location.href to bypass React Router's navigation blocker
         window.location.href = '/complaint/create';
       }, 100);
@@ -406,7 +408,7 @@ const StationCardEdit = () => {
       // Fallback navigation if serialization fails
       navigate('/complaint/create');
     }
-  }, [complaintStore, setHasChanges, setShowUnsavedDialog, navigate]);
+  }, [stationData, complaintDataJotai, complaintData, setHasChanges, setShowUnsavedDialog, navigate]);
 
   // Handle cancel action
   const handleCancel = useCallback(() => {
