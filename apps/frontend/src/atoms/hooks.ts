@@ -60,16 +60,15 @@ import {
 // ===== Station Data Hooks =====
 
 export function useStationData() {
-  const stationData = useAtomValue(allStationDataAtom);
-  const setMonitoringStations = useSetAtom(monitoringStationsAtom);
-  const setRainStations = useSetAtom(rainStationsAtom);
-  const setReservoirs = useSetAtom(reservoirsAtom);
-  const setUserSelectedMonitoringStations = useSetAtom(userSelectedMonitoringStationsAtom);
-  const setUserSelectedRainStations = useSetAtom(userSelectedRainStationsAtom);
-  const setUserSelectedReservoirs = useSetAtom(userSelectedReservoirsAtom);
-  const setDisabledMonitoringStations = useSetAtom(disabledMonitoringStationsAtom);
-  const setDisabledRainStations = useSetAtom(disabledRainStationsAtom);
-  const setDisabledReservoirs = useSetAtom(disabledReservoirsAtom);
+  const [monitoringStations, setMonitoringStations] = useAtom(monitoringStationsAtom);
+  const [rainStations, setRainStations] = useAtom(rainStationsAtom);
+  const [reservoirs, setReservoirs] = useAtom(reservoirsAtom);
+  const [userSelectedMonitoringStations, setUserSelectedMonitoringStations] = useAtom(userSelectedMonitoringStationsAtom);
+  const [userSelectedRainStations, setUserSelectedRainStations] = useAtom(userSelectedRainStationsAtom);
+  const [userSelectedReservoirs, setUserSelectedReservoirs] = useAtom(userSelectedReservoirsAtom);
+  const [disabledMonitoringStations, setDisabledMonitoringStations] = useAtom(disabledMonitoringStationsAtom);
+  const [disabledRainStations, setDisabledRainStations] = useAtom(disabledRainStationsAtom);
+  const [disabledReservoirs, setDisabledReservoirs] = useAtom(disabledReservoirsAtom);
   const [navigatingAfterSave, setNavigatingAfterSave] = useAtom(navigatingAfterSaveAtom);
   const [stationDataUpdateIntentional, setStationDataUpdateIntentional] = useAtom(stationDataUpdateIntentionalAtom);
   
@@ -202,47 +201,218 @@ export function useStationData() {
     setStationDataUpdateIntentional
   ]);
   
-  return {
-    // State
-    ...stationData,
-    navigatingAfterSave,
-    stationDataUpdateIntentional,
+  // Function to adapt a reservoir object for compatibility
+  const adaptReservoir = useCallback((reservoir: unknown): any => {
+    if (!reservoir || typeof reservoir !== 'object') {
+      console.warn("[useStationData] adaptReservoir received invalid reservoir:", reservoir);
+      return { id: 0, name: "Unknown Reservoir", reservoir_name: "Unknown Reservoir" };
+    }
     
-    // Setters
-    setNavigatingAfterSave,
-    setStationDataUpdateIntentional,
-    setMonitoringStations,
-    setRainStations,
-    setReservoirs,
+    // Simple adapter that preserves existing properties while adding any missing ones
+    const apiStyle = reservoir as {id: string; name: string};
+    const dbStyle = reservoir as {id: number; reservoir_name: string | null};
+    
+    // Create a new object with properties from both types
+    return {
+      // Use the original object as base if it's a valid object
+      ...(typeof reservoir === 'object' && reservoir !== null ? reservoir as object : {}),
+      // Ensure these properties exist for any code that expects them
+      id: dbStyle.id || (apiStyle.id ? parseInt(apiStyle.id) : 0),
+      name: apiStyle.name || dbStyle.reservoir_name || `Reservoir ${dbStyle.id || apiStyle.id}`,
+      reservoir_name: dbStyle.reservoir_name || apiStyle.name || `Reservoir ${dbStyle.id || apiStyle.id}`
+    };
+  }, []);
+  
+  // Function to get all station data in one object (for compatibility with old code)
+  const getStationData = useCallback(() => {
+    return {
+      monitoringStations,
+      rainStations,
+      reservoirs,
+      userSelectedMonitoringStations,
+      userSelectedRainStations,
+      userSelectedReservoirs,
+      disabledMonitoringStations,
+      disabledRainStations,
+      disabledReservoirs,
+      // Add helper method
+      adaptReservoir
+    };
+  }, [
+    monitoringStations,
+    rainStations,
+    reservoirs,
+    userSelectedMonitoringStations,
+    userSelectedRainStations,
+    userSelectedReservoirs,
+    disabledMonitoringStations,
+    disabledRainStations,
+    disabledReservoirs,
+    adaptReservoir
+  ]);
+
+  // Function to explicitly save station data to both localStorage and sessionStorage
+  const saveStationDataForNavigation = useCallback(() => {
+    // Generate a unique save ID for this operation
+    const saveId = `save_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    
+    // Debug log the state before saving
+    console.log(`🔍 [useStationData] Saving station data for navigation (ID: ${saveId})`, {
+      timestamp: new Date().toISOString(),
+      monitoringStationsCount: monitoringStations.length,
+      rainStationsCount: rainStations.length,
+      reservoirsCount: reservoirs.length,
+      userSelectedMonitoringCount: userSelectedMonitoringStations.length,
+      userSelectedRainCount: userSelectedRainStations.length,
+      userSelectedReservoirsCount: userSelectedReservoirs.length,
+    });
+    
+    // Set the intentional update flag on window to prevent re-renders
+    window._stationDataUpdateIntentional = true;
+    
+    // 1. Save to localStorage for long-term persistence
+    const stationDataToSave = {
+      monitoringStations,
+      rainStations,
+      reservoirs,
+      userSelectedMonitoringStations,
+      userSelectedRainStations,
+      userSelectedReservoirs,
+      disabledMonitoringStations,
+      disabledRainStations,
+      disabledReservoirs,
+      // Add metadata
+      saveId,
+      savedAt: new Date().toISOString(),
+      saveSource: 'saveStationDataForNavigation'
+    };
+    
+    try {
+      // Save to localStorage
+      localStorage.setItem('tempStationData', JSON.stringify(stationDataToSave));
+      
+      // 2. Also save to sessionStorage for immediate access during navigation
+      sessionStorage.setItem('stationDataForNavigation', JSON.stringify(stationDataToSave));
+      
+      // Set flag in sessionStorage to indicate fresh data available
+      sessionStorage.setItem('stationDataTimestamp', new Date().toISOString());
+      sessionStorage.setItem('stationDataSaveId', saveId);
+      
+      // Also set a flag for the navigation management
+      sessionStorage.setItem('navigatingIntentionally', 'true');
+      
+      // Log success and verify data was stored
+      const savedLocalStorage = localStorage.getItem('tempStationData');
+      const savedSessionStorage = sessionStorage.getItem('stationDataForNavigation');
+      
+      console.log(`🔍 [useStationData] Station data saved successfully (ID: ${saveId})`, {
+        localStorageSuccess: !!savedLocalStorage,
+        sessionStorageSuccess: !!savedSessionStorage,
+        localStorageSize: savedLocalStorage ? savedLocalStorage.length : 0,
+        sessionStorageSize: savedSessionStorage ? savedSessionStorage.length : 0,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Reset the window flag after a brief delay
+      setTimeout(() => {
+        window._stationDataUpdateIntentional = false;
+      }, 100);
+      
+      return {
+        success: true,
+        saveId,
+        timestamp: new Date().toISOString(),
+        storageDetails: {
+          localStorage: savedLocalStorage ? true : false,
+          sessionStorage: savedSessionStorage ? true : false
+        }
+      };
+    } catch (error) {
+      console.error(`[useStationData] Error saving station data (ID: ${saveId}):`, error);
+      
+      // Attempt recovery by using only sessionStorage if localStorage failed
+      try {
+        if (!localStorage.getItem('tempStationData') && !sessionStorage.getItem('stationDataForNavigation')) {
+          console.log(`🔍 [useStationData] Attempting recovery using sessionStorage only (ID: ${saveId})`);
+          sessionStorage.setItem('stationDataForNavigation', JSON.stringify(stationDataToSave));
+          sessionStorage.setItem('stationDataTimestamp', new Date().toISOString());
+          sessionStorage.setItem('stationDataSaveId', saveId);
+          sessionStorage.setItem('stationDataRecoveryMode', 'true');
+          
+          return {
+            success: true,
+            recovery: true,
+            saveId,
+            timestamp: new Date().toISOString(),
+            error: String(error)
+          };
+        }
+      } catch (recoveryError) {
+        console.error(`[useStationData] Recovery attempt failed (ID: ${saveId}):`, recoveryError);
+      }
+      
+      return {
+        success: false,
+        saveId,
+        timestamp: new Date().toISOString(),
+        error: String(error)
+      };
+    } finally {
+      // Reset the window flag
+      window._stationDataUpdateIntentional = false;
+    }
+  }, [
+    monitoringStations,
+    rainStations,
+    reservoirs,
+    userSelectedMonitoringStations,
+    userSelectedRainStations,
+    userSelectedReservoirs,
+    disabledMonitoringStations,
+    disabledRainStations,
+    disabledReservoirs
+  ]);
+
+  // Add a stationData object to match older API
+  const stationData = {
+    monitoringStations,
+    rainStations,
+    reservoirs,
+    userSelectedMonitoringStations,
+    userSelectedRainStations,
+    userSelectedReservoirs,
+    disabledMonitoringStations,
+    disabledRainStations,
+    disabledReservoirs
+  };
+
+  return {
+    monitoringStations,
+    rainStations,
+    reservoirs,
+    userSelectedMonitoringStations,
+    userSelectedRainStations,
+    userSelectedReservoirs,
+    disabledMonitoringStations,
+    disabledRainStations,
+    disabledReservoirs,
+    updateMonitoringStations,
+    updateRainStations,
+    updateReservoirs,
     setUserSelectedMonitoringStations,
     setUserSelectedRainStations,
     setUserSelectedReservoirs,
     setDisabledMonitoringStations,
     setDisabledRainStations,
     setDisabledReservoirs,
-    
-    // Update functions
-    updateMonitoringStations,
-    updateRainStations,
-    updateReservoirs,
-    
-    // User selected stations
-    addUserSelectedMonitoringStation,
-    addUserSelectedRainStation,
-    addUserSelectedReservoir,
-    removeUserSelectedMonitoringStation,
-    removeUserSelectedRainStation,
-    removeUserSelectedReservoir,
-    
-    // Disabled stations
-    disableMonitoringStation,
-    disableRainStation,
-    disableReservoir,
-    enableMonitoringStation,
-    enableRainStation,
-    enableReservoir,
-    
-    // Reset
+    navigatingAfterSave,
+    setNavigatingAfterSave,
+    stationDataUpdateIntentional,
+    setStationDataUpdateIntentional,
+    getStationData,
+    stationData,
+    adaptReservoir,
+    saveStationDataForNavigation,
     resetStationData
   };
 }

@@ -9,7 +9,7 @@ import { Complaint } from "@/types/complaint";
 import { ComplaintDTO } from "@/dto/complaint.dto";
 import { toast } from "sonner";
 import { ProcessedPost } from "@/types/processed-post";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 // Replace Zustand store with Jotai hooks
 import { useComplaintData } from "@/atoms/hooks";
 import { useStationData } from "@/atoms/hooks";
@@ -93,7 +93,8 @@ const ComplaintForm = () => {
     setUserSelectedReservoirs,
     setDisabledMonitoringStations,
     setDisabledRainStations,
-    setDisabledReservoirs
+    setDisabledReservoirs,
+    stationData
   } = useStationData();
   
   // State for tracking if we returned from StationCardEdit
@@ -102,14 +103,79 @@ const ComplaintForm = () => {
   // State to store preserved complaint data when returning from StationCardEdit
   const [preservedData, setPreservedData] = useState<any>(null);
   
+  // Ref to track if initial state restoration has been done
+  const initialStateRestorationDone = useRef(false);
+  
   // Check if we're returning from StationCardEdit
   useEffect(() => {
+    // Skip if we've already done the initial state restoration
+    if (initialStateRestorationDone.current) {
+      console.log("🔍 [DEBUG-ComplaintForm] Skipping duplicate state restoration - already restored once");
+      return;
+    }
+    
     console.log("🔍 [DEBUG-ComplaintForm] useEffect for StationCardEdit return check running");
     console.log("🔍 [DEBUG-ComplaintForm] Current timestamp:", new Date().toISOString());
     
     // Log all sessionStorage keys for debugging
     const sessionStorageKeys = Object.keys(sessionStorage);
     console.log("🔍 [DEBUG-ComplaintForm] All sessionStorage keys:", sessionStorageKeys);
+    
+    // PRIORITY ORDER FOR STATE RESTORATION:
+    // 1. First check complaintFormState in sessionStorage (most reliable)
+    // 2. Then check for stationDataForNavigation in sessionStorage
+    // 3. Then check location.state (least reliable)
+    // 4. Finally, check localStorage for legacy data storage
+    
+    // First, check for complaintFormState in sessionStorage
+    const savedComplaintFormState = sessionStorage.getItem('complaintFormState');
+    
+    if (savedComplaintFormState) {
+      try {
+        console.log("🔍 [DEBUG-ComplaintForm] Found complaintFormState in sessionStorage");
+        const savedState = JSON.parse(savedComplaintFormState);
+        console.log("🔍 [DEBUG-ComplaintForm] Parsed complaintFormState:", savedState);
+        
+        // Check if we're returning from StationCardEdit
+        if (savedState.from === 'StationCardEdit') {
+          console.log("🔍 [DEBUG-ComplaintForm] Confirmed return from StationCardEdit via sessionStorage");
+          console.log("🔍 [DEBUG-ComplaintForm] Timestamp:", savedState.timestamp);
+          console.log("🔍 [DEBUG-ComplaintForm] Save method:", savedState.saveMethodUsed || 'unknown');
+          
+          // Set the flag to indicate we're returning from StationCardEdit
+          setReturnedFromStationEdit(true);
+          
+          // Check if we have station data included
+          if (savedState.includesStationData) {
+            console.log("🔍 [DEBUG-ComplaintForm] Station data included flag is true");
+            
+            // Check which save method was used
+            if (savedState.saveMethodUsed === 'saveStationDataForNavigation') {
+              console.log("🔍 [DEBUG-ComplaintForm] Using saveStationDataForNavigation method");
+              
+              // The stationDataForNavigation check below will handle loading the data
+              // Just set the flag to intentional to prevent navigation warnings
+              window._stationDataUpdateIntentional = true;
+              setStationDataUpdateIntentional(true);
+            }
+          }
+          
+          // Save the complaint data for later use
+          if (savedState.complaintData) {
+            console.log("🔍 [DEBUG-ComplaintForm] Found complaint data in complaintFormState");
+            setPreservedData(savedState.complaintData);
+          }
+          
+          // Remove the complaintFormState from sessionStorage to prevent duplicates
+          sessionStorage.removeItem('complaintFormState');
+          console.log("🔍 [DEBUG-ComplaintForm] Removed complaintFormState from sessionStorage");
+        }
+      } catch (error) {
+        console.error("[ComplaintForm] Error parsing complaintFormState:", error);
+      } finally {
+        setStationDataUpdateIntentional(false);
+      }
+    }
     
     // Check if we have a flag indicating we're navigating after a successful save
     const navigatingAfterSave = sessionStorage.getItem('navigatingAfterSave');
@@ -211,63 +277,259 @@ const ComplaintForm = () => {
     // Check for temp station data from StationCardEdit
     const tempStationData = localStorage.getItem('tempStationData');
     if (tempStationData) {
-      console.log("[ComplaintForm] Found temp station data from StationCardEdit");
+      console.log("[ComplaintForm] Found temp station data from StationCardEdit in localStorage");
+      
+      // 🔍 DEBUG: Log the detection timestamp and check if we have the exit timestamp
+      const exitTimestamp = sessionStorage.getItem('exitingStationCardEdit');
+      console.log("🔍 [DEBUG-ComplaintForm] Found tempStationData at:", new Date().toISOString());
+      console.log("🔍 [DEBUG-ComplaintForm] Exit timestamp from StationCardEdit:", exitTimestamp);
       
       try {
+        // 🔍 DEBUG: Log the raw data before parsing
+        console.log("🔍 [DEBUG-ComplaintForm] Raw tempStationData length:", tempStationData.length);
+        console.log("🔍 [DEBUG-ComplaintForm] Raw tempStationData starts with:", tempStationData.substring(0, 100) + "...");
+        
         // Mark the update as intentional to prevent triggering side effects
         setStationDataUpdateIntentional(true);
         
         const parsedData = JSON.parse(tempStationData);
         
+        // 🔍 DEBUG: Log detailed stats of what we're loading
+        console.log("🔍 [DEBUG-ComplaintForm] DETAILED STATS of parsed tempStationData:", {
+          timestamp: new Date().toISOString(),
+          monitoringStationsCount: parsedData.monitoringStations?.length || 0,
+          rainStationsCount: parsedData.rainStations?.length || 0,
+          reservoirsCount: parsedData.reservoirs?.length || 0,
+          userSelectedMonitoringCount: parsedData.userSelectedMonitoringStations?.length || 0,
+          userSelectedRainCount: parsedData.userSelectedRainStations?.length || 0,
+          userSelectedReservoirsCount: parsedData.userSelectedReservoirs?.length || 0,
+          disabledMonitoringCount: parsedData.disabledMonitoringStations ? Object.keys(parsedData.disabledMonitoringStations).length : 0,
+          disabledRainCount: parsedData.disabledRainStations ? Object.keys(parsedData.disabledRainStations).length : 0,
+          disabledReservoirsCount: parsedData.disabledReservoirs ? Object.keys(parsedData.disabledReservoirs).length : 0,
+          // Sample a few IDs to verify data integrity
+          sampleMonitoringIDs: parsedData.monitoringStations?.slice(0, 2).map((s: any) => s.id || 'unknown') || [],
+          sampleRainIDs: parsedData.rainStations?.slice(0, 2).map((s: any) => s.id || 'unknown') || [],
+          sampleReservoirIDs: parsedData.reservoirs?.slice(0, 2).map((s: any) => s.id || 'unknown') || [],
+        });
+        
         // Update all station data with the temp data
         if (parsedData.monitoringStations) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating monitoring stations:", parsedData.monitoringStations.length);
+          updateMonitoringStations(parsedData.monitoringStations);
+        } else {
+          console.log("🔍 [DEBUG-ComplaintForm] No monitoringStations in temp data");
+        }
+        
+        if (parsedData.rainStations) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating rain stations:", parsedData.rainStations.length);
+          updateRainStations(parsedData.rainStations);
+        } else {
+          console.log("🔍 [DEBUG-ComplaintForm] No rainStations in temp data");
+        }
+        
+        if (parsedData.reservoirs) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating reservoirs:", parsedData.reservoirs.length);
+          updateReservoirs(parsedData.reservoirs);
+        } else {
+          console.log("🔍 [DEBUG-ComplaintForm] No reservoirs in temp data");
+        }
+        
+        if (parsedData.userSelectedMonitoringStations) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating userSelectedMonitoringStations:", parsedData.userSelectedMonitoringStations.length);
+          setUserSelectedMonitoringStations(parsedData.userSelectedMonitoringStations);
+        } else {
+          console.log("🔍 [DEBUG-ComplaintForm] No userSelectedMonitoringStations in temp data");
+        }
+        
+        if (parsedData.userSelectedRainStations) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating userSelectedRainStations:", parsedData.userSelectedRainStations.length);
+          setUserSelectedRainStations(parsedData.userSelectedRainStations);
+        } else {
+          console.log("🔍 [DEBUG-ComplaintForm] No userSelectedRainStations in temp data");
+        }
+        
+        if (parsedData.userSelectedReservoirs) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating userSelectedReservoirs:", parsedData.userSelectedReservoirs.length);
+          setUserSelectedReservoirs(parsedData.userSelectedReservoirs);
+        } else {
+          console.log("🔍 [DEBUG-ComplaintForm] No userSelectedReservoirs in temp data");
+        }
+        
+        if (parsedData.disabledMonitoringStations) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating disabledMonitoringStations:", Object.keys(parsedData.disabledMonitoringStations).length);
+          setDisabledMonitoringStations(parsedData.disabledMonitoringStations);
+        } else {
+          console.log("🔍 [DEBUG-ComplaintForm] No disabledMonitoringStations in temp data");
+        }
+        
+        if (parsedData.disabledRainStations) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating disabledRainStations:", Object.keys(parsedData.disabledRainStations).length);
+          setDisabledRainStations(parsedData.disabledRainStations);
+        } else {
+          console.log("🔍 [DEBUG-ComplaintForm] No disabledRainStations in temp data");
+        }
+        
+        if (parsedData.disabledReservoirs) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating disabledReservoirs:", Object.keys(parsedData.disabledReservoirs).length);
+          setDisabledReservoirs(parsedData.disabledReservoirs);
+        } else {
+          console.log("🔍 [DEBUG-ComplaintForm] No disabledReservoirs in temp data");
+        }
+        
+        console.log("[ComplaintForm] Successfully loaded temp station data from localStorage");
+        
+        // VERIFICATION: Check that data was updated in Jotai
+        setTimeout(() => {
+          console.log("🔍 [DEBUG-ComplaintForm] VERIFICATION - Jotai store state after updates:", {
+            monitoringStationsCount: stationData.monitoringStations?.length || 0,
+            rainStationsCount: stationData.rainStations?.length || 0,
+            reservoirsCount: stationData.reservoirs?.length || 0,
+            userSelectedMonitoringCount: stationData.userSelectedMonitoringStations?.length || 0,
+            userSelectedRainCount: stationData.userSelectedRainStations?.length || 0,
+            userSelectedReservoirsCount: stationData.userSelectedReservoirs?.length || 0,
+            timestamp: new Date().toISOString()
+          });
+        }, 10);
+        
+        // Remove the temp data to avoid reloading it on refresh
+        localStorage.removeItem('tempStationData');
+        console.log("🔍 [DEBUG-ComplaintForm] Removed tempStationData from localStorage");
+        
+        // Also remove the exit timestamp
+        sessionStorage.removeItem('exitingStationCardEdit');
+        console.log("🔍 [DEBUG-ComplaintForm] Removed exitingStationCardEdit from sessionStorage");
+      } catch (error) {
+        console.error("[ComplaintForm] Error parsing temp station data from localStorage:", error);
+        console.log("🔍 [DEBUG-ComplaintForm] Error details:", {
+          errorName: error && (error as Error).name,
+          errorMessage: error && (error as Error).message,
+          errorStack: error && (error as Error).stack
+        });
+      } finally {
+        // Reset the update flag
+        setStationDataUpdateIntentional(false);
+        console.log("🔍 [DEBUG-ComplaintForm] Reset stationDataUpdateIntentional flag");
+      }
+    } else {
+      console.log("🔍 [DEBUG-ComplaintForm] No tempStationData found in localStorage");
+    }
+    
+    // ENHANCED PERSISTENCE: Check for session storage data (faster and more reliable during navigation)
+    const sessionStationData = sessionStorage.getItem('stationDataForNavigation');
+    const stationDataTimestamp = sessionStorage.getItem('stationDataTimestamp');
+    
+    if (sessionStationData && stationDataTimestamp) {
+      console.log("[ComplaintForm] Found station data in sessionStorage from saveStationDataForNavigation");
+      console.log("🔍 [DEBUG-ComplaintForm] Station data timestamp:", stationDataTimestamp);
+      
+      try {
+        // Mark the update as intentional to prevent triggering side effects
+        setStationDataUpdateIntentional(true);
+        
+        const parsedData = JSON.parse(sessionStationData);
+        
+        // 🔍 DEBUG: Log detailed stats of what we're loading from sessionStorage
+        console.log("🔍 [DEBUG-ComplaintForm] DETAILED STATS of stationDataForNavigation:", {
+          timestamp: new Date().toISOString(),
+          savedAt: stationDataTimestamp,
+          monitoringStationsCount: parsedData.monitoringStations?.length || 0,
+          rainStationsCount: parsedData.rainStations?.length || 0,
+          reservoirsCount: parsedData.reservoirs?.length || 0,
+          userSelectedMonitoringCount: parsedData.userSelectedMonitoringStations?.length || 0,
+          userSelectedRainCount: parsedData.userSelectedRainStations?.length || 0,
+          userSelectedReservoirsCount: parsedData.userSelectedReservoirs?.length || 0,
+          disabledMonitoringCount: parsedData.disabledMonitoringStations ? Object.keys(parsedData.disabledMonitoringStations).length : 0,
+          disabledRainCount: parsedData.disabledRainStations ? Object.keys(parsedData.disabledRainStations).length : 0,
+          disabledReservoirsCount: parsedData.disabledReservoirs ? Object.keys(parsedData.disabledReservoirs).length : 0
+        });
+        
+        // Update all station data from sessionStorage
+        if (parsedData.monitoringStations) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating monitoring stations from sessionStorage:", parsedData.monitoringStations.length);
           updateMonitoringStations(parsedData.monitoringStations);
         }
         
         if (parsedData.rainStations) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating rain stations from sessionStorage:", parsedData.rainStations.length);
           updateRainStations(parsedData.rainStations);
         }
         
         if (parsedData.reservoirs) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating reservoirs from sessionStorage:", parsedData.reservoirs.length);
           updateReservoirs(parsedData.reservoirs);
         }
         
         if (parsedData.userSelectedMonitoringStations) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating userSelectedMonitoringStations from sessionStorage:", parsedData.userSelectedMonitoringStations.length);
           setUserSelectedMonitoringStations(parsedData.userSelectedMonitoringStations);
         }
         
         if (parsedData.userSelectedRainStations) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating userSelectedRainStations from sessionStorage:", parsedData.userSelectedRainStations.length);
           setUserSelectedRainStations(parsedData.userSelectedRainStations);
         }
         
         if (parsedData.userSelectedReservoirs) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating userSelectedReservoirs from sessionStorage:", parsedData.userSelectedReservoirs.length);
           setUserSelectedReservoirs(parsedData.userSelectedReservoirs);
         }
         
         if (parsedData.disabledMonitoringStations) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating disabledMonitoringStations from sessionStorage:", Object.keys(parsedData.disabledMonitoringStations).length);
           setDisabledMonitoringStations(parsedData.disabledMonitoringStations);
         }
         
         if (parsedData.disabledRainStations) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating disabledRainStations from sessionStorage:", Object.keys(parsedData.disabledRainStations).length);
           setDisabledRainStations(parsedData.disabledRainStations);
         }
         
         if (parsedData.disabledReservoirs) {
+          console.log("🔍 [DEBUG-ComplaintForm] Updating disabledReservoirs from sessionStorage:", Object.keys(parsedData.disabledReservoirs).length);
           setDisabledReservoirs(parsedData.disabledReservoirs);
         }
         
-        console.log("[ComplaintForm] Successfully loaded temp station data");
+        console.log("[ComplaintForm] Successfully loaded station data from sessionStorage");
         
-        // Remove the temp data to avoid reloading it on refresh
-        localStorage.removeItem('tempStationData');
+        // VERIFICATION: Check that data was updated in Jotai
+        setTimeout(() => {
+          console.log("🔍 [DEBUG-ComplaintForm] VERIFICATION - Jotai store state after sessionStorage updates:", {
+            monitoringStationsCount: stationData.monitoringStations?.length || 0,
+            rainStationsCount: stationData.rainStations?.length || 0,
+            reservoirsCount: stationData.reservoirs?.length || 0,
+            userSelectedMonitoringCount: stationData.userSelectedMonitoringStations?.length || 0,
+            userSelectedRainCount: stationData.userSelectedRainStations?.length || 0,
+            userSelectedReservoirsCount: stationData.userSelectedReservoirs?.length || 0,
+            timestamp: new Date().toISOString()
+          });
+        }, 10);
+        
+        // Only remove the sessionStorage data after successfully loading it
+        sessionStorage.removeItem('stationDataForNavigation');
+        sessionStorage.removeItem('stationDataTimestamp');
+        console.log("🔍 [DEBUG-ComplaintForm] Removed stationDataForNavigation from sessionStorage");
+        
+        // Set flag that we returned from station edit with data
+        setReturnedFromStationEdit(true);
+        console.log("🔍 [DEBUG-ComplaintForm] Setting returnedFromStationEdit to true based on sessionStorage data");
+        
       } catch (error) {
-        console.error("[ComplaintForm] Error parsing temp station data:", error);
+        console.error("[ComplaintForm] Error parsing station data from sessionStorage:", error);
+        console.log("🔍 [DEBUG-ComplaintForm] Error details:", {
+          errorName: error && (error as Error).name,
+          errorMessage: error && (error as Error).message,
+          errorStack: error && (error as Error).stack
+        });
       } finally {
         // Reset the update flag
         setStationDataUpdateIntentional(false);
+        console.log("🔍 [DEBUG-ComplaintForm] Reset stationDataUpdateIntentional flag after sessionStorage handling");
       }
+    } else {
+      console.log("🔍 [DEBUG-ComplaintForm] No stationDataForNavigation found in sessionStorage");
+      console.log("🔍 [DEBUG-ComplaintForm] All sessionStorage keys:", Object.keys(sessionStorage));
     }
-    
+
     // Check if we have state in location.state (normal navigation)
     if (location.state && location.state.from === 'StationCardEdit') {
       console.log("[ComplaintForm] Returned from StationCardEdit", location.state);
@@ -293,7 +555,7 @@ const ComplaintForm = () => {
       // Clear the state to prevent reloading on refresh
       window.history.replaceState({}, document.title);
       console.log("🔍 [DEBUG-ComplaintForm] Cleared history state");
-    } 
+    }
     // Check if we have state in sessionStorage (direct navigation)
     else if (sessionStorage.getItem('complaintFormState')) {
       try {
@@ -313,74 +575,82 @@ const ComplaintForm = () => {
             console.log("[ComplaintForm] Station data was saved in StationCardEdit, verifying it's loaded");
             console.log("🔍 [DEBUG-ComplaintForm] stationDataSaved flag is true in sessionStorage");
             
-            // Set the update flag to prevent navigation warnings
-            setStationDataUpdateIntentional(true);
-            
-            try {
-              // Force reload data from localStorage
-              const savedStoreData = localStorage.getItem('monitoringStations');
-              const savedRainStations = localStorage.getItem('rainStations');
-              const savedReservoirs = localStorage.getItem('reservoirs');
-              const savedUserSelectedMonitoring = localStorage.getItem('userSelectedMonitoringStations');
-              const savedUserSelectedRain = localStorage.getItem('userSelectedRainStations');
-              const savedUserSelectedReservoirs = localStorage.getItem('userSelectedReservoirs');
-              const savedDisabledMonitoring = localStorage.getItem('disabledMonitoringStations');
-              const savedDisabledRain = localStorage.getItem('disabledRainStations');
-              const savedDisabledReservoirs = localStorage.getItem('disabledReservoirsStations');
+            // Check which save method was used
+            if (savedState.saveMethodUsed === 'saveStationDataForNavigation') {
+              console.log("🔍 [DEBUG-ComplaintForm] SaveMethodUsed is saveStationDataForNavigation");
+              console.log("🔍 [DEBUG-ComplaintForm] Data should already be loaded from sessionStorage");
+            } else {
+              console.log("🔍 [DEBUG-ComplaintForm] Legacy save method was used, checking localStorage directly");
               
-              // Parse and update each piece of data if it exists
-              if (savedStoreData) {
-                const monitoringStations = JSON.parse(savedStoreData);
-                updateMonitoringStations(monitoringStations);
+              // Set the update flag to prevent navigation warnings
+              setStationDataUpdateIntentional(true);
+              
+              try {
+                // Force reload data from localStorage
+                const savedStoreData = localStorage.getItem('monitoringStations');
+                const savedRainStations = localStorage.getItem('rainStations');
+                const savedReservoirs = localStorage.getItem('reservoirs');
+                const savedUserSelectedMonitoring = localStorage.getItem('userSelectedMonitoringStations');
+                const savedUserSelectedRain = localStorage.getItem('userSelectedRainStations');
+                const savedUserSelectedReservoirs = localStorage.getItem('userSelectedReservoirs');
+                const savedDisabledMonitoring = localStorage.getItem('disabledMonitoringStations');
+                const savedDisabledRain = localStorage.getItem('disabledRainStations');
+                const savedDisabledReservoirs = localStorage.getItem('disabledReservoirsStations');
+                
+                // Parse and update each piece of data if it exists
+                if (savedStoreData) {
+                  const monitoringStations = JSON.parse(savedStoreData);
+                  updateMonitoringStations(monitoringStations);
+                }
+                
+                if (savedRainStations) {
+                  const rainStations = JSON.parse(savedRainStations);
+                  updateRainStations(rainStations);
+                }
+                
+                if (savedReservoirs) {
+                  const reservoirs = JSON.parse(savedReservoirs);
+                  updateReservoirs(reservoirs);
+                }
+                
+                if (savedUserSelectedMonitoring) {
+                  const userSelectedMonitoring = JSON.parse(savedUserSelectedMonitoring);
+                  setUserSelectedMonitoringStations(userSelectedMonitoring);
+                }
+                
+                if (savedUserSelectedRain) {
+                  const userSelectedRain = JSON.parse(savedUserSelectedRain);
+                  setUserSelectedRainStations(userSelectedRain);
+                }
+                
+                if (savedUserSelectedReservoirs) {
+                  const userSelectedReservoirs = JSON.parse(savedUserSelectedReservoirs);
+                  setUserSelectedReservoirs(userSelectedReservoirs);
+                }
+                
+                if (savedDisabledMonitoring) {
+                  const disabledMonitoring = JSON.parse(savedDisabledMonitoring);
+                  setDisabledMonitoringStations(disabledMonitoring);
+                }
+                
+                if (savedDisabledRain) {
+                  const disabledRain = JSON.parse(savedDisabledRain);
+                  setDisabledRainStations(disabledRain);
+                }
+                
+                if (savedDisabledReservoirs) {
+                  const disabledReservoirs = JSON.parse(savedDisabledReservoirs);
+                  setDisabledReservoirs(disabledReservoirs);
+                }
+                
+                console.log("[ComplaintForm] Successfully loaded station data from localStorage");
+              } catch (error) {
+                console.error("[ComplaintForm] Error parsing localStorage data:", error);
+                console.log("🔍 [DEBUG-ComplaintForm] Error parsing localStorage:", error);
+              } finally {
+                // Reset the update flag
+                setStationDataUpdateIntentional(false);
               }
-              
-              if (savedRainStations) {
-                const rainStations = JSON.parse(savedRainStations);
-                updateRainStations(rainStations);
-              }
-              
-              if (savedReservoirs) {
-                const reservoirs = JSON.parse(savedReservoirs);
-                updateReservoirs(reservoirs);
-              }
-              
-              if (savedUserSelectedMonitoring) {
-                const userSelectedMonitoring = JSON.parse(savedUserSelectedMonitoring);
-                setUserSelectedMonitoringStations(userSelectedMonitoring);
-              }
-              
-              if (savedUserSelectedRain) {
-                const userSelectedRain = JSON.parse(savedUserSelectedRain);
-                setUserSelectedRainStations(userSelectedRain);
-              }
-              
-              if (savedUserSelectedReservoirs) {
-                const userSelectedReservoirs = JSON.parse(savedUserSelectedReservoirs);
-                setUserSelectedReservoirs(userSelectedReservoirs);
-              }
-              
-              if (savedDisabledMonitoring) {
-                const disabledMonitoring = JSON.parse(savedDisabledMonitoring);
-                setDisabledMonitoringStations(disabledMonitoring);
-              }
-              
-              if (savedDisabledRain) {
-                const disabledRain = JSON.parse(savedDisabledRain);
-                setDisabledRainStations(disabledRain);
-              }
-              
-              if (savedDisabledReservoirs) {
-                const disabledReservoirs = JSON.parse(savedDisabledReservoirs);
-                setDisabledReservoirs(disabledReservoirs);
-              }
-              
-              console.log("[ComplaintForm] Successfully loaded station data from localStorage");
-            } catch (error) {
-              console.error("[ComplaintForm] Error parsing localStorage data:", error);
-              console.log("🔍 [DEBUG-ComplaintForm] Error parsing localStorage:", error);
-            } finally {
-              // Reset the update flag
-              setStationDataUpdateIntentional(false);
             }
           }
           
@@ -452,6 +722,18 @@ const ComplaintForm = () => {
     } else {
       console.log("🔍 [DEBUG-ComplaintForm] No complaintFormState in sessionStorage");
     }
+
+    // Remove the sessionStorage items for the selected post if there is one
+    // This is to prevent it from being reloaded on page refresh
+    if (postId) {
+      sessionStorage.removeItem(`post_${postId}`);
+      console.log(`🔍 [DEBUG-ComplaintForm] Removed post_${postId} from sessionStorage`);
+    }
+    
+    console.log("🔍 [DEBUG-ComplaintForm] State restoration complete");
+    
+    // Mark the initial state restoration as done
+    initialStateRestorationDone.current = true;
   }, [location, setStationDataUpdateIntentional, updateMonitoringStations, updateRainStations, updateReservoirs, setUserSelectedMonitoringStations, setUserSelectedRainStations, setUserSelectedReservoirs, setDisabledMonitoringStations, setDisabledRainStations, setDisabledReservoirs]);
 
   // Debug location data

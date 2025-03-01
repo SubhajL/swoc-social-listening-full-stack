@@ -220,21 +220,11 @@ const StationCardEdit = () => {
     // Set the navigatingAfterSave flag in Jotai
     stationData.setNavigatingAfterSave(true);
     
-    // Explicitly save all station data to localStorage
-    const stationDataToSave = {
-      monitoringStations: stationData.monitoringStations,
-      rainStations: stationData.rainStations,
-      reservoirs: stationData.reservoirs,
-      userSelectedMonitoringStations: stationData.userSelectedMonitoringStations,
-      userSelectedRainStations: stationData.userSelectedRainStations,
-      userSelectedReservoirs: stationData.userSelectedReservoirs,
-      disabledMonitoringStations: stationData.disabledMonitoringStations,
-      disabledRainStations: stationData.disabledRainStations,
-      disabledReservoirs: stationData.disabledReservoirs
-    };
+    // Use the new helper function to save station data consistently across storage mechanisms
+    const saveResult = stationData.saveStationDataForNavigation();
     
-    // Save complete station data for restoration in ComplaintForm
-    localStorage.setItem('tempStationData', JSON.stringify(stationDataToSave));
+    // 🔍 DEBUG: Log the save result
+    console.log("🔍 [DEBUG-StationCardEdit] saveStationDataForNavigation result:", saveResult);
     
     // Log the data being saved
     console.log("[StationCardEdit] Saving station data:", {
@@ -269,11 +259,18 @@ const StationCardEdit = () => {
         returnFromStationEdit: true,
         timestamp: new Date().getTime(),
         complaintData: currentComplaintData, // Include the full complaint data
-        includesStationData: true // Add a flag to indicate that station data is available
+        includesStationData: true, // Add a flag to indicate that station data is available
+        stationDataSaved: true,  // Add a new flag to explicitly indicate we saved station data
+        saveMethodUsed: 'saveStationDataForNavigation', // Track which save method was used
+        saveTimestamp: new Date().toISOString() // Track when the save happened
       };
       
       // Store the state in sessionStorage to retrieve it on the target page
       sessionStorage.setItem('complaintFormState', JSON.stringify(essentialData));
+      
+      // 🔍 DEBUG: Log the session storage state before navigation
+      console.log("🔍 [DEBUG-StationCardEdit] Stored in sessionStorage with key 'complaintFormState':", essentialData);
+      console.log("🔍 [DEBUG-StationCardEdit] All sessionStorage keys before navigation:", Object.keys(sessionStorage));
       
       // Store complaint ID separately if available
       if (currentComplaintData) {
@@ -329,8 +326,13 @@ const StationCardEdit = () => {
         }
       }
       
+      // Add a special flag to detect page loads
+      sessionStorage.setItem('exitingStationCardEdit', new Date().toISOString());
+      console.log("🔍 [DEBUG-StationCardEdit] Set exitingStationCardEdit flag in sessionStorage");
+      
       // Use a small timeout to ensure the hasChanges state update has been processed
       setTimeout(() => {
+        console.log("🔍 [DEBUG-StationCardEdit] ABOUT TO NAVIGATE via window.location.href");
         // Use window.location.href to bypass React Router's navigation blocker
         window.location.href = '/complaint/create';
       }, 100);
@@ -350,7 +352,12 @@ const StationCardEdit = () => {
     stationData.setNavigatingAfterSave(true);
     
     // We're intentionally NOT saving any changes made in the current session
-    console.log("[StationCardEdit] Discarding changes");
+    console.log("[StationCardEdit] Discarding changes and returning to complaint form");
+    
+    // Use the saveStationDataForNavigation function but log that we're discarding current session changes
+    console.log("[StationCardEdit] Saving original station data (not current session changes)");
+    const saveResult = stationData.saveStationDataForNavigation();
+    console.log("🔍 [DEBUG-StationCardEdit] saveStationDataForNavigation result in discard:", saveResult);
     
     // Close the dialog
     setShowUnsavedDialog(false);
@@ -371,68 +378,28 @@ const StationCardEdit = () => {
         discardCurrentChanges: true,
         timestamp: new Date().getTime(),
         complaintData: currentComplaintData, // Include the full complaint data
-        includesStationData: false // Indicate we're not including station data
+        includesStationData: true, // Add a flag to indicate that station data is available
+        stationDataSaved: true, // We've technically saved the original data
+        saveMethodUsed: 'saveStationDataForNavigation',
+        saveTimestamp: new Date().toISOString(),
+        saveId: saveResult.saveId, // Include the save ID for tracking
+        discardFlag: true // Flag to indicate we're discarding current changes
       };
       
       // Store the state in sessionStorage to retrieve it on the target page
       sessionStorage.setItem('complaintFormState', JSON.stringify(essentialData));
       
-      // Store complaint ID separately if available
-      if (currentComplaintData) {
-        // Store ID
-        if (isProcessedPost(currentComplaintData) && currentComplaintData.processed_post_id) {
-          sessionStorage.setItem('complaintId', String(currentComplaintData.processed_post_id));
-        } else if ('id' in currentComplaintData && currentComplaintData.id) {
-          // Type assertion to handle potential extra properties
-          sessionStorage.setItem('complaintId', String((currentComplaintData as any).id));
-        }
-        
-        // Store location data
-        if (currentComplaintData.amphure) {
-          const amphure = Array.isArray(currentComplaintData.amphure) 
-            ? currentComplaintData.amphure[0] 
-            : currentComplaintData.amphure;
-          sessionStorage.setItem('complaintAmphure', amphure);
-        }
-        
-        if (currentComplaintData.province) {
-          const province = Array.isArray(currentComplaintData.province) 
-            ? currentComplaintData.province[0] 
-            : currentComplaintData.province;
-          sessionStorage.setItem('complaintProvince', province);
-        }
-        
-        // Store essential fields for validation
-        if (isProcessedPost(currentComplaintData) && currentComplaintData.text) {
-          sessionStorage.setItem('complaintIssue', currentComplaintData.text);
-        } else if ('issue' in currentComplaintData && (currentComplaintData as any).issue) {
-          sessionStorage.setItem('complaintIssue', (currentComplaintData as any).issue);
-        }
-        
-        if (isProcessedPost(currentComplaintData) && currentComplaintData.category_name) {
-          sessionStorage.setItem('complaintCategory', currentComplaintData.category_name);
-        } else if ('category' in currentComplaintData && (currentComplaintData as any).category) {
-          sessionStorage.setItem('complaintCategory', (currentComplaintData as any).category);
-        }
-        
-        if (isProcessedPost(currentComplaintData) && currentComplaintData.profile_name) {
-          sessionStorage.setItem('complaintReporter', currentComplaintData.profile_name);
-        } else if ('reporter' in currentComplaintData && (currentComplaintData as any).reporter) {
-          sessionStorage.setItem('complaintReporter', (currentComplaintData as any).reporter);
-        }
-        
-        if (isProcessedPost(currentComplaintData) && currentComplaintData.post_date) {
-          const dateStr = currentComplaintData.post_date instanceof Date 
-            ? currentComplaintData.post_date.toISOString().split('T')[0]
-            : new Date(currentComplaintData.post_date).toISOString().split('T')[0];
-          sessionStorage.setItem('complaintDate', dateStr);
-        } else if ('date' in currentComplaintData && (currentComplaintData as any).date) {
-          sessionStorage.setItem('complaintDate', (currentComplaintData as any).date);
-        }
-      }
+      // 🔍 DEBUG: Log the session storage state before navigation
+      console.log("🔍 [DEBUG-StationCardEdit] Stored in sessionStorage with key 'complaintFormState':", essentialData);
+      
+      // Add a special flag to detect page loads
+      sessionStorage.setItem('exitingStationCardEdit', new Date().toISOString());
+      sessionStorage.setItem('exitSourceAction', 'discard');
+      console.log("🔍 [DEBUG-StationCardEdit] Set exitingStationCardEdit flag in sessionStorage");
       
       // Use a small timeout to ensure the hasChanges state update has been processed
       setTimeout(() => {
+        console.log("🔍 [DEBUG-StationCardEdit] ABOUT TO NAVIGATE via window.location.href");
         // Use window.location.href to bypass React Router's navigation blocker
         window.location.href = '/complaint/create';
       }, 100);
