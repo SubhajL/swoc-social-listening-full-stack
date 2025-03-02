@@ -69,6 +69,41 @@ See detailed task: [ThaiWater Integration](./.tasks/2025-02-26-thaiwater-integra
 - [ ] Add historical rainfall data visualization
 - [ ] Implement caching strategies for external API data
 
+## User Management System Improvements
+
+See detailed task: [User Management System Enhancements](./.tasks/2025-03-02_1_remove_system_limitation_popups.md)
+
+### User Interface Improvements
+- [x] Remove system limitation popup messages when entering edit mode
+- [x] Remove system limitation popup messages when saving with modified users
+- [x] Maintain informational text in the confirmation dialog
+- [x] Improve user deletion functionality with proper error handling
+- [x] Enhance state management for user list updates
+
+### Role-Based Access Control (RBAC)
+- [x] Create role selection dropdown in the user form
+- [x] Implement permission management interface
+- [x] Enhance user list with role information
+- [x] Add visual indicators for different permission levels
+
+### User Management
+- [x] Enhance user creation with additional fields and validation
+- [x] Implement user deletion with confirmation and batch capabilities
+- [x] Create user information editing functionality
+- [x] Add form validation for all user operations
+
+### Email System
+- [x] Design HTML email templates for user invitations
+- [x] Implement email sending functionality with queue and retry logic
+- [x] Create user onboarding flow with invitation links
+- [x] Add email verification process
+
+### Future Improvements
+- [ ] Add advanced permission customization
+- [ ] Implement user activity logging
+- [ ] Create user session management
+- [ ] Add multi-factor authentication
+
 ## Current Status
 
 ### Database Tables
