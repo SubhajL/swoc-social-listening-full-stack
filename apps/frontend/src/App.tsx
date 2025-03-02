@@ -14,6 +14,7 @@ import StationCardEdit from "./pages/StationCardEdit";
 import DocumentPreparation from "./pages/DocumentPreparation";
 import ApprovalDashboard from "./pages/ApprovalDashboard";
 import ApprovalStep from "./pages/ApprovalStep";
+import SystemSetting from "./pages/SystemSetting";
 import { useHydrateStore } from "./stores/storeHydration";
 import { useEffect, useState } from "react";
 import { JotaiProvider } from "./providers/JotaiProvider";
@@ -30,6 +31,7 @@ const router = createBrowserRouter(
       <Route path="/document-preparation" element={<DocumentPreparation />} />
       <Route path="/approval-dashboard" element={<ApprovalDashboard />} />
       <Route path="/approval-step" element={<ApprovalStep />} />
+      <Route path="/system-setting" element={<SystemSetting />} />
     </>
   ),
   {

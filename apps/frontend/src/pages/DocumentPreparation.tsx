@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { WaterLevelInfo } from "@/components/complaint/WaterLevelInfo";
 import { WaterManagementPlan } from "@/components/complaint/WaterManagementPlan";
-import { Save, Check, Send, ChevronDown, X } from "lucide-react";
+import { Save, Check, Send, ChevronDown, X, Bell, Settings } from "lucide-react";
 // Import SVG icons
 import CalendarIcon from "@/assets/icon/Calendar.svg";
 import ClipboardIcon from "@/assets/icon/Clipboard.svg";
@@ -50,6 +50,12 @@ const SuccessPopup = ({ title, timestamp, onClose }: SuccessPopupProps) => {
 
 // Custom header component for the DocumentPreparation page
 const DocumentPreparationHeader = () => {
+  const navigate = useNavigate();
+
+  const handleSettingsClick = () => {
+    navigate('/system-setting');
+  };
+
   return (
     <header className="bg-white shadow-sm">
       <div className="container mx-auto px-6">
@@ -66,6 +72,28 @@ const DocumentPreparationHeader = () => {
               alt="SWOC Logo" 
               className="h-20 w-auto object-contain"
             />
+          </div>
+
+          {/* Right section - Icons */}
+          <div className="flex items-center gap-1 pr-0">
+            {/* Notification bell with indicator */}
+            <div className="relative p-1.5 hover:bg-gray-100 rounded-lg cursor-pointer">
+              <Bell className="w-6 h-6 text-[#334155]" />
+              <div className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+            </div>
+            
+            {/* Settings */}
+            <div 
+              className="p-1.5 hover:bg-gray-100 rounded-lg cursor-pointer"
+              onClick={handleSettingsClick}
+            >
+              <Settings className="w-6 h-6 text-[#334155]" />
+            </div>
+            
+            {/* Avatar */}
+            <div className="w-10 h-10 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-base font-medium text-[#0F172B] ml-1">
+              CN
+            </div>
           </div>
         </div>
 

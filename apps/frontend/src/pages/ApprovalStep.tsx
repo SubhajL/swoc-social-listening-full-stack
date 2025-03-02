@@ -3,11 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import logo1 from "@/assets/logo1.png";
 import logo2 from "@/assets/logo2.png";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Bell, Settings } from "lucide-react";
 import { useComplaintStore } from "@/stores/complaintStore";
 
 // Custom header component for the ApprovalStep page
 const ApprovalStepHeader = () => {
+  const navigate = useNavigate();
+
+  const handleSettingsClick = () => {
+    navigate('/system-setting');
+  };
+
   return (
     <header className="bg-white shadow-sm">
       <div className="container mx-auto px-6">
@@ -24,6 +30,28 @@ const ApprovalStepHeader = () => {
               alt="SWOC Logo" 
               className="h-20 w-auto object-contain"
             />
+          </div>
+
+          {/* Right section - Icons */}
+          <div className="flex items-center gap-1 pr-0">
+            {/* Notification bell with indicator */}
+            <div className="relative p-1.5 hover:bg-gray-100 rounded-lg cursor-pointer">
+              <Bell className="w-6 h-6 text-[#334155]" />
+              <div className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+            </div>
+            
+            {/* Settings */}
+            <div 
+              className="p-1.5 hover:bg-gray-100 rounded-lg cursor-pointer"
+              onClick={handleSettingsClick}
+            >
+              <Settings className="w-6 h-6 text-[#334155]" />
+            </div>
+            
+            {/* Avatar */}
+            <div className="w-10 h-10 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-base font-medium text-[#0F172B] ml-1">
+              CN
+            </div>
           </div>
         </div>
 

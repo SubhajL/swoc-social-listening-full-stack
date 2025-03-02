@@ -1,15 +1,16 @@
 import express from 'express';
 import cors from 'cors';
-import { errorHandler } from './middleware/error-handler.js';
-import { createPostsRouter } from './api/posts/index.js';
-import telemetryStationsRouter from './api/telemetry-stations.js';
+import { errorHandler } from './middleware/error-handler';
+import { createPostsRouter } from './api/posts/index';
+import telemetryStationsRouter from './api/telemetry-stations';
 import telemetryRouter from './api/telemetry';
 import thaiWaterRouter from './api/thaiwater';
-import { ProcessedPostService } from './services/processed-post.service.js';
-import { pool } from './lib/db.js';
-import { logger } from './utils/logger.js';
+import userAccountRouter from './routes/user-account.routes';
+import { ProcessedPostService } from './services/processed-post.service';
+import { pool } from './lib/db';
+import { logger } from './utils/logger';
 import { Server } from 'socket.io';
-import rainStationsRouter from './api/rain-stations.js';
+import rainStationsRouter from './api/rain-stations';
 
 const app = express();
 
@@ -63,6 +64,7 @@ export const initializeServices = async (io: Server) => {
   app.use('/api/rain-stations', rainStationsRouter);
   app.use('/api/telemetry', telemetryRouter);
   app.use('/api/thaiwater', thaiWaterRouter);
+  app.use('/api/users', userAccountRouter);
   
   logger.info('📍 API routes registered', {
     routes: [
@@ -70,7 +72,8 @@ export const initializeServices = async (io: Server) => {
       '/api/monitoring-stations', 
       '/api/rain-stations',
       '/api/telemetry',
-      '/api/thaiwater'
+      '/api/thaiwater',
+      '/api/users'
     ],
     timestamp: new Date().toISOString()
   });

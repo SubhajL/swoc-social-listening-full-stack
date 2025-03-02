@@ -1,9 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Bell, Settings } from "lucide-react";
 import logo1 from "@/assets/logo1.png";
 import logo2 from "@/assets/logo2.png";
 
 export const ComplaintHeader = () => {
+  const navigate = useNavigate();
+
+  const handleSettingsClick = () => {
+    navigate('/system-setting');
+  };
+
   return (
     <header className="bg-white shadow-sm">
       <div className="container mx-auto px-6">
@@ -31,7 +37,10 @@ export const ComplaintHeader = () => {
             </div>
             
             {/* Settings */}
-            <div className="p-1.5 hover:bg-gray-100 rounded-lg cursor-pointer">
+            <div 
+              className="p-1.5 hover:bg-gray-100 rounded-lg cursor-pointer"
+              onClick={handleSettingsClick}
+            >
               <Settings className="w-6 h-6 text-[#334155]" />
             </div>
             
