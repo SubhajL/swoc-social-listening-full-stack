@@ -1,0 +1,87 @@
+[
+  {
+    "agency_id": 9,
+    "ground_level": -0.33,
+    "id": 1,
+    "is_warning": "N",
+    "left_bank": 2.2,
+    "right_bank": 2.2,
+    "tele_station_lat": "13.854033",
+    "tele_station_long": "100.587265",
+    "tele_station_name": {
+      "en": "Klong Ladprao Bang Bua Temple",
+      "th": "คลองลาดพร้าว วัดบางบัว"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BKK021",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -5.368,
+    "id": 2,
+    "is_warning": "N",
+    "left_bank": 0.922,
+    "right_bank": 0.881,
+    "tele_station_lat": "13.761300",
+    "tele_station_long": "100.616000",
+    "tele_station_name": {
+      "en": "Krung Thep 8",
+      "th": "คลองแสนแสบ บางกะปิ"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BKK008",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -3.171,
+    "id": 3,
+    "is_warning": "N",
+    "left_bank": 0.6228,
+    "right_bank": 1.188,
+    "tele_station_lat": "13.740710",
+    "tele_station_long": "100.794680",
+    "tele_station_name": {
+      "en": "Krung Thep 9",
+      "th": "คลองลำปลาทิว ลาดกระบัง"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BKK009",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -15.697,
+    "id": 4,
+    "is_warning": "Y",
+    "left_bank": 2.201,
+    "right_bank": 2.161,
+    "tele_station_lat": "13.700287",
+    "tele_station_long": "100.492805",
+    "tele_station_name": {
+      "en": "Chao Phraya 15",
+      "th": "สะพานกรุงเทพ"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "CPY015",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -3.101,
+    "id": 5,
+    "is_warning": "N",
+    "left_bank": 2.069,
+    "right_bank": 2.152,
+    "tele_station_lat": "13.799630",
+    "tele_station_long": "100.438660",
+    "tele_station_name": {
+      "en": "Krung Thep 3",
+      "th": "คลองมหาสวัสดิ บางกรวย-สวนผัก"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BKK003",
+    "tele_station_type": "A"
+  }
+]

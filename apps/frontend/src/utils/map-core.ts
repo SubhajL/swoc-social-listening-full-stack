@@ -29,6 +29,20 @@ export const LAYER_CONFIG = {
   UNCLUSTERED_POINT: 'unclustered-point' as const
 } as const;
 
+// Define category mappings for consistent filtering
+const CATEGORY_MAPPINGS: Record<string, string> = {
+  'การรายงานและแจ้งเหตุ': 'report_incident',
+  'รายงาน': 'report_incident',
+  'แจ้งเหตุ': 'report_incident',
+  'การขอการสนับสนุน/ช่วยดำเนินการ': 'request_support',
+  'ขอการสนับสนุน': 'request_support',
+  'ช่วยดำเนินการ': 'request_support',
+  'ขอข้อมูล': 'request_info',
+  'การขอข้อมูล': 'request_info',
+  'ข้อเสนอแนะ': 'suggestion',
+  'เสนอแนะ': 'suggestion'
+};
+
 /**
  * Initializes the core map source and layers
  * @readonly This function should not be modified as it maintains core map functionality
@@ -56,10 +70,10 @@ export function initializeMapCore(map: mapboxgl.Map): void {
     clusterRadius: clusterConfig.radius,
     clusterProperties: {
       // Simple count for each category
-      'incident_count': ['+', ['case', ['==', ['get', 'category'], 'การรายงานและแจ้งเหตุ'], 1, 0]],
-      'support_count': ['+', ['case', ['==', ['get', 'category'], 'การขอการสนับสนุน/ช่วยดำเนินการ'], 1, 0]],
-      'info_count': ['+', ['case', ['==', ['get', 'category'], 'ขอข้อมูล'], 1, 0]],
-      'suggestion_count': ['+', ['case', ['==', ['get', 'category'], 'ข้อเสนอแนะ'], 1, 0]]
+      'incident_count': ['+', ['case', ['==', ['get', 'category'], CategoryName.REPORT_INCIDENT], 1, 0]],
+      'support_count': ['+', ['case', ['==', ['get', 'category'], CategoryName.REQUEST_SUPPORT], 1, 0]],
+      'info_count': ['+', ['case', ['==', ['get', 'category'], CategoryName.REQUEST_INFO], 1, 0]],
+      'suggestion_count': ['+', ['case', ['==', ['get', 'category'], CategoryName.SUGGESTION], 1, 0]]
     }
   });
 
@@ -81,10 +95,10 @@ export function initializeMapCore(map: mapboxgl.Map): void {
         ['==', ['get', 'point_count'], 1],
         ['match',
           ['get', 'category'],
-          'การรายงานและแจ้งเหตุ', categoryColors[CategoryName.REPORT_INCIDENT],
-          'การขอการสนับสนุน/ช่วยดำเนินการ', categoryColors[CategoryName.REQUEST_SUPPORT],
-          'ขอข้อมูล', categoryColors[CategoryName.REQUEST_INFO],
-          'ข้อเสนอแนะ', categoryColors[CategoryName.SUGGESTION],
+          CategoryName.REPORT_INCIDENT, categoryColors[CategoryName.REPORT_INCIDENT],
+          CategoryName.REQUEST_SUPPORT, categoryColors[CategoryName.REQUEST_SUPPORT],
+          CategoryName.REQUEST_INFO, categoryColors[CategoryName.REQUEST_INFO],
+          CategoryName.SUGGESTION, categoryColors[CategoryName.SUGGESTION],
           categoryColors[CategoryName.UNKNOWN]
         ],
         [
@@ -284,22 +298,261 @@ export function matchesAdministrativeArea(
  */
 export function filterPosts(
   posts: ProcessedPost[],
-  selectedCategories: CategoryName[],
-  selectedProvince: string | null,
-  selectedAmphure: string | null,
-  selectedTumbon: string | null
+  selectedCategories: string[],
+  selectedProvince?: string,
+  selectedAmphure?: string,
+  selectedTumbon?: string,
+  dateRange?: { start: string; end: string } | null,
+  skipFiltering: boolean = false
 ): ProcessedPost[] {
-  return posts.filter(post => {
-    const categoryMatch = selectedCategories.length === 0 || 
-      selectedCategories.includes(post.category_name as CategoryName);
-    const areaMatch = matchesAdministrativeArea(
-      post, 
-      selectedProvince, 
-      selectedAmphure, 
-      selectedTumbon
-    );
-    return categoryMatch && areaMatch;
+  // Start with detailed logging
+  console.log('🔍 FILTER POSTS CALLED with criteria:', {
+    postsCount: posts.length,
+    selectedCategories: selectedCategories?.length > 0 ? selectedCategories : 'none',
+    categoryValues: selectedCategories,
+    selectedProvince: selectedProvince || 'none',
+    selectedAmphure: selectedAmphure || 'none',
+    selectedTumbon: selectedTumbon || 'none',
+    dateRange: dateRange ? `${dateRange.start} to ${dateRange.end}` : 'none',
+    skipFiltering: skipFiltering
   });
+
+  // If no posts, return empty array
+  if (!posts || posts.length === 0) {
+    console.log('🔍 No posts to filter, returning empty array');
+    return [];
+  }
+
+  // If skipFiltering is true, return all posts without filtering
+  if (skipFiltering) {
+    console.log('🔍 Skipping filtering, returning all posts:', posts.length);
+    return posts;
+  }
+
+  // Parse date range if provided
+  let startDate: Date | null = null;
+  let endDate: Date | null = null;
+  let dateRangeValid = false;
+
+  if (dateRange && dateRange.start && dateRange.end) {
+    try {
+      startDate = new Date(dateRange.start);
+      endDate = new Date(dateRange.end);
+      
+      // Set time to beginning and end of day
+      startDate.setHours(0, 0, 0, 0);
+      endDate.setHours(23, 59, 59, 999);
+      
+      if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+        dateRangeValid = true;
+        console.log('🔍 Valid date range parsed:', {
+          start: startDate.toISOString(),
+          end: endDate.toISOString()
+        });
+      } else {
+        console.error('🔍 Invalid date range:', {
+          start: dateRange.start,
+          end: dateRange.end,
+          startValid: !isNaN(startDate.getTime()),
+          endValid: !isNaN(endDate.getTime())
+        });
+      }
+    } catch (error) {
+      console.error('🔍 Error parsing date range:', error);
+    }
+  } else {
+    console.log('🔍 No date range provided for filtering');
+  }
+
+  // Create a reverse mapping from Thai category names to English identifiers
+  const REVERSE_CATEGORY_MAPPING: Record<string, string> = {};
+  Object.entries(CATEGORY_MAPPINGS).forEach(([thai, english]) => {
+    REVERSE_CATEGORY_MAPPING[english] = thai;
+  });
+
+  // Convert selectedCategories to a set of both Thai and English identifiers for faster lookup
+  const selectedCategorySet = new Set<string>();
+  selectedCategories.forEach(category => {
+    // Add the original category
+    selectedCategorySet.add(category);
+    
+    // If it's a Thai category name, add its English mapping
+    if (CATEGORY_MAPPINGS[category]) {
+      selectedCategorySet.add(CATEGORY_MAPPINGS[category]);
+    }
+    
+    // If it's an English identifier, add its Thai mapping
+    if (REVERSE_CATEGORY_MAPPING[category]) {
+      selectedCategorySet.add(REVERSE_CATEGORY_MAPPING[category]);
+    }
+  });
+  
+  console.log('🔍 Expanded category set for matching:', Array.from(selectedCategorySet));
+
+  // Filter posts
+  const filteredPosts = posts.filter((post: ProcessedPost) => {
+    // Skip posts with invalid data
+    if (!post) {
+      console.log('🔍 Skipping undefined post');
+      return false;
+    }
+
+    // Date range filtering
+    if (dateRangeValid && startDate && endDate) {
+      // Parse post date
+      let postDate: Date | null = null;
+      try {
+        if (post.post_date) {
+          postDate = new Date(post.post_date);
+          
+          // Check if post date is valid
+          if (isNaN(postDate.getTime())) {
+            console.log(`🔍 Post ${post.processed_post_id} has invalid date: ${post.post_date}`);
+            return false;
+          }
+          
+          // Check if post date is within range
+          const isInRange = postDate >= startDate && postDate <= endDate;
+          if (!isInRange) {
+            console.log(`🔍 Post ${post.processed_post_id} filtered out - date ${postDate.toISOString()} outside range ${startDate.toISOString()} to ${endDate.toISOString()}`);
+            return false;
+          }
+        } else {
+          console.log(`🔍 Post ${post.processed_post_id} has no date, skipping date range filter`);
+        }
+      } catch (error) {
+        console.error(`🔍 Error parsing date for post ${post.processed_post_id}:`, error);
+        return false;
+      }
+    }
+
+    // Category filtering
+    if (selectedCategories && selectedCategories.length > 0) {
+      // Map post category to predefined category names
+      const postCategory = post.category_name?.toLowerCase() || '';
+      
+      // Log unknown categories for debugging
+      if (postCategory && !CATEGORY_MAPPINGS[postCategory]) {
+        console.log(`🔍 Unknown category detected: "${postCategory}" for post ${post.processed_post_id}`);
+      }
+      
+      // Check if post category matches selected categories
+      const mappedCategory = CATEGORY_MAPPINGS[postCategory] || 'unknown';
+      
+      // Add more detailed logging for category matching
+      console.log(`🔍 Checking category for post ${post.processed_post_id}:`, {
+        postCategory,
+        mappedCategory,
+        selectedCategories,
+        selectedCategorySet: Array.from(selectedCategorySet),
+        categoryMatchesOriginal: selectedCategories.includes(mappedCategory),
+        categoryMatchesExpanded: selectedCategorySet.has(mappedCategory) || selectedCategorySet.has(postCategory)
+      });
+      
+      // Use the expanded category set for matching
+      const categoryMatches = selectedCategorySet.has(mappedCategory) || selectedCategorySet.has(postCategory);
+      
+      if (!categoryMatches) {
+        console.log(`🔍 Post ${post.processed_post_id} filtered out - category "${postCategory}" (mapped to "${mappedCategory}") not in selected categories`);
+        return false;
+      }
+    }
+
+    // Administrative area filtering
+    if (selectedProvince) {
+      // Check if any province in the array matches the selected province
+      const provinceMatches = post.province && post.province.some(
+        (p: string) => p.toLowerCase() === selectedProvince.toLowerCase()
+      );
+      
+      if (!provinceMatches) {
+        console.log(`🔍 Post ${post.processed_post_id} filtered out - province "${post.province}" doesn't match "${selectedProvince}"`);
+        return false;
+      }
+
+      if (selectedAmphure) {
+        // Check if any amphure in the array matches the selected amphure
+        const amphureMatches = post.amphure && post.amphure.some(
+          (a: string) => a.toLowerCase() === selectedAmphure.toLowerCase()
+        );
+        
+        if (!amphureMatches) {
+          console.log(`🔍 Post ${post.processed_post_id} filtered out - amphure "${post.amphure}" doesn't match "${selectedAmphure}"`);
+          return false;
+        }
+
+        if (selectedTumbon) {
+          // Check if any tumbon in the array matches the selected tumbon
+          const tumbonMatches = post.tumbon && post.tumbon.some(
+            (t: string) => t.toLowerCase() === selectedTumbon.toLowerCase()
+          );
+          
+          if (!tumbonMatches) {
+            console.log(`🔍 Post ${post.processed_post_id} filtered out - tumbon "${post.tumbon}" doesn't match "${selectedTumbon}"`);
+            return false;
+          }
+        }
+      }
+    }
+
+    // If we got here, the post matches all filters
+    return true;
+  });
+
+  // Log filtering results
+  const filteredOutCount = posts.length - filteredPosts.length;
+  console.log('🔍 FILTER RESULTS:', {
+    beforeCount: posts.length,
+    afterCount: filteredPosts.length,
+    filteredOut: filteredOutCount,
+    percentageFiltered: posts.length > 0 ? Math.round((filteredOutCount / posts.length) * 100) : 0
+  });
+
+  // Count posts by category
+  const categoryCounts = filteredPosts.reduce((acc: Record<string, number>, post: ProcessedPost) => {
+    const postCategory = post.category_name?.toLowerCase() || '';
+    const mappedCategory = CATEGORY_MAPPINGS[postCategory] || 'Unknown';
+    acc[mappedCategory] = (acc[mappedCategory] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  console.log('🔍 Posts by category after filtering:', categoryCounts);
+
+  // Log sample of filtered posts for debugging
+  if (filteredPosts.length > 0) {
+    const sampleSize = Math.min(3, filteredPosts.length);
+    console.log(`🔍 Sample of ${sampleSize} filtered posts:`, 
+      filteredPosts.slice(0, sampleSize).map((post: ProcessedPost) => ({
+        id: post.processed_post_id,
+        category: post.category_name,
+        province: post.province,
+        amphure: post.amphure,
+        tumbon: post.tumbon,
+        postDate: post.post_date
+      }))
+    );
+  } else {
+    console.log('🔍 No posts remain after filtering');
+  }
+
+  return filteredPosts;
+}
+
+/**
+ * Simple function to check if the API server is reachable
+ * @returns Promise<boolean> True if server is reachable, false otherwise
+ */
+export async function pingServer(client = apiClient): Promise<boolean> {
+  try {
+    console.log('Pinging API server...');
+    // Try to make a simple request to check connectivity
+    const response = await client.ping();
+    console.log('API server ping response:', response);
+    return true;
+  } catch (error) {
+    console.error('API server ping failed:', error);
+    return false;
+  }
 }
 
 /**
@@ -310,37 +563,178 @@ export async function loadMapPosts(
   client = apiClient,
   onSuccess?: (posts: ProcessedPost[]) => void,
   onError?: (error: Error) => void,
-  retries: number = MAP_CORE_CONFIG.MAX_RETRIES
+  retries: number = MAP_CORE_CONFIG.MAX_RETRIES,
+  params?: { dateRange?: { start: string; end: string } }
 ): Promise<ProcessedPost[]> {
   try {
-    console.log('Fetching posts from API...');
+    console.log('Fetching posts from API...', params);
+    
+    // Check if API is available first
+    const isServerReachable = await pingServer(client);
+    if (!isServerReachable) {
+      console.error('API server is not reachable');
+      const error = new Error('Cannot connect to API server. Please check if the server is running and accessible.');
+      onError?.(error);
+      return [];
+    }
+    
     const posts = await withRetry(async () => {
-      const result = await client.getUnprocessedPosts();
+      // Prepare API parameters
+      const apiParams: Record<string, any> = {};
+      
+      // Add date range parameters if provided
+      if (params?.dateRange?.start && params?.dateRange?.end) {
+        apiParams.startDate = params.dateRange.start;
+        apiParams.endDate = params.dateRange.end;
+        console.log('Including date range in API call:', {
+          start: params.dateRange.start,
+          end: params.dateRange.end
+        });
+      }
+      
+      // Call the API with parameters
+      const result = await client.getUnprocessedPosts(apiParams);
       console.log('API Response:', {
         totalPosts: result?.length || 0,
         firstPost: result?.[0],
-        hasCoordinates: result?.some((p: ProcessedPost) => p.latitude && p.longitude)
+        hasCoordinates: result?.some((p: ProcessedPost) => p.latitude && p.longitude),
+        params: apiParams
       });
       if (!result) throw new Error('No posts returned from API');
       return result;
     }, retries);
 
     if (posts && posts.length > 0) {
-      console.log('Raw posts from API:', posts.slice(0, 5));
+      // Log unique categories for debugging
+      const uniqueCategories = [...new Set(posts.map((p: ProcessedPost) => p.category_name))];
+      console.log('Unique categories from API:', uniqueCategories);
       
-      // Filter out posts without valid coordinates
-      const validPosts = posts.filter((post: ProcessedPost) => hasValidCoordinates(post));
+      // Count posts by location data availability
+      const postsWithCoords = posts.filter((p: ProcessedPost) => p.latitude && p.longitude).length;
+      const postsWithAmphureAndProvince = posts.filter((p: ProcessedPost) => 
+        p.amphure?.length && p.province?.length && (!p.latitude || !p.longitude)
+      ).length;
+      const postsWithOnlyTumbon = posts.filter((p: ProcessedPost) => 
+        p.tumbon?.length && (!p.amphure?.length || !p.province?.length) && (!p.latitude || !p.longitude)
+      ).length;
+      const postsWithNoLocation = posts.filter((p: ProcessedPost) => 
+        (!p.tumbon?.length && !p.amphure?.length && !p.province?.length) && (!p.latitude || !p.longitude)
+      ).length;
+      
+      // Find posts with only tumbon info but have coordinates (these might be coming from the backend cache)
+      const postsWithOnlyTumbonButCoords = posts.filter((p: ProcessedPost) => 
+        p.tumbon?.length && (!p.amphure?.length || !p.province?.length) && p.latitude && p.longitude
+      );
+      
+      // Find posts with coordinates but missing amphure or province
+      const postsWithCoordsButMissingLocation = posts.filter((p: ProcessedPost) => 
+        p.latitude && p.longitude && (!p.amphure?.length || !p.province?.length)
+      );
+      
+      console.log('Posts location data breakdown:', {
+        total: posts.length,
+        withDirectCoordinates: postsWithCoords,
+        withAmphureAndProvince: postsWithAmphureAndProvince,
+        withOnlyTumbon: postsWithOnlyTumbon,
+        withNoLocation: postsWithNoLocation,
+        withOnlyTumbonButCoords: postsWithOnlyTumbonButCoords.length,
+        withCoordsButMissingLocation: postsWithCoordsButMissingLocation.length
+      });
+      
+      // Log some examples of posts with only tumbon but have coordinates
+      if (postsWithOnlyTumbonButCoords.length > 0) {
+        console.log('Examples of posts with only tumbon but have coordinates:', 
+          postsWithOnlyTumbonButCoords.slice(0, 3).map((p: ProcessedPost) => ({
+            id: p.processed_post_id,
+            tumbon: p.tumbon,
+            lat: p.latitude,
+            lng: p.longitude,
+            source: p.coordinate_source
+          }))
+        );
+      }
+      
+      // Log some examples of posts with coordinates but missing location info
+      if (postsWithCoordsButMissingLocation.length > 0) {
+        console.log('Examples of posts with coordinates but missing location info:', 
+          postsWithCoordsButMissingLocation.slice(0, 3).map((p: ProcessedPost) => ({
+            id: p.processed_post_id,
+            tumbon: p.tumbon,
+            amphure: p.amphure,
+            province: p.province,
+            lat: p.latitude,
+            lng: p.longitude,
+            source: p.coordinate_source
+          }))
+        );
+      }
+      
+      // IMPORTANT: Force filter out posts with only tumbon information, regardless of coordinates
+      const preFilteredPosts = posts.filter((post: ProcessedPost) => {
+        if (post.tumbon?.length && (!post.amphure?.length || !post.province?.length)) {
+          console.log('Pre-filtering post with only tumbon info:', {
+            id: post.processed_post_id,
+            tumbon: post.tumbon,
+            hasCoords: !!(post.latitude && post.longitude),
+            source: post.coordinate_source
+          });
+          return false;
+        }
+        return true;
+      });
+      
+      console.log('After pre-filtering posts with only tumbon info:', {
+        before: posts.length,
+        after: preFilteredPosts.length,
+        filtered: posts.length - preFilteredPosts.length
+      });
+      
+      // Then apply the standard validation
+      const validPosts = preFilteredPosts.filter((post: ProcessedPost) => hasValidCoordinates(post));
 
+      // Count posts by category
+      const categoryCounts = validPosts.reduce((counts: Record<string, number>, post: ProcessedPost) => {
+        const category = post.category_name || 'Unknown';
+        counts[category] = (counts[category] || 0) + 1;
+        return counts;
+      }, {});
+      
+      // Final check: Ensure no posts with only tumbon info made it through
+      const finalPostsWithOnlyTumbon = validPosts.filter((p: ProcessedPost) => 
+        p.tumbon?.length && (!p.amphure?.length || !p.province?.length)
+      );
+      
+      if (finalPostsWithOnlyTumbon.length > 0) {
+        console.error('WARNING: Some posts with only tumbon info made it through filtering!', {
+          count: finalPostsWithOnlyTumbon.length,
+          examples: finalPostsWithOnlyTumbon.slice(0, 3).map((p: ProcessedPost) => ({
+            id: p.processed_post_id,
+            tumbon: p.tumbon,
+            amphure: p.amphure,
+            province: p.province,
+            lat: p.latitude,
+            lng: p.longitude,
+            source: p.coordinate_source
+          }))
+        });
+      }
+      
       console.log('Posts validation summary:', {
         total: posts.length,
+        afterPreFilter: preFilteredPosts.length,
         valid: validPosts.length,
-        categories: [...new Set(validPosts.map((p: ProcessedPost) => p.category_name))],
+        filtered: posts.length - validPosts.length,
+        categoryCounts,
         sources: [...new Set(validPosts.map((p: ProcessedPost) => p.coordinate_source))],
         firstThree: validPosts.slice(0, 3).map((p: ProcessedPost) => ({
           id: p.processed_post_id,
+          category: p.category_name,
           lat: p.latitude,
           lng: p.longitude,
-          source: p.coordinate_source
+          source: p.coordinate_source,
+          hasAmphure: !!p.amphure?.length,
+          hasProvince: !!p.province?.length,
+          hasTumbon: !!p.tumbon?.length
         }))
       });
 

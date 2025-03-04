@@ -1,0 +1,343 @@
+[
+  {
+    "agency_id": 9,
+    "ground_level": -0.33,
+    "id": 1,
+    "is_warning": "N",
+    "left_bank": 2.2,
+    "right_bank": 2.2,
+    "tele_station_lat": "13.854033",
+    "tele_station_long": "100.587265",
+    "tele_station_name": {
+      "en": "Klong Ladprao Bang Bua Temple",
+      "th": "คลองลาดพร้าว วัดบางบัว"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BKK021",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -5.368,
+    "id": 2,
+    "is_warning": "N",
+    "left_bank": 0.922,
+    "right_bank": 0.881,
+    "tele_station_lat": "13.761300",
+    "tele_station_long": "100.616000",
+    "tele_station_name": {
+      "en": "Krung Thep 8",
+      "th": "คลองแสนแสบ บางกะปิ"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BKK008",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -3.171,
+    "id": 3,
+    "is_warning": "N",
+    "left_bank": 0.6228,
+    "right_bank": 1.188,
+    "tele_station_lat": "13.740710",
+    "tele_station_long": "100.794680",
+    "tele_station_name": {
+      "en": "Krung Thep 9",
+      "th": "คลองลำปลาทิว ลาดกระบัง"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BKK009",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -15.697,
+    "id": 4,
+    "is_warning": "Y",
+    "left_bank": 2.201,
+    "right_bank": 2.161,
+    "tele_station_lat": "13.700287",
+    "tele_station_long": "100.492805",
+    "tele_station_name": {
+      "en": "Chao Phraya 15",
+      "th": "สะพานกรุงเทพ"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "CPY015",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -3.101,
+    "id": 5,
+    "is_warning": "N",
+    "left_bank": 2.069,
+    "right_bank": 2.152,
+    "tele_station_lat": "13.799630",
+    "tele_station_long": "100.438660",
+    "tele_station_name": {
+      "en": "Krung Thep 3",
+      "th": "คลองมหาสวัสดิ บางกรวย-สวนผัก"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BKK003",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": null,
+    "id": 6,
+    "is_warning": null,
+    "left_bank": null,
+    "right_bank": null,
+    "tele_station_lat": "13.758900",
+    "tele_station_long": "100.540000",
+    "tele_station_name": {
+      "th": "สถานีทดลอง"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "G24",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": null,
+    "id": 7,
+    "is_warning": null,
+    "left_bank": null,
+    "right_bank": null,
+    "tele_station_lat": "13.758857",
+    "tele_station_long": "100.540387",
+    "tele_station_name": {
+      "en": "Ministry of Science and Technology",
+      "jp": "科学省",
+      "th": "สถาบันสารสนเทศทรัพยากรน้ำและการเกษตร(องค์การมหาชน)"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "SCIM",
+    "tele_station_type": "R"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -1.01,
+    "id": 8,
+    "is_warning": "N",
+    "left_bank": 4.4571,
+    "right_bank": 4.6521,
+    "tele_station_lat": "13.931810",
+    "tele_station_long": "100.639510",
+    "tele_station_name": {
+      "en": "Klong Ladprao Klong 2 Sai Tai",
+      "th": "คลองลาดพร้าว ปากคลอง2สายใต้"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BKK020",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": null,
+    "id": 9,
+    "is_warning": null,
+    "left_bank": null,
+    "right_bank": null,
+    "tele_station_lat": "13.854105",
+    "tele_station_long": "100.587494",
+    "tele_station_name": {
+      "th": "คลองบางบัว"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "CAN003",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -6.605,
+    "id": 10,
+    "is_warning": "N",
+    "left_bank": 1.637,
+    "right_bank": 1.415,
+    "tele_station_lat": "13.691600",
+    "tele_station_long": "100.381290",
+    "tele_station_name": {
+      "en": "Krung Thep 5",
+      "th": "คลองภาษีเจริญ เพชรเกษม69"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BKK005",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -1.9,
+    "id": 11,
+    "is_warning": "N",
+    "left_bank": 2.563,
+    "right_bank": 2.758,
+    "tele_station_lat": "13.922430",
+    "tele_station_long": "100.634370",
+    "tele_station_name": {
+      "en": "Krung Thep 1",
+      "th": "คลองลาดพร้าว ท้ายปตร.คลอง2"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BKK001",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": null,
+    "id": 12,
+    "is_warning": null,
+    "left_bank": 2.345,
+    "right_bank": 1.824,
+    "tele_station_lat": "13.931777",
+    "tele_station_long": "100.639522",
+    "tele_station_name": {
+      "th": "ปากคลองสองสายใต้"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "CAN002",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": null,
+    "id": 13,
+    "is_warning": null,
+    "left_bank": null,
+    "right_bank": null,
+    "tele_station_lat": "13.890300",
+    "tele_station_long": "100.693400",
+    "tele_station_name": {
+      "en": "Nawamintrachinuthit Benjamarachalai School",
+      "jp": "ナワミン・ベンジャラチャーライ学校",
+      "th": "ร.ร.นวมิทรราชูทิศ เบญจมราชาลัย"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "NMBR",
+    "tele_station_type": "R"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -1.835,
+    "id": 14,
+    "is_warning": "N",
+    "left_bank": 1.422,
+    "right_bank": 1.877,
+    "tele_station_lat": "13.795600",
+    "tele_station_long": "100.331940",
+    "tele_station_name": {
+      "en": "Krung Thep 4",
+      "th": "คลองทวีวัฒนา ท้ายปตร.ทวีวัฒนา"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BKK004",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -2.389,
+    "id": 15,
+    "is_warning": null,
+    "left_bank": 1.256,
+    "right_bank": 1.256,
+    "tele_station_lat": "13.691816",
+    "tele_station_long": "100.866544",
+    "tele_station_name": {
+      "en": "Krung Thep 11",
+      "jp": "バンコク11",
+      "th": "คลองพระองค์เจ้าฯ บางบ่อ ถ.ลาดกระบัง"
+    },
+    "tele_station_offset": 0,
+    "tele_station_oldcode": "BKK011",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": null,
+    "id": 16,
+    "is_warning": null,
+    "left_bank": null,
+    "right_bank": null,
+    "tele_station_lat": "13.656908",
+    "tele_station_long": "100.866269",
+    "tele_station_name": {
+      "en": "Phra Ong Chao Chiayanuchit Canal",
+      "jp": "",
+      "th": "สถานีสูบน้ำคลองพระองค์ไชยานุชิต"
+    },
+    "tele_station_offset": 0,
+    "tele_station_oldcode": "PWA003",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -1.573,
+    "id": 17,
+    "is_warning": "N",
+    "left_bank": 1.856,
+    "right_bank": 1.949,
+    "tele_station_lat": "13.573791",
+    "tele_station_long": "100.573975",
+    "tele_station_name": {
+      "en": "Chulachomklao Fortress",
+      "th": "ป้อมพระจุลจอมเกล้า"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "GLF001",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": null,
+    "id": 18,
+    "is_warning": "N",
+    "left_bank": null,
+    "right_bank": null,
+    "tele_station_lat": "13.547010",
+    "tele_station_long": "100.537580",
+    "tele_station_name": {
+      "en": "Laem Fa Pha",
+      "th": "อบต.แหลมฟ้าผ่า"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "PPCH",
+    "tele_station_type": "R"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": -1.635,
+    "id": 19,
+    "is_warning": "N",
+    "left_bank": 0.688,
+    "right_bank": 0.541,
+    "tele_station_lat": "13.589130",
+    "tele_station_long": "100.802490",
+    "tele_station_name": {
+      "en": "Krung Thep 12",
+      "th": "คลองสำโรง บางเสาธง"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BKK012",
+    "tele_station_type": "A"
+  },
+  {
+    "agency_id": 9,
+    "ground_level": null,
+    "id": 20,
+    "is_warning": "N",
+    "left_bank": null,
+    "right_bank": null,
+    "tele_station_lat": "13.677730",
+    "tele_station_long": "100.794480",
+    "tele_station_name": {
+      "en": "Sisa Chorakhe Noi",
+      "th": "อบต.ศีรษะจรเข้น้อย"
+    },
+    "tele_station_offset": null,
+    "tele_station_oldcode": "BST1",
+    "tele_station_type": "R"
+  }
+]

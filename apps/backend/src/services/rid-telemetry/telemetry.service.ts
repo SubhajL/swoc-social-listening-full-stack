@@ -1,4 +1,4 @@
-import axios, { type AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import { logger } from '../../utils/logger';
 import { getOAuthHeader } from './oauth';
 import type { TelemetryReading, TelemetryResponse, TelemetryRequest, TelemetryError } from './types';
@@ -115,7 +115,7 @@ export async function getTelemetryData(
     });
 
     // Make API request with timeout
-    const config: AxiosRequestConfig = {
+    const config: any = {
       headers: requestDetails.headers,
       timeout: 30000, // Increased timeout to 30 seconds
       validateStatus: () => true, // Allow any status code to be handled in our code

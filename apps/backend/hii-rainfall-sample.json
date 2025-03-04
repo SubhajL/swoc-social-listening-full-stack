@@ -1,0 +1,47 @@
+[
+  {
+    "rainfall10m": 0,
+    "rainfall1h": 0,
+    "rainfall24h": null,
+    "rainfall_date_calc": "2025-02-28T00:00:00Z",
+    "rainfall_datetime": "2025-02-28T18:00:00+07:00",
+    "rainfall_today": 0,
+    "tele_station_id": 384
+  },
+  {
+    "rainfall10m": 0,
+    "rainfall1h": 0,
+    "rainfall24h": 1.6,
+    "rainfall_date_calc": "2025-02-28T00:00:00Z",
+    "rainfall_datetime": "2025-02-28T17:00:00+07:00",
+    "rainfall_today": 1.2,
+    "tele_station_id": 934
+  },
+  {
+    "rainfall10m": 0,
+    "rainfall1h": 0,
+    "rainfall24h": 0,
+    "rainfall_date_calc": "2025-02-28T00:00:00Z",
+    "rainfall_datetime": "2025-02-28T17:00:00+07:00",
+    "rainfall_today": 0,
+    "tele_station_id": 1124861
+  },
+  {
+    "rainfall10m": 0,
+    "rainfall1h": 0,
+    "rainfall24h": 0,
+    "rainfall_date_calc": "2025-02-28T00:00:00Z",
+    "rainfall_datetime": "2025-02-28T17:00:00+07:00",
+    "rainfall_today": 0,
+    "tele_station_id": 479216
+  },
+  {
+    "rainfall10m": 0,
+    "rainfall1h": 0,
+    "rainfall24h": 0,
+    "rainfall_date_calc": "2025-02-28T00:00:00Z",
+    "rainfall_datetime": "2025-02-28T17:00:00+07:00",
+    "rainfall_today": 0,
+    "tele_station_id": 564
+  }
+]

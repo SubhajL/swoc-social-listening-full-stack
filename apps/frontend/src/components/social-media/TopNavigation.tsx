@@ -1,6 +1,7 @@
 import React from "react";
 import { Bell, Settings, User } from "lucide-react";
 import { TabItem } from "@/types/social-media";
+import { Link } from "react-router-dom";
 
 interface TopNavigationProps {
   tabs: TabItem[];
@@ -45,9 +46,9 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
             <button className="p-2 rounded-full text-gray-400 hover:text-gray-500">
               <Bell className="h-6 w-6" />
             </button>
-            <button className="p-2 rounded-full text-gray-400 hover:text-gray-500">
+            <Link to="/system-setting" className="p-2 rounded-full text-gray-400 hover:text-gray-500">
               <Settings className="h-6 w-6" />
-            </button>
+            </Link>
             <button className="p-2 rounded-full text-gray-400 hover:text-gray-500">
               <User className="h-6 w-6" />
             </button>

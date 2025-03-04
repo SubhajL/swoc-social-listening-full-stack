@@ -39,7 +39,10 @@ export function MainPage() {
   const [selectedAmphure, setSelectedAmphure] = useState<string | null>(null);
   const [selectedTumbon, setSelectedTumbon] = useState<string | null>(null);
   const [selectedOffice, setSelectedOffice] = useState<string | null>(null);
-  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ start: '', end: '' });
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ 
+    start: new Date().toISOString().split('T')[0], 
+    end: new Date().toISOString().split('T')[0] 
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   // Effect to handle filter changes
@@ -93,21 +96,21 @@ export function MainPage() {
       <DashboardHeader />
       
       {/* Main Content */}
-      <div className="container-fluid mt-6">
-        {/* Frame with Label */}
-        <div className="relative">
-          {/* Frame Label */}
-          <div className="absolute -top-4 left-12 px-6 bg-[#EBF5FF] rounded-full z-10">
-            <span className="text-2xl font-medium text-[#17254D]">ระบบจัดการข้อมูลสื่อสังคมออนไลน์</span>
-          </div>
-
+      <div className="container-fluid">
+        {/* Frame with Content */}
+        <div className="relative -mt-[1px]">
           {/* Frame Content */}
-          <div className="bg-[#EBF5FF] min-h-[calc(100vh-80px)]">
-            <div className="px-12 py-6 pt-12">
+          <div className="bg-[#EBF5FF] min-h-[calc(100vh-80px)] rounded-3xl">
+            {/* Page Title */}
+            <div className="px-12 pt-6 pb-6">
+              <h1 className="text-2xl font-semibold text-[#17254D]">ระบบจัดการข้อมูลสื่อสังคมออนไลน์</h1>
+            </div>
+            
+            <div className="px-12 pt-0 pb-6">
               <div className="flex gap-8">
                 {/* Filter Panel */}
-                <aside className="w-[520px]">
-                  <div className="bg-white rounded-lg border border-[#E2E8F0]">
+                <aside className="w-[450px]">
+                  <div className="bg-white rounded-2xl border border-[#E2E8F0]">
                     <FilterPanel
                       selectedCategories={selectedCategories}
                       setSelectedCategories={setSelectedCategories}
@@ -123,7 +126,7 @@ export function MainPage() {
 
                 {/* Map Panel */}
                 <main className="flex-1">
-                  <div className="bg-white rounded-lg border border-[#E2E8F0] h-full flex flex-col">
+                  <div className="bg-white rounded-2xl border border-[#E2E8F0] h-full flex flex-col">
                     <div className="flex-1 relative">
                       <Map
                         token={MAPBOX_TOKEN}
@@ -132,31 +135,43 @@ export function MainPage() {
                         selectedAmphure={selectedAmphure}
                         selectedTumbon={selectedTumbon}
                         selectedOffice={selectedOffice}
+                        dateRange={dateRange}
                       />
                     </div>
                     
-                    {/* Category summary */}
-                    <div className="p-4 border-t border-[#E2E8F0]">
-                      <div className="flex items-center justify-around">
+                    {/* Category summary - Redesigned */}
+                    <div className="p-4 border-t border-[#E2E8F0] bg-white rounded-b-2xl">
+                      <div className="flex items-center justify-around px-4">
                         <div className="flex items-center gap-2">
-                          <img src={DiamondIcon} alt="Report" className="w-4 h-4" />
-                          <span className="text-sm text-gray-600">การรายงานและแจ้งเหตุ</span>
-                          <span className="text-sm font-medium ml-1">100</span>
+                          <div className="bg-red-50 p-1.5 rounded-full">
+                            <img src={DiamondIcon} alt="Report" className="w-4 h-4" />
+                          </div>
+                          <span className="text-xs font-medium text-gray-700 whitespace-nowrap">การรายงานและแจ้งเหตุ</span>
+                          <span className="text-sm font-bold text-black ml-1.5">100</span>
                         </div>
+                        
                         <div className="flex items-center gap-2">
-                          <img src={SquareIcon} alt="Support" className="w-4 h-4" />
-                          <span className="text-sm text-gray-600">การขอการสนับสนุน</span>
-                          <span className="text-sm font-medium ml-1">100</span>
+                          <div className="bg-green-50 p-1.5 rounded-full">
+                            <img src={SquareIcon} alt="Support" className="w-4 h-4" />
+                          </div>
+                          <span className="text-xs font-medium text-gray-700 whitespace-nowrap">การขอการสนับสนุน</span>
+                          <span className="text-sm font-bold text-black ml-1.5">100</span>
                         </div>
+                        
                         <div className="flex items-center gap-2">
-                          <img src={CircleIcon} alt="Info" className="w-4 h-4" />
-                          <span className="text-sm text-gray-600">การขอข้อมูล</span>
-                          <span className="text-sm font-medium ml-1">100</span>
+                          <div className="bg-yellow-50 p-1.5 rounded-full">
+                            <img src={CircleIcon} alt="Info" className="w-4 h-4" />
+                          </div>
+                          <span className="text-xs font-medium text-gray-700 whitespace-nowrap">การขอข้อมูล</span>
+                          <span className="text-sm font-bold text-black ml-1.5">100</span>
                         </div>
+                        
                         <div className="flex items-center gap-2">
-                          <img src={HexagonIcon} alt="Suggestion" className="w-4 h-4" />
-                          <span className="text-sm text-gray-600">ข้อเสนอแนะ</span>
-                          <span className="text-sm font-medium ml-1">100</span>
+                          <div className="bg-orange-50 p-1.5 rounded-full">
+                            <img src={HexagonIcon} alt="Suggestion" className="w-4 h-4" />
+                          </div>
+                          <span className="text-xs font-medium text-gray-700 whitespace-nowrap">ข้อเสนอแนะ</span>
+                          <span className="text-sm font-bold text-black ml-1.5">100</span>
                         </div>
                       </div>
                     </div>

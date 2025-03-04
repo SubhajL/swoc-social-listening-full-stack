@@ -41,6 +41,40 @@
   - Water level and flow rate data
   - Consistent styling with rain station cards
 
+### 3. Authentication System
+- Components:
+  - Login.tsx (login page with email/password form)
+  - ChangePassword.tsx (password change functionality)
+  - ProtectedRoute.tsx (route protection component)
+  Path: apps/frontend/src/pages/Login.tsx
+  Path: apps/frontend/src/pages/ChangePassword.tsx
+  Path: apps/frontend/src/components/auth/ProtectedRoute.tsx
+
+- API Endpoints:
+  - /api/auth/login
+  - /api/auth/change-password
+  Path: apps/backend/src/api/auth.ts
+
+- Authentication Flow:
+  - Login page as landing page
+  - JWT-based authentication
+  - Protected routes for authenticated users
+  - Redirect to dashboard after successful login
+  - First-time login password change requirement
+
+- Features:
+  - Login with email and password
+  - Password change functionality
+  - Protected routes with authentication check
+  - Loading state during authentication check
+  - Automatic redirection to login for unauthenticated users
+
+## Latest Updates (2024-02-15)
+- Migrating from Zustand to Jotai for state management
+- Implementing atomic state model for better performance and reliability
+- Addressing hydration issues with built-in persistence
+- Improving type safety across the application
+
 ## Latest Updates (2024-02-08)
 - Added station ID and code display for rain stations
 - Added station ID display for telemetry stations
@@ -248,52 +282,43 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
   - Thaiwater API Service
   - RainStationCard Integration
   - Station ID Mapping System
-- Critical Paths:
-  - API endpoint configuration
-  - Station ID mapping (our system ↔ Thaiwater)
-  - Real-time rainfall data retrieval
-  - Data display in RainStationCard
-- Safety Measures: ✅ Complete
-  - Feature Management: ✅ Complete
-    - Proper API endpoint configuration
-    - Station ID mapping system
-    - Error handling and logging
-  - Data Integrity: ✅ Complete
-    - Station ID validation
-    - Data type validation
-    - Null checks and fallbacks
-  - Error Handling: ✅ Complete
-    - API error catching
-    - Response validation
-    - User-friendly error display
-  - Logging: ✅ Complete
-    - Request/response logging
-    - Error tracking
-    - Data transformation logging
-- Working Features: ✅
-  - API Connection: ✅ Working
-    - Endpoint: https://api-v3.thaiwater.net/api/v1/thaiwater30/api_service
-    - Parameters: mid=98, eid=[token]
-  - Station Mapping: ⚠️ In Progress
-    - Need to find official mapping table between our station_ids and Thaiwater tele_station_ids
-    - Current mappings need verification:
-      - 7391 → 1109570 (สชป.1)
-      - 7013 → 494 (อุตุสนามบิน)
-  - Data Display: ✅ Working
-    - 3-day rainfall data
-    - 7-day rainfall data
-    - Loading states
-    - Error handling
-- Known Issues: 
-  - Station ID mapping table needs to be verified with official source
-- Next Steps:
-  - Obtain official station ID mapping table
-  - Verify current station mappings
-  - Monitor API reliability
-  - Consider implementing caching
-  - Document API response patterns
 
-### 10. Social Media Monitoring System
+### 10. WaterLevelInfo Component
+- Status: ✅ LOCKED
+- Last Lock Date: 2025-02-25
+- Components:
+  - WaterLevelInfo.tsx (main container component)
+  - MonitoringStationCard.tsx (monitoring station display)
+  - RainStationCard.tsx (rain station display)
+  - ReservoirCard.tsx (reservoir display)
+- Critical Paths:
+  - Data loading and error handling for all station types
+  - Consistent layout and styling across all station cards
+  - Single-line display of field names and data boxes
+  - Proper alignment of field names with their data
+  - Responsive design with grid layout
+- Features:
+  - Compact layout with all information on a single line
+  - Consistent styling across all station types
+  - Proper error and loading state handling
+  - Location-based filtering (amphure/province)
+  - Comprehensive logging system
+- Safety Measures: ✅ Complete
+  - Feature Management: Implemented
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
+  - ErrorBoundary: Implemented
+
+## Latest Updates (2024-02-25)
+- Completed WaterLevelInfo component with all station cards
+- Updated all station cards to display data in a single line
+- Improved alignment of field names with their data boxes
+- Ensured consistent styling across all station types
+- Enhanced error handling and loading states
+- Added comprehensive logging for debugging
+
+### 11. Social Media Monitoring System
 - Status: 🔒 PARTIALLY LOCKED
 - Last Lock Date: 2024-02-14
 - Components:
@@ -334,7 +359,7 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
   - Logging: Enhanced
   - Type Safety: Enforced
 
-### 10. Map Icons System
+### 12. Map Icons System
 - Status: ✅ LOCKED
 - Last Lock Date: 2024-02-13
 - Components:
@@ -374,7 +399,7 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
   - TypeScript for type safety
   - React for component management
 
-### 10. FilterPanel UI System
+### 13. FilterPanel UI System
 - Status: ✅ LOCKED
 - Last Lock Date: 2024-02-13
 - Components:
@@ -420,6 +445,120 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
   - Type Safety: Enforced
   - State Management: Optimized
   - Event Handling: Secured
+
+### 14. Main Page UI
+- Status: ✅ LOCKED
+- Last Lock Date: 2025-02-25
+- Components:
+  - MainPage.tsx
+  - DashboardHeader.tsx
+  - Category summary section
+- Critical Paths:
+  - Page layout and structure
+  - Navigation tabs alignment
+  - Category icons and labels display
+  - Map integration
+- Features:
+  - Responsive layout with filter panel and map
+  - Properly aligned navigation tabs
+  - Category summary with icons, labels, and counts on a single line
+  - Thai language support
+- Safety Measures: ✅ Complete
+  - Proper text handling with whitespace-nowrap
+  - Responsive design
+  - Consistent styling
+  - Clear visual hierarchy
+- Event Handling: Secured
+
+### 15. Complaint Form UI
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-02-25
+- Components:
+  - ComplaintHeader.tsx (navigation and user interface)
+  - SocialPostInfo.tsx (complaint details display)
+  - ComplaintForm.tsx (layout and structure)
+- Working Features: ✅
+  - Header with Navigation:
+    - Logo display
+    - Navigation tabs
+    - User controls (notifications, settings, avatar)
+  - SocialPostInfo Component:
+    - Non-scrollable content display
+    - Auto-expanding text areas
+    - Consistent font styling across all content boxes
+    - Proper spacing between section labels and content
+    - Symmetrical horizontal padding
+    - Left-padded content (8 spaces)
+  - Layout Management:
+    - Proper vertical spacing between components
+    - Responsive design
+    - Action buttons positioning
+- Critical Paths:
+  - Header Navigation
+  - Complaint Data Display
+  - Form Layout Structure
+  - Data Type Handling (ProcessedPost and Complaint)
+- Safety Measures: ✅ Complete
+  - Error Handling: Comprehensive
+  - Type Safety: Enforced
+  - Data Validation: Implemented
+  - Responsive Design: Optimized
+- Event Handling: Secured
+
+### 10. StationEdit UI System
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-03-01
+- Components:
+  - StationCardEditInfo.tsx (main edit component)
+  - MonitoringStationCard.tsx (with delete button)
+  - RainStationCard.tsx (with delete button)
+  - ReservoirCard.tsx (with delete button)
+  - StationCardEdit.tsx (page component)
+- Critical Paths:
+  - Station data display by location
+  - Add data button functionality
+  - Delete data button functionality
+  - Save button with icon
+  - Conditional button display
+  - Navigation with data preservation
+  - Data persistence between page navigations
+- Features: ✅ Complete
+  - "เพิ่มข้อมูล" (Add Data) buttons for each station type
+  - Delete buttons with Trash2 icon for each station card
+  - Larger "บันทึก" (Save) button with Save icon
+  - Toast notifications for user actions
+  - Proper error handling and loading states
+  - Responsive layout and consistent styling
+  - Navigation with complaint data preservation
+  - "บันทึก" (Save) button properly saves changes to the persistent store
+  - "ไม่บันทึก" (Don't Save) button properly resets station data to original state
+  - Enhanced store persistence to ensure data is saved to localStorage
+  - Verification step to confirm data is saved before navigation
+- Safety Measures: ✅ Complete
+  - Feature Management: Implemented
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
+  - Data Persistence: Improved
+- Dependencies:
+  - useMonitoringStations hook
+  - useRainStations hook
+  - useReservoirs hook
+  - Lucide React icons (Plus, Trash2, Save)
+  - Toast notifications system
+  - SessionStorage for data preservation
+  - LocalStorage for persistent data storage
+- Testing Status:
+  - UI Rendering: ✅ Passing
+  - Button Functionality: ✅ Passing
+  - Conditional Display: ✅ Passing
+  - Error Handling: ✅ Working
+  - Loading States: ✅ Working
+  - Navigation: ✅ Working
+  - Data Persistence: ✅ Working
+  - Data Reset on Discard: ✅ Working
+
+DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
 
 ## 🚧 In Development Features
 
@@ -481,4 +620,317 @@ To validate lock status, check:
 4. Documentation update
 5. Lock status re-validation
 
-Contact the relevant feature owner before attempting any modifications to locked features. 
+Contact the relevant feature owner before attempting any modifications to locked features.
+
+# Branch Locks and Development Status
+
+## Active Branches
+
+### task/filter-logic-new-20250225
+- **Status**: 🔄 In Progress
+- **Owner**: Current Developer
+- **Description**: Filter logic implementation with known issues
+- **Features**:
+  - Message type/subtype filtering
+  - Date range filtering
+  - Geographic location filtering
+  - Communication channel filtering
+- **Known Issues**: See `.tasks/2025-02-24_3_filter_logic.md`
+- **Last Updated**: 2025-02-24
+
+### task/frontend-development
+- **Status**: 🔄 In Progress
+- **Owner**: Current Developer
+- **Description**: Frontend development branch with StationCardEdit improvements
+- **Features**: 
+  - StationCardEdit navigation with data preservation
+  - Complaint data handling improvements
+  - UI enhancements and bug fixes
+- **Last Updated**: 2025-02-28
+
+## Base Branches
+
+### integration-post
+- **Status**: 🟢 Stable
+- **Description**: Base branch for post-related features
+- **Last Stable Commit**: Current HEAD
+- **Dependencies**:
+  - Frontend React components
+  - Backend API services
+  - PostgreSQL database
+
+## Branch Rules
+1. Feature branches should be created from stable base branches
+2. Each feature branch should have a corresponding task file in `.tasks/`
+3. Known issues must be documented before switching branches
+4. Merge conflicts must be resolved before marking a branch as stable
+
+## Current Development Focus
+- Primary: Frontend development (task/frontend-development)
+- Secondary: Filter logic fixes (task/filter-logic-new-20250225)
+
+## Notes
+- Filter logic implementation is temporarily paused
+- Frontend development will proceed independently
+- Known issues in filter logic are documented and will be addressed later
+
+### 10. Station Selection Dialog
+- Status: 🔒 LOCKED (UI/UX) / ⚠️ PENDING (Data Querying)
+- Last Lock Date: 2025-02-28
+- Components:
+  - StationSelectionDialog.tsx
+- Critical Paths:
+  - Dialog layout and styling
+  - Station list display with checkboxes
+  - Pagination with blue arrows
+  - Footer positioning and button alignment
+  - Station selection functionality
+- Working Features: ✅
+  - Dialog layout and styling are finalized
+  - Station list display with checkboxes is working
+  - Pagination with blue arrows below the station list is functioning
+  - Footer with station count and buttons is properly positioned
+  - Selection functionality works as expected
+- Pending Improvements: ⚠️
+  - Data querying functionality still needs improvement
+  - Current implementation fetches all stations by province
+  - Filtering logic may need optimization
+- Safety Measures: ✅ Partial
+  - UI/UX: ✅ Complete
+  - Data Handling: ⚠️ In Progress
+  - Type Safety: ✅ Complete
+  - Error Handling: ✅ Complete
+
+DO NOT modify the UI layout or styling of StationSelectionDialog without approval.
+
+### 16. ComplaintForm - Station Fetching from Administrative Location
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-02-28
+- Components:
+  - ComplaintForm.tsx (main page component)
+  - WaterLevelInfo.tsx (station display component)
+- Critical Paths:
+  - Location data extraction from complaint data
+  - Handling of different location data formats (string, array)
+  - Passing location data to WaterLevelInfo component
+  - Preserving location data when navigating between pages
+- Working Features: ✅
+  - Extraction of amphure and province from complaint data
+  - Handling of location data in different formats
+  - Proper cleaning and formatting of location strings
+  - Passing location data to WaterLevelInfo for station fetching
+  - Preserving location data when returning from StationCardEdit
+- Safety Measures: ✅ Complete
+  - Feature Management: Implemented
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
+- Dependencies:
+  - useComplaintStore for data persistence
+  - WaterLevelInfo component for station display
+  - location-utils for string cleaning and formatting
+  - SessionStorage for data preservation during navigation
+
+### 17. DocumentPreparation - Partial Implementation
+- Status: 🔒 PARTIALLY LOCKED
+- Last Lock Date: 2025-03-01
+- Components:
+  - DocumentPreparation.tsx (main page component)
+  - DocumentPreparationHeader.tsx (navigation component)
+  - SuccessPopup.tsx (notification component)
+- Working Features: ✅
+  - UI Layout and Components:
+    - Document preparation header with navigation
+    - Social post information display
+    - Supporting data section with WaterLevelInfo and WaterManagementPlan
+    - Document draft section with textarea
+    - Action buttons (Save, Approve, Submit)
+    - Success popups for save and approve actions
+  - Zustand Integration:
+    - complaintStore for complaint data
+    - documentPreparationStore for document content and state
+  - Location Data Handling:
+    - Extraction of location data from complaint data
+    - Passing location data to supporting components
+  - Data Validation:
+    - Improved validation of complaint data
+    - Better error handling for missing data
+    - Automatic redirection on invalid data
+- Pending Features: ⚠️
+  - 'เอกสารตอบ' Functionality:
+    - Template selection and management
+    - Document versioning
+    - Document history
+  - Sharing and Printing:
+    - Line integration for sharing
+    - Print formatting and options
+    - PDF generation
+- Safety Measures: ✅ Partial
+  - UI/UX: ✅ Complete
+  - Data Handling: ✅ Complete
+  - Store Integration: ✅ Complete
+  - Data Validation: ✅ Complete
+  - Sharing/Printing: ⚠️ Pending
+
+### 18. Navigation Flow Cleanup
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-03-01
+- Changes:
+  - Removed unused ComplaintFooter component
+  - Updated navigation between ComplaintForm and DocumentPreparation
+  - Ensured direct data passing through location state
+  - Removed references to ComplaintFooter in alternative implementations
+- Critical Paths:
+  - Direct navigation from ComplaintForm to DocumentPreparation
+  - Proper data passing through location state
+  - Consistent data handling in DocumentPreparation
+- Working Features: ✅
+  - Clean navigation between components
+  - Proper data passing through location state
+  - Improved error handling for missing data
+  - Automatic redirection on invalid data
+- Safety Measures: ✅ Complete
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
+
+## Latest Updates (2024-03-01)
+- Removed unused ComplaintFooter component
+- Enhanced DocumentPreparation with improved data validation
+- Updated navigation flow between ComplaintForm and DocumentPreparation
+- Ensured consistent data handling across components
+- Fixed StationCardEdit save functionality:
+  - Improved "บันทึก" button to properly save changes to the persistent store
+  - Enhanced store persistence mechanism to ensure data is saved to localStorage
+  - Added verification step to confirm data is saved before navigation
+  - Increased timeout duration to ensure store updates are complete before navigation
+  - Enhanced ComplaintForm to properly verify and load saved station data when returning from StationCardEdit
+  - Made handleSave function async to properly await persistence operations
+  - Added retry mechanism if initial save to localStorage fails
+  - Improved error handling with user-friendly toast notifications
+  - Enhanced store hydration to ensure proper loading of persisted data
+  - Added loading state during store hydration to prevent race conditions
+  - Added multiple verification steps to confirm data persistence before navigation
+  - Implemented robust error handling with clear user feedback
+  - Added loading state during save operation with toast notifications
+  - Enhanced ComplaintForm to force reload data from localStorage after successful save
+  - Added session flags to track navigation after successful save
+  - Improved store hydration with retry mechanism and better error handling
+  - Added verification that hydrated data matches what was saved
+- Fixed StationCardEdit "ไม่บันทึก" button to properly reset station data to original state
+- Added ApprovalDashboard component with filterable and sortable table
+
+DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
+
+### 19. ApprovalDashboard Component
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-03-01
+- Components:
+  - ApprovalDashboard.tsx (main page component)
+  - ApprovalDashboardHeader.tsx (navigation component)
+- Working Features: ✅
+  - UI Layout and Components:
+    - Dashboard header with navigation tabs
+    - Page title "ระบบตอบประเด็นข้อร้องเรียน"
+    - Top line with post count and search functionality
+    - Table with filterable and sortable columns:
+      - ประเภทข้อความ
+      - ช่องทางการสื่อสาร
+      - จังหวัด
+      - สำนักงานชลประทาน
+      - ประเภทเอกสารตอบ
+      - สถานะ
+      - ผู้รับผิดชอบ
+      - รายละเอียด
+    - Pagination showing 9 records per page by default
+    - Navigation controls at the bottom
+  - Data Management:
+    - Filtering by column values
+    - Global search across all fields
+    - Sorting by column
+    - Pagination with configurable records per page
+  - Navigation:
+    - Detail view navigation
+    - Back navigation with data preservation
+- Safety Measures: ✅ Complete
+  - UI/UX: ✅ Complete
+  - Data Handling: ✅ Complete
+  - Store Integration: ✅ Complete
+  - Navigation: ✅ Complete
+
+## Latest Updates (2025-03-02)
+- Enhanced post filtering logic to ensure posts with only tumbon information (without amphure or province) are not displayed on the map
+- Improved accuracy of map visualization by only showing posts with sufficient location data
+- Enhanced Login and Password Change functionality with better form validation and error handling
+- Optimized Dashboard performance by reducing excessive message counting operations
+- Added better logging for debugging map post filtering
+- Updated branch information in task files from `integration-post` to `feature/settings-rbac`
+
+### 20. Map Post Filtering Enhancement
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-03-02
+- Components:
+  - coordinates.ts (hasValidCoordinates function)
+  - map-core.ts (loadMapPosts function)
+- Critical Paths:
+  - Post validation logic for map display
+  - Filtering of posts with insufficient location data
+  - Logging of filtered posts for debugging
+- Working Features: ✅
+  - Enhanced validation to require both amphure and province data
+  - Filtering out posts with only tumbon information
+  - Detailed logging of filtered posts by location data availability
+  - Improved accuracy of map visualization
+- Safety Measures: ✅ Complete
+  - Feature Management: Implemented
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
+
+### 21. Login and Password Change Improvements
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-03-02
+- Branch: feature/settings-rbac
+- Components:
+  - Login.tsx
+  - ChangePassword.tsx
+  - auth.service.ts
+- Critical Paths:
+  - Authentication flow
+  - Password validation
+  - Error handling
+- Working Features: ✅
+  - Enhanced form validation with descriptive error messages
+  - Improved password strength validation
+  - Better error handling and user feedback
+  - Secure token handling and storage
+- Safety Measures: ✅ Complete
+  - Feature Management: Implemented
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
+
+### 22. Dashboard Message Counting Optimization
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-03-02
+- Branch: feature/settings-rbac
+- Components:
+  - MainPage.tsx
+  - processed-post.service.ts
+  - map-core.ts
+- Critical Paths:
+  - Category count retrieval and display
+  - API integration
+  - Performance optimization
+- Working Features: ✅
+  - Reduced excessive message counting operations
+  - Improved category count display with better loading states
+  - Enhanced API integration with proper error handling
+  - Optimized performance for large datasets
+- Safety Measures: ✅ Complete
+  - Feature Management: Implemented
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
+
+DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL 

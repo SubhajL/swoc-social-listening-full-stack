@@ -16,26 +16,32 @@ export const ComplaintNavigation = () => {
             </Button>
           </Link>
 
-          <Button variant="ghost" className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
-              <FileText className="w-6 h-6 text-blue-600" />
-            </div>
-            <span className="text-xs">ระบบตอบประเด็น</span>
-          </Button>
+          <Link to="/response">
+            <Button variant="ghost" className="flex flex-col items-center gap-2">
+              <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                <FileText className="w-6 h-6 text-blue-600" />
+              </div>
+              <span className="text-xs">ระบบตอบประเด็น</span>
+            </Button>
+          </Link>
 
-          <Button variant="ghost" className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
-              <BarChart3 className="w-6 h-6 text-blue-600" />
-            </div>
-            <span className="text-xs">ระบบแสดงผลข้อมูล</span>
-          </Button>
+          <Link to="/dashboard">
+            <Button variant="ghost" className="flex flex-col items-center gap-2">
+              <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                <BarChart3 className="w-6 h-6 text-blue-600" />
+              </div>
+              <span className="text-xs">ระบบแสดงผลข้อมูล</span>
+            </Button>
+          </Link>
 
-          <Button variant="ghost" className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-blue-600" />
-            </div>
-            <span className="text-xs">การตั้งค่าช่วงวันที่</span>
-          </Button>
+          <Link to="/system-setting">
+            <Button variant="ghost" className="flex flex-col items-center gap-2">
+              <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                <Calendar className="w-6 h-6 text-blue-600" />
+              </div>
+              <span className="text-xs">การตั้งค่าช่วงวันที่</span>
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

@@ -67,3 +67,28 @@ Simply open [Lovable](https://lovable.dev/projects/7b5d0202-ca5b-4396-ac20-3f084
 ## I want to use a custom domain - is that possible?
 
 We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+
+## Recent Updates
+
+### 2025-03-02: Map Post Filtering Enhancement
+- Enhanced post filtering logic to ensure posts with only tumbon information (without amphure or province) are not displayed on the map
+- Improved accuracy of map visualization by only showing posts with sufficient location data
+- Added multiple layers of filtering in both frontend and backend
+- Enhanced logging for better debugging and monitoring
+- See `.tasks/2025-03-02_3_map_post_filtering_enhancement.md` for detailed information
+
+### 2025-03-02: Login and Password Change Improvements
+- Enhanced authentication system with improved Login and Password Change functionality
+- Added better form validation with descriptive error messages
+- Implemented secure token handling and storage
+- Added password strength validation and visual indicators
+- Improved error handling and user feedback
+- See `.tasks/2025-03-02_4_login_password_change_improvements.md` for detailed information
+
+### 2025-03-02: Dashboard Message Counting Optimization
+- Optimized Dashboard performance by reducing excessive message counting operations
+- Reduced verbose console logging to improve browser performance
+- Enhanced API integration with proper base URL and error handling
+- Improved category count display with better loading states and error handling
+- Added performance optimizations for large datasets
+- See `.tasks/2025-03-02_5_dashboard_message_counting_optimization.md` for detailed information

@@ -3,16 +3,19 @@ import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import pkg from 'pg';
 const { Pool } = pkg;
-import { ProcessedPostService } from './services/processed-post.service.js';
-import { LocationCacheService } from './services/location-cache.service.js';
-import { createPostsRouter } from './api/posts/index.js';
-import { createLocationRouter } from './api/location/index.js';
-import telemetryStationsRouter from './api/telemetry-stations.js';
+import { ProcessedPostService } from './services/processed-post.service';
+import { LocationCacheService } from './services/location-cache.service';
+import { createPostsRouter } from './api/posts/index';
+import { createLocationRouter } from './api/location/index';
+import telemetryStationsRouter from './api/telemetry-stations';
 import telemetryRouter from './api/telemetry';
-import rainStationsRouter from './api/rain-stations.js';
-import reservoirsRouter from './api/reservoirs.js';
+import rainStationsRouter from './api/rain-stations';
+import reservoirsRouter from './api/reservoirs';
 import thaiWaterRouter from './api/thaiwater';
-import { logger } from './utils/logger.js';
+import userAccountRouter from './routes/user-account.routes';
+import authRouter from './routes/auth.routes';
+import approvalRecordRouter from './routes/approval-record.routes';
+import { logger } from './utils/logger';
 import dotenv from 'dotenv';
 import cors from 'cors';
 
@@ -109,16 +112,34 @@ const startServer = async () => {
     app.use('/api/reservoirs', reservoirsRouter);
     app.use('/api/telemetry', telemetryRouter);
     app.use('/api/thaiwater', thaiWaterRouter);
+    app.use('/api/users', userAccountRouter);
+    app.use('/api/auth', authRouter);
+    app.use('/api/approval-records', approvalRecordRouter);
+
+    // Add a simple health check endpoint for the root API path
+    app.all('/api', (req, res) => {
+      res.status(200).json({ status: 'ok', message: 'API server is running' });
+    });
+
+    // Also handle the root API path with trailing slash
+    app.all('/api/', (req, res) => {
+      res.status(200).json({ status: 'ok', message: 'API server is running' });
+    });
 
     logger.info('📍 API routes registered', {
       routes: [
+        '/api',
+        '/api/',
         '/api/posts', 
         '/api/location', 
         '/api/monitoring-stations', 
         '/api/rain-stations', 
         '/api/reservoirs',
         '/api/telemetry',
-        '/api/thaiwater'
+        '/api/thaiwater',
+        '/api/users',
+        '/api/auth',
+        '/api/approval-records'
       ],
       timestamp: new Date().toISOString()
     });

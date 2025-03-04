@@ -4,7 +4,6 @@ import { FormInput } from "../../atoms/form/FormInput";
 import { DynamicMap } from "../../molecules/map/DynamicMap";
 import { Card } from "@/components/ui/card";
 import { ComplaintHeader } from "@/components/complaint/ComplaintHeader";
-import { ComplaintFooter } from "@/components/complaint/ComplaintFooter";
 import { WaterLevelInfo } from "@/components/complaint/WaterLevelInfo";
 import { WaterFlowPanel } from "@/components/complaint/WaterFlowPanel";
 import { ComplaintNavigation } from "@/components/complaint/ComplaintNavigation";
@@ -133,7 +132,6 @@ const ComplaintForm = () => {
         </Card>
       </main>
 
-      <ComplaintFooter />
       <ComplaintNavigation />
     </div>
   );

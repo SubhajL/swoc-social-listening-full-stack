@@ -10,6 +10,7 @@ export interface Reservoir {
   normal_storage_capacity: string | null;  // in million cubic meters
   minimum_storage_capacity: string | null; // in million cubic meters
   type: string | null;
+  station_id?: string | null;
 }
 
 export interface ReservoirResponse {
