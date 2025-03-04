@@ -1,9 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import axiosInstance from '@/lib/api-client';
 import type { ThaiWaterResponse } from '../types/api';
-
-// Use the main API URL for Thaiwater endpoints
-const THAIWATER_API_URL = `${import.meta.env.VITE_API_URL}/thaiwater/rainfall`;
 
 // Mock data to use when the API is not available
 const MOCK_THAIWATER_RESPONSE: ThaiWaterResponse = {
@@ -16,10 +13,10 @@ export function useThaiWaterData() {
   return useQuery<ThaiWaterResponse>({
     queryKey: ['thaiwater', 'rainfall'],
     queryFn: async () => {
-      console.log('[useThaiWaterData] Fetching data from:', THAIWATER_API_URL);
+      console.log('[useThaiWaterData] Fetching thaiwater rainfall data');
       
       try {
-        const { data } = await axios.get<ThaiWaterResponse>(THAIWATER_API_URL);
+        const { data } = await axiosInstance.get<ThaiWaterResponse>('/thaiwater/rainfall');
         
         console.log('[useThaiWaterData] Response received:', {
           success: data.success,
@@ -31,8 +28,7 @@ export function useThaiWaterData() {
         return data;
       } catch (error) {
         console.error('[useThaiWaterData] Error fetching data:', {
-          error: error instanceof Error ? error.message : String(error),
-          url: THAIWATER_API_URL
+          error: error instanceof Error ? error.message : String(error)
         });
         
         // Return mock data instead of throwing an error

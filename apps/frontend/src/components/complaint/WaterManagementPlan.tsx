@@ -44,14 +44,14 @@ export const WaterManagementPlan = ({ amphure, province }: WaterManagementPlanPr
           {/* Main Heading with icon */}
           <div className="flex items-center gap-2">
             <Layers className="w-6 h-6 text-blue-600" />
-            <h2 className="text-xl font-semibold text-[#17254D]">แผนผังการสั่งน้ำ</h2>
+            <h2 className="text-xl font-semibold text-[#17254D]">แผนผังการส่งน้ำ</h2>
           </div>
           
           {/* Empty state message */}
           <Alert className="bg-gray-50">
             <InfoIcon className="h-5 w-5 text-blue-500" />
             <AlertDescription className="text-gray-600">
-              กรุณาระบุพื้นที่ (อำเภอหรือจังหวัด) เพื่อดูแผนผังการสั่งน้ำ
+              กรุณาระบุพื้นที่ (อำเภอหรือจังหวัด) เพื่อดูแผนผังการส่งน้ำ
             </AlertDescription>
           </Alert>
         </div>
@@ -65,13 +65,13 @@ export const WaterManagementPlan = ({ amphure, province }: WaterManagementPlanPr
         {/* Main Heading with icon */}
         <div className="flex items-center gap-2">
           <Layers className="w-6 h-6 text-blue-600" />
-          <h2 className="text-xl font-semibold text-[#17254D]">แผนผังการสั่งน้ำ</h2>
+          <h2 className="text-xl font-semibold text-[#17254D]">แผนผังการส่งน้ำ</h2>
         </div>
         
         {/* Content placeholder - to be implemented */}
         <div className="flex flex-col items-center justify-center min-h-[200px] border border-dashed border-gray-300 rounded-xl p-4">
           <p className="text-gray-500 text-center">
-            ข้อมูลแผนผังการสั่งน้ำจะแสดงที่นี่
+            ข้อมูลแผนผังการส่งน้ำจะแสดงที่นี่
             {displayAmphure && ` สำหรับ${displayAmphure}`}
             {!displayAmphure && displayProvince && ` สำหรับ${displayProvince}`}
           </p>

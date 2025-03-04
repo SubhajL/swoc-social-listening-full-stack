@@ -39,6 +39,45 @@ export const createPostsRouter = (postService: ProcessedPostService) => {
     }
   });
 
+  // Get category counts
+  router.get('/category-counts', async (req, res) => {
+    try {
+      logger.info('Fetching category counts with filters:', req.query);
+      
+      // Extract filter parameters from query
+      const filters = {
+        province: req.query.province as string | undefined,
+        amphure: req.query.amphure as string | undefined,
+        tumbon: req.query.tumbon as string | undefined,
+        startDate: req.query.startDate as string | undefined,
+        endDate: req.query.endDate as string | undefined
+      };
+      
+      // Get category counts from service
+      const counts = await postService.getCategoryCounts(filters);
+      
+      logger.info('Successfully fetched category counts:', counts);
+      res.json({
+        data: counts
+      });
+    } catch (error) {
+      logger.error('Error fetching category counts:', {
+        error: error instanceof Error ? {
+          message: error.message,
+          name: error.name,
+          stack: error instanceof Error ? error.stack : undefined
+        } : error
+      });
+      res.status(500).json({
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch category counts',
+          details: error instanceof Error ? error.message : 'Unknown error'
+        }
+      });
+    }
+  });
+
   // Get unprocessed posts
   router.get('/unprocessed', async (req, res) => {
     try {

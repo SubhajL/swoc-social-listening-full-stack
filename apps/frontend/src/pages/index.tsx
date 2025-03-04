@@ -1,7 +1,11 @@
 import { MainPage } from "./MainPage";
 
 const Index = () => {
-  return <MainPage />;
+  return (
+    <div className="min-h-screen bg-[#EBF5FF]">
+      <MainPage />
+    </div>
+  );
 };
 
 export default Index;

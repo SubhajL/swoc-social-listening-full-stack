@@ -17,9 +17,11 @@ import {
   initializeMapCore, 
   updateMapData,
   filterPosts,
-  loadMapPosts
+  loadMapPosts,
+  pingServer
 } from '@/utils/map-core';
 import type { Feature, GeoJSON, Point } from 'geojson';
+import React from 'react';
 
 interface MapProps {
   token: string;
@@ -28,7 +30,17 @@ interface MapProps {
   selectedAmphure: string | null;
   selectedTumbon: string | null;
   selectedOffice: string | null;
-  filteredMessages?: ProcessedPost[];
+  dateRange: { start: string; end: string };
+  allFilters?: {
+    messageType: string;
+    messageSubTypes: string[];
+    communicationChannels: string[];
+    provinces: string[];
+    irrigationOffices: string[];
+    provincialOffices: string[];
+    dateRange: { start: string; end: string };
+  };
+  hasServerError?: boolean;
 }
 
 interface PostFeatureProperties {
@@ -110,6 +122,19 @@ const createMarkerImage = (shape: keyof typeof shapeStyles, color: string, size:
   }
 };
 
+// Add a utility to limit logging frequency
+const createThrottledLogger = (name: string, interval: number = 2000) => {
+  let lastLogTime = 0;
+  
+  return (message: string, data?: any) => {
+    const now = Date.now();
+    if (now - lastLogTime > interval) {
+      console.log(`${name}: ${message}`, data);
+      lastLogTime = now;
+    }
+  };
+};
+
 export function Map({ 
   token, 
   selectedCategories, 
@@ -117,7 +142,9 @@ export function Map({
   selectedAmphure, 
   selectedTumbon, 
   selectedOffice,
-  filteredMessages
+  dateRange,
+  allFilters,
+  hasServerError = false
 }: MapProps) {
   const navigate = useNavigate();
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -127,10 +154,16 @@ export function Map({
   const [error, setError] = useState<Error | null>(null);
   const { latestPost } = useRealTime();
   
-  // New state for managing posts
+  // New state for managing posts - ensure proper initialization
   const [allPosts, setAllPosts] = useState<ProcessedPost[]>([]);
   const [currentPosts, setCurrentPosts] = useState<ProcessedPost[]>([]);
   const [areMarkersReady, setAreMarkersReady] = useState(false);
+  const [noPostsMessage, setNoPostsMessage] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Create throttled loggers
+  const mapLogger = createThrottledLogger('🗺️ MAP');
+  const filterLogger = createThrottledLogger('🔎 FILTER');
 
   // Helper function to check if a feature is a point feature
   const isPointFeature = (feature: any): feature is Feature<Point> => {
@@ -146,6 +179,22 @@ export function Map({
   const getMarkerImageId = (category: CategoryName): string => {
     return `marker-${categoryShapeMap[category]}`;
   };
+
+  // Add logging for the received props
+  console.log('🗺️ MAP COMPONENT RECEIVED PROPS:', {
+    selectedCategories,
+    categoryNames: selectedCategories.map(cat => cat.toString()),
+    categoryValues: selectedCategories.map(cat => cat),
+    selectedProvince,
+    selectedAmphure,
+    selectedTumbon,
+    selectedOffice,
+    dateRange,
+    allFilters
+  });
+
+  // Convert CategoryName enum values to strings for filtering
+  const categoryStrings = selectedCategories.map(cat => cat.toString());
 
   // Initialize map and load marker images
   useEffect(() => {
@@ -311,15 +360,25 @@ export function Map({
 
       try {
         setIsLoading(true);
+        setNoPostsMessage(null);
+        
+        // Check server connectivity first
+        const isServerReachable = await pingServer();
+        if (!isServerReachable && !hasServerError) {
+          throw new Error('Cannot connect to API server. Please check if the server is running and accessible.');
+        }
+        
         const posts = await loadMapPosts();
         console.log('Initial posts loaded:', posts.length);
-        setAllPosts(posts);
         
-        // If no filtered messages, use all posts
-        if (!filteredMessages) {
-          setCurrentPosts(posts);
-          updateMapWithPosts(posts);
+        if (posts.length === 0) {
+          setNoPostsMessage('ไม่พบข้อมูลโพสต์ในระบบ กรุณาตรวจสอบการเชื่อมต่อกับ API หรือติดต่อผู้ดูแลระบบ');
         }
+        
+        setAllPosts(posts);
+        setCurrentPosts(posts);
+        updateMapWithPosts(posts);
+        setIsInitialized(true);
       } catch (error) {
         console.error('Error loading initial data:', error);
         toast({
@@ -329,29 +388,250 @@ export function Map({
         });
         setHasError(true);
         setError(error as Error);
+        setNoPostsMessage('ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่อีกครั้ง');
       } finally {
         setIsLoading(false);
       }
     };
 
     loadInitialData();
-  }, [areMarkersReady]);
+  }, [areMarkersReady, hasServerError]);
+
+  // Add effect to reload data when date range changes
+  useEffect(() => {
+    // Skip if map or markers aren't ready
+    if (!mapRef.current || !areMarkersReady) return;
+    
+    // Skip if date range is not valid
+    if (!dateRange.start || !dateRange.end) {
+      console.log('Skipping data reload: Invalid date range', dateRange);
+      return;
+    }
+    
+    const reloadDataWithDateRange = async () => {
+      try {
+        setIsLoading(true);
+        setNoPostsMessage(null);
+        
+        console.log('Reloading posts with date range:', dateRange);
+        
+        const posts = await loadMapPosts(
+          apiClient,
+          undefined,
+          undefined,
+          MAP_CORE_CONFIG.MAX_RETRIES,
+          { dateRange }
+        );
+        
+        console.log('Posts loaded with date range:', {
+          dateRange,
+          count: posts.length
+        });
+        
+        if (posts.length === 0) {
+          setNoPostsMessage('ไม่พบข้อมูลที่ตรงกับช่วงวันที่ที่เลือก กรุณาลองเลือกช่วงวันที่อื่น');
+        }
+        
+        setAllPosts(posts);
+        setCurrentPosts(posts);
+        updateMapWithPosts(posts);
+      } catch (error) {
+        console.error('Error loading data with date range:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load data with the selected date range.",
+          variant: "destructive"
+        });
+        setNoPostsMessage('เกิดข้อผิดพลาดในการโหลดข้อมูลตามช่วงวันที่ กรุณาลองใหม่อีกครั้ง');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    reloadDataWithDateRange();
+  }, [dateRange, areMarkersReady]);
 
   // Handle filtered messages
   useEffect(() => {
-    if (!mapRef.current || !areMarkersReady) return;
+    if (!mapRef.current || !areMarkersReady || !isInitialized) return;
 
-    const posts = filteredMessages || allPosts;
-    setCurrentPosts(posts);
-    updateMapWithPosts(posts);
-  }, [filteredMessages, allPosts, areMarkersReady]);
+    mapLogger('MAP FILTERED MESSAGES EFFECT TRIGGERED', {
+      allPostsCount: allPosts?.length || 0,
+      hasComprehensiveFilters: !!allFilters,
+      selectedCategories,
+      selectedProvince,
+      selectedAmphure,
+      selectedTumbon,
+      selectedOffice,
+      dateRange
+    });
+
+    // If there are no posts at all, show a message and return
+    if (!allPosts || allPosts.length === 0) {
+      mapLogger('NO POSTS AVAILABLE AT ALL');
+      setNoPostsMessage('ไม่พบข้อมูลโพสต์ในระบบ กรุณาตรวจสอบการเชื่อมต่อกับ API หรือติดต่อผู้ดูแลระบบ');
+      updateMapWithPosts([]);
+      return;
+    }
+
+    // Filter the allPosts based on the selected filters
+    let postsToDisplay;
+    
+    // Validate date range before filtering
+    let validDateRange: { start: string; end: string } | null | undefined = null;
+    
+    if (dateRange && dateRange.start && dateRange.end) {
+      try {
+        // Parse dates to ensure they're valid
+        const startDate = new Date(dateRange.start);
+        const endDate = new Date(dateRange.end);
+        
+        // Check if dates are valid
+        if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime()) && startDate <= endDate) {
+          validDateRange = dateRange;
+          mapLogger('VALID DATE RANGE:', {
+            start: dateRange.start,
+            end: dateRange.end,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString()
+          });
+        } else {
+          console.error('🗺️ INVALID DATE RANGE:', {
+            start: dateRange.start,
+            end: dateRange.end,
+            startDate: startDate.toString(),
+            endDate: endDate.toString(),
+            isStartValid: !isNaN(startDate.getTime()),
+            isEndValid: !isNaN(endDate.getTime()),
+            isStartBeforeEnd: startDate <= endDate
+          });
+          setNoPostsMessage('ช่วงวันที่ไม่ถูกต้อง กรุณาตรวจสอบวันที่เริ่มต้นและวันที่สิ้นสุด');
+          updateMapWithPosts([]);
+          return;
+        }
+      } catch (error) {
+        console.error('🗺️ ERROR PARSING DATE RANGE:', {
+          dateRange,
+          error: error instanceof Error ? error.message : String(error)
+        });
+        setNoPostsMessage('รูปแบบวันที่ไม่ถูกต้อง กรุณาตรวจสอบวันที่เริ่มต้นและวันที่สิ้นสุด');
+        updateMapWithPosts([]);
+        return;
+      }
+    } else {
+      mapLogger('INCOMPLETE DATE RANGE, skipping date filtering:', dateRange);
+    }
+    
+    // Apply filtering directly to the allPosts state
+    const filtered = filterPosts(
+      allPosts,
+      categoryStrings,
+      selectedProvince || undefined,
+      selectedAmphure || undefined,
+      selectedTumbon || undefined,
+      validDateRange
+    );
+    mapLogger('APPLIED LEGACY FILTERS:', {
+      beforeCount: allPosts.length,
+      afterCount: filtered.length,
+      dateRangeApplied: !!validDateRange
+    });
+
+    // Initialize postsToDisplay with filtered posts
+    postsToDisplay = filtered;
+    
+    // Apply additional filters from allFilters if available
+    if (allFilters) {
+      const beforeComprehensiveCount = postsToDisplay.length;
+      
+      // Apply additional filters from allFilters
+      postsToDisplay = postsToDisplay.filter(post => {
+        // Filter by communication channels
+        if (allFilters.communicationChannels.length > 0) {
+          // Check if the post's source matches any of the selected channels
+          const sourceMatches = allFilters.communicationChannels.some(channel => {
+            if (channel === 'facebook' && post.profile_name?.toLowerCase().includes('facebook')) {
+              return true;
+            }
+            if (channel === 'x' && (post.profile_name?.toLowerCase().includes('twitter') || post.profile_name?.toLowerCase().includes('x'))) {
+              return true;
+            }
+            return false;
+          });
+
+          if (!sourceMatches) {
+            return false;
+          }
+        }
+
+        // TODO: Add filtering for irrigation offices
+        // if (allFilters.irrigationOffices.length > 0) {
+        //   // Implementation needed
+        // }
+
+        // TODO: Add filtering for provincial offices
+        // if (allFilters.provincialOffices.length > 0) {
+        //   // Implementation needed
+        // }
+
+        return true;
+      });
+
+      console.log('🗺️ APPLIED COMPREHENSIVE FILTERS:', {
+        beforeCount: beforeComprehensiveCount,
+        afterCount: postsToDisplay.length
+      });
+    }
+
+    // Check if we have any posts after filtering
+    if (postsToDisplay.length === 0) {
+      setNoPostsMessage('ไม่พบข้อมูลที่ตรงกับเงื่อนไขการค้นหา กรุณาปรับเปลี่ยนตัวกรอง');
+    } else {
+      setNoPostsMessage(null);
+    }
+
+    setCurrentPosts(postsToDisplay);
+    mapLogger('UPDATING MAP WITH FILTERED POSTS', {
+      count: postsToDisplay.length
+    });
+    updateMapWithPosts(postsToDisplay);
+  }, [
+    allPosts,
+    selectedCategories,
+    selectedProvince,
+    selectedAmphure,
+    selectedTumbon,
+    selectedOffice,
+    dateRange,
+    allFilters,
+    areMarkersReady,
+    isInitialized
+  ]);
 
   // Update map with posts
-  const updateMapWithPosts = useCallback((posts: ProcessedPost[]) => {
-    const map = mapRef.current;
-    if (!map) return;
-
+  const updateMapWithPosts = (posts: ProcessedPost[]) => {
+    if (!mapRef.current) return;
+    
+    mapLogger('UPDATING MAP WITH POSTS', {
+      count: posts.length
+    });
+    
     try {
+      // Skip update if no posts to display
+      if (posts.length === 0) {
+        mapLogger('NO POSTS TO DISPLAY ON MAP');
+        
+        // Clear the source data
+        const source = mapRef.current.getSource(MAP_CORE_CONFIG.SOURCE_ID);
+        if (source && 'setData' in source) {
+          source.setData({
+            type: 'FeatureCollection',
+            features: []
+          });
+        }
+        return;
+      }
+      
       console.log('Received posts for update:', {
         count: posts.length,
         sample: posts.slice(0, 2).map(p => ({
@@ -388,7 +668,7 @@ export function Map({
         }))
       });
 
-      const source = map.getSource(MAP_CORE_CONFIG.SOURCE_ID);
+      const source = mapRef.current.getSource(MAP_CORE_CONFIG.SOURCE_ID);
       if (!source || !('setData' in source)) {
         console.error('Invalid map source:', {
           hasSource: !!source,
@@ -405,7 +685,7 @@ export function Map({
     } catch (error) {
       console.error('Error updating map with posts:', error);
     }
-  }, []);
+  };
 
   // Handle real-time updates
   useEffect(() => {
@@ -425,22 +705,13 @@ export function Map({
       });
 
       // Update current posts if no filtering is active
-      if (!filteredMessages) {
-        setCurrentPosts(prev => {
-          const newPosts = [...prev];
-          const index = newPosts.findIndex(p => p.processed_post_id === latestPost.processed_post_id);
-          if (index >= 0) {
-            newPosts[index] = latestPost;
-          } else {
-            newPosts.unshift(latestPost);
-          }
-          return newPosts;
-        });
+      if (!currentPosts.includes(latestPost)) {
+        setCurrentPosts(prev => [...prev, latestPost]);
       }
     } catch (error) {
       console.error('Error handling real-time update:', error);
     }
-  }, [latestPost, areMarkersReady, filteredMessages]);
+  }, [latestPost, areMarkersReady, currentPosts]);
 
   return (
     <div className="relative w-full h-full min-h-[400px]">
@@ -458,6 +729,37 @@ export function Map({
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/80">
           <div className="loading-spinner" />
+        </div>
+      )}
+      {noPostsMessage && !isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white/90">
+          <div className="text-center p-6 max-w-md">
+            <svg 
+              className="w-12 h-12 mx-auto text-gray-400 mb-4" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="2" 
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">ไม่พบข้อมูล</h3>
+            <p className="text-gray-600">{noPostsMessage}</p>
+            <div className="mt-4 text-sm text-gray-500">
+              <p className="mb-2">คำแนะนำ:</p>
+              <ul className="list-disc text-left pl-5 space-y-1">
+                <li>ลองขยายช่วงวันที่ให้กว้างขึ้น</li>
+                <li>ตรวจสอบว่าเลือกประเภทข้อความที่ถูกต้อง</li>
+                <li>ลองยกเลิกตัวกรองบางอย่าง เช่น จังหวัด หรือช่องทางการสื่อสาร</li>
+                <li>หากยังไม่พบข้อมูล อาจเป็นไปได้ว่าไม่มีข้อมูลในระบบที่ตรงกับเงื่อนไขที่เลือก</li>
+              </ul>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -52,7 +52,7 @@ export async function getRainfallData(params: RainfallQueryParams, pool: Pool) {
         r.rainfall_datetime,
         r.data_source,
         s.province,
-        s.amphoe,
+        s.amphure,
         s.tambon
       FROM 
         thaiwater_rainfall_data r
@@ -84,7 +84,7 @@ export async function getRainfallData(params: RainfallQueryParams, pool: Pool) {
     }
 
     if (amphoe) {
-      query += ` AND s.amphoe = $${paramIndex}`;
+      query += ` AND s.amphure = $${paramIndex}`;
       queryParams.push(amphoe);
       paramIndex++;
     }

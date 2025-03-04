@@ -1,7 +1,10 @@
 import { http, HttpResponse } from 'msw';
 import { CategoryName } from '@/types/processed-post';
+import { authHandlers } from './auth-handlers';
 
 export const handlers = [
+  ...authHandlers,
+  
   http.get('/api/posts/unprocessed', () => {
     return HttpResponse.json({
       data: [
