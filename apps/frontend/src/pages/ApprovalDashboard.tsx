@@ -1,20 +1,9 @@
-import { Card } from "@/components/ui/card";
-import { Link, useNavigate } from "react-router-dom";
-import logo1 from "@/assets/logo1.png";
-import logo2 from "@/assets/logo2.png";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight, Search, FileText, Bell, Settings } from "lucide-react";
-import { useComplaintStore } from "@/stores/complaintStore";
-import { useState, useEffect } from "react";
+import { useComplaintStore, ComplaintData } from "@/stores/complaintStore";
+import { useState, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   Select,
   SelectContent,
@@ -29,6 +18,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import axios from "axios";
+import { useAuthStore } from "@/stores/authStore";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import logo1 from "@/assets/logo1.png";
+import logo2 from "@/assets/logo2.png";
+import { toast } from "sonner";
+import { apiClient } from '@/lib/api-client';
+import { checkAuthState, fixAuthIssues } from '@/utils/auth-test';
+import { createTestApprovalRecords, deleteAllTestApprovalRecords } from '@/utils/test-approval-data';
 
 // Custom header component for the ApprovalDashboard page
 const ApprovalDashboardHeader = () => {
@@ -79,15 +77,11 @@ const ApprovalDashboardHeader = () => {
           </div>
         </div>
 
-        {/* Navigation tabs - aligned with map and pushed up */}
-        <div className="px-6 -mt-6 pb-0">
-          <div className="flex">
-            {/* This space accounts for the filter panel width and gap */}
-            <div className="w-[450px]"></div>
-            {/* Navigation tabs aligned with the Map */}
+        {/* Navigation tabs */}
+        <div className="flex mt-2">
             <nav className="flex items-center border-b border-[#E2E8F0] whitespace-nowrap">
               <Link 
-                to="/" 
+              to="/dashboard" 
                 className="px-4 py-1 text-[#6B7280] hover:text-[#17254D] text-base whitespace-nowrap"
               >
                 ระบบจัดการข้อมูลสื่อสังคมออนไลน์
@@ -105,291 +99,416 @@ const ApprovalDashboardHeader = () => {
                 ระบบแสดงผลข้อมูลและสรุปผลผู้บริหาร
               </Link>
             </nav>
-          </div>
         </div>
       </div>
     </header>
   );
 };
 
-// Mock data for the table
-const mockData = [
-  {
-    id: 1,
-    type: "การขอข้อมูล",
-    channel: "เฟซบุ๊ก สำนักงานชลประทานที่ 1",
-    province: "เชียงใหม่",
-    office: "สำนักงานชลประทานที่ 1",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "เห็นชอบ",
-    responsible: "นาย ณเดช ศุภมิตร",
-  },
-  {
-    id: 2,
-    type: "ข้อความย่อย",
-    channel: "เฟซบุ๊ก สำนักงานชลประทานที่ 1",
-    province: "ลำปาง",
-    office: "สำนักงานชลประทานที่ 1",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "รอความเห็นชอบ",
-    responsible: "นาย ภูกฤษฎ์ แสนดี",
-  },
-  {
-    id: 3,
-    type: "การขอข้อมูล",
-    channel: "ไลน์ สำนักงานชลประทานที่ 2",
-    province: "พิษณุโลก",
-    office: "สำนักงานชลประทานที่ 2",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "เห็นชอบ",
-    responsible: "นาย ณเดช ศุภมิตร",
-  },
-  {
-    id: 4,
-    type: "ข้อความย่อย",
-    channel: "ทวิตเตอร์ สำนักงานชลประทานที่ 3",
-    province: "อุตรดิตถ์",
-    office: "สำนักงานชลประทานที่ 3",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "รอความเห็นชอบ",
-    responsible: "นาย ภูกฤษฎ์ แสนดี",
-  },
-  {
-    id: 5,
-    type: "การขอข้อมูล",
-    channel: "เฟซบุ๊ก สำนักงานชลประทานที่ 4",
-    province: "กำแพงเพชร",
-    office: "สำนักงานชลประทานที่ 4",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "เห็นชอบ",
-    responsible: "นาย ณเดช ศุภมิตร",
-  },
-  {
-    id: 6,
-    type: "ข้อความย่อย",
-    channel: "ไลน์ สำนักงานชลประทานที่ 5",
-    province: "ลพบุรี",
-    office: "สำนักงานชลประทานที่ 5",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "รอความเห็นชอบ",
-    responsible: "นาย ภูกฤษฎ์ แสนดี",
-  },
-  {
-    id: 7,
-    type: "การขอข้อมูล",
-    channel: "เฟซบุ๊ก สำนักงานชลประทานที่ 6",
-    province: "ขอนแก่น",
-    office: "สำนักงานชลประทานที่ 6",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "เห็นชอบ",
-    responsible: "นาย ณเดช ศุภมิตร",
-  },
-  {
-    id: 8,
-    type: "ข้อความย่อย",
-    channel: "ทวิตเตอร์ สำนักงานชลประทานที่ 7",
-    province: "อุบลราชธานี",
-    office: "สำนักงานชลประทานที่ 7",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "รอความเห็นชอบ",
-    responsible: "นาย ภูกฤษฎ์ แสนดี",
-  },
-  {
-    id: 9,
-    type: "การขอข้อมูล",
-    channel: "เฟซบุ๊ก สำนักงานชลประทานที่ 8",
-    province: "นครราชสีมา",
-    office: "สำนักงานชลประทานที่ 8",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "เห็นชอบ",
-    responsible: "นาย ณเดช ศุภมิตร",
-  },
-  {
-    id: 10,
-    type: "ข้อความย่อย",
-    channel: "ไลน์ สำนักงานชลประทานที่ 9",
-    province: "ชลบุรี",
-    office: "สำนักงานชลประทานที่ 9",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "รอความเห็นชอบ",
-    responsible: "นาย ภูกฤษฎ์ แสนดี",
-  },
-  {
-    id: 11,
-    type: "การขอข้อมูล",
-    channel: "เฟซบุ๊ก สำนักงานชลประทานที่ 10",
-    province: "ลำปาง",
-    office: "สำนักงานชลประทานที่ 10",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "เห็นชอบ",
-    responsible: "นาย ณเดช ศุภมิตร",
-  },
-  {
-    id: 12,
-    type: "ข้อความย่อย",
-    channel: "ทวิตเตอร์ สำนักงานชลประทานที่ 11",
-    province: "นครศรีธรรมราช",
-    office: "สำนักงานชลประทานที่ 11",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "รอความเห็นชอบ",
-    responsible: "นาย ภูกฤษฎ์ แสนดี",
-  },
-  {
-    id: 13,
-    type: "การขอข้อมูล",
-    channel: "เฟซบุ๊ก สำนักงานชลประทานที่ 12",
-    province: "สงขลา",
-    office: "สำนักงานชลประทานที่ 12",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "เห็นชอบ",
-    responsible: "นาย ณเดช ศุภมิตร",
-  },
-  {
-    id: 14,
-    type: "ข้อความย่อย",
-    channel: "ไลน์ สำนักงานชลประทานที่ 13",
-    province: "กรุงเทพมหานคร",
-    office: "สำนักงานชลประทานที่ 13",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "รอความเห็นชอบ",
-    responsible: "นาย ภูกฤษฎ์ แสนดี",
-  },
-  {
-    id: 15,
-    type: "การขอข้อมูล",
-    channel: "เฟซบุ๊ก สำนักงานชลประทานที่ 14",
-    province: "ปทุมธานี",
-    office: "สำนักงานชลประทานที่ 14",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "เห็นชอบ",
-    responsible: "นาย ณเดช ศุภมิตร",
-  },
-  {
-    id: 16,
-    type: "ข้อความย่อย",
-    channel: "ทวิตเตอร์ สำนักงานชลประทานที่ 15",
-    province: "นนทบุรี",
-    office: "สำนักงานชลประทานที่ 15",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "รอความเห็นชอบ",
-    responsible: "นาย ภูกฤษฎ์ แสนดี",
-  },
-  {
-    id: 17,
-    type: "การขอข้อมูล",
-    channel: "เฟซบุ๊ก สำนักงานชลประทานที่ 16",
-    province: "สมุทรปราการ",
-    office: "สำนักงานชลประทานที่ 16",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "เห็นชอบ",
-    responsible: "นาย ณเดช ศุภมิตร",
-  },
-  {
-    id: 18,
-    type: "ข้อความย่อย",
-    channel: "ไลน์ สำนักงานชลประทานที่ 17",
-    province: "สมุทรสาคร",
-    office: "สำนักงานชลประทานที่ 17",
-    documentType: "สื่อสังคมออนไลน์",
-    status: "รอความเห็นชอบ",
-    responsible: "นาย ภูกฤษฎ์ แสนดี",
-  },
-];
+// Define types for approval records
+interface ApprovalRecord {
+  id: number;
+  postId: string;
+  complaintId: string;
+  link: string;
+  type: string;
+  province: string;
+  startDate: string;
+  endDate: string;
+  totalDays: string;
+  status: string;
+  responsible: string;
+  position: number; // RBAC position (1, 2, or 3)
+  organizationId: string;
+  organizationName: string;
+}
 
-// Column definition for the table
-const columns = [
-  { id: "type", name: "ประเภทข้อความ", sortable: true },
-  { id: "channel", name: "ช่องทางการสื่อสาร", sortable: true },
-  { id: "province", name: "จังหวัด", sortable: true },
-  { id: "office", name: "สำนักงานชลประทาน", sortable: true },
-  { id: "documentType", name: "ประเภทเอกสารตอบ", sortable: true },
-  { id: "status", name: "สถานะ", sortable: true },
-  { id: "responsible", name: "ผู้รับผิดชอบ", sortable: false },
-  { id: "action", name: "รายละเอียด", sortable: false },
-];
+// Define interfaces for approval team members
+interface ApprovalTeamMember {
+  id: number;
+  name: string;
+  email?: string;
+  position: number;
+  organizationId: string;
+}
 
-// ApprovalDashboard Component
 const ApprovalDashboard = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const complaintStore = useComplaintStore();
+  const authStore = useAuthStore(); // Get current user's auth info
   
-  // State for pagination
+  // State for approval records
+  const [approvalRecords, setApprovalRecords] = useState<ApprovalRecord[]>([]);
+  const [filteredData, setFilteredData] = useState<ApprovalRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage, setRecordsPerPage] = useState(9);
-  const [totalRecords, setTotalRecords] = useState(mockData.length);
+  const [recordsPerPage, setRecordsPerPage] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
   
-  // State for sorting
-  const [sortColumn, setSortColumn] = useState("");
+  // Sorting and filtering state
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  
-  // State for filtering
   const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState<Record<string, string>>({});
+  const [dateFilter, setDateFilter] = useState({
+    startDate: "",
+    endDate: ""
+  });
   
-  // State for filtered and sorted data
-  const [filteredData, setFilteredData] = useState(mockData);
+  // Get current user's RBAC role from auth store
+  const userRbacRole = authStore?.user?.rbacRole || 1;
   
   // Calculate pagination values
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentRecords = filteredData.slice(indexOfFirstRecord, indexOfLastRecord);
-  const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+  const totalPages = Math.ceil(totalRecords / recordsPerPage);
   
-  // Handle page change
-  const paginate = (pageNumber: number) => {
-    if (pageNumber > 0 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
+  // Function to create three approval records simultaneously
+  const createApprovalRecords = async () => {
+    try {
+      console.log('🔍 [ApprovalDashboard] Creating approval records');
+      
+      if (!complaintStore.complaintData) {
+        console.error('❌ [ApprovalDashboard] No complaint data available');
+        throw new Error('No complaint data available');
+      }
+      
+      const complaint = complaintStore.complaintData;
+      console.log('🔍 [ApprovalDashboard] Complaint data:', complaint);
+      
+      // Get the organization ID from the complaint
+      const organizationId = complaint.organizationId;
+      const organizationName = complaint.organizationName;
+      
+      if (!organizationId || !organizationName) {
+        console.error('❌ [ApprovalDashboard] Missing organization info in complaint data');
+        throw new Error('Missing organization information');
+      }
+      
+      console.log('🔍 [ApprovalDashboard] Organization info:', { organizationId, organizationName });
+      
+      // Fetch approval team from the API
+      console.log('🔍 [ApprovalDashboard] Fetching approval team for organization:', organizationId);
+      const approvalTeamResponse = await axios.get<ApprovalTeamMember[]>(`/api/users/approval-team/${organizationId}`);
+      const approvalTeam = approvalTeamResponse.data;
+      
+      console.log('✅ [ApprovalDashboard] Approval team fetched:', approvalTeam);
+      
+      // If we don't have enough team members, use default names
+      const defaultTeamMembers: ApprovalTeamMember[] = [
+        { id: 1, name: 'ผู้อำนวยการส่วน', position: 1, organizationId },
+        { id: 2, name: 'ผู้อำนวยการสำนัก', position: 2, organizationId },
+        { id: 3, name: 'รองอธิบดี', position: 3, organizationId }
+      ];
+      
+      // Ensure we have all three positions
+      const completeTeam = [1, 2, 3].map(position => {
+        const existingMember = approvalTeam.find(member => member.position === position);
+        if (existingMember) return existingMember;
+        
+        const defaultMember = defaultTeamMembers.find(member => member.position === position);
+        console.log(`⚠️ [ApprovalDashboard] No team member found for position ${position}, using default:`, defaultMember);
+        return defaultMember!; // Non-null assertion since we know defaultTeamMembers has all positions
+      });
+      
+      console.log('🔍 [ApprovalDashboard] Complete approval team:', completeTeam);
+      
+      // Create timestamp for record creation
+      const currentTimestamp = new Date().toISOString();
+      
+      // Create three approval records (one for each position)
+      const approvalRecordsToCreate = [
+        {
+          postId: complaint.postId || '',
+          complaintId: complaint.id || '',
+          link: complaint.link || '',
+          type: complaint.type || '',
+          province: complaint.province || '',
+          startDate: currentTimestamp,
+          endDate: null,
+          totalDays: '0',
+          status: 'รอดำเนินการ',
+          responsible: completeTeam[0]!.name,
+          position: 1, // RBAC position 1
+          organizationId,
+          organizationName
+        },
+        {
+          postId: complaint.postId || '',
+          complaintId: complaint.id || '',
+          link: complaint.link || '',
+          type: complaint.type || '',
+          province: complaint.province || '',
+          startDate: null,
+          endDate: null,
+          totalDays: '0',
+          status: 'รอดำเนินการ',
+          responsible: completeTeam[1]!.name,
+          position: 2, // RBAC position 2
+          organizationId,
+          organizationName
+        },
+        {
+          postId: complaint.postId || '',
+          complaintId: complaint.id || '',
+          link: complaint.link || '',
+          type: complaint.type || '',
+          province: complaint.province || '',
+          startDate: null,
+          endDate: null,
+          totalDays: '0',
+          status: 'รอดำเนินการ',
+          responsible: completeTeam[2]!.name,
+          position: 3, // RBAC position 3
+          organizationId,
+          organizationName
+        }
+      ];
+      
+      console.log('🔍 [ApprovalDashboard] Approval records to create:', approvalRecordsToCreate);
+      
+      // Send records to the API
+      console.log('🔍 [ApprovalDashboard] Sending POST request to /api/approval-records/batch');
+      const createResponse = await axios.post('/api/approval-records/batch', approvalRecordsToCreate);
+      
+      console.log('✅ [ApprovalDashboard] Records created successfully:', createResponse.data);
+      
+      // Update local state with created records
+      if (Array.isArray(createResponse.data)) {
+        setApprovalRecords(createResponse.data);
+      }
+      
+      // Clear the complaint data from the store
+      complaintStore.clearComplaintData();
+      
+      return createResponse.data;
+    } catch (error: any) {
+      console.error('❌ [ApprovalDashboard] Error creating approval records:', error);
+      
+      // Add more detailed error logging
+      if (error.response) {
+        console.error('❌ [ApprovalDashboard] Error response:', {
+          status: error.response.status,
+          statusText: error.response.statusText,
+          data: error.response.data,
+          headers: error.response.headers
+        });
+      } else if (error.request) {
+        console.error('❌ [ApprovalDashboard] No response received:', error.request);
+      } else {
+        console.error('❌ [ApprovalDashboard] Error message:', error.message);
+      }
+      
+      setError('Failed to create approval records. Please try again.');
+      throw error;
     }
   };
   
-  // Handle records per page change
-  const handleRecordsPerPageChange = (value: string) => {
-    setRecordsPerPage(Number(value));
-    setCurrentPage(1); // Reset to first page when changing records per page
+  // Function to handle approval
+  const handleApprove = async (recordId: number) => {
+    try {
+      console.log('🔍 [ApprovalDashboard] Approving record:', recordId);
+      setLoading(true);
+      
+      // Get the current token from auth store
+      const currentToken = useAuthStore.getState().token;
+      
+      // Make API request to approve the record
+      const response = await axios.post(`/api/approval-records/${recordId}/approve`, {}, {
+        headers: {
+          'Authorization': `Bearer ${currentToken}`
+        }
+      });
+      
+      console.log('✅ [ApprovalDashboard] Approval response:', response.data);
+      
+      // Update the record in the local state
+      const updatedRecords = approvalRecords.map(record => {
+        if (record.id === recordId) {
+          return { ...record, status: 'อนุมัติแล้ว' };
+        }
+        return record;
+      });
+      
+      setApprovalRecords(updatedRecords);
+      
+      // Show success message
+      toast.success("บันทึกการอนุมัติเรียบร้อยแล้ว");
+      
+    } catch (error: any) {
+      console.error('❌ [ApprovalDashboard] Error approving record:', error);
+      
+      // Enhanced error logging
+      if (error.response) {
+        console.error('❌ [ApprovalDashboard] Error response:', {
+          status: error.response.status,
+          data: error.response.data
+        });
+      }
+      
+      // Show error message
+      toast.error("ไม่สามารถบันทึกการอนุมัติได้ กรุณาลองใหม่อีกครั้ง");
+    } finally {
+      setLoading(false);
+    }
   };
   
-  // Handle sorting
-  const handleSort = (columnId: string) => {
-    const isAsc = sortColumn === columnId && sortDirection === "asc";
-    setSortDirection(isAsc ? "desc" : "asc");
-    setSortColumn(columnId);
-  };
-  
-  // Handle search
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-  
-  // Handle filter change
-  const handleFilterChange = (columnId: string, value: string) => {
-    setFilters(prev => ({
-      ...prev,
-      [columnId]: value,
-    }));
-  };
-  
-  // Apply filters and sorting
-  useEffect(() => {
-    let result = [...mockData];
+  // Function to get data based on RBAC role
+  const getDataForCurrentRole = useCallback(() => {
+    console.log('🔍 [ApprovalDashboard] Getting data for role:', userRbacRole, 'Total records:', approvalRecords.length);
     
-    // Apply filters
-    Object.keys(filters).forEach(key => {
-      if (filters[key]) {
-        result = result.filter(item => 
-          String(item[key as keyof typeof item])
-            .toLowerCase()
-            .includes(filters[key].toLowerCase())
-        );
+    // Filter records based on user's RBAC role
+    const filteredRecords = approvalRecords.filter(record => {
+      if (userRbacRole === 1) {
+        // RBAC 1 can see all records
+        return true;
+      } else {
+        // Other roles can only see their own records and subsequent records
+        return record.position >= userRbacRole;
       }
     });
     
-    // Apply search term across all columns
+    console.log('🔍 [ApprovalDashboard] Filtered records by role:', filteredRecords.length);
+    return filteredRecords;
+  }, [approvalRecords, userRbacRole]);
+  
+  // Function to load approval records
+  const loadApprovalRecords = useCallback(async () => {
+    console.group('🔍 [ApprovalDashboard] Loading approval records');
+    setLoading(true);
+    
+    try {
+      // Check authentication first
+      if (!authStore.isAuthenticated || !authStore.token) {
+        console.warn('⚠️ [ApprovalDashboard] Auth store not authenticated, attempting to fix');
+        
+        // Try to fix auth issues
+        fixAuthIssues();
+        
+        // Check if fix worked
+        const authState = useAuthStore.getState();
+        if (!authState.isAuthenticated || !authState.token) {
+          console.error('❌ [ApprovalDashboard] User is not authenticated after fix attempt');
+          toast.error('Please log in to view approval records');
+          navigate('/login', { state: { from: '/approval-dashboard' } });
+          setLoading(false);
+          console.groupEnd();
+          return;
+        }
+      }
+      
+      // Get the current token from auth store
+      const currentToken = useAuthStore.getState().token;
+      console.log('🔍 [ApprovalDashboard] Fetching approval records with token', 
+        currentToken ? `${currentToken.substring(0, 10)}...` : 'none');
+      
+      // Get user role from auth store
+      const userRole = useAuthStore.getState().user?.rbacRole || 1;
+      console.log('🔍 [ApprovalDashboard] User role:', userRole);
+      
+      // Make API request with detailed logging
+      console.log('🔍 [ApprovalDashboard] Making API request to /api/approval-records', {
+        params: { rbacRole: userRole },
+        headers: { Authorization: currentToken ? `Bearer ${currentToken.substring(0, 10)}...` : 'none' }
+      });
+      
+      // Use axios directly since apiClient might not have the get method
+      const response = await axios.get('/api/approval-records', {
+        params: { rbacRole: userRole },
+        headers: {
+          'Authorization': `Bearer ${currentToken}`
+        }
+      });
+      
+      console.log('✅ [ApprovalDashboard] API response received:', {
+        status: response.status,
+        dataLength: response.data?.length || 0,
+        data: response.data?.slice(0, 2) // Log just first 2 items to avoid console clutter
+      });
+      
+      if (response.data && Array.isArray(response.data)) {
+        console.log('✅ [ApprovalDashboard] Setting approval records:', response.data.length);
+        setApprovalRecords(response.data);
+        
+        // Ensure we update filteredData as well to trigger re-render
+        const filteredByRole = response.data.filter(record => {
+          if (userRole === 1) return true;
+          return record.position >= userRole;
+        });
+        
+        console.log('✅ [ApprovalDashboard] Initial filtered data:', filteredByRole.length);
+        
+        if (response.data.length === 0) {
+          console.log('ℹ️ [ApprovalDashboard] No approval records found');
+          toast.info('No approval records found');
+        }
+      } else {
+        console.warn('⚠️ [ApprovalDashboard] Unexpected response format:', response.data);
+        toast.warning('Unexpected data format received');
+      }
+    } catch (error: any) {
+      console.error('❌ [ApprovalDashboard] Error fetching approval records:', error);
+      
+      // Check if it's an authentication error
+      if (error.response?.status === 401) {
+        console.error('❌ [ApprovalDashboard] Authentication error (401)');
+        toast.error('Your session has expired. Please log in again.');
+        
+        // Clear invalid auth data
+        authStore.logout();
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        
+        navigate('/login', { state: { from: '/approval-dashboard' } });
+      } else {
+        toast.error(`Error loading approval records: ${error.message || 'Unknown error'}`);
+      }
+    } finally {
+      setLoading(false);
+      console.groupEnd();
+    }
+  }, [authStore, navigate]);
+  
+  // Fetch records on component mount or when location changes
+  useEffect(() => {
+    console.group('🔍 [ApprovalDashboard] Component mounted');
+    console.log('Initial auth state:', { isAuthenticated: authStore.isAuthenticated, hasUser: !!authStore.user, hasToken: !!authStore.token });
+    
+    // Run auth diagnostics
+    checkAuthState();
+    
+    // Try to load approval records
+    loadApprovalRecords();
+    
+    console.groupEnd();
+  }, [loadApprovalRecords]);
+  
+  // Apply filtering and sorting
+  useEffect(() => {
+    // Get data filtered by role
+    let result = getDataForCurrentRole();
+    
+    // Log the initial filtered data
+    console.log('🔍 [ApprovalDashboard] Initial filtered data by role:', result.length);
+    
+    // Apply global search
     if (searchTerm) {
-      result = result.filter(item => 
-        Object.values(item).some(
-          value => String(value).toLowerCase().includes(searchTerm.toLowerCase())
+      result = result.filter(record => 
+        Object.values(record).some(value => 
+          value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
         )
       );
+      console.log('🔍 [ApprovalDashboard] After search filter:', result.length);
+    }
+    
+    // Apply date filter if needed
+    if (dateFilter.startDate || dateFilter.endDate) {
+      result = result.filter(record => isDateInRange(record.startDate || ''));
+      console.log('🔍 [ApprovalDashboard] After date filter:', result.length);
     }
     
     // Apply sorting
@@ -398,62 +517,159 @@ const ApprovalDashboard = () => {
         const aValue = a[sortColumn as keyof typeof a];
         const bValue = b[sortColumn as keyof typeof b];
         
+        // Handle undefined values and different types
+        if (aValue === undefined && bValue === undefined) return 0;
+        if (aValue === undefined) return sortDirection === "asc" ? -1 : 1;
+        if (bValue === undefined) return sortDirection === "asc" ? 1 : -1;
+        
+        // Compare values based on their types
         if (typeof aValue === 'string' && typeof bValue === 'string') {
           return sortDirection === "asc" 
             ? aValue.localeCompare(bValue)
             : bValue.localeCompare(aValue);
         }
         
+        // For other types, use basic comparison
         return sortDirection === "asc" 
           ? (aValue > bValue ? 1 : -1)
           : (bValue > aValue ? 1 : -1);
       });
     }
     
+    console.log('🔍 [ApprovalDashboard] Final filtered data:', result.length);
     setFilteredData(result);
     setTotalRecords(result.length);
-  }, [filters, searchTerm, sortColumn, sortDirection]);
+  }, [searchTerm, sortColumn, sortDirection, dateFilter, getDataForCurrentRole, approvalRecords]);
   
-  // Reset pagination when filtered data changes
-  useEffect(() => {
-    if (currentPage > Math.ceil(filteredData.length / recordsPerPage)) {
-      setCurrentPage(1);
+  // Column definitions
+  const columns = [
+    {
+      id: "postId",
+      label: "หมายเลขอ้างอิง",
+      sortable: true,
+      filterable: false,
+    },
+    {
+      id: "link",
+      label: "ลิงค์ข้อความ",
+      sortable: false,
+      filterable: false,
+    },
+    {
+      id: "type",
+      label: "ประเภท",
+      sortable: true,
+      filterable: false,
+    },
+    {
+      id: "province",
+      label: "จังหวัด",
+      sortable: true,
+      filterable: false,
+    },
+    {
+      id: "startDate",
+      label: "วันเริ่มต้น",
+      sortable: true,
+      filterable: false,
+      isDate: true,
+    },
+    {
+      id: "endDate",
+      label: "วันสิ้นสุด",
+      sortable: true,
+      filterable: false,
+      isDate: true,
+    },
+    {
+      id: "totalDays",
+      label: "จำนวนวันรวม",
+      sortable: true,
+      filterable: false,
+    },
+    {
+      id: "status",
+      label: "สถานะ",
+      sortable: true,
+      filterable: false,
+    },
+    {
+      id: "responsible",
+      label: "ผู้รับผิดชอบ",
+      sortable: true,
+      filterable: false,
     }
-  }, [filteredData, recordsPerPage]);
+  ];
   
-  const handleBack = () => {
-    // Check if we have complaint data in the store before navigating back
-    if (complaintStore.complaintData) {
-      console.log("[ApprovalDashboard] Navigating back with complaint data in store");
-      
-      try {
-        // Store essential data in sessionStorage
-        const essentialData = {
-          from: 'ApprovalDashboard',
-          returnToDocumentPreparation: true,
-          timestamp: new Date().getTime(),
-          complaintData: complaintStore.complaintData
-        };
-        
-        // Store the state in sessionStorage to retrieve it on the target page
-        sessionStorage.setItem('documentPreparationState', JSON.stringify(essentialData));
-        
-        // Navigate to document preparation page
-        navigate('/document-preparation');
-      } catch (error) {
-        console.error("[ApprovalDashboard] Error storing data in sessionStorage:", error);
-        // Fallback navigation
-        navigate('/document-preparation');
-      }
+  // Pagination functions
+  const paginate = (pageNumber: number) => {
+      setCurrentPage(pageNumber);
+  };
+  
+  const handleRecordsPerPageChange = (value: string) => {
+    setRecordsPerPage(Number(value));
+    setCurrentPage(1); // Reset to first page when changing records per page
+  };
+  
+  // Sorting function
+  const handleSort = (columnId: string) => {
+    if (sortColumn === columnId) {
+      // Toggle direction if clicking the same column
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
-      console.log("[ApprovalDashboard] No complaint data in store, navigating to home");
-      navigate('/');
+      // Set new column and default to ascending
+    setSortColumn(columnId);
+      setSortDirection("asc");
     }
   };
   
+  // Search function
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+  
+  // Date filter function
+  const handleDateFilterChange = (type: 'startDate' | 'endDate', value: string) => {
+    setDateFilter(prev => ({
+      ...prev,
+      [type]: value
+    }));
+    setCurrentPage(1); // Reset to first page when filtering
+  };
+  
+  // Check if a date is within the filter range
+  const isDateInRange = (dateStr: string) => {
+    if (!dateStr) return true; // Include records with no date
+    
+    try {
+      const date = new Date(dateStr);
+      const startDate = dateFilter.startDate ? new Date(dateFilter.startDate) : null;
+      const endDate = dateFilter.endDate ? new Date(dateFilter.endDate) : null;
+      
+      if (startDate && date < startDate) return false;
+      if (endDate && date > endDate) return false;
+      
+      return true;
+    } catch (error) {
+      console.error('Error parsing date:', error);
+      return true; // If there's an error, don't filter out the record
+    }
+  };
+  
+  // Navigation functions
+  const handleBack = () => {
+    navigate(-1);
+  };
+  
   const handleViewDetails = (id: number) => {
-    console.log(`Viewing details for record ${id}`);
-    navigate(`/approval-step`);
+    // Find the record to view
+    const record = approvalRecords.find(r => r.id === id);
+    
+    if (record) {
+      // Store the record in session storage or state management
+      navigate(`/approval-step/${id}`, { state: { record } });
+    }
   };
   
   // Generate page numbers for pagination
@@ -507,13 +723,13 @@ const ApprovalDashboard = () => {
   };
   
   return (
-    <div className="min-h-screen bg-[#F0F8FF]">
+    <div className="min-h-screen bg-[#EBF5FF]">
       <ApprovalDashboardHeader />
       
       {/* Page Title */}
       <div className="bg-white border-b">
         <div className="container mx-auto px-6 py-4">
-          <h1 className="text-3xl font-semibold text-[#17254D]">ระบบตอบประเด็นข้อร้องเรียน</h1>
+          <h1 className="text-2xl font-semibold text-[#17254D]">การอนุมัติเอกสาร</h1>
         </div>
       </div>
       
@@ -523,6 +739,7 @@ const ApprovalDashboard = () => {
           <div className="text-gray-700">
             จำนวนข้อมูลการร้องเรียนทั้งหมด {totalRecords} ข้อมูล
           </div>
+          
           <div className="relative w-64">
             <Input
               placeholder="ค้นหา"
@@ -534,16 +751,50 @@ const ApprovalDashboard = () => {
           </div>
         </div>
         
-        {/* Table */}
-        <Card className="shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
+        {/* Date filter */}
+        <div className="flex gap-4 mb-6">
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-gray-600">วันที่เริ่มต้น:</label>
+            <Input
+              type="date"
+              value={dateFilter.startDate}
+              onChange={(e) => handleDateFilterChange('startDate', e.target.value)}
+              className="w-40"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-gray-600">วันที่สิ้นสุด:</label>
+            <Input
+              type="date"
+              value={dateFilter.endDate}
+              onChange={(e) => handleDateFilterChange('endDate', e.target.value)}
+              className="w-40"
+            />
+          </div>
+        </div>
+        
+        {/* Loading and error states */}
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : (
+          <>
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                {error}
+              </div>
+            )}
+            
+            {/* Always show the table, regardless of data */}
+            <div className="bg-white rounded-lg shadow overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow>
                   {columns.map((column) => (
                     <TableHead key={column.id} className="bg-gray-50 text-gray-700 font-medium">
                       <div className="flex items-center gap-1">
-                        {column.name}
+                          {column.label}
                         {column.sortable && (
                           <button
                             onClick={() => handleSort(column.id)}
@@ -553,16 +804,6 @@ const ApprovalDashboard = () => {
                           </button>
                         )}
                       </div>
-                      {column.id !== "action" && column.id !== "responsible" && (
-                        <div className="mt-2">
-                          <Input
-                            placeholder={`กรอง${column.name}`}
-                            value={filters[column.id] || ""}
-                            onChange={(e) => handleFilterChange(column.id, e.target.value)}
-                            className="h-8 text-xs"
-                          />
-                        </div>
-                      )}
                     </TableHead>
                   ))}
                 </TableRow>
@@ -571,33 +812,31 @@ const ApprovalDashboard = () => {
                 {currentRecords.length > 0 ? (
                   currentRecords.map((record) => (
                     <TableRow key={record.id} className="hover:bg-gray-50">
+                        <TableCell>{record.postId}</TableCell>
+                        <TableCell>
+                          <a href={record.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                            ดูข้อความ
+                          </a>
+                        </TableCell>
                       <TableCell>{record.type}</TableCell>
-                      <TableCell>{record.channel}</TableCell>
                       <TableCell>{record.province}</TableCell>
-                      <TableCell>{record.office}</TableCell>
-                      <TableCell>{record.documentType}</TableCell>
+                        <TableCell>{record.startDate ? new Date(record.startDate).toLocaleString('th-TH') : "-"}</TableCell>
+                        <TableCell>{record.endDate ? new Date(record.endDate).toLocaleString('th-TH') : "-"}</TableCell>
+                        <TableCell>{record.totalDays}</TableCell>
                       <TableCell>
                         <Badge 
                           className={`${
                             record.status === "เห็นชอบ" 
                               ? "bg-green-100 text-green-800" 
-                              : "bg-yellow-100 text-yellow-800"
+                                : record.status === "รอดำเนินการ"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-blue-100 text-blue-800"
                           }`}
                         >
                           {record.status}
                         </Badge>
                       </TableCell>
                       <TableCell>{record.responsible}</TableCell>
-                      <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleViewDetails(record.id)}
-                          className="text-blue-600 hover:text-blue-800"
-                        >
-                          <FileText className="h-5 w-5" />
-                        </Button>
-                      </TableCell>
                     </TableRow>
                   ))
                 ) : (
@@ -609,33 +848,22 @@ const ApprovalDashboard = () => {
                 )}
               </TableBody>
             </Table>
-          </div>
           
           {/* Pagination */}
-          <div className="flex items-center justify-between px-4 py-4 border-t">
+              <div className="flex items-center justify-between px-4 py-3 bg-white border-t">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-700">Show</span>
-              <Select
-                value={String(recordsPerPage)}
-                onValueChange={handleRecordsPerPageChange}
-              >
-                <SelectTrigger className="w-16 h-8">
-                  <SelectValue placeholder={recordsPerPage} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="9">9</SelectItem>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="50">50</SelectItem>
-                  <SelectItem value="100">100</SelectItem>
-                </SelectContent>
-              </Select>
-              <span className="text-sm text-gray-700">per page</span>
-            </div>
-            
-            <div className="flex items-center">
-              <div className="text-sm text-gray-700 mr-4">
-                {indexOfFirstRecord + 1}-{Math.min(indexOfLastRecord, totalRecords)} of {totalRecords}
+                  <span className="text-sm text-gray-700">แสดง</span>
+                  <select
+                    value={recordsPerPage}
+                    onChange={(e) => handleRecordsPerPageChange(e.target.value)}
+                    className="border rounded px-2 py-1 text-sm"
+                  >
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                  <span className="text-sm text-gray-700">รายการต่อหน้า</span>
               </div>
               
               <div className="flex items-center gap-1">
@@ -649,25 +877,17 @@ const ApprovalDashboard = () => {
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
                 
-                {getPageNumbers().map((page, index) => (
-                  typeof page === 'number' ? (
+                  {getPageNumbers().map((number, index) => (
                     <Button
                       key={index}
-                      variant={currentPage === page ? "default" : "outline"}
-                      onClick={() => paginate(page)}
-                      className={`h-8 w-8 ${
-                        currentPage === page 
-                          ? "bg-blue-600 text-white" 
-                          : "text-gray-700"
-                      }`}
+                      variant={currentPage === number ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => typeof number === 'number' && paginate(number)}
+                      disabled={typeof number !== 'number'}
+                      className={`h-8 w-8 ${typeof number !== 'number' ? 'cursor-default' : ''}`}
                     >
-                      {page}
+                      {number}
                     </Button>
-                  ) : (
-                    <span key={index} className="px-2">
-                      {page}
-                    </span>
-                  )
                 ))}
                 
                 <Button
@@ -682,7 +902,8 @@ const ApprovalDashboard = () => {
               </div>
             </div>
           </div>
-        </Card>
+          </>
+        )}
       </main>
     </div>
   );

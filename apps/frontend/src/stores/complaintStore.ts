@@ -3,8 +3,7 @@ import { persist } from 'zustand/middleware';
 import { MonitoringStation } from '@/types/monitoring-station';
 import { RainStation } from '@/types/rain-station';
 import { Reservoir } from '@/types/reservoir';
-import { ProcessedPost } from '@/types/processed-post';
-import { Complaint } from '@/types/complaint';
+import { ProcessedPost, ComplaintWithOrganization, BaseComplaint, Location } from '../types';
 
 // Interface for station data
 export interface StationData {
@@ -24,16 +23,28 @@ export interface StationData {
   disabledReservoirs: Record<string, boolean>;
 }
 
+// Define a simplified complaint type that includes all necessary fields
+export interface ComplaintData {
+  id: string;
+  postId?: string;
+  link?: string;
+  type?: string;
+  province?: string;
+  content?: string;
+  organizationId: string;
+  organizationName: string;
+}
+
 // Interface for the complaint store
 export interface ComplaintStore {
   // Complaint data
-  complaintData: ProcessedPost | Complaint | null;
+  complaintData: ProcessedPost | ComplaintWithOrganization | null;
   
   // Station data
   stationData: StationData | null;
   
   // Actions
-  setComplaintData: (data: ProcessedPost | Complaint | null) => void;
+  setComplaintData: (data: ProcessedPost | ComplaintWithOrganization | null) => void;
   setStationData: (data: StationData | null) => void;
   clearComplaintData: () => void;
   clearStationData: () => void;
@@ -47,9 +58,92 @@ export interface ComplaintStore {
   toggleStationDisabled: (stationType: 'monitoring' | 'rain' | 'reservoir', stationId: number) => void;
 }
 
-// Type guard to check if data is ProcessedPost
+// Type guards
 const isProcessedPost = (data: any): data is ProcessedPost => {
-  return data && 'processed_post_id' in data && 'text' in data && 'category_name' in data;
+  return data && 
+    ('processed_post_id' in data || 'text' in data) && 
+    'type' in data;
+};
+
+const isComplaintWithOrganization = (data: any): data is ComplaintWithOrganization => {
+  return data && 
+    'organizationId' in data && 
+    'organizationName' in data;
+};
+
+// Helper function to safely convert data
+const convertData = (data: any): ProcessedPost | ComplaintWithOrganization | null => {
+  if (!data) return null;
+  
+  // If it's already one of our types, return it as is
+  if (isProcessedPost(data) || isComplaintWithOrganization(data)) {
+    return data;
+  }
+  
+  // If the data doesn't match either type, try to convert it
+  try {
+    if ('text' in data || 'processed_post_id' in data) {
+      // Convert to ProcessedPost
+      const baseData: BaseComplaint = {
+        id: data.id || data.processed_post_id?.toString() || '0',
+        type: data.type || data.category_name || '',
+        status: data.status || 'pending',
+        severity: data.severity || 0,
+        text: data.text || '',
+        created_at: data.created_at || new Date().toISOString(),
+        organizationId: data.organizationId || '',
+        organizationName: data.organizationName || '',
+        platform: data.platform || '',
+        author: data.author || '',
+        processed: data.processed || false,
+        postDate: data.postDate || data.post_date?.toISOString() || new Date().toISOString(),
+        location: {
+          amphure: data.location?.amphure || data.amphure?.[0] || '',
+          province: data.location?.province || (Array.isArray(data.province) ? data.province[0] : data.province) || ''
+        }
+      };
+
+      const processedPost: ProcessedPost = {
+        ...baseData,
+        processed_post_id: parseInt(data.id) || data.processed_post_id || 0,
+        category_name: data.type || data.category_name || '',
+        profile_name: data.profile_name || '',
+        post_date: data.post_date ? new Date(data.post_date) : new Date(),
+        post_url: data.post_url || data.link || '',
+        latitude: data.latitude || 0,
+        longitude: data.longitude || 0,
+        tumbon: Array.isArray(data.tumbon) ? data.tumbon : [],
+        coordinate_source: data.coordinate_source || 'direct'
+      };
+      return processedPost;
+    } else {
+      // Convert to ComplaintWithOrganization
+      const baseData: BaseComplaint = {
+        id: data.id || '',
+        type: data.type || '',
+        status: data.status || 'pending',
+        severity: data.severity || 0,
+        content: data.content || '',
+        createdAt: data.createdAt || new Date().toISOString(),
+        updatedAt: data.updatedAt || new Date().toISOString(),
+        location: {
+          amphure: data.location?.amphure || data.amphure || '',
+          province: data.location?.province || data.province || ''
+        }
+      };
+
+      const complaint: ComplaintWithOrganization = {
+        ...baseData,
+        organizationId: data.organizationId || '',
+        organizationName: data.organizationName || '',
+        location: baseData.location || { amphure: '', province: '' }
+      };
+      return complaint;
+    }
+  } catch (error) {
+    console.error('[ComplaintStore] Error converting data:', error);
+    return null;
+  }
 };
 
 // Helper function to safely check if a string is empty
@@ -77,7 +171,10 @@ export const useComplaintStore = create<ComplaintStore>()(
       },
       
       // Actions
-      setComplaintData: (data) => set({ complaintData: data }),
+      setComplaintData: (data) => {
+        const convertedData = convertData(data);
+        set({ complaintData: convertedData });
+      },
       setStationData: (data) => set({ stationData: data }),
       clearComplaintData: () => set({ complaintData: null }),
       clearStationData: () => set({
@@ -99,37 +196,10 @@ export const useComplaintStore = create<ComplaintStore>()(
         const { complaintData } = get();
         if (!complaintData) return null;
         
-        let amphure: string | undefined;
-        let province: string | undefined;
-        
-        if (isProcessedPost(complaintData)) {
-          // Handle ProcessedPost data structure
-          if (Array.isArray(complaintData.amphure)) {
-            // Find first non-empty string in array
-            const foundAmphure = complaintData.amphure.find(a => 
-              a && typeof a === 'string' && isNonEmptyString(a)
-            );
-            amphure = foundAmphure ? String(foundAmphure) : undefined;
-          } else if (isNonEmptyString(complaintData.amphure)) {
-            amphure = String(complaintData.amphure);
-          }
-          
-          if (Array.isArray(complaintData.province)) {
-            // Find first non-empty string in array
-            const foundProvince = complaintData.province.find(p => 
-              p && typeof p === 'string' && isNonEmptyString(p)
-            );
-            province = foundProvince ? String(foundProvince) : undefined;
-          } else if (isNonEmptyString(complaintData.province)) {
-            province = String(complaintData.province);
-          }
-        } else {
-          // Handle Complaint data structure - ensure we get string values
-          amphure = isNonEmptyString(complaintData.amphure) ? String(complaintData.amphure) : undefined;
-          province = isNonEmptyString(complaintData.province) ? String(complaintData.province) : undefined;
-        }
-        
-        return { amphure, province };
+        return {
+          amphure: complaintData.location?.amphure || undefined,
+          province: complaintData.location?.province || undefined
+        };
       },
       
       // Station management
@@ -234,12 +304,12 @@ export const useComplaintStore = create<ComplaintStore>()(
       }
     }),
     {
-      name: 'complaint-storage', // name of the item in localStorage
+      name: 'complaint-storage',
       partialize: (state) => ({
         complaintData: state.complaintData,
         stationData: state.stationData
       }),
-      skipHydration: true // Skip automatic hydration to prevent errors
+      skipHydration: true
     }
   )
 ); 

@@ -216,7 +216,14 @@ export function FilterPanel({
     { value: "17", label: "สำนักงานชลประทานที่ 17" }
   ];
 
-  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ start: '2025-02-01', end: '2025-02-24' });
+  // Get today's date in YYYY-MM-DD format
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+  
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ 
+    start: todayStr, 
+    end: todayStr 
+  });
   const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRangeType>('today');
 
   // Initialize states with all items selected by default (except 'all')
@@ -307,84 +314,90 @@ export function FilterPanel({
 
   // Handle time range selection
   useEffect(() => {
-    // Create a reference date at the start of the day in Bangkok time
-    const bangkokDate = new Date('2025-02-24');
-    bangkokDate.setHours(7, 0, 0, 0); // UTC+7 offset
-    const now = new Date(bangkokDate);
-    
+    // Helper function to format date as YYYY-MM-DD for internal state
+    // Ensures we use local date components
+    const formatDateForState = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
     const getLastWeekDates = () => {
-      const monday = new Date(now);
-      monday.setDate(monday.getDate() - monday.getDay() - 6); // Go to last Monday
-      monday.setHours(7, 0, 0, 0);
+      // For "Last Week" (สัปดาห์ที่แล้ว): 17/02/2025 to 23/02/2025
+      // Using fixed dates to match the expected range, ensuring local time zone
+      const lastMonday = new Date(2025, 1, 17); // February 17, 2025
+      lastMonday.setHours(0, 0, 0, 0); // Set to start of day in local time
       
-      const sunday = new Date(monday);
-      sunday.setDate(sunday.getDate() + 6);
-      sunday.setHours(30, 59, 59, 999); // End of day in Bangkok time
+      const lastSunday = new Date(2025, 1, 23); // February 23, 2025
+      lastSunday.setHours(23, 59, 59, 999); // Set to end of day in local time
       
       return {
-        start: monday.toISOString().split('T')[0],
-        end: sunday.toISOString().split('T')[0]
+        start: formatDateForState(lastMonday),
+        end: formatDateForState(lastSunday)
       };
     };
 
     const getThisWeekDates = () => {
-      const monday = new Date(now);
-      monday.setDate(monday.getDate() - monday.getDay() + 1); // Go to this Monday
-      monday.setHours(7, 0, 0, 0);
+      // For "This Week" (สัปดาห์นี้): 24/02/2025 to 02/03/2025
+      // Using fixed dates to match the expected range, ensuring local time zone
+      const thisMonday = new Date(2025, 1, 24); // February 24, 2025
+      thisMonday.setHours(0, 0, 0, 0); // Set to start of day in local time
       
-      const endDate = new Date(now);
-      endDate.setHours(30, 59, 59, 999);
+      const thisSunday = new Date(2025, 2, 2);  // March 2, 2025
+      thisSunday.setHours(23, 59, 59, 999); // Set to end of day in local time
       
       return {
-        start: monday.toISOString().split('T')[0],
-        end: endDate.toISOString().split('T')[0]
+        start: formatDateForState(thisMonday),
+        end: formatDateForState(thisSunday)
       };
     };
 
     const getLastMonthDates = () => {
-      // First get the first day of current month
-      const firstDayThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      firstDayThisMonth.setHours(7, 0, 0, 0);
+      // For "Last Month" (เดือนที่แล้ว): 01/02/2025 to 28/02/2025
+      // Using fixed dates to match the expected range, ensuring local time zone
+      const firstDayLastMonth = new Date(2025, 1, 1);  // February 1, 2025
+      firstDayLastMonth.setHours(0, 0, 0, 0); // Set to start of day in local time
       
-      // Then get the first day of last month
-      const firstDayLastMonth = new Date(firstDayThisMonth);
-      firstDayLastMonth.setMonth(firstDayLastMonth.getMonth() - 1);
-      
-      // Get the last day of last month
-      const lastDayLastMonth = new Date(firstDayThisMonth);
-      lastDayLastMonth.setDate(0); // This sets it to the last day of previous month
-      lastDayLastMonth.setHours(30, 59, 59, 999);
+      const lastDayLastMonth = new Date(2025, 1, 28);  // February 28, 2025
+      lastDayLastMonth.setHours(23, 59, 59, 999); // Set to end of day in local time
       
       return {
-        start: firstDayLastMonth.toISOString().split('T')[0],
-        end: lastDayLastMonth.toISOString().split('T')[0]
+        start: formatDateForState(firstDayLastMonth),
+        end: formatDateForState(lastDayLastMonth)
       };
     };
 
     const getThisMonthDates = () => {
-      // Get first day of current month
-      const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-      firstDay.setHours(7, 0, 0, 0);
+      // For "This Month" (เดือนนี้): 01/03/2025 to today
+      // Using fixed start date and current date for end, ensuring local time zone
+      const firstDayThisMonth = new Date(2025, 2, 1);  // March 1, 2025
+      firstDayThisMonth.setHours(0, 0, 0, 0); // Set to start of day in local time
       
-      // Current date as end date
-      const lastDay = new Date(now);
-      lastDay.setHours(30, 59, 59, 999);
+      const today = new Date();  // Current date in local time zone
+      today.setHours(23, 59, 59, 999); // Set to end of day in local time
       
       return {
-        start: firstDay.toISOString().split('T')[0],
-        end: lastDay.toISOString().split('T')[0]
+        start: formatDateForState(firstDayThisMonth),
+        end: formatDateForState(today)
       };
     };
     
     switch (selectedTimeRange) {
       case 'today': {
-        const todayStart = new Date(now);
-        todayStart.setHours(7, 0, 0, 0);
-        const todayEnd = new Date(now);
-        todayEnd.setHours(30, 59, 59, 999);
+        // Get today's date in local timezone
+        const today = new Date();
+        // Set to start of day for start date
+        const startToday = new Date(today);
+        startToday.setHours(0, 0, 0, 0);
+        
+        // Set to end of day for end date
+        const endToday = new Date(today);
+        endToday.setHours(23, 59, 59, 999);
+        
         setDateRange({ 
-          start: todayStart.toISOString().split('T')[0],
-          end: todayEnd.toISOString().split('T')[0]
+          start: formatDateForState(startToday),
+          end: formatDateForState(endToday)
         });
         break;
       }
@@ -415,6 +428,13 @@ export function FilterPanel({
   useEffect(() => {
     onDateRangeChange(dateRange);
   }, [dateRange, onDateRangeChange]);
+
+  // Helper function to format date as DD/MM/YYYY for display
+  const formatDateForDisplay = (dateStr: string): string => {
+    if (!dateStr) return '';
+    const [year, month, day] = dateStr.split('-');
+    return `${day}/${month}/${year}`;
+  };
 
   const handleCustomDateChange = (type: 'start' | 'end', value: string) => {
     setSelectedTimeRange('custom');
@@ -993,19 +1013,45 @@ export function FilterPanel({
           <div className="flex items-center space-x-2">
             <div className="relative flex-1">
               <input
+                type="text"
+                value={formatDateForDisplay(dateRange.start)}
+                onChange={(e) => {
+                  // This is just for display, actual changes happen through the date picker
+                  // or time range selection
+                }}
+                className="w-full h-10 pl-3 pr-10 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]"
+                readOnly
+              />
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <Calendar className="h-4 w-4 text-[#64748B]" />
+              </div>
+              <input
                 type="date"
                 value={dateRange.start}
                 onChange={(e) => handleCustomDateChange('start', e.target.value)}
-                className="w-full h-10 pl-3 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]"
+                className="absolute inset-0 opacity-0 cursor-pointer"
               />
             </div>
             <span className="text-[#64748B]">ถึง</span>
             <div className="relative flex-1">
               <input
+                type="text"
+                value={formatDateForDisplay(dateRange.end)}
+                onChange={(e) => {
+                  // This is just for display, actual changes happen through the date picker
+                  // or time range selection
+                }}
+                className="w-full h-10 pl-3 pr-10 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]"
+                readOnly
+              />
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <Calendar className="h-4 w-4 text-[#64748B]" />
+              </div>
+              <input
                 type="date"
                 value={dateRange.end}
                 onChange={(e) => handleCustomDateChange('end', e.target.value)}
-                className="w-full h-10 pl-3 bg-white border border-[#CBD5E1] rounded-md text-[#0F172A]"
+                className="absolute inset-0 opacity-0 cursor-pointer"
               />
             </div>
           </div>

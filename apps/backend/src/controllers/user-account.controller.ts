@@ -555,4 +555,58 @@ export async function deleteMultipleUserAccounts(req: Request, res: Response) {
       error: (error as Error).message,
     });
   }
-} 
+}
+
+/**
+ * Get approval team members by organization ID
+ * This function retrieves users with positions 1, 2, and 3 for a specific organization
+ */
+export const getApprovalTeamByOrganization = async (req: Request, res: Response) => {
+  try {
+    const { organizationId } = req.params;
+    
+    if (!organizationId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Organization ID is required',
+      });
+    }
+    
+    logger.info('🔍 Fetching approval team for organization', { organizationId });
+    
+    // Get users by office ID (organization ID)
+    const users = await userAccountModel.getUsersByOfficeId(organizationId);
+    
+    // Filter users by position (1, 2, 3) and map to approval team format
+    const approvalTeam = users
+      .filter(user => ['1', '2', '3'].includes(user.position))
+      .sort((a, b) => parseInt(a.position) - parseInt(b.position))
+      .map(user => ({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        position: parseInt(user.position),
+        organizationId: user.office_id
+      }));
+    
+    logger.info('✅ Retrieved approval team members', { 
+      organizationId, 
+      count: approvalTeam.length,
+      positions: approvalTeam.map(member => member.position)
+    });
+    
+    // Return success response with approval team data
+    return res.status(200).json(approvalTeam);
+  } catch (error) {
+    logger.error('❌ Error fetching approval team', { 
+      error: (error as Error).message,
+      organizationId: req.params.organizationId
+    });
+    
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch approval team',
+      error: (error as Error).message
+    });
+  }
+}; 

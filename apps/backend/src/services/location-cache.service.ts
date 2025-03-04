@@ -150,13 +150,13 @@ export class LocationCacheService {
         SELECT 
           t.id as tumbon_id,
           t.amphure_id,
-          a.province_id,
+          a.province_code as province_id,
           t.name_th,
           t.amphure_id as parent_id,
           t.latitude,
           t.longitude
         FROM tumbons t
-        JOIN amphures a ON t.amphure_id = a.id
+        JOIN amphures a ON t.amphure_id = a.amphure_code
       `);
       
       logger.info(`Loaded ${result.rowCount} location hierarchy records`);
@@ -216,7 +216,14 @@ export class LocationCacheService {
 
   private async loadProvinces(): Promise<void> {
     try {
-      const result = await this.pool.query<LocationRow>('SELECT id, name_th, latitude, longitude FROM provinces');
+      const result = await this.pool.query<LocationRow>(`
+        SELECT 
+          province_code as id, 
+          province_name_th as name_th, 
+          NULL as latitude, 
+          NULL as longitude 
+        FROM provinces
+      `);
       logger.debug('Loaded raw province data', {
         totalRows: result.rowCount,
         sampleRow: result.rows[0]
@@ -277,14 +284,13 @@ export class LocationCacheService {
       // Enhanced query to include province context
       const result = await this.pool.query<LocationRow & { province_name_th: string }>(`
         SELECT 
-          a.id, 
-          a.name_th, 
-          a.latitude, 
-          a.longitude,
-          p.name_th as province_name_th
+          a.amphure_code as id, 
+          a.amphure_name_th as name_th, 
+          NULL as latitude, 
+          NULL as longitude,
+          p.province_name_th
         FROM amphures a
-        JOIN provinces p ON a.province_id = p.id 
-        WHERE a.latitude IS NOT NULL AND a.longitude IS NOT NULL
+        JOIN provinces p ON a.province_code = p.province_code
       `);
       
       const rowCount = result.rowCount || 0;

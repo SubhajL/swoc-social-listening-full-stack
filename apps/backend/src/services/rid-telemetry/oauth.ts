@@ -115,10 +115,7 @@ export class RIDOAuth {
           'Accept': 'application/json, text/plain, */*',
           'User-Agent': 'RID-Telemetry-Client/1.0',
           'Cache-Control': 'no-cache'
-        },
-        agent: new (require('https').Agent)({ 
-          rejectUnauthorized: false // Allow self-signed certificates
-        })
+        }
       });
 
       const roundTripTime = Date.now() - startTime;

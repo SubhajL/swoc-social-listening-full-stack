@@ -13,6 +13,8 @@ import rainStationsRouter from './api/rain-stations';
 import reservoirsRouter from './api/reservoirs';
 import thaiWaterRouter from './api/thaiwater';
 import userAccountRouter from './routes/user-account.routes';
+import authRouter from './routes/auth.routes';
+import approvalRecordRouter from './routes/approval-record.routes';
 import { logger } from './utils/logger';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -111,9 +113,23 @@ const startServer = async () => {
     app.use('/api/telemetry', telemetryRouter);
     app.use('/api/thaiwater', thaiWaterRouter);
     app.use('/api/users', userAccountRouter);
+    app.use('/api/auth', authRouter);
+    app.use('/api/approval-records', approvalRecordRouter);
+
+    // Add a simple health check endpoint for the root API path
+    app.all('/api', (req, res) => {
+      res.status(200).json({ status: 'ok', message: 'API server is running' });
+    });
+
+    // Also handle the root API path with trailing slash
+    app.all('/api/', (req, res) => {
+      res.status(200).json({ status: 'ok', message: 'API server is running' });
+    });
 
     logger.info('📍 API routes registered', {
       routes: [
+        '/api',
+        '/api/',
         '/api/posts', 
         '/api/location', 
         '/api/monitoring-stations', 
@@ -121,7 +137,9 @@ const startServer = async () => {
         '/api/reservoirs',
         '/api/telemetry',
         '/api/thaiwater',
-        '/api/users'
+        '/api/users',
+        '/api/auth',
+        '/api/approval-records'
       ],
       timestamp: new Date().toISOString()
     });

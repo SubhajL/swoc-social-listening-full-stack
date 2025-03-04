@@ -8,20 +8,41 @@ export interface Coordinates {
 }
 
 export interface Complaint {
-  id: number;
-  issue: string;
-  category: string;
-  reporter: string;
-  date: string;
+  id: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  status: string;
+  type?: string;
+  province?: string;
+  postId?: string;
   link?: string;
-  coordinates?: {
-    lat: number;
-    lng: number;
-  };
-  location?: string;
-  tumbon?: string[];
-  amphure?: string[];
-  province?: string[];
+}
+
+// Processed social media post
+export interface ProcessedPost {
+  id: string;
+  platform: string;
+  content: string;
+  postDate: string;
+  author: string;
+  processed: boolean;
+  type?: string;
+  province?: string;
+  postId?: string;
+  link?: string;
+}
+
+// Extended complaint with organization info
+export interface ComplaintWithOrganization extends Complaint {
+  organizationId: string;
+  organizationName: string;
+}
+
+// Extended processed post with organization info
+export interface ProcessedPostWithOrganization extends ProcessedPost {
+  organizationId: string;
+  organizationName: string;
 }
 
 // Response interfaces
@@ -64,16 +85,14 @@ export type ComplaintValidation = z.infer<typeof ComplaintDTO>;
 // Sample data
 export const sampleComplaints: Complaint[] = [
   {
-    id: 1,
-    issue: "น้ำท่วมเชียงราย",
-    category: "แจ้งเหตุ",
-    reporter: "ชาวบ้านเชียงราย",
-    date: "2024-09-10",
-    link: "https://example.com/complaint/1",
-    coordinates: {
-      lat: 18.7883,
-      lng: 98.9853
-    },
-    location: "อ. เมือง จ. เชียงใหม่"
+    id: "1",
+    content: "น้ำท่วมเชียงราย",
+    createdAt: "2024-09-10T00:00:00",
+    updatedAt: "2024-09-10T00:00:00",
+    status: "รอดำเนินการ",
+    type: "แจ้งเหตุ",
+    province: "เชียงใหม่",
+    postId: "https://example.com/complaint/1",
+    link: "https://example.com/complaint/1"
   }
 ];

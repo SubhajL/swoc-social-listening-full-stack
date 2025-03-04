@@ -1,116 +1,94 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import { errorHandler } from './middleware/error-handler';
-import { createPostsRouter } from './api/posts/index';
-import telemetryStationsRouter from './api/telemetry-stations';
-import telemetryRouter from './api/telemetry';
-import thaiWaterRouter from './api/thaiwater';
-import userAccountRouter from './routes/user-account.routes';
-import { ProcessedPostService } from './services/processed-post.service';
-import { pool } from './lib/db';
-import { logger } from './utils/logger';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import compression from 'compression';
+import { createServer } from 'http';
 import { Server } from 'socket.io';
 import rainStationsRouter from './api/rain-stations';
 
 const app = express();
+const server = createServer(app);
 
-// Ensure CORS is the first middleware
-app.use(cors({
-  origin: true, // Enable all origins temporarily for debugging
-  credentials: true
-}));
+// Import routes
+import authRouter from './routes/auth.routes';
+import thaiWaterRouter from './routes/thaiwater.routes';
+import userAccountRouter from './routes/user-account.routes';
+import approvalRecordRouter from './routes/approval-record.routes';
+import telemetryRouter from './routes/telemetry.routes';
 
-// Basic middleware
+// Configure middleware
+app.use(helmet());
+app.use(compression());
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan('dev'));
 
-// Request logging middleware
-app.use((req, res, next) => {
-  logger.info(`📥 Incoming Request`, {
-    method: req.method,
-    url: req.url,
-    origin: req.headers.origin,
-    headers: req.headers,
-    timestamp: new Date().toISOString()
-  });
-
-  // Ensure CORS headers are present
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-
-  if (req.method === 'OPTIONS') {
-    logger.info('👋 Handling OPTIONS request', {
-      origin: req.headers.origin,
-      timestamp: new Date().toISOString()
-    });
-    return res.status(204).end();
-  }
-
-  next();
+// API routes
+app.get('/api/health', (req: Request, res: Response) => {
+  res.status(200).json({ status: 'ok', message: 'Server is running' });
 });
 
-// Initialize services and routes
-export const initializeServices = async (io: Server) => {
-  const processedPostService = new ProcessedPostService(pool, io);
-  await processedPostService.initialize();
-  logger.info('🚀 Services initialized successfully');
-
-  const postsRouter = createPostsRouter(processedPostService);
-  
-  // Register routes
-  app.use('/api/posts', postsRouter);
-  app.use('/api/monitoring-stations', telemetryStationsRouter);
-  app.use('/api/rain-stations', rainStationsRouter);
-  app.use('/api/telemetry', telemetryRouter);
-  app.use('/api/thaiwater', thaiWaterRouter);
-  app.use('/api/users', userAccountRouter);
-  
-  logger.info('📍 API routes registered', {
-    routes: [
-      '/api/posts', 
-      '/api/monitoring-stations', 
-      '/api/rain-stations',
-      '/api/telemetry',
-      '/api/thaiwater',
-      '/api/users'
-    ],
-    timestamp: new Date().toISOString()
-  });
-
-  return { processedPostService };
-};
+// Register routes
+app.use('/api/rain-stations', rainStationsRouter);
+app.use('/api/telemetry', telemetryRouter);
+app.use('/api/thaiwater', thaiWaterRouter);
+app.use('/api/users', userAccountRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/approval-records', approvalRecordRouter);
 
 // Error handling middleware
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  // Handle CORS errors specifically
-  if (err.name === 'CORSError') {
-    logger.error('🚫 CORS Error:', {
-      origin: req.headers.origin,
-      method: req.method,
-      path: req.path,
-      error: err.message,
-      timestamp: new Date().toISOString()
-    });
-    return res.status(403).json({
-      error: 'CORS Error',
-      message: 'Cross-Origin Request Blocked',
-      details: err.message
-    });
-  }
-
-  // Log all other errors
-  logger.error('❌ Unhandled error', {
-    error: err.message,
-    stack: err.stack,
-    url: req.url,
-    method: req.method,
-    timestamp: new Date().toISOString()
-  });
-  next(err);
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// Final error handler
-app.use(errorHandler);
+// Socket.io setup
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+});
 
-export { app }; 
+// Socket.io connection handler
+io.on('connection', (socket) => {
+  console.log('A user connected');
+  
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
+
+// Catch-all route for undefined routes
+app.use('*', (req: Request, res: Response) => {
+  res.status(404).json({ error: 'Not Found' });
+});
+
+// CORS configuration for preflight requests
+app.options('*', cors());
+
+// Configure CORS for specific routes
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:8080',
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+// Apply CORS to specific routes
+const corsProtectedRoutes = [
+  '/api/rain-stations',
+  '/api/telemetry',
+  '/api/thaiwater',
+  '/api/users',
+  '/api/auth',
+  '/api/approval-records'
+];
+
+corsProtectedRoutes.forEach(route => {
+  app.use(route, cors(corsOptions));
+});
+
+export { app, server, io }; 

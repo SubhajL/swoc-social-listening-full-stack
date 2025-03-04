@@ -41,6 +41,34 @@
   - Water level and flow rate data
   - Consistent styling with rain station cards
 
+### 3. Authentication System
+- Components:
+  - Login.tsx (login page with email/password form)
+  - ChangePassword.tsx (password change functionality)
+  - ProtectedRoute.tsx (route protection component)
+  Path: apps/frontend/src/pages/Login.tsx
+  Path: apps/frontend/src/pages/ChangePassword.tsx
+  Path: apps/frontend/src/components/auth/ProtectedRoute.tsx
+
+- API Endpoints:
+  - /api/auth/login
+  - /api/auth/change-password
+  Path: apps/backend/src/api/auth.ts
+
+- Authentication Flow:
+  - Login page as landing page
+  - JWT-based authentication
+  - Protected routes for authenticated users
+  - Redirect to dashboard after successful login
+  - First-time login password change requirement
+
+- Features:
+  - Login with email and password
+  - Password change functionality
+  - Protected routes with authentication check
+  - Loading state during authentication check
+  - Automatic redirection to login for unauthenticated users
+
 ## Latest Updates (2024-02-15)
 - Migrating from Zustand to Jotai for state management
 - Implementing atomic state model for better performance and reliability
@@ -830,30 +858,79 @@ DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL
   - Store Integration: ✅ Complete
   - Navigation: ✅ Complete
 
-## Latest Updates (2024-03-01)
-- Removed unused ComplaintFooter component
-- Enhanced DocumentPreparation with improved data validation
-- Updated navigation flow between ComplaintForm and DocumentPreparation
-- Ensured consistent data handling across components
-- Fixed StationCardEdit save functionality:
-  - Improved "บันทึก" button to properly save changes to the persistent store
-  - Enhanced store persistence mechanism to ensure data is saved to localStorage
-  - Added verification step to confirm data is saved before navigation
-  - Increased timeout duration to ensure store updates are complete before navigation
-  - Enhanced ComplaintForm to properly verify and load saved station data when returning from StationCardEdit
-  - Made handleSave function async to properly await persistence operations
-  - Added retry mechanism if initial save to localStorage fails
-  - Improved error handling with user-friendly toast notifications
-  - Enhanced store hydration to ensure proper loading of persisted data
-  - Added loading state during store hydration to prevent race conditions
-  - Added multiple verification steps to confirm data persistence before navigation
-  - Implemented robust error handling with clear user feedback
-  - Added loading state during save operation with toast notifications
-  - Enhanced ComplaintForm to force reload data from localStorage after successful save
-  - Added session flags to track navigation after successful save
-  - Improved store hydration with retry mechanism and better error handling
-  - Added verification that hydrated data matches what was saved
-- Fixed StationCardEdit "ไม่บันทึก" button to properly reset station data to original state
-- Added ApprovalDashboard component with filterable and sortable table
+## Latest Updates (2025-03-02)
+- Enhanced post filtering logic to ensure posts with only tumbon information (without amphure or province) are not displayed on the map
+- Improved accuracy of map visualization by only showing posts with sufficient location data
+- Enhanced Login and Password Change functionality with better form validation and error handling
+- Optimized Dashboard performance by reducing excessive message counting operations
+- Added better logging for debugging map post filtering
+- Updated branch information in task files from `integration-post` to `feature/settings-rbac`
+
+### 20. Map Post Filtering Enhancement
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-03-02
+- Components:
+  - coordinates.ts (hasValidCoordinates function)
+  - map-core.ts (loadMapPosts function)
+- Critical Paths:
+  - Post validation logic for map display
+  - Filtering of posts with insufficient location data
+  - Logging of filtered posts for debugging
+- Working Features: ✅
+  - Enhanced validation to require both amphure and province data
+  - Filtering out posts with only tumbon information
+  - Detailed logging of filtered posts by location data availability
+  - Improved accuracy of map visualization
+- Safety Measures: ✅ Complete
+  - Feature Management: Implemented
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
+
+### 21. Login and Password Change Improvements
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-03-02
+- Branch: feature/settings-rbac
+- Components:
+  - Login.tsx
+  - ChangePassword.tsx
+  - auth.service.ts
+- Critical Paths:
+  - Authentication flow
+  - Password validation
+  - Error handling
+- Working Features: ✅
+  - Enhanced form validation with descriptive error messages
+  - Improved password strength validation
+  - Better error handling and user feedback
+  - Secure token handling and storage
+- Safety Measures: ✅ Complete
+  - Feature Management: Implemented
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
+
+### 22. Dashboard Message Counting Optimization
+- Status: 🔒 LOCKED
+- Last Lock Date: 2025-03-02
+- Branch: feature/settings-rbac
+- Components:
+  - MainPage.tsx
+  - processed-post.service.ts
+  - map-core.ts
+- Critical Paths:
+  - Category count retrieval and display
+  - API integration
+  - Performance optimization
+- Working Features: ✅
+  - Reduced excessive message counting operations
+  - Improved category count display with better loading states
+  - Enhanced API integration with proper error handling
+  - Optimized performance for large datasets
+- Safety Measures: ✅ Complete
+  - Feature Management: Implemented
+  - Error Handling: Comprehensive
+  - Logging: Enhanced
+  - Type Safety: Enforced
 
 DO NOT MODIFY THESE IMPLEMENTATIONS WITHOUT TEAM APPROVAL 

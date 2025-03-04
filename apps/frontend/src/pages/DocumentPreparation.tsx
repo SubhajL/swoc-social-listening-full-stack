@@ -12,17 +12,27 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { WaterLevelInfo } from "@/components/complaint/WaterLevelInfo";
 import { WaterManagementPlan } from "@/components/complaint/WaterManagementPlan";
-import { Save, Check, Send, ChevronDown, X, Bell, Settings } from "lucide-react";
+import { Save, Check, Send, ChevronDown, X, Bell, Settings, Paperclip } from "lucide-react";
 // Import SVG icons
 import CalendarIcon from "@/assets/icon/Calendar.svg";
 import ClipboardIcon from "@/assets/icon/Clipboard.svg";
 import ShareIcon from "@/assets/icon/share-2.svg";
 import PrinterIcon from "@/assets/icon/printer.svg";
+import PaperclipIcon from "@/assets/icon/paperclip.svg";
 import { cleanLocationString, formatLocationForDisplay, isEmptyLocation } from "@/lib/location-utils";
 
 // Type guard to check if data is ProcessedPost
 const isProcessedPost = (data: any): data is ProcessedPost => {
   return 'processed_post_id' in data && 'text' in data && 'category_name' in data;
+};
+
+// Helper function to extract complaint issue text
+const getIssue = (complaint: ProcessedPost | Complaint | null): string => {
+  if (!complaint) return '';
+  if (isProcessedPost(complaint)) {
+    return complaint.text || '';
+  }
+  return complaint.issue || '';
 };
 
 // Success Popup Component
@@ -97,33 +107,28 @@ const DocumentPreparationHeader = () => {
           </div>
         </div>
 
-        {/* Navigation tabs - aligned with map and pushed up */}
-        <div className="px-6 -mt-6 pb-0">
-          <div className="flex">
-            {/* This space accounts for the filter panel width and gap */}
-            <div className="w-[450px]"></div>
-            {/* Navigation tabs aligned with the Map */}
-            <nav className="flex items-center border-b border-[#E2E8F0] whitespace-nowrap">
-              <Link 
-                to="/" 
-                className="px-4 py-1 text-[#6B7280] hover:text-[#17254D] text-base whitespace-nowrap"
-              >
-                ระบบจัดการข้อมูลสื่อสังคมออนไลน์
-              </Link>
-              <Link 
-                to="/response" 
-                className="px-4 py-1 text-[#17254D] border-b-2 border-[#42A5F5] font-medium text-base -mb-[0px] whitespace-nowrap"
-              >
-                ระบบตอบประเด็นข้อร้องเรียน
-              </Link>
-              <Link 
-                to="/dashboard" 
-                className="px-4 py-1 text-[#6B7280] hover:text-[#17254D] text-base whitespace-nowrap"
-              >
-                ระบบแสดงผลข้อมูลและสรุปผลผู้บริหาร
-              </Link>
-            </nav>
-          </div>
+        {/* Navigation tabs */}
+        <div className="flex mt-2">
+          <nav className="flex items-center border-b border-[#E2E8F0] whitespace-nowrap">
+            <Link 
+              to="/dashboard" 
+              className="px-4 py-1 text-[#6B7280] hover:text-[#17254D] text-base whitespace-nowrap"
+            >
+              ระบบจัดการข้อมูลสื่อสังคมออนไลน์
+            </Link>
+            <Link 
+              to="/response" 
+              className="px-4 py-1 text-[#17254D] border-b-2 border-[#42A5F5] font-medium text-base -mb-[0px] whitespace-nowrap"
+            >
+              ระบบตอบประเด็นข้อร้องเรียน
+            </Link>
+            <Link 
+              to="/dashboard" 
+              className="px-4 py-1 text-[#6B7280] hover:text-[#17254D] text-base whitespace-nowrap"
+            >
+              ระบบแสดงผลข้อมูลและสรุปผลผู้บริหาร
+            </Link>
+          </nav>
         </div>
       </div>
     </header>
@@ -449,14 +454,148 @@ const DocumentPreparation = () => {
   const displayAmphure = amphure ? formatLocationForDisplay(amphure, 'amphure') : undefined;
   const displayProvince = province ? formatLocationForDisplay(province, 'province') : undefined;
 
+  // Handle print action
+  const handlePrint = () => {
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      toast.error("ไม่สามารถเปิดหน้าต่างสำหรับพิมพ์ได้ กรุณาอนุญาตป๊อปอัพ");
+      return;
+    }
+
+    // Get complaint data
+    const currentComplaintData = complaintStore.complaintData;
+    const complaintText = getIssue(currentComplaintData);
+    
+    // Format date for printing
+    const printDate = formatTimestamp();
+    
+    // Create print content with styling
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>เอกสารตอบข้อร้องเรียน</title>
+        <meta charset="utf-8">
+        <style>
+          body {
+            font-family: 'Sarabun', sans-serif;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+          }
+          .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+          }
+          .date {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+          }
+          .section {
+            margin-bottom: 30px;
+          }
+          .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #17254D;
+          }
+          .content {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #eee;
+          }
+          .response {
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #d0e3ff;
+          }
+          @media print {
+            body {
+              padding: 0;
+              margin: 20px;
+            }
+            button {
+              display: none;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>เอกสารตอบข้อร้องเรียน</h1>
+          <div class="date">${printDate}</div>
+        </div>
+        
+        <div class="section">
+          <div class="section-title">ข้อร้องเรียน</div>
+          <div class="content">${complaintText}</div>
+        </div>
+        
+        <div class="section">
+          <div class="section-title">เอกสารตอบ</div>
+          <div class="response">${documentContent || 'ยังไม่มีเอกสารตอบ'}</div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+          <button onclick="window.print();" style="padding: 10px 20px; background: #4B9FE1; color: white; border: none; border-radius: 5px; cursor: pointer;">พิมพ์เอกสาร</button>
+        </div>
+      </body>
+      </html>
+    `;
+    
+    // Write to the new window and trigger print
+    printWindow.document.open();
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    
+    // Auto-trigger print after content is loaded
+    printWindow.onload = function() {
+      setTimeout(() => {
+        printWindow.focus();
+        printWindow.print();
+      }, 250);
+    };
+  };
+
+  // Handle Line share action
+  const handleLineShare = () => {
+    // Get complaint data
+    const currentComplaintData = complaintStore.complaintData;
+    const complaintText = getIssue(currentComplaintData);
+    
+    // Format the text to be shared
+    const shareText = `ข้อร้องเรียน: ${complaintText.substring(0, 100)}${complaintText.length > 100 ? '...' : ''}\n\nเอกสารตอบ: ${documentContent || 'ยังไม่มีเอกสารตอบ'}`;
+    
+    // Encode the text for URL
+    const encodedText = encodeURIComponent(shareText);
+    
+    // Create Line sharing URL
+    const lineShareUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(window.location.href)}&text=${encodedText}`;
+    
+    // Open Line sharing in a new window
+    window.open(lineShareUrl, '_blank', 'width=600,height=600');
+  };
+
   return (
-    <div className="min-h-screen bg-[#F0F8FF]">
+    <div className="min-h-screen bg-[#EBF5FF]">
       <DocumentPreparationHeader />
       
       {/* Page Title */}
       <div className="bg-[#EBF5FF]">
         <div className="container mx-auto px-12 pt-6 pb-4">
-          <h1 className="text-2xl font-semibold text-[#17254D] mb-4">ระบบตอบประเด็นข้อร้องเรียน</h1>
+          <h1 className="text-2xl font-semibold text-[#17254D] mb-4">เตรียมร่างเอกสาร</h1>
         </div>
       </div>
       
@@ -470,29 +609,29 @@ const DocumentPreparation = () => {
           </Card>
         </div>
         
-        {/* Supporting Data Section - Using the same grid layout as ComplaintForm */}
-        <div className="grid grid-cols-1 gap-6 mt-6">
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold">ข้อมูลสนับสนุน</h3>
-            <div className="grid grid-cols-1 gap-6">
-              <Card className="p-8 shadow-sm">
-                <WaterLevelInfo 
-                  amphure={amphure}
-                  province={province}
-                />
-              </Card>
-              <Card className="p-8 shadow-sm">
-                <WaterManagementPlan 
-                  amphure={amphure}
-                  province={province}
-                />
-              </Card>
-            </div>
+        {/* Supporting Data Section - Using a horizontal grid layout */}
+        <div className="mt-6 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="p-8 shadow-sm">
+              <WaterLevelInfo 
+                amphure={amphure}
+                province={province}
+              />
+            </Card>
+            <Card className="p-8 shadow-sm">
+              <WaterManagementPlan 
+                amphure={amphure}
+                province={province}
+              />
+            </Card>
           </div>
         </div>
         
+        {/* Add more vertical space here */}
+        <div className="mb-12"></div>
+        
         {/* ร่างเอกสารตอบ Frameset */}
-        <div className="mb-6">
+        <div className="mb-6 mt-8">
           <Card className="p-8 shadow-sm">
             {/* Frame Header */}
             <h2 className="text-2xl font-semibold text-[#17254D] mb-6">ร่างเอกสารตอบ</h2>
@@ -507,9 +646,20 @@ const DocumentPreparation = () => {
               </div>
               <div className="flex items-center gap-4">
                 <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                  <img src={PaperclipIcon} alt="Paperclip" className="w-5 h-5" />
+                </button>
+                <button 
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  onClick={handleLineShare}
+                  title="แชร์ผ่าน Line"
+                >
                   <img src={ShareIcon} alt="Share" className="w-5 h-5" />
                 </button>
-                <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <button 
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  onClick={handlePrint}
+                  title="พิมพ์เอกสาร"
+                >
                   <img src={PrinterIcon} alt="Print" className="w-5 h-5" />
                 </button>
               </div>
@@ -522,47 +672,69 @@ const DocumentPreparation = () => {
                 <h3 className="text-xl font-semibold text-[#17254D]">ลำดับการร่างเอกสาร</h3>
               </div>
               
-              {/* Timeline with dotted line */}
+              {/* Main content area with restructured layout */}
               <div className="relative">
                 {/* Dotted vertical line */}
                 <div className="absolute left-4 top-[24px] bottom-[24px] w-[1px] border-l border-dashed border-gray-400"></div>
                 
-                {/* ร่างเอกสารตอบ section */}
-                <div className="mb-6 relative mt-8 pl-4">
-                  <div className="flex items-center gap-2 mb-3 relative z-10 bg-white">
-                    <img src={ClipboardIcon} alt="Clipboard" className="w-8 h-8" />
-                    <h4 className="text-lg font-medium text-[#17254D]">ร่างเอกสารตอบ</h4>
-                  </div>
-                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-4 ml-8">
-                    <p className="text-base text-gray-700">
-                      ในช่วงหน้าฝนทาง สชป.๑ จะมีแนวทางให้แต่ละพื้นที่บริหารจัดการน้ำโดยใช้น้ำฝนก่อนเป็นอันดับแรก ถ้าหากเกิดฝนทิ้งช่วงจะจัดสรรน้ำ
-                      ช่วยเหลือ ตามความต้องการใช้น้ำจริง ๆ ในพื้นที่ และตามเกณฑ์ บริหารจัดการน้ำของอ่างเก็บน้ำต่าง ๆ ซึ่ง สชป.๑ ได้สำรองน้ำในส่วนนี้ไว้แหล่งกักเก็บน้ำแล้ว
-                      อย่างเพียงพอ ทั้งนี้ สชป.๑ จะพยายามรักษาปริมาณน้ำในอ่างเก็บน้ำและเก็บกักน้ำไว้ให้ได้มากที่สุด เมื่อสิ้นสุดฤดูฝน สำหรับใช้ในฤดูแล้ง ๒๕๖๗/๖๘
-                    </p>
-                  </div>
-                </div>
-                
-                {/* สร้างร่างเอกสารตอบ section */}
-                <div className="mb-6 relative pl-4">
-                  <div className="flex items-center gap-2 mb-3 relative z-10 bg-white">
-                    <img src={ClipboardIcon} alt="Clipboard" className="w-8 h-8" />
-                    <h4 className="text-lg font-medium text-[#17254D]">สร้างร่างเอกสารตอบ</h4>
-                  </div>
-                  
-                  {/* Show timestamp and approver info after save */}
-                  {isSaved && (
-                    <div className="ml-8 mb-3 text-sm text-gray-500">
-                      {saveTimestamp} สร้างโดย {approverInfo}
+                {/* Two-column layout with document sections on left and เอกสารประกอบ on right */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Left column - Document drafting sections */}
+                  <div>
+                    {/* ร่างเอกสารตอบ section */}
+                    <div className="relative mt-8 pl-4 mb-6">
+                      <div className="flex items-center gap-2 mb-3 relative z-10 bg-white">
+                        <img src={ClipboardIcon} alt="Clipboard" className="w-8 h-8" />
+                        <h4 className="text-lg font-medium text-[#17254D]">ร่างเอกสารตอบ</h4>
+                      </div>
+                      <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-4 ml-8">
+                        <p className="text-base text-gray-700">
+                          ในช่วงหน้าฝนทาง สชป.๑ จะมีแนวทางให้แต่ละพื้นที่บริหารจัดการน้ำโดยใช้น้ำฝนก่อนเป็นอันดับแรก ถ้าหากเกิดฝนทิ้งช่วงจะจัดสรรน้ำ
+                          ช่วยเหลือ ตามความต้องการใช้น้ำจริง ๆ ในพื้นที่ และตามเกณฑ์ บริหารจัดการน้ำของอ่างเก็บน้ำต่าง ๆ ซึ่ง สชป.๑ ได้สำรองน้ำในส่วนนี้ไว้แหล่งกักเก็บน้ำแล้ว
+                          อย่างเพียงพอ ทั้งนี้ สชป.๑ จะพยายามรักษาปริมาณน้ำในอ่างเก็บน้ำและเก็บกักน้ำไว้ให้ได้มากที่สุด เมื่อสิ้นสุดฤดูฝน สำหรับใช้ในฤดูแล้ง ๒๕๖๗/๖๘
+                        </p>
+                      </div>
                     </div>
-                  )}
+                    
+                    {/* สร้างร่างเอกสารตอบ section */}
+                    <div className="relative pl-4">
+                      <div className="flex items-center gap-2 mb-3 relative z-10 bg-white">
+                        <img src={ClipboardIcon} alt="Clipboard" className="w-8 h-8" />
+                        <h4 className="text-lg font-medium text-[#17254D]">สร้างร่างเอกสารตอบ</h4>
+                      </div>
+                      
+                      {/* Show timestamp and approver info after save */}
+                      {isSaved && (
+                        <div className="ml-8 mb-3 text-sm text-gray-500">
+                          {saveTimestamp} สร้างโดย {approverInfo}
+                        </div>
+                      )}
+                      
+                      <div className="ml-8">
+                        <textarea
+                          value={documentContent}
+                          onChange={(e) => setDocumentContent(e.target.value)}
+                          className="w-full h-64 p-5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+                          placeholder="พิมพ์ร่างเอกสารตอบที่นี่..."
+                        />
+                      </div>
+                    </div>
+                  </div>
                   
-                  <div className="ml-8">
-                    <textarea
-                      value={documentContent}
-                      onChange={(e) => setDocumentContent(e.target.value)}
-                      className="w-full h-64 p-5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                      placeholder="พิมพ์ร่างเอกสารตอบที่นี่..."
-                    />
+                  {/* Right column - เอกสารประกอบ spanning full height */}
+                  <div className="relative mt-8 h-full">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Paperclip className="w-6 h-6 text-[#17254D]" strokeWidth={1} />
+                      <h4 className="text-lg font-medium text-[#17254D]">เอกสารประกอบ</h4>
+                    </div>
+                    
+                    <div className="border border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center justify-center" style={{ height: "calc(100% - 40px)" }}>
+                      <Paperclip className="w-12 h-12 text-gray-400 mb-4" strokeWidth={1} />
+                      <p className="text-gray-500 text-center mb-4">อัพโหลดเอกสารประกอบที่นี่</p>
+                      <button className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg border border-blue-200 hover:bg-blue-100 transition-colors">
+                        เพิ่มเอกสาร
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

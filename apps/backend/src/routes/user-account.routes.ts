@@ -7,7 +7,8 @@ import {
   checkEmailConfig,
   testEmailService,
   deleteUserAccount,
-  deleteMultipleUserAccounts
+  deleteMultipleUserAccounts,
+  getApprovalTeamByOrganization
 } from '../controllers/user-account.controller';
 
 const router = express.Router();
@@ -32,6 +33,13 @@ router.post('/batch', createMultipleUserAccounts);
  * @access Private (to be implemented)
  */
 router.get('/office/:officeId', getUsersByOffice);
+
+/**
+ * @route GET /api/users/approval-team/:organizationId
+ * @description Get approval team members (positions 1, 2, 3) for a specific organization
+ * @access Private (to be implemented)
+ */
+router.get('/approval-team/:organizationId', getApprovalTeamByOrganization);
 
 /**
  * @route POST /api/users/resend-welcome

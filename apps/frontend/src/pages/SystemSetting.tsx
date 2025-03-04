@@ -37,6 +37,12 @@ const generateRandomPassword = (length = 10) => {
 
 // Custom header component for the SystemSetting page
 const SystemSettingHeader = () => {
+  const navigate = useNavigate();
+
+  const handleSettingsClick = () => {
+    navigate('/system-setting');
+  };
+
   return (
     <header className="bg-white shadow-sm">
       <div className="container mx-auto px-6">
@@ -63,9 +69,12 @@ const SystemSettingHeader = () => {
               <div className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></div>
             </div>
             
-            {/* Settings - highlighted to show it's active */}
-            <div className="p-1.5 bg-gray-100 rounded-lg">
-              <Settings className="w-6 h-6 text-[#0F172B]" />
+            {/* Settings */}
+            <div 
+              className="p-1.5 hover:bg-gray-100 rounded-lg cursor-pointer"
+              onClick={handleSettingsClick}
+            >
+              <Settings className="w-6 h-6 text-[#334155]" />
             </div>
             
             {/* Avatar */}
@@ -1241,7 +1250,7 @@ const SystemSetting = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F0F8FF]">
+    <div className="min-h-screen bg-[#EBF5FF]">
       <SystemSettingHeader />
       
       {/* Increased spacing after header - reduced */}

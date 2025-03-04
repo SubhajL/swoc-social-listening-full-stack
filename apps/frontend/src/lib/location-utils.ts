@@ -6,13 +6,17 @@
  * Cleans a location string by removing common Thai prefixes
  * such as 'อ.', 'จ.', 'อำเภอ', 'จังหวัด'
  * 
- * @param location The location string to clean
+ * @param location The location string or object to clean
  * @returns The cleaned location string
  */
-export const cleanLocationString = (location?: string): string | undefined => {
+export const cleanLocationString = (location?: string | any): string | undefined => {
   if (!location) return undefined;
   
-  return location
+  // Convert to string if it's not already
+  const locationStr = String(location).trim();
+  if (!locationStr) return undefined;
+  
+  return locationStr
     .replace(/^อ\.\s*/i, '')
     .replace(/^จ\.\s*/i, '')
     .replace(/^อำเภอ\s*/i, '')

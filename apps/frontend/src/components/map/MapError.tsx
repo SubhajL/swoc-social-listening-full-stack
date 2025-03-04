@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
+import { ApiConnectionError } from '@/components/ApiConnectionError';
 
 interface MapErrorProps {
   error: Error | null;
@@ -21,27 +22,51 @@ const MapError: React.FC<MapErrorProps> = ({ error, onRetry }) => {
     return null;
   }
 
+  // Check if this is a network error
+  const isNetworkError = error.message?.includes('Network Error') || 
+                         error.message?.includes('Failed to fetch') ||
+                         error.message?.includes('NetworkError') ||
+                         error.message?.includes('ECONNREFUSED');
+
+  // If it's a network error, show the API connection error component
+  if (isNetworkError) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center bg-white/90 z-10">
+        <ApiConnectionError 
+          onRetry={() => {
+            setShowError(false);
+            onRetry?.();
+          }}
+          message="ไม่สามารถเชื่อมต่อกับ API เซิร์ฟเวอร์เพื่อโหลดข้อมูลแผนที่ได้"
+        />
+      </div>
+    );
+  }
+
+  // For other errors, show the standard error alert
   return (
-    <Alert variant="destructive" className="mb-4">
-      <AlertTitle>Map Loading Error</AlertTitle>
-      <AlertDescription className="mt-2">
-        <p className="text-sm mb-4">{error.message || 'An unexpected error occurred while loading the map.'}</p>
-        {onRetry && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setShowError(false);
-              onRetry();
-            }}
-            className="flex items-center gap-2"
-          >
-            <RefreshCw className="w-4 h-4" />
-            Retry
-          </Button>
-        )}
-      </AlertDescription>
-    </Alert>
+    <div className="absolute inset-0 flex items-center justify-center bg-white/90 z-10">
+      <Alert variant="destructive" className="mb-4 max-w-md">
+        <AlertTitle>เกิดข้อผิดพลาดในการโหลดแผนที่</AlertTitle>
+        <AlertDescription className="mt-2">
+          <p className="text-sm mb-4">{error.message || 'เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุในการโหลดแผนที่'}</p>
+          {onRetry && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setShowError(false);
+                onRetry();
+              }}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className="w-4 h-4" />
+              ลองใหม่อีกครั้ง
+            </Button>
+          )}
+        </AlertDescription>
+      </Alert>
+    </div>
   );
 };
 
