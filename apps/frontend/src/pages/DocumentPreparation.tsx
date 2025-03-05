@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Complaint } from "@/types/complaint";
+import { ComplaintWithOrganization } from "@/types/complaint";
 import { ProcessedPost } from "@/types/processed-post";
 import { SocialPostInfo } from "@/components/complaint/SocialPostInfo";
 import { useComplaintStore } from "@/stores/complaintStore";
@@ -20,19 +21,65 @@ import ShareIcon from "@/assets/icon/share-2.svg";
 import PrinterIcon from "@/assets/icon/printer.svg";
 import PaperclipIcon from "@/assets/icon/paperclip.svg";
 import { cleanLocationString, formatLocationForDisplay, isEmptyLocation } from "@/lib/location-utils";
+import { useStationData } from "@/atoms/hooks";
+import { RainStation as JotaiRainStation } from "@/atoms/stationData";
+import { RainStation as ApiRainStation } from "@/types/rain-station";
 
 // Type guard to check if data is ProcessedPost
 const isProcessedPost = (data: any): data is ProcessedPost => {
   return 'processed_post_id' in data && 'text' in data && 'category_name' in data;
 };
 
-// Helper function to extract complaint issue text
-const getIssue = (complaint: ProcessedPost | Complaint | null): string => {
-  if (!complaint) return '';
-  if (isProcessedPost(complaint)) {
-    return complaint.text || '';
+// Helper function to adapt Jotai RainStation to API RainStation
+const adaptRainStation = (station: JotaiRainStation): ApiRainStation => {
+  return {
+    id: parseInt(station.id, 10) || 0,
+    sequence_number: null,
+    station_id: station.id,
+    station_name: station.name,
+    code: null,
+    irrigation_office: null,
+    river_basin: null,
+    river_name: null,
+    amphure: station.location.split(',')[0] || null,
+    province: station.location.split(',')[1] || null,
+    rainfall_3d: station.lastReading?.value || 0
+  };
+};
+
+// Helper function to adapt Jotai MonitoringStation to API MonitoringStation
+const adaptMonitoringStation = (station: any): any => {
+  return {
+    id: parseInt(station.id, 10) || 0,
+    sequence_number: null,
+    station_id: station.id,
+    station_name: station.name,
+    code: null,
+    irrigation_office: null,
+    river_basin: null,
+    river_name: null,
+    amphure: station.location.split(',')[0] || null,
+    province: station.location.split(',')[1] || null,
+    water_level: station.lastReading?.value || 0
+  };
+};
+
+// Helper function to get the issue from different complaint types
+const getIssue = (data: ProcessedPost | Complaint | ComplaintWithOrganization | null): string => {
+  if (!data) return '';
+  
+  // Check if it's a ProcessedPost
+  if ('text' in data) {
+    return data.text || '';
   }
-  return complaint.issue || '';
+  
+  // Check if it's a ComplaintWithOrganization
+  if ('organizationId' in data) {
+    return data.content || '';
+  }
+  
+  // Otherwise it's a Complaint
+  return data.content || '';
 };
 
 // Success Popup Component
@@ -155,6 +202,16 @@ const DocumentPreparation = () => {
     setApproved
   } = useDocumentPreparationStore();
   
+  // Get station data from Jotai
+  const { 
+    monitoringStations,
+    rainStations,
+    reservoirs,
+    userSelectedMonitoringStations,
+    userSelectedRainStations,
+    userSelectedReservoirs
+  } = useStationData();
+  
   // Local state for UI
   const [hasContentChanged, setHasContentChanged] = useState<boolean>(false);
   const [showSavePopup, setShowSavePopup] = useState<boolean>(false);
@@ -163,6 +220,9 @@ const DocumentPreparation = () => {
   
   // State to store preserved complaint data when returning from ApprovalDashboard or ApprovalStep
   const [preservedData, setPreservedData] = useState<ProcessedPost | Complaint | null>(null);
+  
+  // State to store location data
+  const [locationData, setLocationData] = useState<{ amphure?: string; province?: string }>({});
   
   // Check if we're returning from ApprovalDashboard or ApprovalStep
   useEffect(() => {
@@ -181,6 +241,20 @@ const DocumentPreparation = () => {
       // Clear the state to prevent reloading on refresh
       window.history.replaceState({}, document.title);
     } 
+    // Check if we're coming from ComplaintForm
+    else if (location.state && location.state.fromComplaintForm) {
+      console.log("[DocumentPreparation] Navigated from ComplaintForm");
+      
+      // Station data should already be in Jotai store
+      console.log("[DocumentPreparation] Using station data from Jotai store:", {
+        monitoringStationsCount: monitoringStations.length,
+        rainStationsCount: rainStations.length,
+        reservoirsCount: reservoirs.length,
+        userSelectedMonitoringStationsCount: userSelectedMonitoringStations.length,
+        userSelectedRainStationsCount: userSelectedRainStations.length,
+        userSelectedReservoirsCount: userSelectedReservoirs.length
+      });
+    }
     // Check if we have state in sessionStorage (direct navigation)
     else if (sessionStorage.getItem('documentPreparationState')) {
       try {
@@ -198,47 +272,52 @@ const DocumentPreparation = () => {
           sessionStorage.removeItem('documentPreparationState');
         }
       } catch (error) {
-        console.error("[DocumentPreparation] Error parsing sessionStorage data:", error);
-        toast.error("เกิดข้อผิดพลาดในการโหลดข้อมูล");
+        console.error("[DocumentPreparation] Error parsing sessionStorage state:", error);
       }
-    } else if (location.state) {
-      // Direct navigation from ComplaintForm with data
-      console.log("[DocumentPreparation] Direct navigation with complaint data:", location.state);
     }
-  }, [location]);
+  }, [location.state]);
+
+  // Extract location data from complaint data
+  useEffect(() => {
+    const complaintDataToUse = preservedData || complaintData || complaintStore.complaintData;
+    if (complaintDataToUse) {
+      try {
+        // Use a type assertion to handle the complex union type
+        const dataForLocationExtraction = complaintDataToUse as unknown as (ProcessedPost | Complaint);
+        const extractedLocationData = getLocationData(dataForLocationExtraction);
+        console.log("[DocumentPreparation] Extracted location data:", extractedLocationData);
+        setLocationData(extractedLocationData);
+      } catch (error) {
+        console.error("[DocumentPreparation] Error extracting location data:", error);
+      }
+    }
+  }, [preservedData, complaintData, complaintStore.complaintData]);
 
   // Store the complaint data in the store when the component mounts
   useEffect(() => {
-    // If we have preserved data from returning from approval pages, use it
+    // If we have preserved data from returning from approval page, use it
     if (preservedData && !hasSetComplaintData.current) {
       console.log("[DocumentPreparation] Using preserved data from approval page return:", preservedData);
-      complaintStore.setComplaintData(preservedData);
+      complaintStore.setComplaintData(preservedData as any);
       hasSetComplaintData.current = true;
     }
     // If we have complaint data from navigation state, use it
     else if (complaintData && !hasSetComplaintData.current) {
       console.log("[DocumentPreparation] Storing complaint data from navigation state:", complaintData);
-      complaintStore.setComplaintData(complaintData);
+      complaintStore.setComplaintData(complaintData as any);
       hasSetComplaintData.current = true;
     } 
     // If we don't have complaint data from navigation but we have it in the store, keep using it
-    else if (!complaintData && !preservedData && complaintStore.complaintData && !hasSetComplaintData.current) {
+    else if (complaintStore.complaintData && !hasSetComplaintData.current) {
       console.log("[DocumentPreparation] Using existing complaint data from store:", complaintStore.complaintData);
       hasSetComplaintData.current = true;
     }
-    // If we have neither, we might want to redirect or show an error
-    else if (!complaintData && !preservedData && !complaintStore.complaintData && !hasSetComplaintData.current) {
-      console.error("[DocumentPreparation] No complaint data available from any source");
-      toast.error("ไม่พบข้อมูลข้อร้องเรียน กรุณาเลือกข้อร้องเรียนใหม่");
-      
-      // Navigate back to complaint selection page after a short delay
-      const timer = setTimeout(() => {
-        navigate('/complaint/create');
-      }, 2000);
-      
-      return () => clearTimeout(timer);
+    // If we don't have any complaint data, show an error
+    else if (!hasSetComplaintData.current) {
+      console.error("[DocumentPreparation] No complaint data available");
+      toast.error("ไม่พบข้อมูลข้อร้องเรียน");
     }
-  }, [complaintData, preservedData, complaintStore, navigate]);
+  }, [preservedData, complaintData, complaintStore]);
 
   // Validate complaint data to ensure it has required fields
   useEffect(() => {
@@ -448,28 +527,29 @@ const DocumentPreparation = () => {
     return { amphure: undefined, province: undefined };
   };
 
-  const { amphure, province } = getLocationData(complaintData);
-
   // When displaying location in the UI
-  const displayAmphure = amphure ? formatLocationForDisplay(amphure, 'amphure') : undefined;
-  const displayProvince = province ? formatLocationForDisplay(province, 'province') : undefined;
+  const displayAmphure = locationData.amphure ? formatLocationForDisplay(locationData.amphure, 'amphure') : undefined;
+  const displayProvince = locationData.province ? formatLocationForDisplay(locationData.province, 'province') : undefined;
 
   // Handle print action
   const handlePrint = () => {
-    // Create a new window for printing
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      toast.error("ไม่สามารถเปิดหน้าต่างสำหรับพิมพ์ได้ กรุณาอนุญาตป๊อปอัพ");
-      return;
-    }
-
+    console.log("[DocumentPreparation] Printing document");
+    
     // Get complaint data
     const currentComplaintData = complaintStore.complaintData;
-    const complaintText = getIssue(currentComplaintData);
+    const complaintText = getIssue(currentComplaintData as any);
     
     // Format date for printing
     const printDate = formatTimestamp();
     
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      console.error("[DocumentPreparation] Failed to open print window");
+      toast.error("ไม่สามารถเปิดหน้าต่างพิมพ์ได้");
+      return;
+    }
+
     // Create print content with styling
     const printContent = `
       <!DOCTYPE html>
@@ -571,14 +651,16 @@ const DocumentPreparation = () => {
 
   // Handle Line share action
   const handleLineShare = () => {
+    console.log("[DocumentPreparation] Sharing via LINE");
+    
     // Get complaint data
     const currentComplaintData = complaintStore.complaintData;
-    const complaintText = getIssue(currentComplaintData);
+    const complaintText = getIssue(currentComplaintData as any);
     
     // Format the text to be shared
     const shareText = `ข้อร้องเรียน: ${complaintText.substring(0, 100)}${complaintText.length > 100 ? '...' : ''}\n\nเอกสารตอบ: ${documentContent || 'ยังไม่มีเอกสารตอบ'}`;
     
-    // Encode the text for URL
+    // Encode the text for the URL
     const encodedText = encodeURIComponent(shareText);
     
     // Create Line sharing URL
@@ -614,14 +696,16 @@ const DocumentPreparation = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="p-8 shadow-sm">
               <WaterLevelInfo 
-                amphure={amphure}
-                province={province}
+                amphure={locationData.amphure}
+                province={locationData.province}
+                stationData={userSelectedMonitoringStations.map(adaptMonitoringStation)}
               />
             </Card>
             <Card className="p-8 shadow-sm">
               <WaterManagementPlan 
-                amphure={amphure}
-                province={province}
+                amphure={locationData.amphure}
+                province={locationData.province}
+                stationData={userSelectedRainStations.map(adaptRainStation)}
               />
             </Card>
           </div>

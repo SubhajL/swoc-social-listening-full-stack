@@ -57,6 +57,19 @@ import {
   Document
 } from './documentData';
 
+// Import the documentAttachmentsAtom
+import { documentAttachmentsAtom } from '@/components/shared/DocumentAttachmentsCard';
+
+// Define the Attachment type
+export interface Attachment {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  url?: string;
+  file?: File;
+}
+
 // ===== Station Data Hooks =====
 
 export function useStationData() {
@@ -251,27 +264,42 @@ export function useStationData() {
     adaptReservoir
   ]);
 
-  // Function to explicitly save station data to both localStorage and sessionStorage
-  const saveStationDataForNavigation = useCallback(() => {
-    // Generate a unique save ID for this operation
+  // Improve the saveStationDataForNavigation function
+  const saveStationDataForNavigation = useCallback(async (saveSource: string = 'unknown') => {
+    console.log(`[useStationData] saveStationDataForNavigation called from ${saveSource}`);
+    
+    // Generate a unique save ID for tracking
     const saveId = `save_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     
-    // Debug log the state before saving
-    console.log(`🔍 [useStationData] Saving station data for navigation (ID: ${saveId})`, {
-      timestamp: new Date().toISOString(),
+    // Log the current state before saving
+    console.log(`[useStationData] Current state (saveId: ${saveId}):`, {
       monitoringStationsCount: monitoringStations.length,
       rainStationsCount: rainStations.length,
       reservoirsCount: reservoirs.length,
-      userSelectedMonitoringCount: userSelectedMonitoringStations.length,
-      userSelectedRainCount: userSelectedRainStations.length,
+      userSelectedMonitoringStationsCount: userSelectedMonitoringStations.length,
+      userSelectedRainStationsCount: userSelectedRainStations.length,
       userSelectedReservoirsCount: userSelectedReservoirs.length,
+      disabledMonitoringStationsCount: Object.keys(disabledMonitoringStations).length,
+      disabledRainStationsCount: Object.keys(disabledRainStations).length,
+      disabledReservoirsCount: Object.keys(disabledReservoirs).length
     });
     
-    // Set the intentional update flag on window to prevent re-renders
+    // Set a flag to prevent re-renders during save
     window._stationDataUpdateIntentional = true;
+    setStationDataUpdateIntentional(true);
     
-    // 1. Save to localStorage for long-term persistence
-    const stationDataToSave = {
+    // Track success/failure
+    let sessionStorageSaveSuccess = false;
+    let localStorageSaveSuccess = false;
+    let sessionStorageError = null;
+    let localStorageError = null;
+    let minimalSaveSuccess = false;
+    
+    // Prepare the data to save
+    const dataToSave = {
+      saveId,
+      savedAt: new Date().toISOString(),
+      saveSource,
       monitoringStations,
       rainStations,
       reservoirs,
@@ -280,97 +308,100 @@ export function useStationData() {
       userSelectedReservoirs,
       disabledMonitoringStations,
       disabledRainStations,
-      disabledReservoirs,
-      // Add metadata
-      saveId,
-      savedAt: new Date().toISOString(),
-      saveSource: 'saveStationDataForNavigation'
+      disabledReservoirs
     };
     
     try {
-      // Save to localStorage
-      localStorage.setItem('tempStationData', JSON.stringify(stationDataToSave));
-      
-      // 2. Also save to sessionStorage for immediate access during navigation
-      sessionStorage.setItem('stationDataForNavigation', JSON.stringify(stationDataToSave));
-      
-      // Set flag in sessionStorage to indicate fresh data available
-      sessionStorage.setItem('stationDataTimestamp', new Date().toISOString());
-      sessionStorage.setItem('stationDataSaveId', saveId);
-      
-      // Also set a flag for the navigation management
-      sessionStorage.setItem('navigatingIntentionally', 'true');
-      
-      // Log success and verify data was stored
-      const savedLocalStorage = localStorage.getItem('tempStationData');
-      const savedSessionStorage = sessionStorage.getItem('stationDataForNavigation');
-      
-      console.log(`🔍 [useStationData] Station data saved successfully (ID: ${saveId})`, {
-        localStorageSuccess: !!savedLocalStorage,
-        sessionStorageSuccess: !!savedSessionStorage,
-        localStorageSize: savedLocalStorage ? savedLocalStorage.length : 0,
-        sessionStorageSize: savedSessionStorage ? savedSessionStorage.length : 0,
-        timestamp: new Date().toISOString()
-      });
-      
-      // Reset the window flag after a brief delay
-      setTimeout(() => {
-        window._stationDataUpdateIntentional = false;
-      }, 100);
-      
-      return {
-        success: true,
-        saveId,
-        timestamp: new Date().toISOString(),
-        storageDetails: {
-          localStorage: savedLocalStorage ? true : false,
-          sessionStorage: savedSessionStorage ? true : false
-        }
-      };
-    } catch (error) {
-      console.error(`[useStationData] Error saving station data (ID: ${saveId}):`, error);
-      
-      // Attempt recovery by using only sessionStorage if localStorage failed
+      // First try sessionStorage (more reliable for navigation)
       try {
-        if (!localStorage.getItem('tempStationData') && !sessionStorage.getItem('stationDataForNavigation')) {
-          console.log(`🔍 [useStationData] Attempting recovery using sessionStorage only (ID: ${saveId})`);
-          sessionStorage.setItem('stationDataForNavigation', JSON.stringify(stationDataToSave));
-          sessionStorage.setItem('stationDataTimestamp', new Date().toISOString());
-          sessionStorage.setItem('stationDataSaveId', saveId);
-          sessionStorage.setItem('stationDataRecoveryMode', 'true');
-          
-          return {
-            success: true,
-            recovery: true,
-            saveId,
-            timestamp: new Date().toISOString(),
-            error: String(error)
-          };
-        }
-      } catch (recoveryError) {
-        console.error(`[useStationData] Recovery attempt failed (ID: ${saveId}):`, recoveryError);
+        // Save to sessionStorage first (more reliable for navigation)
+        const serializedData = JSON.stringify(dataToSave);
+        sessionStorage.setItem('stationDataForNavigation', serializedData);
+        sessionStorage.setItem('stationDataTimestamp', new Date().toISOString());
+        
+        // Calculate the size of the data
+        const dataSizeInBytes = new Blob([serializedData]).size;
+        const dataSizeInKB = (dataSizeInBytes / 1024).toFixed(2);
+        
+        console.log(`[useStationData] Successfully saved to sessionStorage (${dataSizeInKB} KB)`);
+        sessionStorageSaveSuccess = true;
+        
+        // Also save a minimal version as backup
+        const minimalData = {
+          saveId,
+          savedAt: new Date().toISOString(),
+          saveSource: `${saveSource}_minimal`,
+          userSelectedMonitoringStations,
+          userSelectedRainStations,
+          userSelectedReservoirs
+        };
+        
+        sessionStorage.setItem('stationDataForNavigation_minimal', JSON.stringify(minimalData));
+        console.log("[useStationData] Also saved minimal version to sessionStorage");
+        minimalSaveSuccess = true;
+      } catch (error) {
+        console.error("[useStationData] Error saving to sessionStorage:", error);
+        sessionStorageError = error;
       }
       
-      return {
-        success: false,
-        saveId,
-        timestamp: new Date().toISOString(),
-        error: String(error)
-      };
+      // Then try localStorage (more persistent)
+      try {
+        // Save to localStorage for persistence
+        localStorage.setItem('monitoringStations', JSON.stringify(monitoringStations));
+        localStorage.setItem('rainStations', JSON.stringify(rainStations));
+        localStorage.setItem('reservoirs', JSON.stringify(reservoirs));
+        localStorage.setItem('userSelectedMonitoringStations', JSON.stringify(userSelectedMonitoringStations));
+        localStorage.setItem('userSelectedRainStations', JSON.stringify(userSelectedRainStations));
+        localStorage.setItem('userSelectedReservoirs', JSON.stringify(userSelectedReservoirs));
+        localStorage.setItem('disabledMonitoringStations', JSON.stringify(disabledMonitoringStations));
+        localStorage.setItem('disabledRainStations', JSON.stringify(disabledRainStations));
+        localStorage.setItem('disabledReservoirs', JSON.stringify(disabledReservoirs));
+        
+        console.log("[useStationData] Successfully saved to localStorage");
+        localStorageSaveSuccess = true;
+      } catch (error) {
+        console.error("[useStationData] Error saving to localStorage:", error);
+        localStorageError = error;
+        
+        // If localStorage fails but sessionStorage succeeded, we're still good
+        if (sessionStorageSaveSuccess) {
+          console.log("[useStationData] Using sessionStorage as fallback since localStorage failed");
+        } else if (minimalSaveSuccess) {
+          console.log("[useStationData] Using minimal sessionStorage data as last resort");
+        } else {
+          console.error("[useStationData] All storage methods failed!");
+        }
+      }
     } finally {
-      // Reset the window flag
-      window._stationDataUpdateIntentional = false;
+      // Reset the window flag after a short delay
+      setTimeout(() => {
+        window._stationDataUpdateIntentional = false;
+        setStationDataUpdateIntentional(false);
+      }, 100);
     }
+    
+    // Return the result of the save operation
+    return {
+      saveId,
+      timestamp: new Date().toISOString(),
+      sessionStorageSaveSuccess,
+      localStorageSaveSuccess,
+      minimalSaveSuccess,
+      sessionStorageError,
+      localStorageError,
+      overallSuccess: sessionStorageSaveSuccess || localStorageSaveSuccess || minimalSaveSuccess
+    };
   }, [
-    monitoringStations,
-    rainStations,
-    reservoirs,
-    userSelectedMonitoringStations,
-    userSelectedRainStations,
-    userSelectedReservoirs,
-    disabledMonitoringStations,
-    disabledRainStations,
-    disabledReservoirs
+    monitoringStations, 
+    rainStations, 
+    reservoirs, 
+    userSelectedMonitoringStations, 
+    userSelectedRainStations, 
+    userSelectedReservoirs, 
+    disabledMonitoringStations, 
+    disabledRainStations, 
+    disabledReservoirs,
+    setStationDataUpdateIntentional
   ]);
 
   // Add a stationData object to match older API
@@ -424,41 +455,40 @@ export function useStationCounts() {
 // ===== Complaint Data Hooks =====
 
 export function useComplaintData() {
-  const complaintData = useAtomValue(allComplaintDataAtom);
-  const setTitle = useSetAtom(titleAtom);
-  const setDescription = useSetAtom(descriptionAtom);
-  const setLocation = useSetAtom(locationAtom);
-  const setCoordinates = useSetAtom(coordinatesAtom);
-  const setProcessedPosts = useSetAtom(processedPostsAtom);
-  const setSelectedPostIds = useSetAtom(selectedPostIdsAtom);
-  const setIsSubmitting = useSetAtom(isSubmittingAtom);
-  const setIsSubmitted = useSetAtom(isSubmittedAtom);
-  const setSubmissionError = useSetAtom(submissionErrorAtom);
-  const setCurrentStep = useSetAtom(currentStepAtom);
+  const [title, setTitle] = useAtom(titleAtom);
+  const [description, setDescription] = useAtom(descriptionAtom);
+  const [location, setLocation] = useAtom(locationAtom);
+  const [coordinates, setCoordinates] = useAtom(coordinatesAtom);
+  const [processedPosts, setProcessedPosts] = useAtom(processedPostsAtom);
+  const [selectedPostIds, setSelectedPostIds] = useAtom(selectedPostIdsAtom);
+  const [isSubmitting, setIsSubmitting] = useAtom(isSubmittingAtom);
+  const [isSubmitted, setIsSubmitted] = useAtom(isSubmittedAtom);
+  const [submissionError, setSubmissionError] = useAtom(submissionErrorAtom);
+  const [currentStep, setCurrentStep] = useAtom(currentStepAtom);
   
-  // Helper functions
-  const updateTitle = useCallback((title: string) => {
-    setTitle(title);
+  // Helper functions to update complaint data
+  const updateTitle = useCallback((newTitle: string) => {
+    setTitle(newTitle);
   }, [setTitle]);
   
-  const updateDescription = useCallback((description: string) => {
-    setDescription(description);
+  const updateDescription = useCallback((newDescription: string) => {
+    setDescription(newDescription);
   }, [setDescription]);
   
-  const updateLocation = useCallback((location: string) => {
-    setLocation(location);
+  const updateLocation = useCallback((newLocation: string) => {
+    setLocation(newLocation);
   }, [setLocation]);
   
-  const updateCoordinates = useCallback((lat: number | null, lng: number | null) => {
-    setCoordinates({ lat, lng });
+  const updateCoordinates = useCallback((newCoordinates: {lat: number | null, lng: number | null}) => {
+    setCoordinates(newCoordinates);
   }, [setCoordinates]);
   
-  const updateProcessedPosts = useCallback((posts: ProcessedPost[]) => {
-    setProcessedPosts(posts);
+  const updateProcessedPosts = useCallback((newPosts: ProcessedPost[]) => {
+    setProcessedPosts(newPosts);
   }, [setProcessedPosts]);
   
   const togglePostSelection = useCallback((postId: string) => {
-    setSelectedPostIds((prev: string[]) => {
+    setSelectedPostIds(prev => {
       if (prev.includes(postId)) {
         return prev.filter(id => id !== postId);
       } else {
@@ -475,10 +505,18 @@ export function useComplaintData() {
   const completeSubmission = useCallback((success: boolean, error?: string) => {
     setIsSubmitting(false);
     setIsSubmitted(success);
-    if (error) {
+    if (!success && error) {
       setSubmissionError(error);
     }
   }, [setIsSubmitting, setIsSubmitted, setSubmissionError]);
+  
+  const nextStep = useCallback(() => {
+    setCurrentStep(prev => prev + 1);
+  }, [setCurrentStep]);
+  
+  const prevStep = useCallback(() => {
+    setCurrentStep(prev => Math.max(0, prev - 1));
+  }, [setCurrentStep]);
   
   const goToStep = useCallback((step: number) => {
     setCurrentStep(step);
@@ -488,7 +526,7 @@ export function useComplaintData() {
     setTitle('');
     setDescription('');
     setLocation('');
-    setCoordinates({ lat: null, lng: null });
+    setCoordinates({lat: null, lng: null});
     setProcessedPosts([]);
     setSelectedPostIds([]);
     setIsSubmitting(false);
@@ -508,9 +546,23 @@ export function useComplaintData() {
     setCurrentStep
   ]);
   
+  // Return all complaint data and functions
   return {
     // State
-    ...complaintData,
+    title,
+    description,
+    location,
+    coordinates,
+    processedPosts,
+    selectedPostIds,
+    isSubmitting,
+    isSubmitted,
+    submissionError,
+    currentStep,
+    
+    // Derived state
+    hasSelectedPosts: useAtomValue(hasSelectedPostsAtom),
+    isFormValid: useAtomValue(isFormValidAtom),
     
     // Update functions
     updateTitle,
@@ -524,10 +576,12 @@ export function useComplaintData() {
     startSubmission,
     completeSubmission,
     
-    // Navigation
+    // Navigation functions
+    nextStep,
+    prevStep,
     goToStep,
     
-    // Reset
+    // Reset function
     resetComplaintData
   };
 }
@@ -642,5 +696,44 @@ export function useDocumentValidation() {
   return {
     hasSelectedDocuments,
     isDocumentValid
+  };
+}
+
+// ===== Document Attachments Hooks =====
+
+export function useDocumentAttachments() {
+  const [attachments, setAttachments] = useAtom(documentAttachmentsAtom);
+  
+  const addAttachment = useCallback((file: File) => {
+    const newAttachment: Attachment = {
+      id: `attachment-${Date.now()}`,
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      file
+    };
+    
+    setAttachments(prev => [...prev, newAttachment]);
+    return newAttachment.id;
+  }, [setAttachments]);
+  
+  const removeAttachment = useCallback((id: string) => {
+    setAttachments(prev => prev.filter(attachment => attachment.id !== id));
+  }, [setAttachments]);
+  
+  const getAttachment = useCallback((id: string) => {
+    return attachments.find(attachment => attachment.id === id);
+  }, [attachments]);
+  
+  const clearAttachments = useCallback(() => {
+    setAttachments([]);
+  }, [setAttachments]);
+  
+  return {
+    attachments,
+    addAttachment,
+    removeAttachment,
+    getAttachment,
+    clearAttachments
   };
 } 

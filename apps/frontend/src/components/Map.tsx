@@ -22,6 +22,7 @@ import {
 } from '@/utils/map-core';
 import type { Feature, GeoJSON, Point } from 'geojson';
 import React from 'react';
+import { useComplaintData } from '@/atoms/hooks';
 
 interface MapProps {
   token: string;
@@ -196,6 +197,9 @@ export function Map({
   // Convert CategoryName enum values to strings for filtering
   const categoryStrings = selectedCategories.map(cat => cat.toString());
 
+  // Get the complaint data functions at the component level
+  const complaintData = useComplaintData();
+
   // Initialize map and load marker images
   useEffect(() => {
     if (!isReady || !token || mapRef.current) return;
@@ -256,6 +260,33 @@ export function Map({
         const properties = feature.properties;
         
         if (properties?.id) {
+          // Create a post object with the necessary properties
+          const post = {
+            processed_post_id: properties.id,
+            text: properties.text || '',
+            category_name: properties.category || 'Unknown',
+            sub1_category_name: '',
+            profile_name: '',
+            post_date: new Date(),
+            post_url: '',
+            latitude: feature.geometry.coordinates[1] || 0,
+            longitude: feature.geometry.coordinates[0] || 0,
+            tumbon: [] as string[],
+            amphure: [] as string[],
+            province: [] as string[],
+            created_at: new Date().toISOString(),
+            status: 'new',
+            type: 'complaint',
+            severity: 1,
+            id: properties.id.toString(),
+            coordinate_source: 'direct' as const
+          };
+          
+          // Update the Jotai store with the post data
+          complaintData.updateProcessedPosts([post as ProcessedPost]);
+          complaintData.togglePostSelection(properties.id.toString());
+          
+          // Navigate to the complaint form with the post ID
           navigate(`/complaint/create?postId=${properties.id}`);
         }
       });
@@ -314,6 +345,33 @@ export function Map({
                 link.textContent = properties?.text?.substring(0, 50) + '...';
                 link.onclick = () => {
                   if (properties?.id) {
+                    // Create a post object with the necessary properties
+                    const post = {
+                      processed_post_id: properties.id,
+                      text: properties.text || '',
+                      category_name: properties.category || 'Unknown',
+                      sub1_category_name: '',
+                      profile_name: '',
+                      post_date: new Date(),
+                      post_url: '',
+                      latitude: feature.geometry.coordinates[1] || 0,
+                      longitude: feature.geometry.coordinates[0] || 0,
+                      tumbon: [] as string[],
+                      amphure: [] as string[],
+                      province: [] as string[],
+                      created_at: new Date().toISOString(),
+                      status: 'new',
+                      type: 'complaint',
+                      severity: 1,
+                      id: properties.id.toString(),
+                      coordinate_source: 'direct' as const
+                    };
+                    
+                    // Update the Jotai store with the post data
+                    complaintData.updateProcessedPosts([post as ProcessedPost]);
+                    complaintData.togglePostSelection(properties.id.toString());
+                    
+                    // Navigate to the complaint form with the post ID
                     navigate(`/complaint/create?postId=${properties.id}`);
                   }
                 };
@@ -351,7 +409,7 @@ export function Map({
       setHasError(true);
       setError(error as Error);
     }
-  }, [isReady, token, containerRef, navigate]);
+  }, [isReady, token, containerRef, navigate, complaintData]);
 
   // Load initial data
   useEffect(() => {

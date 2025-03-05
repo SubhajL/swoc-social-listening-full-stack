@@ -13,6 +13,10 @@ import { useEffect, useState, useRef } from "react";
 // Replace Zustand store with Jotai hooks
 import { useComplaintData } from "@/atoms/hooks";
 import { useStationData } from "@/atoms/hooks";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+// Import the reusable components
+import { ComplaintInfoCard, WaterLevelInfoCard, WaterManagementPlanCard } from "@/components/shared";
 
 // Declare the window property for TypeScript
 declare global {
@@ -21,36 +25,154 @@ declare global {
   }
 }
 
+// Create a FormComplaint type that extends Complaint with additional fields needed in the form
+// but overrides some fields to match ComplaintDTO schema
+interface FormComplaint extends Omit<Complaint, 'id' | 'province'> {
+  id: number; // Override to match ComplaintDTO
+  issue?: string;
+  category?: string;
+  reporter?: string;
+  date?: string;
+  coordinates?: { lat: number; lng: number };
+  tumbon?: string[];
+  amphure?: string[];
+  province?: string[]; // Override to match ComplaintDTO
+  location?: string;
+}
+
+// Update the ExtendedComplaintData interface to match the FormComplaint type
+interface ExtendedComplaintData {
+  id: string | number; // Allow both string and number to handle different sources
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  status: string;
+  type?: string;
+  province?: string | string[]; // Allow both string and array to handle different sources
+  postId?: string;
+  link?: string;
+  // Additional fields used in the form
+  issue?: string;
+  category?: string;
+  reporter?: string;
+  date?: string;
+  coordinates?: { lat: number; lng: number };
+  tumbon?: string[];
+  amphure?: string[];
+  location?: string;
+}
+
+// Add type guards to check data types
+function isExtendedComplaintData(data: any): data is ExtendedComplaintData {
+  return data && 
+    (typeof data.id === 'string' || typeof data.id === 'number') && 
+    typeof data.content === 'string' && 
+    typeof data.createdAt === 'string' && 
+    typeof data.updatedAt === 'string' && 
+    typeof data.status === 'string';
+}
+
+function isComplaint(data: any): data is Complaint {
+  return data && 
+    typeof data.id === 'string' && 
+    typeof data.content === 'string' && 
+    typeof data.createdAt === 'string' &&
+    typeof data.updatedAt === 'string' &&
+    typeof data.status === 'string';
+}
+
 // Type guard to check if data is ProcessedPost
 const isProcessedPost = (data: any): data is ProcessedPost => {
   return 'processed_post_id' in data && 'text' in data && 'category_name' in data;
 };
 
-// Convert ProcessedPost to ComplaintDTO format while preserving location data
-const convertToComplaintFormat = (data: ProcessedPost | Complaint) => {
-  if (isProcessedPost(data)) {
+// Update the convertToComplaintFormat function to handle ExtendedComplaintData
+const convertToComplaintFormat = (data: ProcessedPost | Complaint | ExtendedComplaintData): FormComplaint => {
+  // If it's already a Complaint, add form fields
+  if (isComplaint(data)) {
     return {
-      id: data.processed_post_id,
-      issue: data.text,
-      category: data.category_name,
-      reporter: data.profile_name,
-      date: data.post_date instanceof Date 
-        ? data.post_date.toISOString().split('T')[0] 
-        : new Date(data.post_date).toISOString().split('T')[0],
-      link: data.post_url,
-      coordinates: {
-        lat: data.latitude,
-        lng: data.longitude
-      },
-      // Preserve original location data structure
-      tumbon: Array.isArray(data.tumbon) ? data.tumbon : [data.tumbon].filter(Boolean),
-      amphure: Array.isArray(data.amphure) ? data.amphure : [data.amphure].filter(Boolean),
-      province: Array.isArray(data.province) ? data.province : [data.province].filter(Boolean),
-      // Keep location field for backward compatibility
-      location: ''
+      ...data,
+      // Convert id to number for validation
+      id: typeof data.id === 'string' ? parseInt(data.id, 10) || 0 : data.id,
+      issue: data.content,
+      category: data.type || '',
+      coordinates: { lat: 0, lng: 0 }, // Default coordinates
+      tumbon: [],
+      // Convert province to array for validation
+      province: typeof data.province === 'string' ? [data.province] : 
+               (Array.isArray(data.province) ? 
+                (data.province as string[]) : []),
+      amphure: [],
+      location: data.province || ''
     };
   }
-  return data;
+  
+  // If it's an ExtendedComplaintData, convert it to FormComplaint
+  if (isExtendedComplaintData(data)) {
+    return {
+      // Convert id to number for validation
+      id: typeof data.id === 'string' ? parseInt(data.id, 10) || 0 : 
+         (typeof data.id === 'number' ? data.id : 0),
+      content: data.content,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+      status: data.status,
+      type: data.type,
+      // Convert province to array for validation
+      province: typeof data.province === 'string' ? [data.province] : 
+               (Array.isArray(data.province) ? 
+                (data.province as string[]) : []),
+      postId: data.postId,
+      link: data.link,
+      // Form fields
+      issue: data.issue || data.content,
+      category: data.category || data.type || '',
+      reporter: data.reporter || '',
+      date: data.date || '',
+      coordinates: data.coordinates || { lat: 0, lng: 0 },
+      tumbon: data.tumbon || [],
+      amphure: data.amphure || [],
+      location: data.location || (typeof data.province === 'string' ? data.province : '')
+    };
+  }
+  
+  // Otherwise, it's a ProcessedPost, convert it to FormComplaint
+  return {
+    // Convert id to number for validation
+    id: typeof data.processed_post_id === 'string' ? 
+      parseInt(data.processed_post_id, 10) || 0 : 
+      (typeof data.processed_post_id === 'number' ? data.processed_post_id : 0),
+    content: data.text || '',
+    createdAt: data.created_at || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    status: data.status || 'pending',
+    type: data.category_name || '',
+    // Convert province to array for validation
+    province: Array.isArray(data.province) ? 
+              (data.province as string[]) : 
+              (typeof data.province === 'string' ? [data.province] : []),
+    postId: String(data.processed_post_id),
+    link: data.post_url || '',
+    // Form fields
+    issue: data.text || '',
+    category: data.category_name || '',
+    reporter: data.profile_name || '',
+    date: data.post_date instanceof Date 
+      ? data.post_date.toISOString().split('T')[0] 
+      : (typeof data.post_date === 'string' 
+        ? new Date(data.post_date).toISOString().split('T')[0]
+        : new Date().toISOString().split('T')[0]),
+    coordinates: { lat: data.latitude || 0, lng: data.longitude || 0 },
+    tumbon: Array.isArray(data.tumbon) ? data.tumbon : 
+            (data.tumbon ? [data.tumbon].filter(Boolean) : []),
+    amphure: Array.isArray(data.amphure) ? data.amphure : 
+             (data.amphure ? [data.amphure].filter(Boolean) : []),
+    location: [
+      ...(Array.isArray(data.tumbon) ? data.tumbon : (data.tumbon ? [data.tumbon] : [])).filter(Boolean),
+      ...(Array.isArray(data.amphure) ? data.amphure : (data.amphure ? [data.amphure] : [])).filter(Boolean),
+      ...(Array.isArray(data.province) ? data.province : (data.province ? [data.province] : [])).filter(Boolean)
+    ].join(', ')
+  };
 };
 
 // Helper function to safely check if a string is empty
@@ -64,681 +186,68 @@ const ComplaintForm = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const postId = searchParams.get('postId');
-  const complaintData = location.state as ProcessedPost | undefined;
+  const complaintDataFromLocation = location.state as ProcessedPost | undefined;
   const { isLoading, complaint } = useComplaint(postId ? Number(postId) : undefined);
   
-  // Replace Zustand store with Jotai hooks
-  const {
+  // Get complaint data from Jotai store
+  const { 
+    title, 
+    description, 
     updateTitle,
     updateDescription,
     updateLocation,
     updateCoordinates,
     updateProcessedPosts,
-    togglePostSelection,
-    startSubmission,
-    completeSubmission,
-    goToStep,
-    resetComplaintData
+    togglePostSelection
   } = useComplaintData();
   
-  // Get station data from Jotai
-  const {
-    stationDataUpdateIntentional,
-    setStationDataUpdateIntentional,
-    updateMonitoringStations,
-    updateRainStations,
-    updateReservoirs,
-    setUserSelectedMonitoringStations,
-    setUserSelectedRainStations,
-    setUserSelectedReservoirs,
-    setDisabledMonitoringStations,
-    setDisabledRainStations,
-    setDisabledReservoirs,
-    stationData
-  } = useStationData();
+  // Get station data from Jotai store
+  const stationData = useStationData();
   
-  // State for tracking if we returned from StationCardEdit
+  // State to track if we're returning from StationCardEdit
   const [returnedFromStationEdit, setReturnedFromStationEdit] = useState(false);
   
-  // State to store preserved complaint data when returning from StationCardEdit
-  const [preservedData, setPreservedData] = useState<any>(null);
+  // State for preserving data when returning from StationCardEdit
+  const [preservedData, setPreservedData] = useState<Complaint | ExtendedComplaintData | ProcessedPost | null>(null);
   
   // Ref to track if initial state restoration has been done
-  const initialStateRestorationDone = useRef(false);
+  const initialStateRestored = useRef(false);
   
   // Check if we're returning from StationCardEdit
   useEffect(() => {
-    // Skip if we've already done the initial state restoration
-    if (initialStateRestorationDone.current) {
-      console.log("🔍 [DEBUG-ComplaintForm] Skipping duplicate state restoration - already restored once");
-      return;
-    }
-    
-    console.log("🔍 [DEBUG-ComplaintForm] useEffect for StationCardEdit return check running");
-    console.log("🔍 [DEBUG-ComplaintForm] Current timestamp:", new Date().toISOString());
-    
-    // Log all sessionStorage keys for debugging
-    const sessionStorageKeys = Object.keys(sessionStorage);
-    console.log("🔍 [DEBUG-ComplaintForm] All sessionStorage keys:", sessionStorageKeys);
-    
-    // PRIORITY ORDER FOR STATE RESTORATION:
-    // 1. First check complaintFormState in sessionStorage (most reliable)
-    // 2. Then check for stationDataForNavigation in sessionStorage
-    // 3. Then check location.state (least reliable)
-    // 4. Finally, check localStorage for legacy data storage
-    
-    // First, check for complaintFormState in sessionStorage
-    const savedComplaintFormState = sessionStorage.getItem('complaintFormState');
-    
-    if (savedComplaintFormState) {
-      try {
-        console.log("🔍 [DEBUG-ComplaintForm] Found complaintFormState in sessionStorage");
-        const savedState = JSON.parse(savedComplaintFormState);
-        console.log("🔍 [DEBUG-ComplaintForm] Parsed complaintFormState:", savedState);
-        
-        // Check if we're returning from StationCardEdit
-        if (savedState.from === 'StationCardEdit') {
-          console.log("🔍 [DEBUG-ComplaintForm] Confirmed return from StationCardEdit via sessionStorage");
-          console.log("🔍 [DEBUG-ComplaintForm] Timestamp:", savedState.timestamp);
-          console.log("🔍 [DEBUG-ComplaintForm] Save method:", savedState.saveMethodUsed || 'unknown');
-          
-          // Set the flag to indicate we're returning from StationCardEdit
-          setReturnedFromStationEdit(true);
-          
-          // Check if we have station data included
-          if (savedState.includesStationData) {
-            console.log("🔍 [DEBUG-ComplaintForm] Station data included flag is true");
-            
-            // Check which save method was used
-            if (savedState.saveMethodUsed === 'saveStationDataForNavigation') {
-              console.log("🔍 [DEBUG-ComplaintForm] Using saveStationDataForNavigation method");
-              
-              // The stationDataForNavigation check below will handle loading the data
-              // Just set the flag to intentional to prevent navigation warnings
-              window._stationDataUpdateIntentional = true;
-              setStationDataUpdateIntentional(true);
-            }
-          }
-          
-          // Save the complaint data for later use
-          if (savedState.complaintData) {
-            console.log("🔍 [DEBUG-ComplaintForm] Found complaint data in complaintFormState");
-            setPreservedData(savedState.complaintData);
-          }
-          
-          // Remove the complaintFormState from sessionStorage to prevent duplicates
-          sessionStorage.removeItem('complaintFormState');
-          console.log("🔍 [DEBUG-ComplaintForm] Removed complaintFormState from sessionStorage");
-        }
-      } catch (error) {
-        console.error("[ComplaintForm] Error parsing complaintFormState:", error);
-      } finally {
-        setStationDataUpdateIntentional(false);
-      }
-    }
-    
-    // Check if we have a flag indicating we're navigating after a successful save
-    const navigatingAfterSave = sessionStorage.getItem('navigatingAfterSave');
-    console.log("🔍 [DEBUG-ComplaintForm] navigatingAfterSave flag value:", navigatingAfterSave);
-    
-    if (navigatingAfterSave === 'true') {
-      console.log("[ComplaintForm] Detected navigation after successful save");
-      console.log("🔍 [DEBUG-ComplaintForm] Found navigatingAfterSave flag in sessionStorage");
-      
-      // Remove the flag immediately to prevent duplicate processing
-      sessionStorage.removeItem('navigatingAfterSave');
-      console.log("🔍 [DEBUG-ComplaintForm] Removed navigatingAfterSave flag from sessionStorage");
-      
-      // Force reload data from localStorage
-      const savedStoreData = localStorage.getItem('monitoringStations');
-      const savedRainStations = localStorage.getItem('rainStations');
-      const savedReservoirs = localStorage.getItem('reservoirs');
-      const savedUserSelectedMonitoring = localStorage.getItem('userSelectedMonitoringStations');
-      const savedUserSelectedRain = localStorage.getItem('userSelectedRainStations');
-      const savedUserSelectedReservoirs = localStorage.getItem('userSelectedReservoirs');
-      const savedDisabledMonitoring = localStorage.getItem('disabledMonitoringStations');
-      const savedDisabledRain = localStorage.getItem('disabledRainStations');
-      const savedDisabledReservoirs = localStorage.getItem('disabledReservoirsStations');
-      
-      console.log("🔍 [DEBUG-ComplaintForm] localStorage data exists:", {
-        monitoringStations: !!savedStoreData,
-        rainStations: !!savedRainStations,
-        reservoirs: !!savedReservoirs,
-        userSelectedMonitoring: !!savedUserSelectedMonitoring,
-        userSelectedRain: !!savedUserSelectedRain,
-        userSelectedReservoirs: !!savedUserSelectedReservoirs,
-        disabledMonitoring: !!savedDisabledMonitoring,
-        disabledRain: !!savedDisabledRain,
-        disabledReservoirs: !!savedDisabledReservoirs
-      });
-      
-      // Set the update flag to prevent navigation warnings
-      setStationDataUpdateIntentional(true);
-      
-      try {
-        // Parse and update each piece of data if it exists
-        if (savedStoreData) {
-          const monitoringStations = JSON.parse(savedStoreData);
-          updateMonitoringStations(monitoringStations);
-        }
-        
-        if (savedRainStations) {
-          const rainStations = JSON.parse(savedRainStations);
-          updateRainStations(rainStations);
-        }
-        
-        if (savedReservoirs) {
-          const reservoirs = JSON.parse(savedReservoirs);
-          updateReservoirs(reservoirs);
-        }
-        
-        if (savedUserSelectedMonitoring) {
-          const userSelectedMonitoring = JSON.parse(savedUserSelectedMonitoring);
-          setUserSelectedMonitoringStations(userSelectedMonitoring);
-        }
-        
-        if (savedUserSelectedRain) {
-          const userSelectedRain = JSON.parse(savedUserSelectedRain);
-          setUserSelectedRainStations(userSelectedRain);
-        }
-        
-        if (savedUserSelectedReservoirs) {
-          const userSelectedReservoirs = JSON.parse(savedUserSelectedReservoirs);
-          setUserSelectedReservoirs(userSelectedReservoirs);
-        }
-        
-        if (savedDisabledMonitoring) {
-          const disabledMonitoring = JSON.parse(savedDisabledMonitoring);
-          setDisabledMonitoringStations(disabledMonitoring);
-        }
-        
-        if (savedDisabledRain) {
-          const disabledRain = JSON.parse(savedDisabledRain);
-          setDisabledRainStations(disabledRain);
-        }
-        
-        if (savedDisabledReservoirs) {
-          const disabledReservoirs = JSON.parse(savedDisabledReservoirs);
-          setDisabledReservoirs(disabledReservoirs);
-        }
-        
-        console.log("[ComplaintForm] Successfully loaded station data from localStorage");
-      } catch (error) {
-        console.error("[ComplaintForm] Error parsing localStorage data after save:", error);
-        console.log("🔍 [DEBUG-ComplaintForm] Error details:", error);
-      } finally {
-        // Reset the update flag
-        setStationDataUpdateIntentional(false);
-      }
-    } else {
-      console.log("🔍 [DEBUG-ComplaintForm] No navigatingAfterSave flag found");
-    }
-    
-    // Check for temp station data from StationCardEdit
-    const tempStationData = localStorage.getItem('tempStationData');
-    if (tempStationData) {
-      console.log("[ComplaintForm] Found temp station data from StationCardEdit in localStorage");
-      
-      // 🔍 DEBUG: Log the detection timestamp and check if we have the exit timestamp
-      const exitTimestamp = sessionStorage.getItem('exitingStationCardEdit');
-      console.log("🔍 [DEBUG-ComplaintForm] Found tempStationData at:", new Date().toISOString());
-      console.log("🔍 [DEBUG-ComplaintForm] Exit timestamp from StationCardEdit:", exitTimestamp);
-      
-      try {
-        // 🔍 DEBUG: Log the raw data before parsing
-        console.log("🔍 [DEBUG-ComplaintForm] Raw tempStationData length:", tempStationData.length);
-        console.log("🔍 [DEBUG-ComplaintForm] Raw tempStationData starts with:", tempStationData.substring(0, 100) + "...");
-        
-        // Mark the update as intentional to prevent triggering side effects
-        setStationDataUpdateIntentional(true);
-        
-        const parsedData = JSON.parse(tempStationData);
-        
-        // 🔍 DEBUG: Log detailed stats of what we're loading
-        console.log("🔍 [DEBUG-ComplaintForm] DETAILED STATS of parsed tempStationData:", {
-          timestamp: new Date().toISOString(),
-          monitoringStationsCount: parsedData.monitoringStations?.length || 0,
-          rainStationsCount: parsedData.rainStations?.length || 0,
-          reservoirsCount: parsedData.reservoirs?.length || 0,
-          userSelectedMonitoringCount: parsedData.userSelectedMonitoringStations?.length || 0,
-          userSelectedRainCount: parsedData.userSelectedRainStations?.length || 0,
-          userSelectedReservoirsCount: parsedData.userSelectedReservoirs?.length || 0,
-          disabledMonitoringCount: parsedData.disabledMonitoringStations ? Object.keys(parsedData.disabledMonitoringStations).length : 0,
-          disabledRainCount: parsedData.disabledRainStations ? Object.keys(parsedData.disabledRainStations).length : 0,
-          disabledReservoirsCount: parsedData.disabledReservoirs ? Object.keys(parsedData.disabledReservoirs).length : 0,
-          // Sample a few IDs to verify data integrity
-          sampleMonitoringIDs: parsedData.monitoringStations?.slice(0, 2).map((s: any) => s.id || 'unknown') || [],
-          sampleRainIDs: parsedData.rainStations?.slice(0, 2).map((s: any) => s.id || 'unknown') || [],
-          sampleReservoirIDs: parsedData.reservoirs?.slice(0, 2).map((s: any) => s.id || 'unknown') || [],
-        });
-        
-        // Update all station data with the temp data
-        if (parsedData.monitoringStations) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating monitoring stations:", parsedData.monitoringStations.length);
-          updateMonitoringStations(parsedData.monitoringStations);
-        } else {
-          console.log("🔍 [DEBUG-ComplaintForm] No monitoringStations in temp data");
-        }
-        
-        if (parsedData.rainStations) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating rain stations:", parsedData.rainStations.length);
-          updateRainStations(parsedData.rainStations);
-        } else {
-          console.log("🔍 [DEBUG-ComplaintForm] No rainStations in temp data");
-        }
-        
-        if (parsedData.reservoirs) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating reservoirs:", parsedData.reservoirs.length);
-          updateReservoirs(parsedData.reservoirs);
-        } else {
-          console.log("🔍 [DEBUG-ComplaintForm] No reservoirs in temp data");
-        }
-        
-        if (parsedData.userSelectedMonitoringStations) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating userSelectedMonitoringStations:", parsedData.userSelectedMonitoringStations.length);
-          setUserSelectedMonitoringStations(parsedData.userSelectedMonitoringStations);
-        } else {
-          console.log("🔍 [DEBUG-ComplaintForm] No userSelectedMonitoringStations in temp data");
-        }
-        
-        if (parsedData.userSelectedRainStations) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating userSelectedRainStations:", parsedData.userSelectedRainStations.length);
-          setUserSelectedRainStations(parsedData.userSelectedRainStations);
-        } else {
-          console.log("🔍 [DEBUG-ComplaintForm] No userSelectedRainStations in temp data");
-        }
-        
-        if (parsedData.userSelectedReservoirs) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating userSelectedReservoirs:", parsedData.userSelectedReservoirs.length);
-          setUserSelectedReservoirs(parsedData.userSelectedReservoirs);
-        } else {
-          console.log("🔍 [DEBUG-ComplaintForm] No userSelectedReservoirs in temp data");
-        }
-        
-        if (parsedData.disabledMonitoringStations) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating disabledMonitoringStations:", Object.keys(parsedData.disabledMonitoringStations).length);
-          setDisabledMonitoringStations(parsedData.disabledMonitoringStations);
-        } else {
-          console.log("🔍 [DEBUG-ComplaintForm] No disabledMonitoringStations in temp data");
-        }
-        
-        if (parsedData.disabledRainStations) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating disabledRainStations:", Object.keys(parsedData.disabledRainStations).length);
-          setDisabledRainStations(parsedData.disabledRainStations);
-        } else {
-          console.log("🔍 [DEBUG-ComplaintForm] No disabledRainStations in temp data");
-        }
-        
-        if (parsedData.disabledReservoirs) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating disabledReservoirs:", Object.keys(parsedData.disabledReservoirs).length);
-          setDisabledReservoirs(parsedData.disabledReservoirs);
-        } else {
-          console.log("🔍 [DEBUG-ComplaintForm] No disabledReservoirs in temp data");
-        }
-        
-        console.log("[ComplaintForm] Successfully loaded temp station data from localStorage");
-        
-        // VERIFICATION: Check that data was updated in Jotai
-        setTimeout(() => {
-          console.log("🔍 [DEBUG-ComplaintForm] VERIFICATION - Jotai store state after updates:", {
-            monitoringStationsCount: stationData.monitoringStations?.length || 0,
-            rainStationsCount: stationData.rainStations?.length || 0,
-            reservoirsCount: stationData.reservoirs?.length || 0,
-            userSelectedMonitoringCount: stationData.userSelectedMonitoringStations?.length || 0,
-            userSelectedRainCount: stationData.userSelectedRainStations?.length || 0,
-            userSelectedReservoirsCount: stationData.userSelectedReservoirs?.length || 0,
-            timestamp: new Date().toISOString()
-          });
-        }, 10);
-        
-        // Remove the temp data to avoid reloading it on refresh
-        localStorage.removeItem('tempStationData');
-        console.log("🔍 [DEBUG-ComplaintForm] Removed tempStationData from localStorage");
-        
-        // Also remove the exit timestamp
-        sessionStorage.removeItem('exitingStationCardEdit');
-        console.log("🔍 [DEBUG-ComplaintForm] Removed exitingStationCardEdit from sessionStorage");
-      } catch (error) {
-        console.error("[ComplaintForm] Error parsing temp station data from localStorage:", error);
-        console.log("🔍 [DEBUG-ComplaintForm] Error details:", {
-          errorName: error && (error as Error).name,
-          errorMessage: error && (error as Error).message,
-          errorStack: error && (error as Error).stack
-        });
-      } finally {
-        // Reset the update flag
-        setStationDataUpdateIntentional(false);
-        console.log("🔍 [DEBUG-ComplaintForm] Reset stationDataUpdateIntentional flag");
-      }
-    } else {
-      console.log("🔍 [DEBUG-ComplaintForm] No tempStationData found in localStorage");
-    }
-    
-    // ENHANCED PERSISTENCE: Check for session storage data (faster and more reliable during navigation)
-    const sessionStationData = sessionStorage.getItem('stationDataForNavigation');
-    const stationDataTimestamp = sessionStorage.getItem('stationDataTimestamp');
-    
-    if (sessionStationData && stationDataTimestamp) {
-      console.log("[ComplaintForm] Found station data in sessionStorage from saveStationDataForNavigation");
-      console.log("🔍 [DEBUG-ComplaintForm] Station data timestamp:", stationDataTimestamp);
-      
-      try {
-        // Mark the update as intentional to prevent triggering side effects
-        setStationDataUpdateIntentional(true);
-        
-        const parsedData = JSON.parse(sessionStationData);
-        
-        // 🔍 DEBUG: Log detailed stats of what we're loading from sessionStorage
-        console.log("🔍 [DEBUG-ComplaintForm] DETAILED STATS of stationDataForNavigation:", {
-          timestamp: new Date().toISOString(),
-          savedAt: stationDataTimestamp,
-          monitoringStationsCount: parsedData.monitoringStations?.length || 0,
-          rainStationsCount: parsedData.rainStations?.length || 0,
-          reservoirsCount: parsedData.reservoirs?.length || 0,
-          userSelectedMonitoringCount: parsedData.userSelectedMonitoringStations?.length || 0,
-          userSelectedRainCount: parsedData.userSelectedRainStations?.length || 0,
-          userSelectedReservoirsCount: parsedData.userSelectedReservoirs?.length || 0,
-          disabledMonitoringCount: parsedData.disabledMonitoringStations ? Object.keys(parsedData.disabledMonitoringStations).length : 0,
-          disabledRainCount: parsedData.disabledRainStations ? Object.keys(parsedData.disabledRainStations).length : 0,
-          disabledReservoirsCount: parsedData.disabledReservoirs ? Object.keys(parsedData.disabledReservoirs).length : 0
-        });
-        
-        // Update all station data from sessionStorage
-        if (parsedData.monitoringStations) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating monitoring stations from sessionStorage:", parsedData.monitoringStations.length);
-          updateMonitoringStations(parsedData.monitoringStations);
-        }
-        
-        if (parsedData.rainStations) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating rain stations from sessionStorage:", parsedData.rainStations.length);
-          updateRainStations(parsedData.rainStations);
-        }
-        
-        if (parsedData.reservoirs) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating reservoirs from sessionStorage:", parsedData.reservoirs.length);
-          updateReservoirs(parsedData.reservoirs);
-        }
-        
-        if (parsedData.userSelectedMonitoringStations) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating userSelectedMonitoringStations from sessionStorage:", parsedData.userSelectedMonitoringStations.length);
-          setUserSelectedMonitoringStations(parsedData.userSelectedMonitoringStations);
-        }
-        
-        if (parsedData.userSelectedRainStations) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating userSelectedRainStations from sessionStorage:", parsedData.userSelectedRainStations.length);
-          setUserSelectedRainStations(parsedData.userSelectedRainStations);
-        }
-        
-        if (parsedData.userSelectedReservoirs) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating userSelectedReservoirs from sessionStorage:", parsedData.userSelectedReservoirs.length);
-          setUserSelectedReservoirs(parsedData.userSelectedReservoirs);
-        }
-        
-        if (parsedData.disabledMonitoringStations) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating disabledMonitoringStations from sessionStorage:", Object.keys(parsedData.disabledMonitoringStations).length);
-          setDisabledMonitoringStations(parsedData.disabledMonitoringStations);
-        }
-        
-        if (parsedData.disabledRainStations) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating disabledRainStations from sessionStorage:", Object.keys(parsedData.disabledRainStations).length);
-          setDisabledRainStations(parsedData.disabledRainStations);
-        }
-        
-        if (parsedData.disabledReservoirs) {
-          console.log("🔍 [DEBUG-ComplaintForm] Updating disabledReservoirs from sessionStorage:", Object.keys(parsedData.disabledReservoirs).length);
-          setDisabledReservoirs(parsedData.disabledReservoirs);
-        }
-        
-        console.log("[ComplaintForm] Successfully loaded station data from sessionStorage");
-        
-        // VERIFICATION: Check that data was updated in Jotai
-        setTimeout(() => {
-          console.log("🔍 [DEBUG-ComplaintForm] VERIFICATION - Jotai store state after sessionStorage updates:", {
-            monitoringStationsCount: stationData.monitoringStations?.length || 0,
-            rainStationsCount: stationData.rainStations?.length || 0,
-            reservoirsCount: stationData.reservoirs?.length || 0,
-            userSelectedMonitoringCount: stationData.userSelectedMonitoringStations?.length || 0,
-            userSelectedRainCount: stationData.userSelectedRainStations?.length || 0,
-            userSelectedReservoirsCount: stationData.userSelectedReservoirs?.length || 0,
-            timestamp: new Date().toISOString()
-          });
-        }, 10);
-        
-        // Only remove the sessionStorage data after successfully loading it
-        sessionStorage.removeItem('stationDataForNavigation');
-        sessionStorage.removeItem('stationDataTimestamp');
-        console.log("🔍 [DEBUG-ComplaintForm] Removed stationDataForNavigation from sessionStorage");
-        
-        // Set flag that we returned from station edit with data
-        setReturnedFromStationEdit(true);
-        console.log("🔍 [DEBUG-ComplaintForm] Setting returnedFromStationEdit to true based on sessionStorage data");
-        
-      } catch (error) {
-        console.error("[ComplaintForm] Error parsing station data from sessionStorage:", error);
-        console.log("🔍 [DEBUG-ComplaintForm] Error details:", {
-          errorName: error && (error as Error).name,
-          errorMessage: error && (error as Error).message,
-          errorStack: error && (error as Error).stack
-        });
-      } finally {
-        // Reset the update flag
-        setStationDataUpdateIntentional(false);
-        console.log("🔍 [DEBUG-ComplaintForm] Reset stationDataUpdateIntentional flag after sessionStorage handling");
-      }
-    } else {
-      console.log("🔍 [DEBUG-ComplaintForm] No stationDataForNavigation found in sessionStorage");
-      console.log("🔍 [DEBUG-ComplaintForm] All sessionStorage keys:", Object.keys(sessionStorage));
-    }
-
-    // Check if we have state in location.state (normal navigation)
-    if (location.state && location.state.from === 'StationCardEdit') {
-      console.log("[ComplaintForm] Returned from StationCardEdit", location.state);
-      console.log("🔍 [DEBUG-ComplaintForm] Found location.state with from=StationCardEdit");
+    if (location.state?.returnedFromStationEdit) {
+      console.log('[ComplaintForm] Detected return from StationCardEdit');
       setReturnedFromStationEdit(true);
       
-      // Check if we should discard current changes
-      if (location.state.discardCurrentChanges) {
-        console.log("[ComplaintForm] Discarding current changes as requested");
-        console.log("🔍 [DEBUG-ComplaintForm] discardCurrentChanges flag is true");
-      }
-      
-      // Try to get preserved complaint data from location state
-      if (location.state.complaintData) {
-        console.log("[ComplaintForm] Received complaint data from location.state");
-        console.log("🔍 [DEBUG-ComplaintForm] Using complaint data from location.state");
-        setPreservedData(location.state.complaintData);
-      } else {
-        console.log("[ComplaintForm] No complaint data found in location.state");
-        console.log("🔍 [DEBUG-ComplaintForm] No complaint data available");
-      }
-      
-      // Clear the state to prevent reloading on refresh
-      window.history.replaceState({}, document.title);
-      console.log("🔍 [DEBUG-ComplaintForm] Cleared history state");
-    }
-    // Check if we have state in sessionStorage (direct navigation)
-    else if (sessionStorage.getItem('complaintFormState')) {
-      try {
-        const savedState = JSON.parse(sessionStorage.getItem('complaintFormState') || '{}');
-        console.log("[ComplaintForm] Found state in sessionStorage", savedState);
-        console.log("🔍 [DEBUG-ComplaintForm] Parsed complaintFormState from sessionStorage");
+      // Set preserved data if available
+      if (location.state.preserveState && complaintDataFromLocation) {
+        setPreservedData(complaintDataFromLocation as any);
         
-        if (savedState.from === 'StationCardEdit') {
-          setReturnedFromStationEdit(true);
-          console.log("🔍 [DEBUG-ComplaintForm] Setting returnedFromStationEdit to true");
-          
-          // Check if we should discard current changes
-          if (savedState.discardCurrentChanges) {
-            console.log("[ComplaintForm] Discarding current changes as requested from sessionStorage");
-            console.log("🔍 [DEBUG-ComplaintForm] discardCurrentChanges flag is true in sessionStorage");
-          } else if (savedState.stationDataSaved) {
-            console.log("[ComplaintForm] Station data was saved in StationCardEdit, verifying it's loaded");
-            console.log("🔍 [DEBUG-ComplaintForm] stationDataSaved flag is true in sessionStorage");
-            
-            // Check which save method was used
-            if (savedState.saveMethodUsed === 'saveStationDataForNavigation') {
-              console.log("🔍 [DEBUG-ComplaintForm] SaveMethodUsed is saveStationDataForNavigation");
-              console.log("🔍 [DEBUG-ComplaintForm] Data should already be loaded from sessionStorage");
-            } else {
-              console.log("🔍 [DEBUG-ComplaintForm] Legacy save method was used, checking localStorage directly");
-              
-              // Set the update flag to prevent navigation warnings
-              setStationDataUpdateIntentional(true);
-              
-              try {
-                // Force reload data from localStorage
-                const savedStoreData = localStorage.getItem('monitoringStations');
-                const savedRainStations = localStorage.getItem('rainStations');
-                const savedReservoirs = localStorage.getItem('reservoirs');
-                const savedUserSelectedMonitoring = localStorage.getItem('userSelectedMonitoringStations');
-                const savedUserSelectedRain = localStorage.getItem('userSelectedRainStations');
-                const savedUserSelectedReservoirs = localStorage.getItem('userSelectedReservoirs');
-                const savedDisabledMonitoring = localStorage.getItem('disabledMonitoringStations');
-                const savedDisabledRain = localStorage.getItem('disabledRainStations');
-                const savedDisabledReservoirs = localStorage.getItem('disabledReservoirsStations');
-                
-                // Parse and update each piece of data if it exists
-                if (savedStoreData) {
-                  const monitoringStations = JSON.parse(savedStoreData);
-                  updateMonitoringStations(monitoringStations);
-                }
-                
-                if (savedRainStations) {
-                  const rainStations = JSON.parse(savedRainStations);
-                  updateRainStations(rainStations);
-                }
-                
-                if (savedReservoirs) {
-                  const reservoirs = JSON.parse(savedReservoirs);
-                  updateReservoirs(reservoirs);
-                }
-                
-                if (savedUserSelectedMonitoring) {
-                  const userSelectedMonitoring = JSON.parse(savedUserSelectedMonitoring);
-                  setUserSelectedMonitoringStations(userSelectedMonitoring);
-                }
-                
-                if (savedUserSelectedRain) {
-                  const userSelectedRain = JSON.parse(savedUserSelectedRain);
-                  setUserSelectedRainStations(userSelectedRain);
-                }
-                
-                if (savedUserSelectedReservoirs) {
-                  const userSelectedReservoirs = JSON.parse(savedUserSelectedReservoirs);
-                  setUserSelectedReservoirs(userSelectedReservoirs);
-                }
-                
-                if (savedDisabledMonitoring) {
-                  const disabledMonitoring = JSON.parse(savedDisabledMonitoring);
-                  setDisabledMonitoringStations(disabledMonitoring);
-                }
-                
-                if (savedDisabledRain) {
-                  const disabledRain = JSON.parse(savedDisabledRain);
-                  setDisabledRainStations(disabledRain);
-                }
-                
-                if (savedDisabledReservoirs) {
-                  const disabledReservoirs = JSON.parse(savedDisabledReservoirs);
-                  setDisabledReservoirs(disabledReservoirs);
-                }
-                
-                console.log("[ComplaintForm] Successfully loaded station data from localStorage");
-              } catch (error) {
-                console.error("[ComplaintForm] Error parsing localStorage data:", error);
-                console.log("🔍 [DEBUG-ComplaintForm] Error parsing localStorage:", error);
-              } finally {
-                // Reset the update flag
-                setStationDataUpdateIntentional(false);
-              }
-            }
-          }
-          
-          // Try to get preserved complaint data from session storage
-          if (savedState.complaintData) {
-            console.log("[ComplaintForm] Received complaint data from sessionStorage");
-            console.log("🔍 [DEBUG-ComplaintForm] Using complaint data from sessionStorage");
-            setPreservedData(savedState.complaintData);
-          } else {
-            console.log("[ComplaintForm] No complaint data found in sessionStorage");
-            console.log("🔍 [DEBUG-ComplaintForm] No complaint data available in sessionStorage");
-            
-            // Check if we have location data in sessionStorage
-            const complaintId = sessionStorage.getItem('complaintId');
-            const amphure = sessionStorage.getItem('complaintAmphure');
-            const province = sessionStorage.getItem('complaintProvince');
-            const issue = sessionStorage.getItem('complaintIssue');
-            const category = sessionStorage.getItem('complaintCategory');
-            const reporter = sessionStorage.getItem('complaintReporter');
-            const date = sessionStorage.getItem('complaintDate');
-            
-            console.log("🔍 [DEBUG-ComplaintForm] Checking for individual complaint fields in sessionStorage:", {
-              complaintId: !!complaintId,
-              amphure: !!amphure,
-              province: !!province,
-              issue: !!issue,
-              category: !!category,
-              reporter: !!reporter,
-              date: !!date
-            });
-            
-            if (amphure || province) {
-              console.log("[ComplaintForm] Found location data in sessionStorage", { 
-                complaintId, amphure, province, issue, category, reporter, date 
-              });
-              
-              // Create a complaint data object with all available fields
-              const minimalData = {
-                id: complaintId ? parseInt(complaintId, 10) : 0,
-                issue: issue || "ข้อมูลจากการแก้ไขสถานี", // Use stored value or placeholder
-                category: category || "ข้อมูลสนับสนุน", // Use stored value or placeholder
-                reporter: reporter || "ระบบ", // Use stored value or placeholder
-                date: date || new Date().toISOString().split('T')[0], // Use stored value or today's date
-                amphure: amphure ? [amphure] : [],
-                province: province ? [province] : [],
-                tumbon: []
-              };
-              
-              console.log("🔍 [DEBUG-ComplaintForm] Created minimal data object:", minimalData);
-              setPreservedData(minimalData);
-            }
-          }
-          
-          // Clear the session storage to prevent reloading on refresh
-          sessionStorage.removeItem('complaintFormState');
-          sessionStorage.removeItem('complaintId');
-          sessionStorage.removeItem('complaintAmphure');
-          sessionStorage.removeItem('complaintProvince');
-          sessionStorage.removeItem('complaintIssue');
-          sessionStorage.removeItem('complaintCategory');
-          sessionStorage.removeItem('complaintReporter');
-          sessionStorage.removeItem('complaintDate');
-          console.log("🔍 [DEBUG-ComplaintForm] Cleared all sessionStorage items");
+        // If we have complaint data in location state, update the Jotai store
+        const { updateTitle, updateDescription } = useComplaintData();
+        
+        // Use type assertion to safely access properties
+        const data = complaintDataFromLocation as any;
+        if (data.text) {
+          updateTitle(data.text);
         }
-      } catch (error) {
-        console.error("[ComplaintForm] Error parsing state from sessionStorage", error);
-        console.log("🔍 [DEBUG-ComplaintForm] Error parsing complaintFormState:", error);
+        if (data.content) {
+          updateDescription(data.content);
+        }
       }
-    } else {
-      console.log("🔍 [DEBUG-ComplaintForm] No complaintFormState in sessionStorage");
-    }
 
-    // Remove the sessionStorage items for the selected post if there is one
-    // This is to prevent it from being reloaded on page refresh
-    if (postId) {
-      sessionStorage.removeItem(`post_${postId}`);
-      console.log(`🔍 [DEBUG-ComplaintForm] Removed post_${postId} from sessionStorage`);
+      // No need to get station data from sessionStorage as it's already in Jotai store
+      // The StationCardEdit component should have updated the Jotai store before navigation
+      console.log('[ComplaintForm] Using station data from Jotai store');
     }
-    
-    console.log("🔍 [DEBUG-ComplaintForm] State restoration complete");
-    
-    // Mark the initial state restoration as done
-    initialStateRestorationDone.current = true;
-  }, [location, setStationDataUpdateIntentional, updateMonitoringStations, updateRainStations, updateReservoirs, setUserSelectedMonitoringStations, setUserSelectedRainStations, setUserSelectedReservoirs, setDisabledMonitoringStations, setDisabledRainStations, setDisabledReservoirs]);
+  }, [
+    location.state, 
+    complaintDataFromLocation
+  ]);
 
   // Debug location data
   useEffect(() => {
-    const currentData = preservedData || complaint || complaintData;
+    const currentData = preservedData || complaint || complaintDataFromLocation;
     console.log('[ComplaintForm] Current complaint data:', currentData);
     
     if (currentData) {
@@ -749,11 +258,11 @@ const ComplaintForm = () => {
         tumbon: locationData.tumbon
       });
     }
-  }, [preservedData, complaint, complaintData]);
+  }, [preservedData, complaint, complaintDataFromLocation]);
 
   const validateComplaintData = () => {
     // Use preserved complaint data if returning from StationCardEdit
-    const currentData = preservedData || complaint || complaintData;
+    const currentData = preservedData || complaint || complaintDataFromLocation;
     if (!currentData) return;
 
     // Special handling for minimal data from sessionStorage
@@ -773,74 +282,59 @@ const ComplaintForm = () => {
   };
 
   const handleContinue = () => {
-    // Use preserved complaint data if returning from StationCardEdit
-    const currentComplaintData = preservedData || complaint || complaintData;
-    console.log('Processing complaint:', currentComplaintData);
-    toast.success('ดำเนินการต่อ');
-    
-    // Update complaint data in Jotai store
-    if (currentComplaintData) {
-      const formattedData = convertToComplaintFormat(currentComplaintData);
-      updateTitle(formattedData.issue || '');
-      updateDescription(formattedData.issue || '');
-      updateLocation(formattedData.location || '');
-      updateCoordinates(
-        formattedData.coordinates?.lat || null, 
-        formattedData.coordinates?.lng || null
-      );
-      
-      // If we have processed posts, update them
-      if (isProcessedPost(currentComplaintData)) {
-        // Use type assertion to tell TypeScript that this is a valid ProcessedPost
-        const processedPost = currentComplaintData as unknown as ProcessedPost;
-        updateProcessedPosts([processedPost]);
-        // Select this post
-        togglePostSelection(processedPost.processed_post_id.toString());
-      }
-    }
-    
-    // Navigate to the StationCardEdit page with the complaint data
-    navigate('/station-card-edit', { state: currentComplaintData });
-  };
-
-  // Renamed from handleCancel to handlePrepareDocument to better reflect its purpose
-  const handlePrepareDocument = () => {
-    // Use preserved complaint data if returning from StationCardEdit
-    const currentComplaintData = preservedData || complaint || complaintData;
-    
-    if (!currentComplaintData) {
-      console.error('[ComplaintForm] No complaint data available for document preparation');
-      toast.error('ไม่พบข้อมูลข้อร้องเรียน กรุณาเลือกข้อร้องเรียนใหม่');
+    // Validate the complaint data
+    if (!validateComplaintData()) {
       return;
     }
     
-    console.log('[ComplaintForm] Preparing document draft for:', currentComplaintData);
-    
-    // Update complaint data in Jotai store
-    if (currentComplaintData) {
-      const formattedData = convertToComplaintFormat(currentComplaintData);
-      updateTitle(formattedData.issue || '');
-      updateDescription(formattedData.issue || '');
-      updateLocation(formattedData.location || '');
-      updateCoordinates(
-        formattedData.coordinates?.lat || null, 
-        formattedData.coordinates?.lng || null
-      );
-      
-      // If we have processed posts, update them
-      if (isProcessedPost(currentComplaintData)) {
-        // Use type assertion to tell TypeScript that this is a valid ProcessedPost
-        const processedPost = currentComplaintData as unknown as ProcessedPost;
-        updateProcessedPosts([processedPost]);
-        // Select this post
-        togglePostSelection(processedPost.processed_post_id.toString());
-      }
+    // Save the current state using the useStationData hook
+    if (stationData.saveStationDataForNavigation) {
+      stationData.saveStationDataForNavigation('handleContinue');
     }
     
-    toast.success('กำลังเตรียมร่างเอกสาร');
+    // Navigate to the station card edit page
+    navigate('/station-card-edit', { 
+      state: { 
+        complaintData: complaint || preservedData || complaintDataFromLocation
+      } 
+    });
+  };
+
+  const handlePrepareDocument = () => {
+    // Validate the complaint data
+    if (!validateComplaintData()) {
+      return;
+    }
     
-    // Navigate to the document preparation page with the complaint data
-    navigate('/document-preparation', { state: currentComplaintData });
+    // Save the current state using the useStationData hook
+    if (stationData.saveStationDataForNavigation) {
+      stationData.saveStationDataForNavigation('handlePrepareDocument');
+    }
+    
+    // Get the current complaint data
+    const currentComplaintData = preservedData || complaint || complaintDataFromLocation;
+    
+    // Navigate to the document preparation page
+    navigate('/document-preparation', { 
+      state: { 
+        fromComplaintForm: true,
+        complaintData: currentComplaintData
+      } 
+    });
+  };
+
+  // Add a function to handle returning to the dashboard
+  const handleReturnToDashboard = () => {
+    // Save the current state if needed
+    if (complaint || complaintDataFromLocation) {
+      // Update the title and description in the store
+      const contentText = complaint?.content || (complaintDataFromLocation as any)?.issue || '';
+      updateTitle(contentText);
+      updateDescription(contentText);
+    }
+    
+    // Navigate back to the dashboard
+    navigate('/dashboard');
   };
 
   if (isLoading) {
@@ -848,7 +342,7 @@ const ComplaintForm = () => {
   }
 
   // Use preserved complaint data if returning from StationCardEdit
-  const data = preservedData || complaint || complaintData;
+  const data = preservedData || complaint || complaintDataFromLocation;
   if (data && !validateComplaintData()) {
     return <div>Invalid complaint data</div>;
   }
@@ -910,6 +404,29 @@ const ComplaintForm = () => {
     timestamp: new Date().toISOString()
   });
 
+  // Helper function to convert ExtendedComplaintData to Complaint
+  const convertToComplaintType = (data: Complaint | ExtendedComplaintData | ProcessedPost | null): Complaint | ProcessedPost | null => {
+    if (!data) return null;
+    
+    if (isExtendedComplaintData(data)) {
+      // Convert ExtendedComplaintData to Complaint
+      return {
+        id: typeof data.id === 'number' ? String(data.id) : data.id as string,
+        content: data.content,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+        status: data.status,
+        type: data.type,
+        province: typeof data.province === 'string' ? data.province : 
+                 (Array.isArray(data.province) && data.province.length > 0 ? data.province[0] : ''),
+        postId: data.postId,
+        link: data.link
+      };
+    }
+    
+    return data;
+  };
+
   return (
     <div className="min-h-screen bg-[#F0F8FF] pb-32">
       <ComplaintHeader />
@@ -917,7 +434,28 @@ const ComplaintForm = () => {
       {/* Page Title */}
       <div className="bg-[#EBF5FF]">
         <div className="container mx-auto px-12 pt-6 pb-4">
-          <h1 className="text-xl font-semibold text-[#17254D] mb-4">ระบบตอบประเด็นข้อร้องเรียน</h1>
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-semibold text-[#17254D]">ระบบตอบประเด็นข้อร้องเรียน</h1>
+            <div className="flex gap-2">
+              <Button 
+                onClick={handleReturnToDashboard}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                กลับไปยังหน้าหลัก
+              </Button>
+              {returnedFromStationEdit && (
+                <Button 
+                  onClick={handleContinue}
+                  className="flex items-center gap-2"
+                >
+                  ดำเนินการต่อ
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
           
           {/* Action Buttons */}
           <div className="flex items-center mb-2">
@@ -942,7 +480,7 @@ const ComplaintForm = () => {
         {/* Complaint Data Section */}
         <div className="mb-6">
           <Card className="p-6 shadow-sm">
-            <SocialPostInfo complaint={data!} />
+            <SocialPostInfo complaint={convertToComplaintType(data || null)} />
           </Card>
         </div>
         
@@ -953,6 +491,7 @@ const ComplaintForm = () => {
               <WaterLevelInfo 
                 amphure={firstAmphure}
                 province={firstProvince}
+                returnedFromStationEdit={returnedFromStationEdit}
               />
             </Card>
             <Card className="p-6 shadow-sm">

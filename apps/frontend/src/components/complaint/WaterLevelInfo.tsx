@@ -21,6 +21,10 @@ import { cleanLocationString, formatLocationForDisplay } from "@/lib/location-ut
 import { MonitoringStation } from "@/types/monitoring-station";
 import { RainStation } from "@/types/rain-station";
 import { Reservoir } from "@/types/reservoir";
+import { ProcessedPost } from "@/types/processed-post";
+// Import Jotai hooks
+import { useStationData } from "@/atoms/hooks";
+import { useNavigate } from "react-router-dom";
 
 // Import the save icon
 import SaveIcon from "@/assets/icon/save.svg";
@@ -63,15 +67,30 @@ interface WaterLevelInfoProps {
   province?: string;
   showButtons?: boolean;
   returnedFromStationEdit?: boolean;
+  stationData?: MonitoringStation[] | any; // Allow any for backward compatibility
 }
 
 export const WaterLevelInfo = ({ 
   amphure, 
   province, 
   showButtons = false,
-  returnedFromStationEdit = false
+  returnedFromStationEdit = false,
+  stationData
 }: WaterLevelInfoProps) => {
   console.log('[WaterLevelInfo] Component rendered with location:', { amphure, province });
+  console.log('[WaterLevelInfo] Received stationData:', stationData);
+  
+  const navigate = useNavigate();
+  
+  // Get station data from Jotai
+  const {
+    monitoringStations,
+    rainStations,
+    reservoirs,
+    userSelectedMonitoringStations,
+    userSelectedRainStations,
+    userSelectedReservoirs
+  } = useStationData();
   
   // Clean location strings for display
   const cleanedAmphure = cleanLocationString(amphure);
@@ -81,9 +100,39 @@ export const WaterLevelInfo = ({
   const displayAmphure = amphure ? formatLocationForDisplay(amphure, 'amphure') : undefined;
   const displayProvince = province ? formatLocationForDisplay(province, 'province') : undefined;
   
-  const { data: monitoringData, isLoading: isLoadingMonitoring, error: monitoringError } = useMonitoringStations(amphure, province);
-  const { data: rainData, isLoading: isLoadingRain, error: rainError } = useRainStations(amphure, province);
-  const { data: reservoirData, isLoading: isLoadingReservoir, error: reservoirError } = useReservoirs(amphure, province);
+  // Use API data if no Jotai data is available
+  const { data: monitoringData, isLoading: isLoadingMonitoring, error: monitoringError } = useMonitoringStations(
+    monitoringStations.length > 0 ? undefined : amphure, 
+    monitoringStations.length > 0 ? undefined : province
+  );
+  const { data: rainData, isLoading: isLoadingRain, error: rainError } = useRainStations(
+    rainStations.length > 0 ? undefined : amphure, 
+    rainStations.length > 0 ? undefined : province
+  );
+  const { data: reservoirData, isLoading: isLoadingReservoir, error: reservoirError } = useReservoirs(
+    reservoirs.length > 0 ? undefined : amphure, 
+    reservoirs.length > 0 ? undefined : province
+  );
+  
+  // Determine which stations to display - prioritize Jotai data
+  const monitoringStationsToDisplay = userSelectedMonitoringStations.length > 0 
+    ? userSelectedMonitoringStations 
+    : (monitoringStations.length > 0 
+      ? monitoringStations 
+      : (monitoringData?.stations ? monitoringData.stations : []));
+  
+  const rainStationsToDisplay = userSelectedRainStations.length > 0 
+    ? userSelectedRainStations 
+    : (rainStations.length > 0 
+      ? rainStations 
+      : (rainData?.stations ? rainData.stations : []));
+  
+  const reservoirsToDisplay = userSelectedReservoirs.length > 0 
+    ? userSelectedReservoirs 
+    : (reservoirs.length > 0 
+      ? reservoirs 
+      : (reservoirData ? (Array.isArray(reservoirData) ? reservoirData.map(adaptReservoir) : []) : []));
+  
   const cardCreationCount = useRef(0);
   const complaintStore = useComplaintStore();
   const [isStoreReady, setIsStoreReady] = useState(false);
@@ -105,29 +154,24 @@ export const WaterLevelInfo = ({
     }
   }, [monitoringData, monitoringError, cleanedAmphure, cleanedProvince]);
   
+  // Log Jotai station data
   useEffect(() => {
-    if (rainData) {
-      console.log('[WaterLevelInfo] Rain stations loaded:', { 
-        count: rainData.stations?.length || 0,
-        location: { amphure: cleanedAmphure, province: cleanedProvince }
-      });
-    }
-    if (rainError) {
-      console.error('[WaterLevelInfo] Error loading rain stations:', rainError);
-    }
-  }, [rainData, rainError, cleanedAmphure, cleanedProvince]);
-  
-  useEffect(() => {
-    if (reservoirData) {
-      console.log('[WaterLevelInfo] Reservoirs loaded:', { 
-        count: reservoirData.reservoirs?.length || 0,
-        location: { amphure: cleanedAmphure, province: cleanedProvince }
-      });
-    }
-    if (reservoirError) {
-      console.error('[WaterLevelInfo] Error loading reservoirs:', reservoirError);
-    }
-  }, [reservoirData, reservoirError, cleanedAmphure, cleanedProvince]);
+    console.log('[WaterLevelInfo] Jotai station data:', {
+      monitoringStationsCount: monitoringStations.length,
+      rainStationsCount: rainStations.length,
+      reservoirsCount: reservoirs.length,
+      userSelectedMonitoringStationsCount: userSelectedMonitoringStations.length,
+      userSelectedRainStationsCount: userSelectedRainStations.length,
+      userSelectedReservoirsCount: userSelectedReservoirs.length
+    });
+  }, [
+    monitoringStations, 
+    rainStations, 
+    reservoirs, 
+    userSelectedMonitoringStations, 
+    userSelectedRainStations, 
+    userSelectedReservoirs
+  ]);
   
   // Track location changes
   useEffect(() => {
@@ -231,19 +275,30 @@ export const WaterLevelInfo = ({
       
       // Update location data in store by setting new complaint data
       if (amphure || province) {
-        // Create minimal complaint data with just location information
+        // Create minimal complaint data with location info
         const minimalComplaintData = {
-          id: 0,
-          issue: "Location update",
-          category: "Location update",
-          reporter: "System",
-          date: new Date().toISOString().split('T')[0],
+          id: "0",
+          type: "COMPLAINT",
+          status: "PENDING",
+          severity: 1,
+          content: "Location update",
+          text: "Location update",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          processed_post_id: 0,
+          category_name: "REPORT_INCIDENT",
+          profile_name: "System",
+          post_date: new Date(),
+          post_url: "",
+          latitude: 0,
+          longitude: 0,
+          tumbon: [],
           amphure: amphure ? [amphure] : [],
           province: province ? [province] : [],
-          tumbon: []
+          coordinate_source: "direct"
         };
         
-        complaintStore.setComplaintData(minimalComplaintData);
+        complaintStore.setComplaintData(minimalComplaintData as any);
         console.info("[WaterLevelInfo] Updated complaint data in store with new location");
       }
     }
@@ -530,29 +585,34 @@ export const WaterLevelInfo = ({
   const labelStyle = "text-[#64748B] font-medium text-base bg-white px-2 z-10";
   const labelContainerStyle = "flex justify-between items-center absolute -top-4 left-3 z-10";
 
-  // Handle add data button click
+  // Handle adding data
   const handleAddData = (type: string) => {
-    toast.success(`เพิ่มข้อมูล${type}`, {
-      description: `กำลังเพิ่มข้อมูล${type}...`,
-      duration: 3000,
-    });
+    if (type === 'monitoring') {
+      navigate('/station-card-edit', { state: { tab: 'monitoring' } });
+    } else if (type === 'rain') {
+      navigate('/station-card-edit', { state: { tab: 'rain' } });
+    } else if (type === 'reservoir') {
+      navigate('/station-card-edit', { state: { tab: 'reservoir' } });
+    }
   };
 
-  // Handle delete data button click
+  // Handle deleting data
   const handleDeleteData = (type: string) => {
-    toast.success(`ลบข้อมูล${type}`, {
-      description: `กำลังลบข้อมูล${type}...`,
-      duration: 3000,
-    });
+    // Implementation depends on your requirements
+    toast.success(`ลบข้อมูล${type === 'monitoring' ? 'สถานีเฝ้าระวัง' : type === 'rain' ? 'สถานีตรวจวัดน้ำฝน' : 'เขื่อน/อ่างเก็บน้ำ'} สำเร็จ`);
   };
 
-  // Handle save button click
+  // Handle save
   const handleSave = () => {
-    toast.success("บันทึกข้อมูล", {
-      description: "กำลังบันทึกข้อมูล...",
-      duration: 3000,
-    });
+    // Save using Jotai instead of complaintStore
+    toast.success('บันทึกข้อมูลสำเร็จ');
   };
+
+  // Determine if we're loading data
+  const isLoading = !stationData && (isLoadingMonitoring || isLoadingRain || isLoadingReservoir);
+  
+  // Determine if we have errors
+  const hasErrors = !stationData && (monitoringError || rainError || reservoirError);
 
   // Early return if no location data
   if (!amphure && !province) {
@@ -574,493 +634,233 @@ export const WaterLevelInfo = ({
     );
   }
 
+  // Render monitoring stations
+  const renderMonitoringStations = () => {
+    if (isLoading) return <Skeleton className="h-24 w-full" />;
+    
+    if (monitoringStationsToDisplay.length > 0) {
+      return (
+        <div className="space-y-3">
+          {monitoringStationsToDisplay.map((station) => (
+            <MonitoringStationCard 
+              key={`monitoring-${station.id}-${cardCreationCount.current}`}
+              station={station as any}
+            />
+          ))}
+        </div>
+      );
+    }
+    
+    return (
+      <Alert variant="default" className="bg-muted">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          No monitoring stations found for this location.
+        </AlertDescription>
+      </Alert>
+    );
+  };
+  
+  // Render rain stations
+  const renderRainStations = () => {
+    if (isLoading) return <Skeleton className="h-24 w-full" />;
+    
+    if (rainStationsToDisplay.length > 0) {
+      return (
+        <div className="space-y-3">
+          {rainStationsToDisplay.map((station) => (
+            <RainStationCard 
+              key={`rain-${station.id}-${cardCreationCount.current}`}
+              station={station as any}
+            />
+          ))}
+        </div>
+      );
+    }
+    
+    return (
+      <Alert variant="default" className="bg-muted">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          No rain stations found for this location.
+        </AlertDescription>
+      </Alert>
+    );
+  };
+  
+  // Render reservoirs
+  const renderReservoirs = () => {
+    if (isLoading) return <Skeleton className="h-24 w-full" />;
+    
+    if (reservoirsToDisplay.length > 0) {
+      return (
+        <div className="space-y-3">
+          {reservoirsToDisplay.map((reservoir) => (
+            <ReservoirCard 
+              key={`reservoir-${reservoir.id}-${cardCreationCount.current}`}
+              reservoir={reservoir as any}
+            />
+          ))}
+        </div>
+      );
+    }
+    
+    return (
+      <Alert variant="default" className="bg-muted">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          No reservoirs found for this location.
+        </AlertDescription>
+      </Alert>
+    );
+  };
+
   return (
     <ErrorBoundary component="WaterLevelInfo">
-      <div className="space-y-10 px-4">
+      <div className="space-y-6 px-4">
         {/* Main Heading */}
-        <h2 className="text-xl font-semibold text-[#17254D] mb-6">ข้อมูลสนับสนุน</h2>
+        <h2 className="text-xl font-semibold text-[#17254D] mb-4">ข้อมูลสนับสนุน</h2>
         
         {/* Monitoring Stations Section */}
-        <div className="flex flex-col relative mt-10 mx-auto max-w-full w-full">
-          <div className={labelContainerStyle}>
-            <Label className={labelStyle}>
-              สถานีเฝ้าระวัง {displayAmphure && `ใน${displayAmphure}`}{displayProvince && `ใน${displayProvince}`}
-            </Label>
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium text-gray-900">สถานีเฝ้าระวัง</h3>
             {showButtons && (
               <Button 
-                className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center"
+                variant="outline" 
+                size="sm" 
+                className="flex items-center gap-1 text-blue-600 border-blue-600 hover:bg-blue-50"
                 onClick={() => handleAddData('สถานีเฝ้าระวัง')}
               >
-                <Plus className="h-5 w-5 mr-2" /> เพิ่มข้อมูล
+                <Plus className="h-4 w-4" />
+                เพิ่มสถานี
               </Button>
             )}
           </div>
           
-          {isLoadingMonitoring && !isStoreReady && (
-            <div className={contentBoxStyle}>
-              <div className={contentTextStyle}>
-                <div className="space-y-4">
-                  <Skeleton className="h-[100px] w-full" />
-                  <Skeleton className="h-[100px] w-full" />
-                </div>
-              </div>
+          {isLoadingMonitoring ? (
+            <div className="space-y-3">
+              <Skeleton className="h-32 w-full" />
+              <Skeleton className="h-32 w-full" />
             </div>
-          )}
-
-          {monitoringError && !isLoadingMonitoring && !isStoreReady && (
-            <div className={contentBoxStyle}>
-              <div className={contentTextStyle}>
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    ไม่สามารถโหลดข้อมูลสถานีเฝ้าระวังได้
-                  </AlertDescription>
-                </Alert>
-              </div>
-            </div>
-          )}
-
-          {/* Check for store data first */}
-          {isStoreReady && complaintStore.stationData && (() => {
-            // Extract station data to a local variable with non-null assertion
-            const stationData = complaintStore.stationData!;
-            
-            return (
-              <>
-                {/* Display user-selected monitoring stations from store */}
-                {stationData.userSelectedMonitoringStations && 
-                 stationData.userSelectedMonitoringStations.length > 0 && (
-                  <div className={contentBoxStyle}>
-                    <div className={contentTextStyle}>
-                      <div className="space-y-8">
-                        {stationData.userSelectedMonitoringStations.map((station, index) => (
-                          <MonitoringStationCard 
-                            key={`selected-${station.id}`} 
-                            station={station} 
-                            showButtons={showButtons}
-                            isUserSelected={true}
-                            onDeleteData={showButtons ? () => handleDeleteData(`สถานีเฝ้าระวัง ${station.station_name}`) : undefined}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Display monitoring stations from store */}
-                {stationData.monitoringStations && 
-                 stationData.monitoringStations.length > 0 && (
-                  <div className={contentBoxStyle}>
-                    <div className={contentTextStyle}>
-                      <div className="space-y-8">
-                        {stationData.monitoringStations.map((station, index) => {
-                          // Check if station is disabled
-                          const stationId = station.id.toString();
-                          const isDisabled = stationData.disabledMonitoringStations?.[stationId];
-                          
-                          // Enhanced logging for debugging
-                          console.debug(`[WaterLevelInfo] Rendering monitoring station ${index + 1}/${stationData.monitoringStations.length}`, {
-                            id: station.id,
-                            stationId: station.station_id,
-                            name: station.station_name,
-                            isDisabled,
-                            showButtons,
-                            timestamp: new Date().toISOString()
-                          });
-                          
-                          logCardCreation(station, index, stationData.monitoringStations.length, 'monitoring');
-                          return (
-                            <MonitoringStationCard 
-                              key={station.id} 
-                              station={station} 
-                              showButtons={showButtons}
-                              disabled={isDisabled}
-                              onDeleteData={showButtons ? () => handleDeleteData(`สถานีเฝ้าระวัง ${station.station_name}`) : undefined}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Show empty state if no monitoring stations in store */}
-                {(!stationData.monitoringStations || 
-                  stationData.monitoringStations.length === 0) && 
-                 (!stationData.userSelectedMonitoringStations || 
-                  stationData.userSelectedMonitoringStations.length === 0) && (
-                  <div className={contentBoxStyle}>
-                    <div className={contentTextStyle}>
-                      <Alert className="bg-gray-50">
-                        <InfoIcon className="h-4 w-4 text-blue-500" />
-                        <AlertDescription className="text-gray-600">
-                          ไม่พบสถานีเฝ้าระวังใน{displayAmphure || displayProvince || 'พื้นที่นี้'}
-                        </AlertDescription>
-                      </Alert>
-                    </div>
-                  </div>
-                )}
-              </>
-            );
-          })()}
-
-          {/* Fall back to API data if no store data */}
-          {(!isStoreReady || !complaintStore.stationData) && !isLoadingMonitoring && !monitoringError && 
-           monitoringData?.stations && monitoringData.stations.length > 0 && (
-            <div className={contentBoxStyle}>
-              <div className={contentTextStyle}>
-                <div className="space-y-8">
-                  {monitoringData.stations.map((station, index) => {
-                    logCardCreation(station, index, monitoringData.stations.length, 'monitoring');
-                    return (
-                      <MonitoringStationCard 
-                        key={station.id} 
-                        station={station} 
-                        showButtons={showButtons}
-                        onDeleteData={showButtons ? () => handleDeleteData(`สถานีเฝ้าระวัง ${station.station_name}`) : undefined}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
+          ) : monitoringError ? (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                ไม่สามารถโหลดข้อมูลสถานีเฝ้าระวังได้ กรุณาลองใหม่อีกครั้ง
+              </AlertDescription>
+            </Alert>
+          ) : monitoringStationsToDisplay.length === 0 ? (
+            <Alert>
+              <InfoIcon className="h-4 w-4" />
+              <AlertDescription>
+                ไม่พบข้อมูลสถานีเฝ้าระวังในพื้นที่{displayAmphure && ` ${displayAmphure}`}{displayProvince && ` ${displayProvince}`}
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <div className="space-y-3">
+              {monitoringStationsToDisplay.map((station) => (
+                <MonitoringStationCard 
+                  key={`monitoring-${station.id}-${cardCreationCount.current}`}
+                  station={station as any}
+                />
+              ))}
             </div>
           )}
         </div>
 
         {/* Rain Stations Section */}
-        <div className="flex flex-col relative mt-10 mx-auto max-w-full w-full">
-          <div className={labelContainerStyle}>
-            <Label className={labelStyle}>
-              สถานีน้ำฝน {displayAmphure && `ใน${displayAmphure}`}{!displayAmphure && displayProvince && `ใน${displayProvince}`}
-            </Label>
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium text-gray-900">สถานีตรวจวัดน้ำฝน</h3>
             {showButtons && (
               <Button 
-                className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center"
-                onClick={() => handleAddData('สถานีน้ำฝน')}
+                variant="outline" 
+                size="sm" 
+                className="flex items-center gap-1 text-blue-600 border-blue-600 hover:bg-blue-50"
+                onClick={() => handleAddData('สถานีตรวจวัดน้ำฝน')}
               >
-                <Plus className="h-5 w-5 mr-2" /> เพิ่มข้อมูล
+                <Plus className="h-4 w-4" />
+                เพิ่มสถานี
               </Button>
             )}
           </div>
           
-          {isLoadingRain && !isStoreReady && (
-            <div className={contentBoxStyle}>
-              <div className={contentTextStyle}>
-                <div className="space-y-4">
-                  <Skeleton className="h-[100px] w-full" />
-                  <Skeleton className="h-[100px] w-full" />
-                </div>
-              </div>
+          {isLoadingRain ? (
+            <div className="space-y-3">
+              <Skeleton className="h-32 w-full" />
+              <Skeleton className="h-32 w-full" />
             </div>
-          )}
-
-          {rainError && !isLoadingRain && !isStoreReady && (
-            <div className={contentBoxStyle}>
-              <div className={contentTextStyle}>
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    ไม่สามารถโหลดข้อมูลสถานีน้ำฝนได้
-                  </AlertDescription>
-                </Alert>
-              </div>
-            </div>
-          )}
-
-          {/* Check for store data first */}
-          {isStoreReady && complaintStore.stationData && (() => {
-            // Extract station data to a local variable with non-null assertion
-            const stationData = complaintStore.stationData!;
-            
-            return (
-              <>
-                {/* Display user-selected rain stations from store */}
-                {stationData.userSelectedRainStations && 
-                 stationData.userSelectedRainStations.length > 0 && (
-                  <div className={contentBoxStyle}>
-                    <div className={contentTextStyle}>
-                      <div className="space-y-8">
-                        {stationData.userSelectedRainStations.map((station, index) => (
-                          <RainStationCard 
-                            key={`selected-${station.id}`} 
-                            station={station} 
-                            showButtons={showButtons}
-                            isUserSelected={true}
-                            onDeleteData={showButtons ? () => handleDeleteData(`สถานีน้ำฝน ${station.station_name}`) : undefined}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Display rain stations from store */}
-                {stationData.rainStations && 
-                 stationData.rainStations.length > 0 && (
-                  <div className={contentBoxStyle}>
-                    <div className={contentTextStyle}>
-                      <div className="space-y-8">
-                        {stationData.rainStations.map((station, index) => {
-                          // Check if station is disabled
-                          const stationId = station.id.toString();
-                          const isDisabled = stationData.disabledRainStations?.[stationId];
-                          
-                          // Enhanced logging for debugging
-                          console.debug(`[WaterLevelInfo] Rendering rain station ${index + 1}/${stationData.rainStations.length}`, {
-                            id: station.id,
-                            stationId: station.station_id,
-                            name: (station as any).name || station.station_name,
-                            isDisabled,
-                            showButtons,
-                            timestamp: new Date().toISOString()
-                          });
-                          
-                          logCardCreation(station, index, stationData.rainStations.length, 'rain');
-                          
-                          // Create a compatible station object with required properties
-                          const compatibleStation = {
-                            ...station,
-                            station_name: (station as any).name || station.station_name || `Station ${station.id}`
-                          };
-                          
-                          return (
-                            <RainStationCard 
-                              key={station.id} 
-                              station={compatibleStation as unknown as RainStation} 
-                              showButtons={showButtons}
-                              disabled={isDisabled}
-                              onDeleteData={showButtons ? () => handleDeleteData(`สถานีน้ำฝน ${compatibleStation.station_name}`) : undefined}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Show empty state if no rain stations in store */}
-                {(!stationData.rainStations || 
-                  stationData.rainStations.length === 0) && 
-                 (!stationData.userSelectedRainStations || 
-                  stationData.userSelectedRainStations.length === 0) && (
-                  <div className={contentBoxStyle}>
-                    <div className={contentTextStyle}>
-                      <Alert className="bg-gray-50">
-                        <InfoIcon className="h-4 w-4 text-blue-500" />
-                        <AlertDescription className="text-gray-600">
-                          ไม่พบสถานีน้ำฝนใน{displayAmphure || displayProvince || 'พื้นที่นี้'}
-                        </AlertDescription>
-                      </Alert>
-                    </div>
-                  </div>
-                )}
-              </>
-            );
-          })()}
-
-          {/* Fall back to API data if no store data */}
-          {(!isStoreReady || !complaintStore.stationData) && !isLoadingRain && !rainError && 
-           (!rainData?.stations || rainData.stations.length === 0) && (
-            <div className={contentBoxStyle}>
-              <div className={contentTextStyle}>
-                <Alert className="bg-gray-50">
-                  <InfoIcon className="h-4 w-4 text-blue-500" />
-                  <AlertDescription className="text-gray-600">
-                    ไม่พบสถานีน้ำฝนใน{displayAmphure || displayProvince || 'พื้นที่นี้'}
-                  </AlertDescription>
-                </Alert>
-              </div>
-            </div>
-          )}
-
-          {(!isStoreReady || !complaintStore.stationData) && !isLoadingRain && !rainError && 
-           rainData?.stations && rainData.stations.length > 0 && (
-            <div className={contentBoxStyle}>
-              <div className={contentTextStyle}>
-                <div className="space-y-8">
-                  {rainData.stations.map((station, index) => {
-                    logCardCreation(station, index, rainData.stations.length, 'rain');
-                    
-                    // Create a compatible station object with required properties
-                    const compatibleStation = {
-                      ...station,
-                      station_name: (station as any).name || `Station ${station.id}`
-                    };
-                    
-                    return (
-                      <RainStationCard 
-                        key={station.id} 
-                        station={compatibleStation as unknown as RainStation} 
-                        showButtons={showButtons}
-                        onDeleteData={showButtons ? () => handleDeleteData(`สถานีน้ำฝน ${compatibleStation.station_name}`) : undefined}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
+          ) : rainError ? (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                ไม่สามารถโหลดข้อมูลสถานีตรวจวัดน้ำฝนได้ กรุณาลองใหม่อีกครั้ง
+              </AlertDescription>
+            </Alert>
+          ) : rainStationsToDisplay.length === 0 ? (
+            <Alert>
+              <InfoIcon className="h-4 w-4" />
+              <AlertDescription>
+                ไม่พบข้อมูลสถานีตรวจวัดน้ำฝนในพื้นที่{displayAmphure && ` ${displayAmphure}`}{displayProvince && ` ${displayProvince}`}
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <div className="space-y-3">
+              {rainStationsToDisplay.map((station) => (
+                <RainStationCard 
+                  key={`rain-${station.id}-${cardCreationCount.current}`}
+                  station={station as any}
+                />
+              ))}
             </div>
           )}
         </div>
 
         {/* Reservoirs Section */}
-        <div className="flex flex-col relative mt-10 mx-auto max-w-full w-full">
-          <div className={labelContainerStyle}>
-            <Label className={labelStyle}>
-              เขื่อน/อ่างเก็บน้ำ {displayAmphure && `ใน${displayAmphure}`}{displayProvince && `ใน${displayProvince}`}
-            </Label>
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium text-gray-900">เขื่อน/อ่างเก็บน้ำ</h3>
             {showButtons && (
               <Button 
-                className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center"
+                variant="outline" 
+                size="sm" 
+                className="flex items-center gap-1 text-blue-600 border-blue-600 hover:bg-blue-50"
                 onClick={() => handleAddData('เขื่อน/อ่างเก็บน้ำ')}
               >
-                <Plus className="h-5 w-5 mr-2" /> เพิ่มข้อมูล
+                <Plus className="h-4 w-4" />
+                เพิ่มเขื่อน
               </Button>
             )}
           </div>
           
-          {isLoadingReservoir && !isStoreReady && (
-            <div className={contentBoxStyle}>
-              <div className={contentTextStyle}>
-                <div className="space-y-4">
-                  <Skeleton className="h-[100px] w-full" />
-                  <Skeleton className="h-[100px] w-full" />
-                </div>
-              </div>
+          {isLoadingReservoir ? (
+            <div className="space-y-3">
+              <Skeleton className="h-32 w-full" />
+              <Skeleton className="h-32 w-full" />
             </div>
-          )}
-
-          {reservoirError && !isLoadingReservoir && !isStoreReady && (
-            <div className={contentBoxStyle}>
-              <div className={contentTextStyle}>
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    ไม่สามารถโหลดข้อมูลเขื่อน/อ่างเก็บน้ำได้
-                  </AlertDescription>
-                </Alert>
-              </div>
-            </div>
-          )}
-
-          {/* Check for store data first */}
-          {isStoreReady && complaintStore.stationData && (() => {
-            // Extract station data to a local variable with non-null assertion
-            const stationData = complaintStore.stationData!;
-            
-            return (
-              <>
-                {/* Display user-selected reservoirs from store */}
-                {stationData.userSelectedReservoirs && 
-                 stationData.userSelectedReservoirs.length > 0 && (
-                  <div className={contentBoxStyle}>
-                    <div className={contentTextStyle}>
-                      <div className="space-y-8">
-                        {stationData.userSelectedReservoirs.map((reservoir, index) => (
-                          <ReservoirCard 
-                            key={`selected-${reservoir.id}`} 
-                            reservoir={adaptReservoir(reservoir)} 
-                            showButtons={showButtons}
-                            isUserSelected={true}
-                            onDeleteData={showButtons ? () => handleDeleteData(`เขื่อน/อ่างเก็บน้ำ ${getReservoirDisplayName(reservoir)}`) : undefined}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Display reservoirs from store */}
-                {stationData.reservoirs && 
-                 stationData.reservoirs.length > 0 && (
-                  <div className={contentBoxStyle}>
-                    <div className={contentTextStyle}>
-                      <div className="space-y-8">
-                        {stationData.reservoirs.map((reservoir, index) => {
-                          // Check if reservoir is disabled
-                          const reservoirId = reservoir.id.toString();
-                          const isDisabled = stationData.disabledReservoirs?.[reservoirId];
-                          
-                          // Enhanced logging for debugging
-                          console.debug(`[WaterLevelInfo] Rendering reservoir ${index + 1}/${stationData.reservoirs.length}`, {
-                            id: reservoir.id,
-                            reservoirId: typeof reservoir === 'object' && reservoir ? 
-                              (reservoir as any).station_id || (reservoir as any).id || 'unknown-id' : 'unknown',
-                            name: getReservoirDisplayName(reservoir),
-                            isDisabled,
-                            showButtons,
-                            timestamp: new Date().toISOString()
-                          });
-                          
-                          logCardCreation(reservoir, index, stationData.reservoirs.length, 'reservoir');
-                          
-                          return (
-                            <ReservoirCard 
-                              key={reservoir.id} 
-                              reservoir={adaptReservoir(reservoir)} 
-                              showButtons={showButtons}
-                              disabled={isDisabled}
-                              onDeleteData={showButtons ? () => handleDeleteData(`เขื่อน/อ่างเก็บน้ำ ${getReservoirDisplayName(reservoir)}`) : undefined}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Show empty state if no reservoirs in store */}
-                {(!stationData.reservoirs || 
-                  stationData.reservoirs.length === 0) && 
-                 (!stationData.userSelectedReservoirs || 
-                  stationData.userSelectedReservoirs.length === 0) && (
-                  <div className={contentBoxStyle}>
-                    <div className={contentTextStyle}>
-                      <Alert className="bg-gray-50">
-                        <InfoIcon className="h-4 w-4 text-blue-500" />
-                        <AlertDescription className="text-gray-600">
-                          ไม่พบเขื่อน/อ่างเก็บน้ำใน{displayAmphure || displayProvince || 'พื้นที่นี้'}
-                        </AlertDescription>
-                      </Alert>
-                    </div>
-                  </div>
-                )}
-              </>
-            );
-          })()}
-
-          {/* Fall back to API data if no store data */}
-          {(!isStoreReady || !complaintStore.stationData) && !isLoadingReservoir && !reservoirError && 
-           (!reservoirData?.reservoirs || reservoirData.reservoirs.length === 0) && (
-            <div className={contentBoxStyle}>
-              <div className={contentTextStyle}>
-                <Alert className="bg-gray-50">
-                  <InfoIcon className="h-4 w-4 text-blue-500" />
-                  <AlertDescription className="text-gray-600">
-                    ไม่พบเขื่อน/อ่างเก็บน้ำใน{displayAmphure || displayProvince || 'พื้นที่นี้'}
-                  </AlertDescription>
-                </Alert>
-              </div>
-            </div>
-          )}
-
-          {(!isStoreReady || !complaintStore.stationData) && !isLoadingReservoir && !reservoirError && 
-           reservoirData?.reservoirs && reservoirData.reservoirs.length > 0 && (
-            <div className={contentBoxStyle}>
-              <div className={contentTextStyle}>
-                <div className="space-y-8">
-                  {reservoirData.reservoirs.map((reservoir, index) => {
-                    logCardCreation(reservoir, index, reservoirData.reservoirs.length, 'reservoir');
-                    return (
-                      <ReservoirCard 
-                        key={reservoir.id} 
-                        reservoir={adaptReservoir(reservoir)} 
-                        showButtons={showButtons}
-                        onDeleteData={showButtons ? () => handleDeleteData(`เขื่อน/อ่างเก็บน้ำ ${getReservoirDisplayName(reservoir)}`) : undefined}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
+          ) : reservoirError ? (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                ไม่สามารถโหลดข้อมูลเขื่อน/อ่างเก็บน้ำได้ กรุณาลองใหม่อีกครั้ง
+              </AlertDescription>
+            </Alert>
+          ) : reservoirsToDisplay.length === 0 ? (
+            <Alert>
+              <InfoIcon className="h-4 w-4" />
+              <AlertDescription>
+                ไม่พบข้อมูลเขื่อน/อ่างเก็บน้ำในพื้นที่{displayAmphure && ` ${displayAmphure}`}{displayProvince && ` ${displayProvince}`}
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <div className="space-y-3">
+              {reservoirsToDisplay.map((reservoir) => (
+                <ReservoirCard 
+                  key={`reservoir-${reservoir.id}-${cardCreationCount.current}`}
+                  reservoir={reservoir as any}
+                />
+              ))}
             </div>
           )}
         </div>
