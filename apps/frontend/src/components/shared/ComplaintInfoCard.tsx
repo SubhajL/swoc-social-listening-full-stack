@@ -60,6 +60,14 @@ export const ComplaintInfoCard = ({
   // Add state to track if mock posts section is expanded
   const [showMockPostsSection, setShowMockPostsSection] = useState(false);
   
+  // State for image carousel - MOVED UP to ensure hooks are always called in the same order
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const mockImages = [
+    { id: 1, src: null, alt: "รูปภาพที่ 1" },
+    { id: 2, src: null, alt: "รูปภาพที่ 2" },
+    { id: 3, src: null, alt: "รูปภาพที่ 3" }
+  ];
+  
   // Get data from Jotai
   const { 
     title: storeTitle, 
@@ -278,14 +286,6 @@ export const ComplaintInfoCard = ({
   const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-xl p-3 bg-white text-[#17254D] text-sm font-normal";
   const contentTextStyle = "pl-4"; // Reduced left padding to move content to the left
   const labelStyle = "text-[#64748B] font-medium text-base absolute -top-4 left-2 bg-white px-2 z-10"; // Moved left
-
-  // State for image carousel
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const mockImages = [
-    { id: 1, src: null, alt: "รูปภาพที่ 1" },
-    { id: 2, src: null, alt: "รูปภาพที่ 2" },
-    { id: 3, src: null, alt: "รูปภาพที่ 3" }
-  ];
 
   const nextImage = () => {
     setCurrentImageIndex((prevIndex) => 

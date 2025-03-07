@@ -253,21 +253,26 @@ function adaptToMonitoringStationProps(station: StandardizedMonitoringStation): 
     stationName: station.name
   });
   
+  // Ensure we have a valid ID (prefer numeric ID if available)
+  const id = station.id !== undefined && station.id !== null ? station.id : 
+             (station.stationId ? parseInt(station.stationId, 10) : 0);
+  
   const adapted = {
-    id: station.id,
-    station_id: station.stationId,
-    station_name: station.name,
+    id: id,
+    sequence_number: '0',
+    station_id: station.stationId || '',
+    station_name: station.name || '',
     code: '',
     irrigation_office: '',
     river_basin: '',
     river_name: '',
     province: '',
     amphure: '',
+    water_level: station.waterLevel,
+    flow_rate: station.flowRate,
     bank_level_meters: '0',
     capacity_cms: '0',
     pole_center_msl: '0',
-    water_level: station.waterLevel,
-    flow_rate: station.flowRate,
     telemetry_data: station.telemetryData ? {
       timestamp: station.telemetryData.timestamp,
       water_level: station.telemetryData.waterLevel,
@@ -295,11 +300,15 @@ function adaptToRainStationProps(station: StandardizedRainStation): RainStation 
     stationName: station.name
   });
   
+  // Ensure we have a valid ID (prefer numeric ID if available)
+  const id = station.id !== undefined && station.id !== null ? station.id : 
+             (station.stationId ? parseInt(station.stationId, 10) : 0);
+  
   const adapted = {
-    id: station.id,
+    id: id,
     sequence_number: '0',
-    station_id: station.stationId,
-    station_name: station.name,
+    station_id: station.stationId || '',
+    station_name: station.name || '',
     code: '',
     irrigation_office: '',
     river_basin: '',
@@ -331,11 +340,15 @@ function adaptToReservoirProps(reservoir: StandardizedReservoir): Reservoir {
     reservoirName: reservoir.name
   });
   
+  // Ensure we have a valid ID (prefer numeric ID if available)
+  const id = reservoir.id !== undefined && reservoir.id !== null ? reservoir.id : 
+             (reservoir.stationId ? parseInt(reservoir.stationId, 10) : 0);
+  
   const adapted = {
-    id: reservoir.id,
+    id: id,
     sequence_number: '0',
     irrigation_office: '',
-    reservoir_name: reservoir.name,
+    reservoir_name: reservoir.name || '',
     river_basin: '',
     river_name: '',
     amphure: '',
@@ -343,7 +356,7 @@ function adaptToReservoirProps(reservoir: StandardizedReservoir): Reservoir {
     normal_storage_capacity: reservoir.normalStorageCapacity || '0',
     minimum_storage_capacity: reservoir.minimumStorageCapacity || '0',
     type: reservoir.type,
-    station_id: reservoir.stationId
+    station_id: reservoir.stationId || ''
   };
   
   console.log('[adaptToReservoirProps] Adapted reservoir ID for UI:', {

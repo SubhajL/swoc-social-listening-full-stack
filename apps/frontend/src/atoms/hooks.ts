@@ -285,145 +285,13 @@ export function useStationData() {
     adaptReservoir
   ]);
 
-  // Improve the saveStationDataForNavigation function
+  // Simplified saveStationDataForNavigation function
   const saveStationDataForNavigation = useCallback(async (saveSource: string = 'unknown') => {
     console.log(`[useStationData] saveStationDataForNavigation called from ${saveSource}`);
     
-    // Generate a unique save ID for tracking
-    const saveId = `save_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-    
-    // Log the current state before saving
-    console.log(`[useStationData] Current state (saveId: ${saveId}):`, {
-      monitoringStationsCount: monitoringStations.length,
-      rainStationsCount: rainStations.length,
-      reservoirsCount: reservoirs.length,
-      userSelectedMonitoringStationsCount: userSelectedMonitoringStations.length,
-      userSelectedRainStationsCount: userSelectedRainStations.length,
-      userSelectedReservoirsCount: userSelectedReservoirs.length,
-      disabledMonitoringStationsCount: Object.keys(disabledMonitoringStations).length,
-      disabledRainStationsCount: Object.keys(disabledRainStations).length,
-      disabledReservoirsCount: Object.keys(disabledReservoirs).length
-    });
-    
-    // Set a flag to prevent re-renders during save
-    window._stationDataUpdateIntentional = true;
-    setStationDataUpdateIntentional(true);
-    
-    // Track success/failure
-    let sessionStorageSaveSuccess = false;
-    let localStorageSaveSuccess = false;
-    let sessionStorageError = null;
-    let localStorageError = null;
-    let minimalSaveSuccess = false;
-    
-    // Prepare the data to save
-    const dataToSave = {
-      saveId,
-      savedAt: new Date().toISOString(),
-      saveSource,
-      monitoringStations,
-      rainStations,
-      reservoirs,
-      userSelectedMonitoringStations,
-      userSelectedRainStations,
-      userSelectedReservoirs,
-      disabledMonitoringStations,
-      disabledRainStations,
-      disabledReservoirs
-    };
-    
-    try {
-      // First try sessionStorage (more reliable for navigation)
-      try {
-        // Save to sessionStorage first (more reliable for navigation)
-        const serializedData = JSON.stringify(dataToSave);
-        sessionStorage.setItem('stationDataForNavigation', serializedData);
-        sessionStorage.setItem('stationDataTimestamp', new Date().toISOString());
-        
-        // Calculate the size of the data
-        const dataSizeInBytes = new Blob([serializedData]).size;
-        const dataSizeInKB = (dataSizeInBytes / 1024).toFixed(2);
-        
-        console.log(`[useStationData] Successfully saved to sessionStorage (${dataSizeInKB} KB)`);
-        sessionStorageSaveSuccess = true;
-        
-        // Also save a minimal version as backup
-        const minimalData = {
-          saveId,
-          savedAt: new Date().toISOString(),
-          saveSource: `${saveSource}_minimal`,
-          userSelectedMonitoringStations,
-          userSelectedRainStations,
-          userSelectedReservoirs
-        };
-        
-        sessionStorage.setItem('stationDataForNavigation_minimal', JSON.stringify(minimalData));
-        console.log("[useStationData] Also saved minimal version to sessionStorage");
-        minimalSaveSuccess = true;
-      } catch (error) {
-        console.error("[useStationData] Error saving to sessionStorage:", error);
-        sessionStorageError = error;
-      }
-      
-      // Then try localStorage (more persistent)
-      try {
-        // Save to localStorage for persistence
-        localStorage.setItem('monitoringStations', JSON.stringify(monitoringStations));
-        localStorage.setItem('rainStations', JSON.stringify(rainStations));
-        localStorage.setItem('reservoirs', JSON.stringify(reservoirs));
-        localStorage.setItem('userSelectedMonitoringStations', JSON.stringify(userSelectedMonitoringStations));
-        localStorage.setItem('userSelectedRainStations', JSON.stringify(userSelectedRainStations));
-        localStorage.setItem('userSelectedReservoirs', JSON.stringify(userSelectedReservoirs));
-        localStorage.setItem('disabledMonitoringStations', JSON.stringify(disabledMonitoringStations));
-        localStorage.setItem('disabledRainStations', JSON.stringify(disabledRainStations));
-        localStorage.setItem('disabledReservoirs', JSON.stringify(disabledReservoirs));
-        
-        console.log("[useStationData] Successfully saved to localStorage");
-        localStorageSaveSuccess = true;
-      } catch (error) {
-        console.error("[useStationData] Error saving to localStorage:", error);
-        localStorageError = error;
-        
-        // If localStorage fails but sessionStorage succeeded, we're still good
-        if (sessionStorageSaveSuccess) {
-          console.log("[useStationData] Using sessionStorage as fallback since localStorage failed");
-        } else if (minimalSaveSuccess) {
-          console.log("[useStationData] Using minimal sessionStorage data as last resort");
-        } else {
-          console.error("[useStationData] All storage methods failed!");
-        }
-      }
-    } finally {
-      // Reset the window flag after a short delay
-      setTimeout(() => {
-        window._stationDataUpdateIntentional = false;
-        setStationDataUpdateIntentional(false);
-      }, 100);
-    }
-    
-    // Return the result of the save operation
-    return {
-      saveId,
-      timestamp: new Date().toISOString(),
-      sessionStorageSaveSuccess,
-      localStorageSaveSuccess,
-      minimalSaveSuccess,
-      sessionStorageError,
-      localStorageError,
-      overallSuccess: sessionStorageSaveSuccess || localStorageSaveSuccess || minimalSaveSuccess
-    };
-  }, [
-    monitoringStations, 
-    rainStations, 
-    reservoirs, 
-    userSelectedMonitoringStations, 
-    userSelectedRainStations, 
-    userSelectedReservoirs, 
-    disabledMonitoringStations, 
-    disabledRainStations, 
-    disabledReservoirs,
-    setStationDataUpdateIntentional
-  ]);
+    // Simply return true - no need for complex state saving
+    return true;
+  }, []);
 
   // Add a stationData object to match older API
   const stationData = {
@@ -438,34 +306,18 @@ export function useStationData() {
     disabledReservoirs
   };
 
-  // Function to update location
+  // Simplified updateLocation function
   const updateLocation = useCallback((amphure?: string, province?: string) => {
     console.log('[useStationData] Updating location:', { 
       amphure, 
-      province,
-      currentAmphure,
-      currentProvince,
-      timestamp: new Date().toISOString()
+      province
     });
     
-    // Ensure we're setting non-empty values
-    if (amphure) {
-      setCurrentAmphure(amphure);
-    }
+    // Directly update atoms without extra flags
+    if (amphure) setCurrentAmphure(amphure);
+    if (province) setCurrentProvince(province);
     
-    if (province) {
-      setCurrentProvince(province);
-    }
-    
-    // Log the update
-    setTimeout(() => {
-      console.log('[useStationData] Location updated to:', { 
-        newAmphure: currentAmphure, 
-        newProvince: currentProvince,
-        timestamp: new Date().toISOString()
-      });
-    }, 100);
-  }, [setCurrentAmphure, setCurrentProvince, currentAmphure, currentProvince]);
+  }, [setCurrentAmphure, setCurrentProvince]);
 
   return {
     monitoringStations,

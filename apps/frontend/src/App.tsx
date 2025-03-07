@@ -64,12 +64,16 @@ const router = createBrowserRouter(
       } />
       <Route path="/station-card-edit" element={
         <ProtectedRoute>
-          <StationCardEdit />
+          <Suspense fallback={<div>Loading...</div>}>
+            <StationCardEdit />
+          </Suspense>
         </ProtectedRoute>
       } />
       <Route path="/document-preparation" element={
         <ProtectedRoute>
-          <DocumentPreparation />
+          <Suspense fallback={<div>Loading...</div>}>
+            <DocumentPreparation />
+          </Suspense>
         </ProtectedRoute>
       } />
       <Route path="/approval-dashboard" element={
