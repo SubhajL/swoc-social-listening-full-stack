@@ -12,9 +12,11 @@ import { UnsavedChangesDialog } from "@/components/complaint/UnsavedChangesDialo
 import { toast } from "sonner";
 // Import Jotai hooks instead of Zustand
 import { useComplaintData, useStationData } from "@/atoms/hooks";
-import { Bell, Settings, ArrowLeft, ArrowRight } from "lucide-react";
+import { Bell, Settings, ArrowLeft, ArrowRight, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+// Import reusable components
+import { ComplaintInfoCard, WaterLevelInfoCard } from "@/components/shared";
 
 // Type guard to check if data is ProcessedPost
 const isProcessedPost = (data: any): data is ProcessedPost => {
@@ -66,7 +68,7 @@ const StationCardEditHeader = () => {
 
   return (
     <header className="bg-white shadow-sm">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-12">
         <div className="flex items-center justify-between pt-3">
           {/* Left section - Logos */}
           <div className="flex items-center gap-4">
@@ -224,46 +226,53 @@ const StationCardEdit = () => {
   return (
     <div className="min-h-screen bg-[#F0F8FF] pb-32">
       <StationCardEditHeader />
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">แก้ไขข้อมูลสถานี</h1>
-          <div className="flex gap-2">
-            <Button 
-              onClick={saveAndReturn}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              บันทึกและกลับ
-            </Button>
-            <Button 
-              onClick={saveAndNavigate}
-              className="flex items-center gap-2"
-            >
-              บันทึกและดำเนินการต่อ
-              <ArrowRight className="h-4 w-4" />
-            </Button>
+      
+      {/* Page Title */}
+      <div className="bg-[#EBF5FF]">
+        <div className="container mx-auto px-12 pt-6 pb-4">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-semibold text-[#17254D]">ระบบตอบประเด็นข้อร้องเรียน</h1>
+            <div className="flex gap-2">
+              <Button 
+                onClick={saveAndReturn}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                บันทึกและกลับ
+              </Button>
+              <Button 
+                onClick={saveAndNavigate}
+                className="flex items-center gap-2"
+              >
+                บันทึกและดำเนินการต่อ
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
-        
-        <main className="container mx-auto px-12 pt-2">
-          <Card className="p-6 -mt-2">
-            <SocialPostInfo complaint={complaintData} />
-          </Card>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 mt-6">
-            <Card className="p-6">
-              <StationCardEditInfo 
-                amphure={locationData.amphure[0]}
-                province={locationData.province[0]}
-                onChangesMade={() => console.log("Changes made")}
-                onSave={saveAndNavigate}
-                onDiscard={() => navigate(-1)}
-              />
-            </Card>
-          </div>
-        </main>
       </div>
+      
+      <main className="container mx-auto px-12 pt-6">
+        {/* Complaint Data Section */}
+        <div className="mb-6">
+          <ComplaintInfoCard 
+            title="ข้อร้องเรียน"
+            editable={false}
+          />
+        </div>
+        
+        {/* Supporting Data Section */}
+        <div className="mb-6">
+          <StationCardEditInfo 
+            amphure={locationData.amphure[0]}
+            province={locationData.province[0]}
+            onChangesMade={() => console.log("Changes made")}
+            onSave={saveAndNavigate}
+            onDiscard={saveAndReturn}
+          />
+        </div>
+      </main>
     </div>
   );
 };

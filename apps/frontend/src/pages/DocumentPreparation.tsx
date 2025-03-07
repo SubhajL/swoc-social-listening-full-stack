@@ -24,6 +24,14 @@ import { cleanLocationString, formatLocationForDisplay, isEmptyLocation } from "
 import { useStationData } from "@/atoms/hooks";
 import { RainStation as JotaiRainStation } from "@/atoms/stationData";
 import { RainStation as ApiRainStation } from "@/types/rain-station";
+// Import reusable components
+import { 
+  ComplaintInfoCard, 
+  WaterLevelInfoCard, 
+  WaterManagementPlanCard,
+  DocumentResponseCard,
+  DocumentAttachmentsCard
+} from "@/components/shared";
 
 // Type guard to check if data is ProcessedPost
 const isProcessedPost = (data: any): data is ProcessedPost => {
@@ -115,7 +123,7 @@ const DocumentPreparationHeader = () => {
 
   return (
     <header className="bg-white shadow-sm">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-12">
         <div className="flex items-center justify-between pt-3">
           {/* Left section - Logos */}
           <div className="flex items-center gap-4">
@@ -415,7 +423,7 @@ const DocumentPreparation = () => {
   };
 
   // Handle cancel action
-  const handleCancel = () => {
+  const handleReturnToComplaintForm = () => {
     navigate(-1);
   };
 
@@ -671,203 +679,96 @@ const DocumentPreparation = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#EBF5FF]">
+    <div className="min-h-screen bg-[#F0F8FF] pb-32">
       <DocumentPreparationHeader />
       
       {/* Page Title */}
       <div className="bg-[#EBF5FF]">
         <div className="container mx-auto px-12 pt-6 pb-4">
-          <h1 className="text-2xl font-semibold text-[#17254D] mb-4">เตรียมร่างเอกสาร</h1>
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-semibold text-[#17254D]">ระบบตอบประเด็นข้อร้องเรียน</h1>
+            <div className="flex gap-2">
+              <button 
+                onClick={handleReturnToComplaintForm}
+                className="bg-white hover:bg-[#f0f9ff] text-[#4B9FE1] border-[1.5px] border-[#4B9FE1] px-4 py-2 rounded-xl font-medium flex items-center justify-center transition-colors duration-200 text-base"
+              >
+                กลับไปยังหน้าข้อร้องเรียน
+              </button>
+            </div>
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="flex items-center mb-2">
+            <button 
+              className="bg-[#4B9FE1] hover:bg-[#3D8FD1] text-white px-4 py-2 rounded-xl font-medium flex items-center justify-center transition-colors duration-200 text-base"
+              onClick={handleSave}
+            >
+              <Save className="mr-2 h-4 w-4" />
+              บันทึก
+            </button>
+            <div className="w-[10px]"></div>
+            <button 
+              className="bg-[#4B9FE1] hover:bg-[#3D8FD1] text-white px-4 py-2 rounded-xl font-medium flex items-center justify-center transition-colors duration-200 text-base"
+              onClick={handleApprove}
+            >
+              <Check className="mr-2 h-4 w-4" />
+              เห็นชอบ
+            </button>
+            <div className="w-[10px]"></div>
+            <button 
+              className="bg-white hover:bg-[#f0f9ff] text-[#4B9FE1] border-[1.5px] border-[#4B9FE1] px-4 py-2 rounded-xl font-medium flex items-center justify-center transition-colors duration-200 text-base"
+              onClick={handleSubmitForApproval}
+            >
+              <Send className="mr-2 h-4 w-4" />
+              ส่งต่อการอนุมัติ
+            </button>
+          </div>
         </div>
       </div>
       
-      <main className="container mx-auto px-12 pt-2 pb-20">
+      <main className="container mx-auto px-12 pt-6">
         {/* Complaint Data Section */}
         <div className="mb-6">
-          <Card className="p-8 shadow-sm">
-            {complaintData && (
-              <SocialPostInfo complaint={complaintData} />
-            )}
-          </Card>
+          <ComplaintInfoCard 
+            title="ข้อร้องเรียน"
+            editable={false}
+          />
         </div>
         
-        {/* Supporting Data Section - Using a horizontal grid layout */}
-        <div className="mt-6 mb-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="p-8 shadow-sm">
-              <WaterLevelInfo 
-                amphure={locationData.amphure}
-                province={locationData.province}
-                stationData={userSelectedMonitoringStations.map(adaptMonitoringStation)}
-              />
-            </Card>
-            <Card className="p-8 shadow-sm">
-              <WaterManagementPlan 
-                amphure={locationData.amphure}
-                province={locationData.province}
-                stationData={userSelectedRainStations.map(adaptRainStation)}
-              />
-            </Card>
-          </div>
+        {/* Supporting Data Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+          <WaterLevelInfoCard 
+            amphure={locationData.amphure}
+            province={locationData.province}
+            showButtons={false}
+          />
+          <WaterManagementPlanCard 
+            amphure={locationData.amphure}
+            province={locationData.province}
+          />
         </div>
         
-        {/* Add more vertical space here */}
-        <div className="mb-12"></div>
-        
-        {/* ร่างเอกสารตอบ Frameset */}
+        {/* Document Response Card */}
         <div className="mb-6 mt-8">
-          <Card className="p-8 shadow-sm">
-            {/* Frame Header */}
-            <h2 className="text-2xl font-semibold text-[#17254D] mb-6">ร่างเอกสารตอบ</h2>
-            
-            {/* Top line with dropdown and icons */}
-            <div className="flex justify-between items-center mb-6">
-              <div className="relative">
-                <button className="flex items-center gap-2 bg-white border border-gray-300 rounded-xl px-4 py-2 text-base text-gray-700">
-                  <span>สื่อสังคมออนไลน์</span>
-                  <ChevronDown className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="flex items-center gap-4">
-                <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                  <img src={PaperclipIcon} alt="Paperclip" className="w-5 h-5" />
-                </button>
-                <button 
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                  onClick={handleLineShare}
-                  title="แชร์ผ่าน Line"
-                >
-                  <img src={ShareIcon} alt="Share" className="w-5 h-5" />
-                </button>
-                <button 
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                  onClick={handlePrint}
-                  title="พิมพ์เอกสาร"
-                >
-                  <img src={PrinterIcon} alt="Print" className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-            
-            {/* ลำดับการร่างเอกสาร section */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-4">
-                <img src={CalendarIcon} alt="Calendar" className="w-8 h-8" />
-                <h3 className="text-xl font-semibold text-[#17254D]">ลำดับการร่างเอกสาร</h3>
-              </div>
-              
-              {/* Main content area with restructured layout */}
-              <div className="relative">
-                {/* Dotted vertical line */}
-                <div className="absolute left-4 top-[24px] bottom-[24px] w-[1px] border-l border-dashed border-gray-400"></div>
-                
-                {/* Two-column layout with document sections on left and เอกสารประกอบ on right */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Left column - Document drafting sections */}
-                  <div>
-                    {/* ร่างเอกสารตอบ section */}
-                    <div className="relative mt-8 pl-4 mb-6">
-                      <div className="flex items-center gap-2 mb-3 relative z-10 bg-white">
-                        <img src={ClipboardIcon} alt="Clipboard" className="w-8 h-8" />
-                        <h4 className="text-lg font-medium text-[#17254D]">ร่างเอกสารตอบ</h4>
-                      </div>
-                      <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-4 ml-8">
-                        <p className="text-base text-gray-700">
-                          ในช่วงหน้าฝนทาง สชป.๑ จะมีแนวทางให้แต่ละพื้นที่บริหารจัดการน้ำโดยใช้น้ำฝนก่อนเป็นอันดับแรก ถ้าหากเกิดฝนทิ้งช่วงจะจัดสรรน้ำ
-                          ช่วยเหลือ ตามความต้องการใช้น้ำจริง ๆ ในพื้นที่ และตามเกณฑ์ บริหารจัดการน้ำของอ่างเก็บน้ำต่าง ๆ ซึ่ง สชป.๑ ได้สำรองน้ำในส่วนนี้ไว้แหล่งกักเก็บน้ำแล้ว
-                          อย่างเพียงพอ ทั้งนี้ สชป.๑ จะพยายามรักษาปริมาณน้ำในอ่างเก็บน้ำและเก็บกักน้ำไว้ให้ได้มากที่สุด เมื่อสิ้นสุดฤดูฝน สำหรับใช้ในฤดูแล้ง ๒๕๖๗/๖๘
-                        </p>
-                      </div>
-                    </div>
-                    
-                    {/* สร้างร่างเอกสารตอบ section */}
-                    <div className="relative pl-4">
-                      <div className="flex items-center gap-2 mb-3 relative z-10 bg-white">
-                        <img src={ClipboardIcon} alt="Clipboard" className="w-8 h-8" />
-                        <h4 className="text-lg font-medium text-[#17254D]">สร้างร่างเอกสารตอบ</h4>
-                      </div>
-                      
-                      {/* Show timestamp and approver info after save */}
-                      {isSaved && (
-                        <div className="ml-8 mb-3 text-sm text-gray-500">
-                          {saveTimestamp} สร้างโดย {approverInfo}
-                        </div>
-                      )}
-                      
-                      <div className="ml-8">
-                        <textarea
-                          value={documentContent}
-                          onChange={(e) => setDocumentContent(e.target.value)}
-                          className="w-full h-64 p-5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                          placeholder="พิมพ์ร่างเอกสารตอบที่นี่..."
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Right column - เอกสารประกอบ spanning full height */}
-                  <div className="relative mt-8 h-full">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Paperclip className="w-6 h-6 text-[#17254D]" strokeWidth={1} />
-                      <h4 className="text-lg font-medium text-[#17254D]">เอกสารประกอบ</h4>
-                    </div>
-                    
-                    <div className="border border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center justify-center" style={{ height: "calc(100% - 40px)" }}>
-                      <Paperclip className="w-12 h-12 text-gray-400 mb-4" strokeWidth={1} />
-                      <p className="text-gray-500 text-center mb-4">อัพโหลดเอกสารประกอบที่นี่</p>
-                      <button className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg border border-blue-200 hover:bg-blue-100 transition-colors">
-                        เพิ่มเอกสาร
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Action Buttons moved inside the frame */}
-            <div className="pt-6 mt-6">
-              <div className="flex justify-center gap-4">
-                <button
-                  onClick={handleSave}
-                  disabled={!hasContentChanged}
-                  className={`flex items-center justify-center gap-2 ${
-                    hasContentChanged 
-                      ? "bg-[#4B9FE1] hover:bg-[#3D8FD1] text-white" 
-                      : "bg-[#E2E8F0] text-[#94A3B8] cursor-not-allowed"
-                  } px-6 py-3 rounded-xl transition-colors duration-200`}
-                >
-                  <Save className="w-5 h-5" />
-                  <span>บันทึก</span>
-                </button>
-                
-                <button
-                  onClick={handleApprove}
-                  disabled={!isSaved}
-                  className={`flex items-center justify-center gap-2 ${
-                    isSaved 
-                      ? "bg-[#4B9FE1] hover:bg-[#3D8FD1] text-white" 
-                      : "bg-[#E2E8F0] text-[#94A3B8] cursor-not-allowed"
-                  } px-6 py-3 rounded-xl transition-colors duration-200`}
-                >
-                  <Check className="w-5 h-5" />
-                  <span>เห็นชอบ</span>
-                </button>
-                
-                <button
-                  onClick={handleSubmitForApproval}
-                  disabled={!isApproved}
-                  className={`flex items-center justify-center gap-2 ${
-                    isApproved 
-                      ? "bg-[#4B9FE1] hover:bg-[#3D8FD1] text-white" 
-                      : "bg-[#E2E8F0] text-[#94A3B8] cursor-not-allowed"
-                  } px-6 py-3 rounded-xl transition-colors duration-200`}
-                >
-                  <Send className="w-5 h-5" />
-                  <span>ส่งเข้ากระบวนการเห็นชอบ</span>
-                </button>
-              </div>
-            </div>
-          </Card>
+          <DocumentResponseCard
+            title="ร่างเอกสารตอบ"
+            editable={true}
+            showApprovalButtons={true}
+            onSave={handleSave}
+            onApprove={handleApprove}
+            onSubmitForApproval={handleSubmitForApproval}
+            isSaved={isSaved}
+            isApproved={isApproved}
+          />
+        </div>
+        
+        {/* Document Attachments Card */}
+        <div className="mb-6">
+          <DocumentAttachmentsCard
+            title="เอกสารประกอบ"
+            editable={true}
+            onAttachmentDownload={(id) => console.log(`Downloading attachment ${id}`)}
+          />
         </div>
       </main>
       

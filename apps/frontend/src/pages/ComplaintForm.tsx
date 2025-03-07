@@ -9,7 +9,7 @@ import { Complaint } from "@/types/complaint";
 import { ComplaintDTO } from "@/dto/complaint.dto";
 import { toast } from "sonner";
 import { ProcessedPost } from "@/types/processed-post";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useTransition, useCallback } from "react";
 // Replace Zustand store with Jotai hooks
 import { useComplaintData } from "@/atoms/hooks";
 import { useStationData } from "@/atoms/hooks";
@@ -17,6 +17,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 // Import the reusable components
 import { ComplaintInfoCard, WaterLevelInfoCard, WaterManagementPlanCard } from "@/components/shared";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Suspense } from "react";
+// Import mock data
+import { MOCK_PROCESSED_POSTS, USE_MOCK_DATA } from "@/utils/mockData";
 
 // Declare the window property for TypeScript
 declare global {
@@ -83,7 +87,8 @@ function isComplaint(data: any): data is Complaint {
 
 // Type guard to check if data is ProcessedPost
 const isProcessedPost = (data: any): data is ProcessedPost => {
-  return 'processed_post_id' in data && 'text' in data && 'category_name' in data;
+  return data && typeof data === 'object' && 
+    ('processed_post_id' in data && 'text' in data && 'category_name' in data && 'profile_name' in data);
 };
 
 // Update the convertToComplaintFormat function to handle ExtendedComplaintData
@@ -157,8 +162,8 @@ const convertToComplaintFormat = (data: ProcessedPost | Complaint | ExtendedComp
     issue: data.text || '',
     category: data.category_name || '',
     reporter: data.profile_name || '',
-    date: data.post_date instanceof Date 
-      ? data.post_date.toISOString().split('T')[0] 
+      date: data.post_date instanceof Date 
+        ? data.post_date.toISOString().split('T')[0] 
       : (typeof data.post_date === 'string' 
         ? new Date(data.post_date).toISOString().split('T')[0]
         : new Date().toISOString().split('T')[0]),
@@ -189,8 +194,11 @@ const ComplaintForm = () => {
   const complaintDataFromLocation = location.state as ProcessedPost | undefined;
   const { isLoading, complaint } = useComplaint(postId ? Number(postId) : undefined);
   
+  // Add isPending state for transitions
+  const [isPending, startTransition] = useTransition();
+  
   // Get complaint data from Jotai store
-  const { 
+  const {
     title, 
     description, 
     updateTitle,
@@ -198,8 +206,18 @@ const ComplaintForm = () => {
     updateLocation,
     updateCoordinates,
     updateProcessedPosts,
-    togglePostSelection
+    togglePostSelection,
+    processedPosts,
+    selectedPostIds
   } = useComplaintData();
+  
+  // Log Jotai store data
+  console.log('[ComplaintForm] Jotai store data:', {
+    title,
+    description,
+    processedPosts,
+    selectedPostIds
+  });
   
   // Get station data from Jotai store
   const stationData = useStationData();
@@ -213,28 +231,147 @@ const ComplaintForm = () => {
   // Ref to track if initial state restoration has been done
   const initialStateRestored = useRef(false);
   
+  // State to track if mock data is being used
+  const [usingMockData, setUsingMockData] = useState(false);
+
+  // TEMPORARY: Load mock data when PostgreSQL is unavailable
+  useEffect(() => {
+    if (USE_MOCK_DATA && processedPosts.length === 0) {
+      console.log('[ComplaintForm] 🚨 USING MOCK DATA - PostgreSQL is unavailable 🚨');
+      updateProcessedPosts(MOCK_PROCESSED_POSTS);
+      setUsingMockData(true);
+      
+      // Set the current amphure and province values directly for the mock data
+      // This will allow the WaterLevelInfoCard to make the appropriate API queries
+      if (stationData.updateLocation) {
+        console.log('[ComplaintForm] Setting location for mock data: แม่แตง, เชียงใหม่', {
+          currentAmphure: stationData.currentAmphure,
+          currentProvince: stationData.currentProvince,
+          timestamp: new Date().toISOString()
+        });
+        
+        // Set a flag to prevent other useEffects from overriding this location update
+              window._stationDataUpdateIntentional = true;
+        
+        // Update the location in the Jotai store
+        stationData.updateLocation('แม่แตง', 'เชียงใหม่');
+        
+        // Clear the flag after a short delay
+        setTimeout(() => {
+          window._stationDataUpdateIntentional = false;
+          console.log('[ComplaintForm] Cleared intentional update flag, current location:', {
+            currentAmphure: stationData.currentAmphure,
+            currentProvince: stationData.currentProvince,
+            timestamp: new Date().toISOString()
+          });
+        }, 500);
+      }
+    }
+  }, [updateProcessedPosts, processedPosts.length, stationData]);
+  
+  // Extract location data from Jotai store only
+  const extractLocationData = useCallback(() => {
+    // Get location data directly from Jotai store
+    const amphure = stationData.currentAmphure;
+    const province = stationData.currentProvince;
+    
+    console.log('[ComplaintForm] Getting location from Jotai store:', { 
+      amphure, 
+      province,
+      timestamp: new Date().toISOString()
+    });
+    
+    return { amphure, province };
+  }, [stationData]);
+  
+  // Update location in Jotai store when component mounts or data changes
+  useEffect(() => {
+    // Skip updating location if we're using mock data
+    if (usingMockData) {
+      console.log('[ComplaintForm] Skipping location update from complaint data because mock data is in use');
+      return;
+    }
+    
+    // Skip updating location if an intentional update is in progress
+    if (window._stationDataUpdateIntentional) {
+      console.log('[ComplaintForm] Skipping location update because an intentional update is in progress');
+      return;
+    }
+
+    // Extract location from complaint data
+    const data = preservedData || complaint || complaintDataFromLocation;
+    if (!data) {
+      console.log('[ComplaintForm] No complaint data available to update location');
+      return;
+    }
+    
+    const locationData = convertToComplaintFormat(data);
+    
+    // Handle amphure data - could be string, array, or undefined
+    let firstAmphure = undefined;
+    if (locationData?.amphure) {
+      if (Array.isArray(locationData.amphure)) {
+        // If it's an array, take the first non-empty value
+        firstAmphure = locationData.amphure.find(a => isNonEmptyString(a)) || undefined;
+      } else if (isNonEmptyString(locationData.amphure)) {
+        // If it's a string, use it directly
+        firstAmphure = locationData.amphure;
+      }
+    }
+    
+    // Handle province data - could be string, array, or undefined
+    let firstProvince = undefined;
+    if (locationData?.province) {
+      if (Array.isArray(locationData.province)) {
+        // If it's an array, take the first non-empty value
+        firstProvince = locationData.province.find(p => isNonEmptyString(p)) || undefined;
+      } else if (isNonEmptyString(locationData.province)) {
+        // If it's a string, use it directly
+        firstProvince = locationData.province;
+      }
+    }
+    
+    console.log('[ComplaintForm] Extracted location from complaint data:', { 
+      amphure: firstAmphure, 
+      province: firstProvince,
+            timestamp: new Date().toISOString()
+          });
+    
+    // Update the Jotai store with the extracted location
+    if (firstAmphure && firstProvince && stationData.updateLocation) {
+      console.log('[ComplaintForm] Updating location in Jotai store:', { 
+        amphure: firstAmphure, 
+        province: firstProvince,
+        timestamp: new Date().toISOString()
+      });
+      stationData.updateLocation(firstAmphure, firstProvince);
+    }
+  }, [preservedData, complaint, complaintDataFromLocation, stationData, usingMockData]);
+  
   // Check if we're returning from StationCardEdit
   useEffect(() => {
     if (location.state?.returnedFromStationEdit) {
       console.log('[ComplaintForm] Detected return from StationCardEdit');
-      setReturnedFromStationEdit(true);
       
-      // Set preserved data if available
-      if (location.state.preserveState && complaintDataFromLocation) {
-        setPreservedData(complaintDataFromLocation as any);
+      // Use startTransition for state updates that might trigger suspense
+      startTransition(() => {
+          setReturnedFromStationEdit(true);
         
-        // If we have complaint data in location state, update the Jotai store
-        const { updateTitle, updateDescription } = useComplaintData();
-        
-        // Use type assertion to safely access properties
-        const data = complaintDataFromLocation as any;
-        if (data.text) {
-          updateTitle(data.text);
+        // Set preserved data if available
+        if (location.state.preserveState && complaintDataFromLocation) {
+          setPreservedData(complaintDataFromLocation as any);
+          
+          // If we have complaint data in location state, update the Jotai store
+          // Don't call hooks inside useEffect - use the ones from component scope
+          const data = complaintDataFromLocation as any;
+          if (data.text) {
+            updateTitle(data.text);
+          }
+          if (data.content) {
+            updateDescription(data.content);
+          }
         }
-        if (data.content) {
-          updateDescription(data.content);
-        }
-      }
+      });
 
       // No need to get station data from sessionStorage as it's already in Jotai store
       // The StationCardEdit component should have updated the Jotai store before navigation
@@ -242,7 +379,9 @@ const ComplaintForm = () => {
     }
   }, [
     location.state, 
-    complaintDataFromLocation
+    complaintDataFromLocation,
+    updateTitle,
+    updateDescription
   ]);
 
   // Debug location data
@@ -259,6 +398,47 @@ const ComplaintForm = () => {
       });
     }
   }, [preservedData, complaint, complaintDataFromLocation]);
+
+  // Add a useEffect to ensure location data is always set
+  useEffect(() => {
+    // Check if location data is not set
+    if ((!stationData.currentAmphure || !stationData.currentProvince) && stationData.updateLocation) {
+      console.log('[ComplaintForm] Setting default location data: แม่แตง, เชียงใหม่', {
+        currentAmphure: stationData.currentAmphure,
+        currentProvince: stationData.currentProvince,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Set a flag to prevent other useEffects from overriding this location update
+      window._stationDataUpdateIntentional = true;
+      
+      // Update the location in the Jotai store with default values
+      stationData.updateLocation('แม่แตง', 'เชียงใหม่');
+      
+      // Verify that the location was set correctly
+      setTimeout(() => {
+        console.log('[ComplaintForm] Verifying location update:', {
+          currentAmphure: stationData.currentAmphure,
+          currentProvince: stationData.currentProvince,
+          timestamp: new Date().toISOString()
+        });
+        
+        // If the location is still not set, try again
+        if (!stationData.currentAmphure || !stationData.currentProvince) {
+          console.log('[ComplaintForm] Location update failed, trying again');
+          stationData.updateLocation('แม่แตง', 'เชียงใหม่');
+        }
+        
+        // Clear the flag after a short delay
+        window._stationDataUpdateIntentional = false;
+        console.log('[ComplaintForm] Cleared intentional update flag, current location:', {
+          currentAmphure: stationData.currentAmphure,
+          currentProvince: stationData.currentProvince,
+          timestamp: new Date().toISOString()
+        });
+      }, 500);
+    }
+  }, [stationData]); // Run this effect when stationData changes
 
   const validateComplaintData = () => {
     // Use preserved complaint data if returning from StationCardEdit
@@ -295,7 +475,8 @@ const ComplaintForm = () => {
     // Navigate to the station card edit page
     navigate('/station-card-edit', { 
       state: { 
-        complaintData: complaint || preservedData || complaintDataFromLocation
+        complaintData: complaint || preservedData || complaintDataFromLocation,
+        preserveState: true
       } 
     });
   };
@@ -318,7 +499,8 @@ const ComplaintForm = () => {
     navigate('/document-preparation', { 
       state: { 
         fromComplaintForm: true,
-        complaintData: currentComplaintData
+        complaintData: currentComplaintData,
+        preserveState: true
       } 
     });
   };
@@ -337,12 +519,34 @@ const ComplaintForm = () => {
     navigate('/dashboard');
   };
 
+  // Handler functions for WaterLevelInfoCard
+  const handleAddStation = (type: string) => {
+    console.log('[ComplaintForm] Add station:', type);
+    navigate('/station-card-edit', { state: { type, returnUrl: '/complaint/create' } });
+  };
+
+  const handleDeleteStation = (type: string) => {
+    console.log('[ComplaintForm] Delete station:', type);
+    // Implementation for deleting stations
+  };
+
+  const handleSaveStationData = () => {
+    toast.success('บันทึกข้อมูลสถานีสำเร็จ');
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   // Use preserved complaint data if returning from StationCardEdit
   const data = preservedData || complaint || complaintDataFromLocation;
+  console.log('[ComplaintForm] Data sources:', {
+    preservedData,
+    complaint,
+    complaintDataFromLocation,
+    finalData: data
+  });
+  
   if (data && !validateComplaintData()) {
     return <div>Invalid complaint data</div>;
   }
@@ -393,7 +597,14 @@ const ComplaintForm = () => {
   
   // No more fallback to hardcoded values - if we don't have location data, we'll show appropriate UI
   if (!firstAmphure && !firstProvince) {
+    // If we're using mock data, use the mock location values
+    if (usingMockData) {
+      console.log('[ComplaintForm] Using mock location data for display: แม่แตง, เชียงใหม่');
+      // We don't need to set firstAmphure and firstProvince here anymore
+      // since we're getting location data directly from Jotai in the WaterLevelInfoCard component
+    } else {
     console.warn('[ComplaintForm] No valid location data found in complaint data');
+    }
   }
   
   console.log('[ComplaintForm] Final location data being passed to components:', { 
@@ -401,16 +612,30 @@ const ComplaintForm = () => {
     firstProvince,
     isAmphureDefined: !!firstAmphure,
     isProvinceDefined: !!firstProvince,
-    timestamp: new Date().toISOString()
+    usingMockData,
+    jotaiAmphure: stationData.currentAmphure,
+    jotaiProvince: stationData.currentProvince
   });
 
   // Helper function to convert ExtendedComplaintData to Complaint
   const convertToComplaintType = (data: Complaint | ExtendedComplaintData | ProcessedPost | null): Complaint | ProcessedPost | null => {
-    if (!data) return null;
+    console.log('[convertToComplaintType] Input data:', data);
+    
+    if (!data) {
+      console.log('[convertToComplaintType] No data provided, returning null');
+      return null;
+    }
+    
+    // If it's a ProcessedPost, return it directly
+    if (isProcessedPost(data)) {
+      console.log('[convertToComplaintType] Data is a ProcessedPost, returning as is');
+      return data as ProcessedPost;
+    }
     
     if (isExtendedComplaintData(data)) {
+      console.log('[convertToComplaintType] Converting ExtendedComplaintData to Complaint');
       // Convert ExtendedComplaintData to Complaint
-      return {
+      const result = {
         id: typeof data.id === 'number' ? String(data.id) : data.id as string,
         content: data.content,
         createdAt: data.createdAt,
@@ -422,43 +647,71 @@ const ComplaintForm = () => {
         postId: data.postId,
         link: data.link
       };
+      console.log('[convertToComplaintType] Converted result:', result);
+      return result;
     }
     
+    console.log('[convertToComplaintType] Data is already in the correct format, returning as is');
     return data;
   };
 
+  // Render the WaterLevelInfoCard component
+  const renderWaterLevelInfoCard = () => {
+    // We don't need to differentiate between mock data and real data anymore
+    // since the WaterLevelInfoCard component gets its location data directly from Jotai
+    return (
+      <WaterLevelInfoCard
+        location={{
+          amphure: stationData.currentAmphure,
+          province: stationData.currentProvince
+        }}
+      />
+    );
+  };
+
+  // Wrap the JSX with Suspense
   return (
+    <Suspense fallback={<div className="container mx-auto px-12 pt-6 pb-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-semibold text-[#17254D]">ระบบตอบประเด็นข้อร้องเรียน</h1>
+      </div>
+      <div className="space-y-4">
+        <Skeleton className="h-[200px] w-full" />
+        <Skeleton className="h-[300px] w-full" />
+        <Skeleton className="h-[200px] w-full" />
+      </div>
+    </div>}>
     <div className="min-h-screen bg-[#F0F8FF] pb-32">
       <ComplaintHeader />
       
       {/* Page Title */}
       <div className="bg-[#EBF5FF]">
         <div className="container mx-auto px-12 pt-6 pb-4">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-semibold text-[#17254D]">ระบบตอบประเด็นข้อร้องเรียน</h1>
-            <div className="flex gap-2">
-              <Button 
-                onClick={handleReturnToDashboard}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                กลับไปยังหน้าหลัก
-              </Button>
-              {returnedFromStationEdit && (
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-2xl font-semibold text-[#17254D]">ระบบตอบประเด็นข้อร้องเรียน</h1>
+              <div className="flex gap-2">
                 <Button 
-                  onClick={handleContinue}
+                  onClick={handleReturnToDashboard}
+                  variant="outline"
                   className="flex items-center gap-2"
                 >
-                  ดำเนินการต่อ
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowLeft className="h-4 w-4" />
+                  กลับไปยังหน้าหลัก
                 </Button>
-              )}
+                {returnedFromStationEdit && (
+                  <Button 
+                    onClick={handleContinue}
+                    className="flex items-center gap-2"
+                  >
+                    ดำเนินการต่อ
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-          
-          {/* Action Buttons */}
-          <div className="flex items-center mb-2">
+            
+            {/* Action Buttons - Moved up with reduced margin */}
+            <div className="flex items-center mb-4">
             <button 
               className="bg-[#4B9FE1] hover:bg-[#3D8FD1] text-white px-2 py-2 rounded-xl w-[150px] h-[42px] font-medium flex items-center justify-center transition-colors duration-200 text-base whitespace-nowrap"
               onClick={handleContinue}
@@ -477,33 +730,49 @@ const ComplaintForm = () => {
       </div>
       
       <main className="container mx-auto px-12 pt-2">
-        {/* Complaint Data Section */}
-        <div className="mb-6">
-          <Card className="p-6 shadow-sm">
-            <SocialPostInfo complaint={convertToComplaintType(data || null)} />
-          </Card>
+          {/* TEMPORARY: Show warning when using mock data */}
+          {usingMockData && (
+            <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded" role="alert">
+              <div className="flex items-center">
+                <div className="py-1">
+                  <svg className="h-6 w-6 text-yellow-500 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
         </div>
+        <div>
+                  <p className="font-bold">ข้อมูลจำลอง (Mock Data)</p>
+                  <p className="text-sm">กำลังใช้ข้อมูลจำลองเนื่องจาก PostgreSQL ไม่พร้อมใช้งาน (เฉพาะข้อมูลอำเภอแม่แตง จังหวัดเชียงใหม่)</p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Debug the complaint data */}
+          {(() => {
+            const complaintData = convertToComplaintType(data || null);
+            console.log('[ComplaintForm] Data passed to ComplaintInfoCard:', complaintData);
+            return null;
+          })()}
+          
+          {/* Complaint Data Section - Moved up with reduced spacing */}
+          <div className="mb-4">
+            <ComplaintInfoCard 
+              title="ข้อร้องเรียน"
+              editable={false}
+              showMockData={USE_MOCK_DATA}
+            />
+          </div>
         
         {/* Supporting Data Section */}
-        <div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="p-6 shadow-sm">
-              <WaterLevelInfo 
-                amphure={firstAmphure}
-                province={firstProvince}
-                returnedFromStationEdit={returnedFromStationEdit}
-              />
-            </Card>
-            <Card className="p-6 shadow-sm">
-              <WaterManagementPlan 
-                amphure={firstAmphure}
-                province={firstProvince}
-              />
-            </Card>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div>
+              {renderWaterLevelInfoCard()}
+            </div>
+            <WaterManagementPlanCard />
         </div>
       </main>
     </div>
+    </Suspense>
   );
 };
 
