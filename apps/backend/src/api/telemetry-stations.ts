@@ -68,6 +68,15 @@ router.get('/', async (req, res) => {
     logger.debug('📝 Executing query', { query, params });
     const { rows } = await pool.query<TelemetryStation>(query, params);
 
+    // Log detailed station ID information from database
+    logger.info('🔢 Station IDs from PostgreSQL', { 
+      stationIds: rows.map(station => ({
+        id: station.id,
+        station_id: station.station_id,
+        name: station.station_name
+      }))
+    });
+
     // Group stations by amphure for better logging
     const stationsByAmphure = rows.reduce((acc: Record<string, number>, station: TelemetryStation) => {
       acc[station.amphure] = (acc[station.amphure] || 0) + 1;
