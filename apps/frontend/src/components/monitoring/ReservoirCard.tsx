@@ -5,8 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, UserCircle } from "lucide-react";
 
+// Extended Reservoir interface with additional properties
+interface ExtendedReservoir extends Reservoir {
+  current_storage?: number | null;
+  percent_full?: number | null;
+  updated_at?: string | null;
+}
+
 interface ReservoirCardProps {
-  reservoir: Reservoir;
+  reservoir: ExtendedReservoir;
   showButtons?: boolean;
   disabled?: boolean;
   isUserSelected?: boolean;
@@ -29,12 +36,23 @@ export const ReservoirCard = ({
   const contentTextStyle = "px-3"; // Consistent horizontal padding for balanced layout
   const labelStyle = `text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10 ${disabled ? 'opacity-60' : ''}`;
 
+  // Use fallback values for missing data
+  const normalStorage = reservoir.normal_storage_capacity ?? 0;
+  const minStorage = reservoir.minimum_storage_capacity ?? 0;
+  const currentStorage = reservoir.current_storage ?? 0;
+  const percentFull = reservoir.percent_full ?? 0;
+  const updatedAt = reservoir.updated_at ?? new Date().toISOString();
+
   // Debug logging
   console.log('ReservoirCard Debug:', {
     reservoirId: reservoir.id,
+    stationId: reservoir.station_id,
     reservoirName: reservoir.reservoir_name,
-    normalStorage: reservoir.normal_storage_capacity,
-    minStorage: reservoir.minimum_storage_capacity,
+    normalStorage,
+    minStorage,
+    currentStorage,
+    percentFull,
+    updatedAt,
     disabled,
     isUserSelected
   });

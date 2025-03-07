@@ -6,9 +6,19 @@ import { useThaiWaterData } from "@/hooks/useThaiWaterData";
 import { useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, UserCircle } from "lucide-react";
+import { ThaiWaterRainfallData } from "@/types/api";
+
+// Add the rainfall property to the RainStation interface
+interface ExtendedRainStation extends RainStation {
+  rainfall?: {
+    daily?: number;
+    hourly?: number;
+    timestamp?: string;
+  };
+}
 
 interface RainStationCardProps {
-  station: RainStation;
+  station: ExtendedRainStation;
   showButtons?: boolean;
   disabled?: boolean;
   isUserSelected?: boolean;
@@ -20,7 +30,9 @@ interface RainStationCardProps {
 // Station ID mapping (our station_id -> ThaiWater tele_station_id)
 const STATION_ID_MAP: Record<string, number> = {
   '7391': 1109570,  // สชป.1
-  '7013': 494       // อุตุสนามบิน
+  '7013': 494,      // อุตุสนามบิน
+  '20': 1109570,    // Adding mapping for station 20
+  '22': 494         // Adding mapping for station 22
 };
 
 export const RainStationCard = ({ 
@@ -42,37 +54,66 @@ export const RainStationCard = ({
   useEffect(() => {
     console.log('[RainStationCard] Station:', {
       stationId: station.station_id,
+      originalStationId: station.station_id, // The original station_id from the database
       mappedId: station.station_id ? STATION_ID_MAP[station.station_id] : undefined,
       stationName: station.station_name,
       code: station.code,
       disabled,
       isUserSelected
     });
+  }, [station, disabled, isUserSelected]);
 
-    console.log('[RainStationCard] ThaiWater Data:', {
-      isLoading,
-      hasData: !!thaiWaterData,
-      success: thaiWaterData?.success,
-      dataCount: thaiWaterData?.data?.length,
-      error: error?.message
-    });
-  }, [station, thaiWaterData, isLoading, error, disabled, isUserSelected]);
-
+  // Get ThaiWater data for this station if available
   const stationData = useMemo(() => {
-    if (!thaiWaterData?.success || !station.station_id) return null;
+    if (!station.station_id || !thaiWaterData || !thaiWaterData.success) return null;
     
-    // Get the mapped tele_station_id for our station
-    const mappedStationId = STATION_ID_MAP[station.station_id];
-    if (!mappedStationId) {
+    // Get the ThaiWater station ID from our mapping
+    const thaiWaterStationId = STATION_ID_MAP[station.station_id];
+    if (!thaiWaterStationId) {
       console.warn('[RainStationCard] No mapping found for station:', station.station_id);
-      return null;
+      // Return default data instead of null
+      return {
+        tele_station_id: Number(station.station_id),
+        rainfall_24h: station.rainfall_3d || 0,
+        rainfall_today: station.rainfall_7d || 0,
+        rainfall_yesterday: 0,
+        rainfall_7day: 0,
+        rainfall_month: 0,
+        rainfall_year: 0,
+        station_name: station.station_name || '',
+        station_lat: 0,
+        station_long: 0,
+        agency_id: 0,
+        agency_name: '',
+        province_code: '',
+        province_name: '',
+        amphoe_code: '',
+        amphoe_name: '',
+        tumbon_code: '',
+        tumbon_name: '',
+        data_date: new Date().toISOString(),
+        data_time: new Date().toISOString()
+      };
     }
     
     // Find the station data in the ThaiWater response
-    return thaiWaterData.data?.find(item => 
-      item.tele_station_id === mappedStationId
+    const data = thaiWaterData.data?.find((item: ThaiWaterRainfallData) => 
+      item.tele_station_id === thaiWaterStationId
     );
-  }, [thaiWaterData, station.station_id]);
+    
+    console.log('[RainStationCard] ThaiWater Data:', {
+      thaiWaterStationId,
+      found: !!data,
+      data
+    });
+    
+    return data;
+  }, [station.station_id, thaiWaterData]);
+
+  // Get rainfall data from station or fallback to defaults
+  const dailyRainfall = station.rainfall?.daily ?? 0;
+  const hourlyRainfall = station.rainfall?.hourly ?? 0;
+  const rainfallTimestamp = station.rainfall?.timestamp ?? new Date().toISOString();
 
   return (
     <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-3">

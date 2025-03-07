@@ -31,13 +31,19 @@ export const MonitoringStationCard = ({
   onDeleteData,
   onToggleDisabled
 }: MonitoringStationCardProps) => {
-  const waterLevel = station.telemetry_data?.water_level ?? station.water_level;
-  const flowRate = station.telemetry_data?.flow_rate ?? station.flow_rate;
+  // Use fallback values if telemetry_data is missing
+  const waterLevel = station.telemetry_data?.water_level ?? station.water_level ?? 0;
+  const flowRate = station.telemetry_data?.flow_rate ?? station.flow_rate ?? 0;
   const hasRealTimeData = !!station.telemetry_data;
 
   // Debug logging
   console.log('MonitoringStationCard Debug:', {
+    id: station.id,
+    idType: typeof station.id,
     stationId: station.station_id,
+    stationIdType: typeof station.station_id,
+    stationName: station.station_name,
+    displayedStationId: station.station_id, // The ID that will be displayed
     telemetryData: station.telemetry_data,
     hasRealTimeData,
     waterLevel,
