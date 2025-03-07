@@ -1,149 +1,145 @@
 import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Paperclip, X, FileText, Download } from "lucide-react";
-import { useRef, useCallback } from "react";
-import { atom } from "jotai";
-import { useDocumentAttachments, Attachment } from "@/atoms/hooks";
-
-// Define attachment atom
-export const documentAttachmentsAtom = atom<Attachment[]>([]);
+import { useDocumentAttachments } from "@/atoms/hooks";
+import { Attachment } from "@/atoms/documentAttachments";
+import { Download, Trash2, Upload, FileText } from "lucide-react";
+import { useRef, useState } from "react";
 
 interface DocumentAttachmentsCardProps {
   title?: string;
   className?: string;
   editable?: boolean;
-  onAttachmentDownload?: (id: string) => void;
+  onAttachmentDownload?: (fileName: string) => void;
 }
 
 export const DocumentAttachmentsCard = ({
-  title = "เอกสารประกอบ",
+  title = "เอกสารแนบ",
   className = "",
   editable = true,
-  onAttachmentDownload
+  onAttachmentDownload,
 }: DocumentAttachmentsCardProps) => {
-  // Use document attachments hook
-  const { attachments, addAttachment, removeAttachment, getAttachment } = useDocumentAttachments();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
   
-  // Handle file selection
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  const { 
+    attachments, 
+    addAttachment, 
+    removeAttachment,
+    downloadAttachment
+  } = useDocumentAttachments();
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!editable || !e.target.files || e.target.files.length === 0) return;
     
-    const file = files[0];
+    const file = e.target.files[0];
     addAttachment(file);
     
-    // Reset the file input
+    // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-  }, [addAttachment]);
+  };
   
-  // Handle attachment download
-  const handleDownloadAttachment = useCallback((id: string) => {
-    if (onAttachmentDownload) {
-      onAttachmentDownload(id);
-    } else {
-      // Default download behavior
-      const attachment = getAttachment(id);
-      if (attachment && attachment.url) {
-        window.open(attachment.url, '_blank');
-      }
+  const handleUploadClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
-  }, [getAttachment, onAttachmentDownload]);
+  };
   
-  // Format file size
+  const handleDownload = (fileName: string) => {
+    if (onAttachmentDownload) {
+      onAttachmentDownload(fileName);
+    } else {
+      downloadAttachment(fileName);
+    }
+  };
+  
   const formatFileSize = (bytes: number): string => {
     if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    else return (bytes / 1048576).toFixed(1) + ' MB';
   };
   
   return (
     <ErrorBoundary component="DocumentAttachmentsCard">
-      <Card className={className}>
-        <CardHeader>
-          <CardTitle>{title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {/* File upload input (hidden) */}
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
-              accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
-            />
+      <div className={`bg-white rounded-lg shadow-sm p-6 ${className}`}>
+        <div className="flex justify-start items-center mb-4">
+          <h2 className="text-xl font-semibold text-[#17254D]">{title}</h2>
+        </div>
+        
+        <div className="px-4 py-0">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          
+          {editable && (
+            <div className="mb-4">
+              <Button
+                variant="outline"
+                onClick={handleUploadClick}
+                className="w-full border-dashed border-2 border-[#E2E8F0] py-6 flex flex-col items-center justify-center gap-2 hover:bg-[#F8FAFC]"
+              >
+                <Upload className="h-6 w-6 text-[#64748B]" />
+                <span className="text-[#64748B]">คลิกเพื่ออัปโหลดเอกสาร</span>
+                <span className="text-xs text-[#94A3B8]">หรือลากและวางไฟล์ที่นี่</span>
+              </Button>
+            </div>
+          )}
+          
+          <div className="space-y-3">
+            <h3 className="text-base font-medium text-[#17254D]">เอกสารที่แนบ</h3>
             
-            {/* Upload button */}
-            {editable && (
-              <div>
-                <Button
-                  variant="outline"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full border-dashed border-2 py-8 flex flex-col items-center justify-center"
-                >
-                  <Paperclip className="h-6 w-6 mb-2" />
-                  <span>คลิกเพื่อเพิ่มเอกสารประกอบ</span>
-                  <span className="text-sm text-gray-500 mt-1">
-                    รองรับไฟล์ PDF, Word, Excel, และรูปภาพ
-                  </span>
-                </Button>
-              </div>
-            )}
-            
-            {/* Attachment list */}
             {attachments.length > 0 ? (
               <div className="space-y-2">
-                <Label>รายการเอกสารประกอบ</Label>
-                <div className="space-y-2">
-                  {attachments.map((attachment) => (
-                    <div 
-                      key={attachment.id} 
-                      className="flex items-center justify-between p-3 border rounded-md bg-gray-50"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <FileText className="h-5 w-5 text-blue-500" />
-                        <div>
-                          <p className="font-medium">{attachment.name}</p>
-                          <p className="text-sm text-gray-500">{formatFileSize(attachment.size)}</p>
-                        </div>
-                      </div>
-                      <div className="flex space-x-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDownloadAttachment(attachment.id)}
-                        >
-                          <Download className="h-4 w-4" />
-                        </Button>
-                        {editable && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeAttachment(attachment.id)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        )}
+                {attachments.map((attachment) => (
+                  <div 
+                    key={attachment.id} 
+                    className="flex items-center justify-between p-3 border border-[#E2E8F0] rounded-lg"
+                  >
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-5 w-5 text-[#64748B]" />
+                      <div>
+                        <p className="text-sm font-medium text-[#17254D]">{attachment.name}</p>
+                        <p className="text-xs text-[#64748B]">{formatFileSize(attachment.size)}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDownload(attachment.name)}
+                        className="h-8 w-8 text-[#64748B] hover:text-[#0284C7] hover:bg-[#F0F9FF]"
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                      
+                      {editable && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeAttachment(attachment.id)}
+                          className="h-8 w-8 text-[#64748B] hover:text-red-500 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : (
-              <div className="text-center py-4 text-gray-500">
-                ยังไม่มีเอกสารประกอบ
+              <div className="text-center py-8 border border-[#E2E8F0] rounded-lg">
+                <p className="text-[#64748B]">ยังไม่มีเอกสารแนบ</p>
               </div>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </ErrorBoundary>
   );
 };

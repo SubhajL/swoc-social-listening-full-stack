@@ -1,10 +1,10 @@
 import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useDocumentData } from "@/atoms/hooks";
 import { useState, useEffect, useCallback } from "react";
+import { CheckCircle, Save, Send } from "lucide-react";
 
 interface DocumentResponseCardProps {
   title?: string;
@@ -31,117 +31,114 @@ export const DocumentResponseCard = ({
 }: DocumentResponseCardProps) => {
   // Get document data from Jotai
   const { 
-    documentContent: storeContent, 
-    documentTitle: storeTitle,
+    documentContent, 
     updateDocumentContent
   } = useDocumentData();
   
-  // Local state for content
-  const [content, setContent] = useState(storeContent || "");
-  const [hasContentChanged, setHasContentChanged] = useState(false);
+  // Use props for approval and saved status
+  const documentIsApproved = isApproved;
+  const documentIsSaved = isSaved;
   
-  // Update local state when store content changes
-  useEffect(() => {
-    if (storeContent !== undefined) {
-      setContent(storeContent);
-      setHasContentChanged(false);
+  // Handle textarea change
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (editable) {
+      updateDocumentContent(e.target.value);
     }
-  }, [storeContent]);
-  
-  // Handle content change
-  const handleContentChange = useCallback((value: string) => {
-    setContent(value);
-    setHasContentChanged(true);
-    updateDocumentContent(value);
-  }, [updateDocumentContent]);
-  
-  // Handle save
-  const handleSave = useCallback(() => {
-    if (onSave) {
-      onSave();
-    }
-    setHasContentChanged(false);
-  }, [onSave]);
-  
-  // Handle approve
-  const handleApprove = useCallback(() => {
-    if (onApprove) {
-      onApprove();
-    }
-  }, [onApprove]);
-  
-  // Handle submit for approval
-  const handleSubmitForApproval = useCallback(() => {
-    if (onSubmitForApproval) {
-      onSubmitForApproval();
-    }
-  }, [onSubmitForApproval]);
+  };
   
   return (
     <ErrorBoundary component="DocumentResponseCard">
-      <Card className={className}>
-        <CardHeader>
-          <CardTitle>{title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="documentContent">เนื้อหาเอกสาร</Label>
-              <Textarea
-                id="documentContent"
-                value={content}
-                onChange={(e) => handleContentChange(e.target.value)}
+      <div className={`bg-white rounded-lg shadow-sm p-6 ${className}`}>
+        <div className="flex justify-start items-center mb-4">
+          <h2 className="text-xl font-semibold text-[#17254D]">{title}</h2>
+        </div>
+        
+        <div className="px-4 py-0">
+          <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full mb-6">
+            <Label className="text-[#64748B] font-medium text-base absolute -top-4 left-2 bg-white px-2 z-10">
+              เนื้อหาเอกสาร
+            </Label>
+            {editable ? (
+              <Textarea 
+                value={documentContent} 
+                onChange={handleChange}
                 placeholder="พิมพ์เนื้อหาเอกสารตอบที่นี่..."
-                className="min-h-[300px] font-sarabun"
-                readOnly={!editable}
+                className="min-h-[200px] border border-[#E2E8F0] rounded-xl p-4 text-[#17254D] text-sm"
               />
-            </div>
-            
-            <div className="flex justify-end space-x-2">
-              {editable && (
+            ) : (
+              <div className="min-h-[200px] border border-[#E2E8F0] rounded-xl p-4 bg-white text-[#17254D] text-sm whitespace-pre-wrap">
+                <div className="pl-4">
+                  {documentContent || "ยังไม่มีเนื้อหาเอกสาร"}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Action Buttons */}
+          {(editable || showApprovalButtons) && (
+            <div className="flex justify-end gap-3 mt-6">
+              {editable && onSave && (
                 <Button
-                  variant="default"
-                  onClick={handleSave}
-                  disabled={!hasContentChanged && isSaved}
-                  className={isSaved && !hasContentChanged ? "bg-green-600 hover:bg-green-700" : ""}
+                  variant="outline"
+                  onClick={onSave}
+                  className={`flex items-center gap-2 ${
+                    documentIsSaved ? 'bg-green-50 text-green-600 border-green-300' : ''
+                  }`}
                 >
-                  {isSaved && !hasContentChanged ? "บันทึกแล้ว" : "บันทึก"}
+                  {documentIsSaved ? (
+                    <>
+                      <CheckCircle className="h-4 w-4" />
+                      บันทึกแล้ว
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4" />
+                      บันทึก
+                    </>
+                  )}
                 </Button>
               )}
               
               {showApprovalButtons && (
                 <>
-                  {isApproved ? (
+                  {onSubmitForApproval && !documentIsApproved && (
                     <Button
-                      variant="default"
-                      className="bg-green-600 hover:bg-green-700"
-                      disabled
+                      variant="outline"
+                      onClick={onSubmitForApproval}
+                      className="flex items-center gap-2"
                     >
-                      อนุมัติแล้ว
+                      <Send className="h-4 w-4" />
+                      ส่งอนุมัติ
                     </Button>
-                  ) : (
-                    <>
-                      <Button
-                        variant="default"
-                        onClick={handleApprove}
-                        className="bg-blue-600 hover:bg-blue-700"
-                      >
-                        อนุมัติ
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={handleSubmitForApproval}
-                      >
-                        ส่งต่อการอนุมัติ
-                      </Button>
-                    </>
+                  )}
+                  
+                  {onApprove && (
+                    <Button
+                      variant={documentIsApproved ? "outline" : "default"}
+                      onClick={onApprove}
+                      className={`flex items-center gap-2 ${
+                        documentIsApproved ? 'bg-green-50 text-green-600 border-green-300' : 'bg-[#0284C7] hover:bg-[#0369A1] text-white'
+                      }`}
+                    >
+                      {documentIsApproved ? (
+                        <>
+                          <CheckCircle className="h-4 w-4" />
+                          อนุมัติแล้ว
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="h-4 w-4" />
+                          อนุมัติ
+                        </>
+                      )}
+                    </Button>
                   )}
                 </>
               )}
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          )}
+        </div>
+      </div>
     </ErrorBoundary>
   );
 };
