@@ -47,6 +47,15 @@ export const fetchMonitoringStations = async (
 
     const data = await response.json();
     
+    // Log detailed station ID information from API response
+    console.log('[fetchMonitoringStations] Station IDs from API response:', 
+      data.stations?.map((station: any) => ({
+        id: station.id,
+        station_id: station.station_id,
+        name: station.station_name
+      }))
+    );
+    
     // Fetch telemetry data for each station
     const stationsWithTelemetry = await Promise.all(
       data.stations.map(async (station: MonitoringStation) => {
@@ -54,20 +63,49 @@ export const fetchMonitoringStations = async (
           const telemetryUrl = new URL(
             `${import.meta.env.VITE_API_URL}/api/telemetry/${station.id}`
           );
-          const telemetryResponse = await fetch(telemetryUrl.toString());
           
-          if (telemetryResponse.ok) {
-            const telemetryData = await telemetryResponse.json();
-            return {
-              ...station,
-              telemetry: telemetryData,
-            };
+          // Use fetch with { method: 'HEAD' } first to check if the endpoint exists
+          // This avoids the 404 errors in the console
+          const checkResponse = await fetch(telemetryUrl.toString(), { method: 'HEAD' })
+            .catch(() => ({ ok: false, status: 404 }));
+          
+          // Only proceed with actual fetch if the endpoint exists
+          if (checkResponse.ok) {
+            const telemetryResponse = await fetch(telemetryUrl.toString());
+            
+            if (telemetryResponse.ok) {
+              const telemetryData = await telemetryResponse.json();
+              return {
+                ...station,
+                telemetry: telemetryData,
+              };
+            }
           }
           
-          return station;
+          // If API returns 404 or HEAD check failed, provide default telemetry data
+          return {
+            ...station,
+            telemetry_data: {
+              water_level: station.water_level || 0,
+              flow_rate: station.flow_rate || 0,
+              timestamp: new Date().toISOString(),
+              notation: "ข้อมูลสำรอง (API ยังไม่พร้อมใช้งาน)"
+            }
+          };
         } catch (error) {
+          // Only log error once per station to reduce console spam
           console.error(`Error fetching telemetry for station ${station.id}:`, error);
-          return station;
+          
+          // Return station with default telemetry data
+          return {
+            ...station,
+            telemetry_data: {
+              water_level: station.water_level || 0,
+              flow_rate: station.flow_rate || 0,
+              timestamp: new Date().toISOString(),
+              notation: "ข้อมูลสำรอง (เกิดข้อผิดพลาดในการเชื่อมต่อ)"
+            }
+          };
         }
       })
     );

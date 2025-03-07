@@ -1,5 +1,6 @@
 import { useAtom, useAtomValue, useSetAtom, Getter } from 'jotai';
 import { useCallback } from 'react';
+import { atomWithStorage } from 'jotai/utils';
 
 // Station data atoms
 import {
@@ -19,7 +20,18 @@ import {
   StationData,
   MonitoringStation,
   RainStation,
-  Reservoir
+  Reservoir,
+  currentAmphureAtom,
+  currentProvinceAtom,
+  monitoringStationsQueryAtom,
+  rainStationsQueryAtom,
+  reservoirsQueryAtom,
+  isLoadingMonitoringStationsAtom,
+  isLoadingRainStationsAtom,
+  isLoadingReservoirsAtom,
+  monitoringStationsErrorAtom,
+  rainStationsErrorAtom,
+  reservoirsErrorAtom
 } from './stationData';
 
 // Complaint data atoms
@@ -57,18 +69,8 @@ import {
   Document
 } from './documentData';
 
-// Import the documentAttachmentsAtom
-import { documentAttachmentsAtom } from '@/components/shared/DocumentAttachmentsCard';
-
-// Define the Attachment type
-export interface Attachment {
-  id: string;
-  name: string;
-  size: number;
-  type: string;
-  url?: string;
-  file?: File;
-}
+// Import the documentAttachmentsAtom and Attachment interface from the correct location
+import { documentAttachmentsAtom, Attachment } from './documentAttachments';
 
 // ===== Station Data Hooks =====
 
@@ -84,6 +86,25 @@ export function useStationData() {
   const [disabledReservoirs, setDisabledReservoirs] = useAtom(disabledReservoirsAtom);
   const [navigatingAfterSave, setNavigatingAfterSave] = useAtom(navigatingAfterSaveAtom);
   const [stationDataUpdateIntentional, setStationDataUpdateIntentional] = useAtom(stationDataUpdateIntentionalAtom);
+  
+  // New atoms for location
+  const [currentAmphure, setCurrentAmphure] = useAtom(currentAmphureAtom);
+  const [currentProvince, setCurrentProvince] = useAtom(currentProvinceAtom);
+  
+  // New atoms for API data
+  const monitoringStationsQuery = useAtomValue(monitoringStationsQueryAtom);
+  const rainStationsQuery = useAtomValue(rainStationsQueryAtom);
+  const reservoirsQuery = useAtomValue(reservoirsQueryAtom);
+  
+  // New atoms for loading states
+  const isLoadingMonitoringStations = useAtomValue(isLoadingMonitoringStationsAtom);
+  const isLoadingRainStations = useAtomValue(isLoadingRainStationsAtom);
+  const isLoadingReservoirs = useAtomValue(isLoadingReservoirsAtom);
+  
+  // New atoms for error states
+  const [monitoringStationsError, setMonitoringStationsError] = useAtom(monitoringStationsErrorAtom);
+  const [rainStationsError, setRainStationsError] = useAtom(rainStationsErrorAtom);
+  const [reservoirsError, setReservoirsError] = useAtom(reservoirsErrorAtom);
   
   // Helper functions to update station data
   const updateMonitoringStations = useCallback((stations: MonitoringStation[]) => {
@@ -417,6 +438,35 @@ export function useStationData() {
     disabledReservoirs
   };
 
+  // Function to update location
+  const updateLocation = useCallback((amphure?: string, province?: string) => {
+    console.log('[useStationData] Updating location:', { 
+      amphure, 
+      province,
+      currentAmphure,
+      currentProvince,
+      timestamp: new Date().toISOString()
+    });
+    
+    // Ensure we're setting non-empty values
+    if (amphure) {
+      setCurrentAmphure(amphure);
+    }
+    
+    if (province) {
+      setCurrentProvince(province);
+    }
+    
+    // Log the update
+    setTimeout(() => {
+      console.log('[useStationData] Location updated to:', { 
+        newAmphure: currentAmphure, 
+        newProvince: currentProvince,
+        timestamp: new Date().toISOString()
+      });
+    }, 100);
+  }, [setCurrentAmphure, setCurrentProvince, currentAmphure, currentProvince]);
+
   return {
     monitoringStations,
     rainStations,
@@ -427,24 +477,44 @@ export function useStationData() {
     disabledMonitoringStations,
     disabledRainStations,
     disabledReservoirs,
+    navigatingAfterSave,
+    stationDataUpdateIntentional,
+    monitoringStationsQuery,
+    rainStationsQuery,
+    reservoirsQuery,
+    isLoadingMonitoringStations,
+    isLoadingRainStations,
+    isLoadingReservoirs,
+    monitoringStationsError,
+    rainStationsError,
+    reservoirsError,
+    currentAmphure,
+    currentProvince,
     updateMonitoringStations,
     updateRainStations,
     updateReservoirs,
-    setUserSelectedMonitoringStations,
-    setUserSelectedRainStations,
-    setUserSelectedReservoirs,
-    setDisabledMonitoringStations,
-    setDisabledRainStations,
-    setDisabledReservoirs,
-    navigatingAfterSave,
-    setNavigatingAfterSave,
-    stationDataUpdateIntentional,
-    setStationDataUpdateIntentional,
-    getStationData,
-    stationData,
+    addUserSelectedMonitoringStation,
+    addUserSelectedRainStation,
+    addUserSelectedReservoir,
+    removeUserSelectedMonitoringStation,
+    removeUserSelectedRainStation,
+    removeUserSelectedReservoir,
+    disableMonitoringStation,
+    disableRainStation,
+    disableReservoir,
+    enableMonitoringStation,
+    enableRainStation,
+    enableReservoir,
+    resetStationData,
     adaptReservoir,
+    getStationData,
     saveStationDataForNavigation,
-    resetStationData
+    setNavigatingAfterSave,
+    setStationDataUpdateIntentional,
+    updateLocation,
+    setMonitoringStationsError,
+    setRainStationsError,
+    setReservoirsError
   };
 }
 
@@ -713,16 +783,23 @@ export function useDocumentAttachments() {
       file
     };
     
-    setAttachments(prev => [...prev, newAttachment]);
+    setAttachments((prev: Attachment[]) => [...prev, newAttachment]);
     return newAttachment.id;
   }, [setAttachments]);
   
   const removeAttachment = useCallback((id: string) => {
-    setAttachments(prev => prev.filter(attachment => attachment.id !== id));
+    setAttachments((prev: Attachment[]) => prev.filter((attachment: Attachment) => attachment.id !== id));
   }, [setAttachments]);
   
   const getAttachment = useCallback((id: string) => {
-    return attachments.find(attachment => attachment.id === id);
+    return attachments.find((attachment: Attachment) => attachment.id === id);
+  }, [attachments]);
+  
+  const downloadAttachment = useCallback((fileName: string) => {
+    const attachment = attachments.find((a: Attachment) => a.name === fileName);
+    if (attachment && attachment.url) {
+      window.open(attachment.url, '_blank');
+    }
   }, [attachments]);
   
   const clearAttachments = useCallback(() => {
@@ -734,6 +811,7 @@ export function useDocumentAttachments() {
     addAttachment,
     removeAttachment,
     getAttachment,
+    downloadAttachment,
     clearAttachments
   };
 } 

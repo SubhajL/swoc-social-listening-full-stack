@@ -55,13 +55,24 @@ export const fetchReservoirs = async (
 
     const data = await response.json();
     
+    // Add default values for any missing data
+    const reservoirsWithDefaults = data.reservoirs.map((reservoir: Reservoir) => {
+      return {
+        ...reservoir,
+        capacity: reservoir.capacity || 0,
+        current_volume: reservoir.current_volume || 0,
+        percent_full: reservoir.percent_full || 0,
+        updated_at: reservoir.updated_at || new Date().toISOString()
+      };
+    });
+    
     console.log(
-      `[fetchReservoirs] Successfully fetched ${data.reservoirs.length} reservoirs for:`,
+      `[fetchReservoirs] Successfully fetched ${reservoirsWithDefaults.length} reservoirs for:`,
       { cleanedAmphure, cleanedProvince }
     );
 
     return {
-      reservoirs: data.reservoirs,
+      reservoirs: reservoirsWithDefaults,
     };
   } catch (error) {
     console.error("Error fetching reservoirs:", error);

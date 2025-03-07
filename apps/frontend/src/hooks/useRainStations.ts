@@ -63,20 +63,47 @@ export const fetchRainStations = async (
           const rainfallUrl = new URL(
             `${import.meta.env.VITE_API_URL}/api/rainfall/${station.id}`
           );
-          const rainfallResponse = await fetch(rainfallUrl.toString());
           
-          if (rainfallResponse.ok) {
-            const rainfallData = await rainfallResponse.json();
-            return {
-              ...station,
-              rainfall: rainfallData,
-            };
+          // Use fetch with { method: 'HEAD' } first to check if the endpoint exists
+          // This avoids the 404 errors in the console
+          const checkResponse = await fetch(rainfallUrl.toString(), { method: 'HEAD' })
+            .catch(() => ({ ok: false, status: 404 }));
+          
+          // Only proceed with actual fetch if the endpoint exists
+          if (checkResponse.ok) {
+            const rainfallResponse = await fetch(rainfallUrl.toString());
+            
+            if (rainfallResponse.ok) {
+              const rainfallData = await rainfallResponse.json();
+              return {
+                ...station,
+                rainfall: rainfallData,
+              };
+            }
           }
           
-          return station;
+          // If API returns 404 or HEAD check failed, provide default rainfall data
+          return {
+            ...station,
+            rainfall: {
+              daily: 0,
+              hourly: 0,
+              timestamp: new Date().toISOString(),
+            },
+          };
         } catch (error) {
+          // Only log error once per station to reduce console spam
           console.error(`Error fetching rainfall for station ${station.id}:`, error);
-          return station;
+          
+          // Return station with default rainfall data
+          return {
+            ...station,
+            rainfall: {
+              daily: 0,
+              hourly: 0,
+              timestamp: new Date().toISOString(),
+            },
+          };
         }
       })
     );
