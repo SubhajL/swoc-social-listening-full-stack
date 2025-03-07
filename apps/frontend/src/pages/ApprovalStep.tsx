@@ -5,7 +5,6 @@ import logo1 from "@/assets/logo1.png";
 import logo2 from "@/assets/logo2.png";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight, Search, Bell, Settings, Check, User, Send, X, Paperclip, Save } from "lucide-react";
-import { useComplaintStore } from "@/stores/complaintStore";
 import { useAuthStore } from "@/stores/authStore";
 import { useDocumentPreparationStore } from "@/stores/documentPreparationStore";
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -30,6 +29,8 @@ import { Header as ApprovalHeader } from '@/components/ApprovalStepHeader';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { generateNameAcronym } from '@/utils/name-utils';
 import { AppHeader } from '@/components/shared/AppHeader';
+import { ComplaintInfoCard } from '@/components/shared/ComplaintInfoCard';
+import { useComplaintStore } from "@/stores/complaintStore";
 
 // Import SVG icons
 import CalendarIcon from "@/assets/icon/Calendar.svg";
@@ -211,9 +212,9 @@ const convertData = (data: any): ProcessedPost | ComplaintWithOrganization | nul
 const ApprovalStep = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const complaintStore = useComplaintStore();
   const authStore = useAuthStore();
   const documentStore = useDocumentPreparationStore();
+  const complaintStore = useComplaintStore();
   
   // Get document preparation state from store
   const {
@@ -697,7 +698,7 @@ const ApprovalStep = () => {
   ];
   
   // Get location data for water info components
-  const locationData = getLocationData(complaintStore.complaintData);
+  const locationData = getLocationData(complaintStore.complaintData || null);
 
   // Format current date and time for timestamp
   const formatTimestamp = (): string => {
@@ -838,138 +839,12 @@ const ApprovalStep = () => {
                     <h3 className="text-xl font-semibold text-[#17254D]">ข้อมูลข้อร้องเรียน</h3>
                   </div>
                   
-                  <div className="bg-white rounded-xl p-6 border border-gray-200 h-full flex flex-col justify-between">
-                    {complaintStore.complaintData && (
-                      <div className="space-y-6">
-                        {/* ประเด็นข้อความ */}
-                        <div>
-                          <h5 className="text-base font-medium text-gray-500 mb-2">ประเด็นข้อความ</h5>
-                          <div className="flex items-start gap-4">
-                            <div className="flex-1">
-                              <textarea
-                                className="w-full p-3 border border-gray-200 rounded-lg min-h-[100px] text-base text-[#17254D]"
-                                value={getIssue(complaintStore.complaintData)}
-                                readOnly
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* ประเภทข้อความ */}
-                        <div>
-                          <h5 className="text-base font-medium text-gray-500 mb-2">ประเภทข้อความ</h5>
-                          <div className="flex items-center gap-4">
-                            <div className="flex-1">
-                              <input
-                                type="text"
-                                className="w-full p-3 border border-gray-200 rounded-lg text-base text-[#17254D]"
-                                value={complaintStore.complaintData.type}
-                                readOnly
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* ประเภทข้อความย่อย */}
-                        <div>
-                          <h5 className="text-base font-medium text-gray-500 mb-2">ประเภทข้อความย่อย</h5>
-                          <div className="flex items-center gap-4">
-                            <div className="flex-1">
-                              <input
-                                type="text"
-                                className="w-full p-3 border border-gray-200 rounded-lg text-base text-[#17254D]"
-                                value={isProcessedPost(complaintStore.complaintData) 
-                                  ? complaintStore.complaintData.category_name 
-                                  : complaintStore.complaintData.type}
-                                readOnly
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* ข้อมูลผู้ร้องเรียน */}
-                        <div>
-                          <h5 className="text-base font-medium text-gray-500 mb-2">ข้อมูลผู้ร้องเรียน</h5>
-                          <div className="flex items-center gap-4">
-                            <div className="flex-1">
-                              <input
-                                type="text"
-                                className="w-full p-3 border border-gray-200 rounded-lg text-base text-[#17254D]"
-                                value={isProcessedPost(complaintStore.complaintData) 
-                                  ? complaintStore.complaintData.profile_name 
-                                  : 'ไม่ระบุ'}
-                                readOnly
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* สถานที่ */}
-                        <div>
-                          <h5 className="text-base font-medium text-gray-500 mb-2">สถานที่</h5>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <label className="text-sm text-gray-500 mb-1 block">อำเภอ</label>
-                              <input
-                                type="text"
-                                className="w-full p-3 border border-gray-200 rounded-lg text-base text-[#17254D]"
-                                value={locationData.amphure || 'ไม่ระบุ'}
-                                readOnly
-                              />
-                            </div>
-                            <div>
-                              <label className="text-sm text-gray-500 mb-1 block">จังหวัด</label>
-                              <input
-                                type="text"
-                                className="w-full p-3 border border-gray-200 rounded-lg text-base text-[#17254D]"
-                                value={locationData.province || 'ไม่ระบุ'}
-                                readOnly
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* ลิงค์ข้อความ */}
-                        {isProcessedPost(complaintStore.complaintData) && (
-                          <div>
-                            <h5 className="text-base font-medium text-gray-500 mb-2">ลิงค์ข้อความ</h5>
-                            <div className="flex items-center gap-4">
-                              <div className="flex-1">
-                                <input
-                                  type="text"
-                                  className="w-full p-3 border border-gray-200 rounded-lg text-base text-blue-600 underline cursor-pointer"
-                                  value={complaintStore.complaintData.post_url}
-                                  readOnly
-                                  onClick={() => window.open(complaintStore.complaintData.post_url, '_blank')}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* วันที่โพสต์ */}
-                        {isProcessedPost(complaintStore.complaintData) && (
-                          <div>
-                            <h5 className="text-base font-medium text-gray-500 mb-2">วันที่โพสต์</h5>
-                            <div className="flex items-center gap-4">
-                              <div className="flex-1">
-                                <input
-                                  type="text"
-                                  className="w-full p-3 border border-gray-200 rounded-lg text-base text-[#17254D]"
-                                  value={new Date(complaintStore.complaintData.post_date).toLocaleDateString('th-TH', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                  })}
-                                  readOnly
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                  <ComplaintInfoCard 
+                    complaint={complaintStore.complaintData as any}
+                    title="ข้อมูลข้อร้องเรียน"
+                    editable={false}
+                    className="h-full"
+                  />
                 </div>
               </div>
             </div>

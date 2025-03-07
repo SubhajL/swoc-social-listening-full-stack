@@ -38,7 +38,7 @@ const ApprovalDashboardHeader = () => {
 
   return (
     <header className="bg-white shadow-sm">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-12">
         <div className="flex items-center justify-between pt-3">
           {/* Left section - Logos */}
           <div className="flex items-center gap-4">
@@ -728,12 +728,12 @@ const ApprovalDashboard = () => {
       
       {/* Page Title */}
       <div className="bg-white border-b">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-12 py-4">
           <h1 className="text-2xl font-semibold text-[#17254D]">การอนุมัติเอกสาร</h1>
         </div>
       </div>
       
-      <main className="container mx-auto px-6 py-6">
+      <main className="container mx-auto px-12 py-6">
         {/* Top line with record count and search */}
         <div className="flex justify-between items-center mb-4">
           <div className="text-gray-700">

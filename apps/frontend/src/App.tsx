@@ -20,7 +20,7 @@ import Login from "./pages/Login";
 import ChangePassword from "./pages/ChangePassword";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { useHydrateStore } from "./stores/storeHydration";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { JotaiProvider } from "./providers/JotaiProvider";
 import { checkApiStatus } from "./utils/api-status";
 import { RealTimeProvider } from "./contexts/RealTimeContext";
@@ -28,7 +28,16 @@ import { ApiConnectionError } from "./components/ApiConnectionError";
 import { toast } from "@/components/ui/use-toast";
 import AuthTest from '@/pages/AuthTest';
 
-const queryClient = new QueryClient();
+// Create a new query client with optimized configuration
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+});
 
 // Create router with data router API
 const router = createBrowserRouter(
@@ -224,7 +233,16 @@ const App = () => {
         <RealTimeProvider>
           <TooltipProvider>
             <div className="relative">
-              <RouterProvider router={router} />
+              <Suspense fallback={
+                <div className="flex items-center justify-center min-h-screen bg-[#F0F8FF]">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+                    <p className="mt-4 text-lg text-gray-600">กำลังโหลด...</p>
+                  </div>
+                </div>
+              }>
+                <RouterProvider router={router} />
+              </Suspense>
               <Toaster />
               <Sonner />
               <div id="radix-hover-card-portal" className="fixed top-0 left-0 z-[9999]" />

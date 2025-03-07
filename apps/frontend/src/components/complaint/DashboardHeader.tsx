@@ -6,7 +6,7 @@ import logo2 from "@/assets/logo2.png";
 export const DashboardHeader = () => {
   return (
     <header className="bg-white shadow-sm">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-12">
         <div className="flex items-center justify-between pt-3">
           {/* Left section - Logos */}
           <div className="flex items-center gap-4">
