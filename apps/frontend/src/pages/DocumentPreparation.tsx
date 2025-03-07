@@ -21,7 +21,7 @@ import ShareIcon from "@/assets/icon/share-2.svg";
 import PrinterIcon from "@/assets/icon/printer.svg";
 import PaperclipIcon from "@/assets/icon/paperclip.svg";
 import { cleanLocationString, formatLocationForDisplay, isEmptyLocation } from "@/lib/location-utils";
-import { useStationData } from "@/atoms/hooks";
+import { useStationData, useComplaintData } from "@/atoms/hooks";
 import { RainStation as JotaiRainStation } from "@/atoms/stationData";
 import { RainStation as ApiRainStation } from "@/types/rain-station";
 // Import reusable components
@@ -32,6 +32,9 @@ import {
   DocumentResponseCard,
   DocumentAttachmentsCard
 } from "@/components/shared";
+import { AlertTriangle, ArrowLeft } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 // Type guard to check if data is ProcessedPost
 const isProcessedPost = (data: any): data is ProcessedPost => {
@@ -195,8 +198,41 @@ const DocumentPreparation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const complaintStore = useComplaintStore();
-  const complaintData = location.state as ProcessedPost | Complaint | undefined;
   const hasSetComplaintData = useRef(false);
+  
+  // Add state for error handling with more detailed error types
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Get complaint data from Jotai store
+  const complaintData = useComplaintData();
+  
+  // Get station data from Jotai
+  const stationData = useStationData();
+  
+  // Validate data on component mount with improved error handling
+  useEffect(() => {
+    console.log('[DocumentPreparation] Checking Jotai state:', {
+      title: complaintData.title,
+      description: complaintData.description,
+      location: complaintData.location,
+      amphure: stationData.currentAmphure,
+      province: stationData.currentProvince
+    });
+    
+    // We don't need to validate the data since we're using Jotai
+    // The data should already be available from the ComplaintForm
+    
+    // Just log a warning if location data is missing
+    if (!stationData.currentAmphure && !stationData.currentProvince) {
+      console.warn('[DocumentPreparation] No location data available in Jotai store');
+    }
+    
+    console.log('[DocumentPreparation] Ready to display data from Jotai');
+    
+    // Set loading to false
+    setIsLoading(false);
+  }, [complaintData, stationData]);
   
   // Get document preparation state from store
   const {
@@ -287,7 +323,7 @@ const DocumentPreparation = () => {
 
   // Extract location data from complaint data
   useEffect(() => {
-    const complaintDataToUse = preservedData || complaintData || complaintStore.complaintData;
+    const complaintDataToUse = preservedData || complaintData;
     if (complaintDataToUse) {
       try {
         // Use a type assertion to handle the complex union type
@@ -299,7 +335,7 @@ const DocumentPreparation = () => {
         console.error("[DocumentPreparation] Error extracting location data:", error);
       }
     }
-  }, [preservedData, complaintData, complaintStore.complaintData]);
+  }, [preservedData, complaintData]);
 
   // Store the complaint data in the store when the component mounts
   useEffect(() => {
@@ -330,17 +366,27 @@ const DocumentPreparation = () => {
   // Validate complaint data to ensure it has required fields
   useEffect(() => {
     const validateComplaintData = () => {
-      const data = preservedData || complaintData || complaintStore.complaintData;
+      const data = preservedData || complaintData;
       
       if (!data) {
+        console.error("[DocumentPreparation] No complaint data available for validation");
+        toast.error("ไม่พบข้อมูลข้อร้องเรียน");
         return false;
       }
       
-      // Check for essential fields
-      const hasEssentialFields = Boolean(
-        (isProcessedPost(data) && data.processed_post_id && data.text) || 
-        (!isProcessedPost(data) && data.id)
-      );
+      // Check for essential fields based on data type
+      let hasEssentialFields = false;
+      
+      if (isProcessedPost(data)) {
+        // For ProcessedPost type
+        hasEssentialFields = Boolean(data.processed_post_id && data.text);
+      } else if ('id' in data) {
+        // For Complaint type
+        hasEssentialFields = Boolean(data.id);
+      } else {
+        // For Jotai ComplaintData type
+        hasEssentialFields = Boolean(data.title && data.description);
+      }
       
       if (!hasEssentialFields) {
         console.error("[DocumentPreparation] Complaint data is missing essential fields:", data);
@@ -351,10 +397,10 @@ const DocumentPreparation = () => {
       return true;
     };
     
-    if (hasSetComplaintData.current) {
+    if (!isLoading) {
       validateComplaintData();
     }
-  }, [complaintData, preservedData, complaintStore.complaintData]);
+  }, [complaintData, preservedData, isLoading]);
 
   // Check if content has changed - now we just check if there's any content
   useEffect(() => {
@@ -678,6 +724,44 @@ const DocumentPreparation = () => {
     window.open(lineShareUrl, '_blank', 'width=600,height=600');
   };
 
+  // Handle error state
+  if (loadError) {
+    return (
+      <div className="min-h-screen bg-[#F0F8FF] pb-32">
+        <DocumentPreparationHeader />
+        <div className="container mx-auto px-12 pt-6 pb-4">
+          <Alert variant="destructive" className="mb-6">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>{loadError}</AlertDescription>
+          </Alert>
+          <Button 
+            onClick={() => navigate('/complaint/create')}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            กลับไปยังหน้าข้อร้องเรียน
+          </Button>
+        </div>
+      </div>
+    );
+  }
+  
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#F0F8FF] pb-32">
+        <DocumentPreparationHeader />
+        <div className="container mx-auto px-12 pt-6 pb-4">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+            <div className="h-64 bg-gray-200 rounded mb-4"></div>
+            <div className="h-64 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#F0F8FF] pb-32">
       <DocumentPreparationHeader />
@@ -738,13 +822,13 @@ const DocumentPreparation = () => {
         {/* Supporting Data Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
           <WaterLevelInfoCard 
-            amphure={locationData.amphure}
-            province={locationData.province}
-            showButtons={false}
+            location={{
+              amphure: locationData.amphure,
+              province: locationData.province
+            }}
           />
           <WaterManagementPlanCard 
-            amphure={locationData.amphure}
-            province={locationData.province}
+            className="h-full"
           />
         </div>
         

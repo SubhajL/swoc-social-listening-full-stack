@@ -22,13 +22,6 @@ import { Suspense } from "react";
 // Import mock data
 import { MOCK_PROCESSED_POSTS, USE_MOCK_DATA } from "@/utils/mockData";
 
-// Declare the window property for TypeScript
-declare global {
-  interface Window {
-    _stationDataUpdateIntentional?: boolean;
-  }
-}
-
 // Create a FormComplaint type that extends Complaint with additional fields needed in the form
 // but overrides some fields to match ComplaintDTO schema
 interface FormComplaint extends Omit<Complaint, 'id' | 'province'> {
@@ -91,92 +84,34 @@ const isProcessedPost = (data: any): data is ProcessedPost => {
     ('processed_post_id' in data && 'text' in data && 'category_name' in data && 'profile_name' in data);
 };
 
-// Update the convertToComplaintFormat function to handle ExtendedComplaintData
-const convertToComplaintFormat = (data: ProcessedPost | Complaint | ExtendedComplaintData): FormComplaint => {
-  // If it's already a Complaint, add form fields
-  if (isComplaint(data)) {
+// Simplified conversion logic with proper type handling
+const convertToComplaintFormat = (data: any): FormComplaint => {
+  // Handle ProcessedPost from API
+  if ('processed_post_id' in data) {
     return {
-      ...data,
-      // Convert id to number for validation
-      id: typeof data.id === 'string' ? parseInt(data.id, 10) || 0 : data.id,
-      issue: data.content,
-      category: data.type || '',
-      coordinates: { lat: 0, lng: 0 }, // Default coordinates
-      tumbon: [],
-      // Convert province to array for validation
-      province: typeof data.province === 'string' ? [data.province] : 
-               (Array.isArray(data.province) ? 
-                (data.province as string[]) : []),
-      amphure: [],
-      location: data.province || ''
+      id: typeof data.processed_post_id === 'string' ? parseInt(data.processed_post_id, 10) : data.processed_post_id,
+      issue: data.text || '',
+      category: data.category_name || '',
+      province: Array.isArray(data.province) ? data.province : (data.province ? [data.province] : []),
+      amphure: Array.isArray(data.amphure) ? data.amphure : (data.amphure ? [data.amphure] : []),
+      content: data.text || '',
+      createdAt: data.post_date ? (typeof data.post_date === 'string' ? data.post_date : data.post_date.toISOString()) : '',
+      updatedAt: data.created_at || '',
+      status: data.status || 'new'
     };
   }
   
-  // If it's an ExtendedComplaintData, convert it to FormComplaint
-  if (isExtendedComplaintData(data)) {
-    return {
-      // Convert id to number for validation
-      id: typeof data.id === 'string' ? parseInt(data.id, 10) || 0 : 
-         (typeof data.id === 'number' ? data.id : 0),
-      content: data.content,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
-      status: data.status,
-      type: data.type,
-      // Convert province to array for validation
-      province: typeof data.province === 'string' ? [data.province] : 
-               (Array.isArray(data.province) ? 
-                (data.province as string[]) : []),
-      postId: data.postId,
-      link: data.link,
-      // Form fields
-      issue: data.issue || data.content,
-      category: data.category || data.type || '',
-      reporter: data.reporter || '',
-      date: data.date || '',
-      coordinates: data.coordinates || { lat: 0, lng: 0 },
-      tumbon: data.tumbon || [],
-      amphure: data.amphure || [],
-      location: data.location || (typeof data.province === 'string' ? data.province : '')
-    };
-  }
-  
-  // Otherwise, it's a ProcessedPost, convert it to FormComplaint
+  // Handle Complaint type
   return {
-    // Convert id to number for validation
-    id: typeof data.processed_post_id === 'string' ? 
-      parseInt(data.processed_post_id, 10) || 0 : 
-      (typeof data.processed_post_id === 'number' ? data.processed_post_id : 0),
-    content: data.text || '',
-    createdAt: data.created_at || new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    status: data.status || 'pending',
-    type: data.category_name || '',
-    // Convert province to array for validation
-    province: Array.isArray(data.province) ? 
-              (data.province as string[]) : 
-              (typeof data.province === 'string' ? [data.province] : []),
-    postId: String(data.processed_post_id),
-    link: data.post_url || '',
-    // Form fields
-    issue: data.text || '',
-    category: data.category_name || '',
-    reporter: data.profile_name || '',
-      date: data.post_date instanceof Date 
-        ? data.post_date.toISOString().split('T')[0] 
-      : (typeof data.post_date === 'string' 
-        ? new Date(data.post_date).toISOString().split('T')[0]
-        : new Date().toISOString().split('T')[0]),
-    coordinates: { lat: data.latitude || 0, lng: data.longitude || 0 },
-    tumbon: Array.isArray(data.tumbon) ? data.tumbon : 
-            (data.tumbon ? [data.tumbon].filter(Boolean) : []),
-    amphure: Array.isArray(data.amphure) ? data.amphure : 
-             (data.amphure ? [data.amphure].filter(Boolean) : []),
-    location: [
-      ...(Array.isArray(data.tumbon) ? data.tumbon : (data.tumbon ? [data.tumbon] : [])).filter(Boolean),
-      ...(Array.isArray(data.amphure) ? data.amphure : (data.amphure ? [data.amphure] : [])).filter(Boolean),
-      ...(Array.isArray(data.province) ? data.province : (data.province ? [data.province] : [])).filter(Boolean)
-    ].join(', ')
+    id: typeof data.id === 'string' ? parseInt(data.id, 10) : (data.id || 0),
+    issue: data.content || '',
+    category: data.type || '',
+    province: Array.isArray(data.province) ? data.province : (data.province ? [data.province] : []),
+    amphure: data.amphure || [],
+    content: data.content || '',
+    createdAt: data.createdAt || '',
+    updatedAt: data.updatedAt || '',
+    status: data.status || 'new'
   };
 };
 
@@ -211,14 +146,6 @@ const ComplaintForm = () => {
     selectedPostIds
   } = useComplaintData();
   
-  // Log Jotai store data
-  console.log('[ComplaintForm] Jotai store data:', {
-    title,
-    description,
-    processedPosts,
-    selectedPostIds
-  });
-  
   // Get station data from Jotai store
   const stationData = useStationData();
   
@@ -238,6 +165,8 @@ const ComplaintForm = () => {
   useEffect(() => {
     if (USE_MOCK_DATA && processedPosts.length === 0) {
       console.log('[ComplaintForm] 🚨 USING MOCK DATA - PostgreSQL is unavailable 🚨');
+      
+      // Update Jotai state with mock data
       updateProcessedPosts(MOCK_PROCESSED_POSTS);
       setUsingMockData(true);
       
@@ -250,15 +179,11 @@ const ComplaintForm = () => {
           timestamp: new Date().toISOString()
         });
         
-        // Set a flag to prevent other useEffects from overriding this location update
-              window._stationDataUpdateIntentional = true;
-        
         // Update the location in the Jotai store
         stationData.updateLocation('แม่แตง', 'เชียงใหม่');
         
         // Clear the flag after a short delay
         setTimeout(() => {
-          window._stationDataUpdateIntentional = false;
           console.log('[ComplaintForm] Cleared intentional update flag, current location:', {
             currentAmphure: stationData.currentAmphure,
             currentProvince: stationData.currentProvince,
@@ -268,6 +193,48 @@ const ComplaintForm = () => {
       }
     }
   }, [updateProcessedPosts, processedPosts.length, stationData]);
+  
+  // Initialize Jotai state with data from API or location state
+  useEffect(() => {
+    // Get data from all possible sources
+    const currentData = preservedData || complaint || complaintDataFromLocation;
+    
+    if (currentData) {
+      console.log('[ComplaintForm] Initializing Jotai state with data:', currentData);
+      
+      // Update Jotai state with current complaint data
+      if ('content' in currentData && currentData.content) {
+        updateDescription(currentData.content);
+      } else if ('text' in currentData && currentData.text) {
+        updateDescription(currentData.text);
+      }
+
+      if ('type' in currentData && currentData.type) {
+        updateTitle(currentData.type);
+      } else if ('category_name' in currentData && currentData.category_name) {
+        updateTitle(currentData.category_name);
+      }
+
+      // Update location in Jotai store if available
+      if (currentData.province) {
+        const province = Array.isArray(currentData.province) ? 
+                        currentData.province[0] : currentData.province;
+        
+        // Use type guard to safely access amphure property
+        let amphure = '';
+        if ('amphure' in currentData && currentData.amphure) {
+          amphure = Array.isArray(currentData.amphure) ? 
+                    currentData.amphure[0] : currentData.amphure;
+        }
+        
+        if (province && stationData.updateLocation) {
+          stationData.updateLocation(amphure, province);
+        }
+      }
+    } else {
+      console.log('[ComplaintForm] No data available to initialize Jotai state');
+    }
+  }, [preservedData, complaint, complaintDataFromLocation, updateDescription, updateTitle, stationData]);
   
   // Extract location data from Jotai store only
   const extractLocationData = useCallback(() => {
@@ -292,12 +259,6 @@ const ComplaintForm = () => {
       return;
     }
     
-    // Skip updating location if an intentional update is in progress
-    if (window._stationDataUpdateIntentional) {
-      console.log('[ComplaintForm] Skipping location update because an intentional update is in progress');
-      return;
-    }
-
     // Extract location from complaint data
     const data = preservedData || complaint || complaintDataFromLocation;
     if (!data) {
@@ -409,41 +370,24 @@ const ComplaintForm = () => {
         timestamp: new Date().toISOString()
       });
       
-      // Set a flag to prevent other useEffects from overriding this location update
-      window._stationDataUpdateIntentional = true;
-      
       // Update the location in the Jotai store with default values
       stationData.updateLocation('แม่แตง', 'เชียงใหม่');
       
-      // Verify that the location was set correctly
+      // Clear the flag after a short delay
       setTimeout(() => {
-        console.log('[ComplaintForm] Verifying location update:', {
-          currentAmphure: stationData.currentAmphure,
-          currentProvince: stationData.currentProvince,
-          timestamp: new Date().toISOString()
-        });
-        
-        // If the location is still not set, try again
-        if (!stationData.currentAmphure || !stationData.currentProvince) {
-          console.log('[ComplaintForm] Location update failed, trying again');
-          stationData.updateLocation('แม่แตง', 'เชียงใหม่');
-        }
-        
-        // Clear the flag after a short delay
-        window._stationDataUpdateIntentional = false;
         console.log('[ComplaintForm] Cleared intentional update flag, current location:', {
           currentAmphure: stationData.currentAmphure,
           currentProvince: stationData.currentProvince,
           timestamp: new Date().toISOString()
         });
-      }, 500);
+      }, 100);
     }
-  }, [stationData]); // Run this effect when stationData changes
+  }, [stationData]);
 
   const validateComplaintData = () => {
     // Use preserved complaint data if returning from StationCardEdit
     const currentData = preservedData || complaint || complaintDataFromLocation;
-    if (!currentData) return;
+    if (!currentData) return false;
 
     // Special handling for minimal data from sessionStorage
     if (returnedFromStationEdit && preservedData && !('issue' in preservedData)) {
@@ -461,48 +405,58 @@ const ComplaintForm = () => {
     return true;
   };
 
-  const handleContinue = () => {
-    // Validate the complaint data
-    if (!validateComplaintData()) {
-      return;
-    }
-    
-    // Save the current state using the useStationData hook
-    if (stationData.saveStationDataForNavigation) {
-      stationData.saveStationDataForNavigation('handleContinue');
-    }
-    
-    // Navigate to the station card edit page
-    navigate('/station-card-edit', { 
-      state: { 
-        complaintData: complaint || preservedData || complaintDataFromLocation,
-        preserveState: true
-      } 
-    });
+  // Simplified navigation function
+  const navigateDirectly = (path: string, state: any) => {
+    console.log(`[ComplaintForm] Navigating directly to ${path}`, state);
+    navigate(path, { state });
   };
 
+  // Handle continue button click
+  const handleContinue = () => {
+    try {
+      console.log('[ComplaintForm] Navigating to StationCardEdit using Jotai state');
+      
+      // Log the current Jotai state for debugging
+      console.log('[ComplaintForm] Current Jotai state for navigation:', {
+        title,
+        description,
+        location: {
+          amphure: stationData.currentAmphure,
+          province: stationData.currentProvince
+        }
+      });
+
+      // Simply navigate to StationCardEdit
+      // StationCardEdit will get data from Jotai
+      navigate('/station-card-edit');
+    } catch (error) {
+      console.error('Error during navigation:', error);
+      toast.error('เกิดข้อผิดพลาดในการนำทาง กรุณาลองใหม่อีกครั้ง');
+    }
+  };
+
+  // Handle prepare document button click
   const handlePrepareDocument = () => {
-    // Validate the complaint data
-    if (!validateComplaintData()) {
-      return;
+    console.log('[ComplaintForm] Navigating to document preparation using Jotai state');
+    
+    try {
+      // Log the current Jotai state for debugging
+      console.log('[ComplaintForm] Current Jotai state for document preparation:', {
+        title,
+        description,
+        location: {
+          amphure: stationData.currentAmphure,
+          province: stationData.currentProvince
+        }
+      });
+
+      // Simply navigate to DocumentPreparation
+      // DocumentPreparation will get data from Jotai
+      navigate('/document-preparation');
+    } catch (error) {
+      console.error('Error during navigation to document preparation:', error);
+      toast.error('เกิดข้อผิดพลาดในการนำทาง กรุณาลองใหม่อีกครั้ง');
     }
-    
-    // Save the current state using the useStationData hook
-    if (stationData.saveStationDataForNavigation) {
-      stationData.saveStationDataForNavigation('handlePrepareDocument');
-    }
-    
-    // Get the current complaint data
-    const currentComplaintData = preservedData || complaint || complaintDataFromLocation;
-    
-    // Navigate to the document preparation page
-    navigate('/document-preparation', { 
-      state: { 
-        fromComplaintForm: true,
-        complaintData: currentComplaintData,
-        preserveState: true
-      } 
-    });
   };
 
   // Add a function to handle returning to the dashboard
@@ -698,15 +652,13 @@ const ComplaintForm = () => {
                   <ArrowLeft className="h-4 w-4" />
                   กลับไปยังหน้าหลัก
                 </Button>
-                {returnedFromStationEdit && (
-                  <Button 
-                    onClick={handleContinue}
-                    className="flex items-center gap-2"
-                  >
-                    ดำเนินการต่อ
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                )}
+                <Button 
+                  onClick={handleContinue}
+                  className="flex items-center gap-2"
+                >
+                  ดำเนินการต่อ
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
               </div>
             </div>
             
@@ -715,6 +667,7 @@ const ComplaintForm = () => {
             <button 
               className="bg-[#4B9FE1] hover:bg-[#3D8FD1] text-white px-2 py-2 rounded-xl w-[150px] h-[42px] font-medium flex items-center justify-center transition-colors duration-200 text-base whitespace-nowrap"
               onClick={handleContinue}
+              type="button"
             >
               เพิ่มเติม/แก้ไขข้อมูล
             </button>
@@ -722,6 +675,7 @@ const ComplaintForm = () => {
             <button 
               className="bg-white hover:bg-[#f0f9ff] text-[#4B9FE1] border-[1.5px] border-[#4B9FE1] px-2 py-2 rounded-xl w-[140px] h-[42px] font-medium flex items-center justify-center transition-colors duration-200 text-base whitespace-nowrap"
               onClick={handlePrepareDocument}
+              type="button"
             >
               เตรียมร่างเอกสาร
             </button>

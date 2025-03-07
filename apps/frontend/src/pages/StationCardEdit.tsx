@@ -12,11 +12,12 @@ import { UnsavedChangesDialog } from "@/components/complaint/UnsavedChangesDialo
 import { toast } from "sonner";
 // Import Jotai hooks instead of Zustand
 import { useComplaintData, useStationData } from "@/atoms/hooks";
-import { Bell, Settings, ArrowLeft, ArrowRight, Save } from "lucide-react";
+import { Bell, Settings, ArrowLeft, ArrowRight, Save, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 // Import reusable components
 import { ComplaintInfoCard, WaterLevelInfoCard } from "@/components/shared";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 // Type guard to check if data is ProcessedPost
 const isProcessedPost = (data: any): data is ProcessedPost => {
@@ -50,11 +51,11 @@ const extractLocationData = (data: any) => {
   // For other types that might have location arrays
   return {
     province: Array.isArray(data.province) ? data.province : 
-              (data.province ? [data.province] : []),
+             (data.province ? [data.province] : []),
     amphure: Array.isArray(data.amphure) ? data.amphure : 
-             (data.amphure ? [data.amphure] : []),
+            (data.amphure ? [data.amphure] : []),
     tumbon: Array.isArray(data.tumbon) ? data.tumbon : 
-            (data.tumbon ? [data.tumbon] : [])
+           (data.tumbon ? [data.tumbon] : [])
   };
 };
 
@@ -143,27 +144,62 @@ const StationCardEditHeader = () => {
 const StationCardEdit = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const complaintData = location.state;
   const { toast } = useToast();
+  
+  // Add state for error handling with more detailed error types
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Get complaint data from Jotai store
+  const complaintData = useComplaintData();
   
   // Get station data from Jotai with the correct types
   const stationData = useStationData();
   
+  // Validate data on component mount with improved error handling
+  useEffect(() => {
+    console.log('[StationCardEdit] Checking Jotai state:', {
+      title: complaintData.title,
+      description: complaintData.description,
+      location: complaintData.location,
+      amphure: stationData.currentAmphure,
+      province: stationData.currentProvince
+    });
+    
+    // We don't need to validate the data since we're using Jotai
+    // The data should already be available from the ComplaintForm
+    
+    // Just log a warning if location data is missing
+    if (!stationData.currentAmphure && !stationData.currentProvince) {
+      console.warn('[StationCardEdit] No location data available in Jotai store');
+    }
+    
+    console.log('[StationCardEdit] Ready to display data from Jotai');
+    
+    // Set loading to false
+    setIsLoading(false);
+  }, [complaintData, stationData]);
+  
   const isInitialMount = useRef(true);
   
-  // Extract location data from the complaint
-  const locationData = extractLocationData(complaintData);
+  // Extract location data from Jotai
+  const locationData = {
+    province: stationData.currentProvince ? [stationData.currentProvince] : [],
+    amphure: stationData.currentAmphure ? [stationData.currentAmphure] : [],
+    tumbon: []
+  };
   
   // Store the complaint data when the component mounts
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
-      console.log('StationCardEdit mounted with complaint data:', complaintData);
-      
-      // Set the flag to indicate intentional update
-      if (stationData.setStationDataUpdateIntentional) {
-        stationData.setStationDataUpdateIntentional(true);
-      }
+      console.log('StationCardEdit mounted with Jotai data:', {
+        title: complaintData.title,
+        description: complaintData.description,
+        location: complaintData.location,
+        amphure: stationData.currentAmphure,
+        province: stationData.currentProvince
+      });
     }
   }, [complaintData, stationData]);
   
@@ -223,6 +259,44 @@ const StationCardEdit = () => {
     }
   };
   
+  // Handle error state
+  if (loadError) {
+    return (
+      <div className="min-h-screen bg-[#F0F8FF] pb-32">
+        <StationCardEditHeader />
+        <div className="container mx-auto px-12 pt-6 pb-4">
+          <Alert variant="destructive" className="mb-6">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>{loadError}</AlertDescription>
+          </Alert>
+          <Button 
+            onClick={() => navigate('/complaint/create')}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            กลับไปยังหน้าข้อร้องเรียน
+          </Button>
+        </div>
+      </div>
+    );
+  }
+  
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#F0F8FF] pb-32">
+        <StationCardEditHeader />
+        <div className="container mx-auto px-12 pt-6 pb-4">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+            <div className="h-64 bg-gray-200 rounded mb-4"></div>
+            <div className="h-64 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="min-h-screen bg-[#F0F8FF] pb-32">
       <StationCardEditHeader />
@@ -265,8 +339,6 @@ const StationCardEdit = () => {
         {/* Supporting Data Section */}
         <div className="mb-6">
           <StationCardEditInfo 
-            amphure={locationData.amphure[0]}
-            province={locationData.province[0]}
             onChangesMade={() => console.log("Changes made")}
             onSave={saveAndNavigate}
             onDiscard={saveAndReturn}
