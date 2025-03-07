@@ -1,5 +1,7 @@
 # Task: Fix State Transition Bug Between ComplaintForm and StationCardEdit
 
+## Status: ✅ COMPLETED
+
 ## Context
 - **Task ID**: 2025-03-05_2
 - **Created**: 2025-03-05_13:33:05
