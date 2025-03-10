@@ -210,10 +210,10 @@ export const MonitoringStationCard = ({
           </div>
           
           {showButtons && (
-            <div className="flex space-x-2 ml-4">
+            <div className="flex-shrink-0 flex space-x-2 ml-4">
               {disabled ? (
                 <Button
-                  className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center justify-center rounded-xl"
+                  className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center justify-center rounded-xl whitespace-nowrap"
                   onClick={onToggleDisabled}
                 >
                   <Plus className="h-5 w-5 mr-2" />
@@ -221,7 +221,7 @@ export const MonitoringStationCard = ({
                 </Button>
               ) : (
                 <Button
-                  className="bg-[#EF5350] text-white hover:bg-[#E53935] h-10 px-4 text-base flex items-center justify-center rounded-xl"
+                  className="bg-[#EF5350] text-white hover:bg-[#E53935] h-10 px-4 text-base flex items-center justify-center rounded-xl whitespace-nowrap"
                   onClick={isUserSelected ? onDeleteData : onToggleDisabled}
                 >
                   <Trash2 className="h-5 w-5 mr-2" />

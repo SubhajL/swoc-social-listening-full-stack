@@ -2,8 +2,6 @@ import { Card } from "@/components/ui/card";
 import { useLocation, useNavigate, useBlocker } from "react-router-dom";
 import { Complaint } from "@/types/complaint";
 import { ProcessedPost } from "@/types/processed-post";
-import { SocialPostInfo } from "@/components/complaint/SocialPostInfo";
-import { StationCardEditInfo } from "@/components/complaint/StationCardEditInfo";
 import { useEffect, useRef, useState, useCallback } from "react";
 import logo1 from "@/assets/logo1.png";
 import logo2 from "@/assets/logo2.png";
@@ -16,25 +14,23 @@ import { Bell, Settings, ArrowLeft, ArrowRight, Save, AlertTriangle } from "luci
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 // Import reusable components
-import { ComplaintInfoCard, WaterLevelInfoCard } from "@/components/shared";
+import { ComplaintInfoCard, WaterLevelInfoCard, WaterManagementPlanCard } from "@/components/shared";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { StationCardEditInfo } from "@/components/complaint/StationCardEditInfo";
+import { useAtom } from "jotai";
+import { currentAmphureAtom, currentProvinceAtom } from "@/atoms/stationData";
 
-// Type guard to check if data is ProcessedPost
+// Type guards
 const isProcessedPost = (data: any): data is ProcessedPost => {
-  return 'processed_post_id' in data && 'text' in data && 'category_name' in data;
+  return data && typeof data === 'object' && 'processed_post_id' in data;
 };
 
-// Add a type guard for Complaint
 const isComplaint = (data: any): data is Complaint => {
-  return data && 
-    typeof data.id === 'string' && 
-    typeof data.content === 'string' && 
-    typeof data.createdAt === 'string' &&
-    typeof data.updatedAt === 'string' &&
-    typeof data.status === 'string';
+  return data && typeof data === 'object' && 'complaint_id' in data;
 };
 
-// Extract location data safely
+// Helper function to extract location data from different data structures
+// This is only used for display purposes, not for updating Jotai state
 const extractLocationData = (data: any) => {
   if (!data) return { province: [], amphure: [], tumbon: [] };
   
@@ -59,88 +55,36 @@ const extractLocationData = (data: any) => {
   };
 };
 
-// Custom header component for the StationCardEdit page
+// Header component with settings button
 const StationCardEditHeader = () => {
   const navigate = useNavigate();
-
+  
   const handleSettingsClick = () => {
-    navigate('/system-setting');
+    navigate('/settings');
   };
-
+  
   return (
-    <header className="bg-white shadow-sm">
-      <div className="container mx-auto px-12">
-        <div className="flex items-center justify-between pt-3">
-          {/* Left section - Logos */}
-          <div className="flex items-center gap-4">
-            <img 
-              src={logo1} 
-              alt="Royal Irrigation Department Logo" 
-              className="h-20 w-auto object-contain"
-            />
-            <img 
-              src={logo2} 
-              alt="SWOC Logo" 
-              className="h-20 w-auto object-contain"
-            />
-          </div>
-
-          {/* Right section - Icons */}
-          <div className="flex items-center gap-1 pr-0">
-            {/* Notification bell with indicator */}
-            <div className="relative p-1.5 hover:bg-gray-100 rounded-lg cursor-pointer">
-              <Bell className="w-6 h-6 text-[#334155]" />
-              <div className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></div>
-            </div>
-            
-            {/* Settings */}
-            <div 
-              className="p-1.5 hover:bg-gray-100 rounded-lg cursor-pointer"
-              onClick={handleSettingsClick}
-            >
-              <Settings className="w-6 h-6 text-[#334155]" />
-            </div>
-            
-            {/* Avatar */}
-            <div className="w-10 h-10 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-base font-medium text-[#0F172B] ml-1">
-              CN
-            </div>
-          </div>
-        </div>
-
-        {/* Navigation tabs - aligned with map and pushed up */}
-        <div className="px-6 -mt-6 pb-0">
-          <div className="flex">
-            {/* This space accounts for the filter panel width and gap */}
-            <div className="w-[450px]"></div>
-            {/* Navigation tabs aligned with the Map */}
-            <nav className="flex items-center border-b border-[#E2E8F0] whitespace-nowrap">
-              <Link 
-                to="/" 
-                className="px-4 py-1 text-[#6B7280] hover:text-[#17254D] text-base whitespace-nowrap"
-              >
-                ระบบจัดการข้อมูลสื่อสังคมออนไลน์
-              </Link>
-              <Link 
-                to="/response" 
-                className="px-4 py-1 text-[#17254D] border-b-2 border-[#42A5F5] font-medium text-base -mb-[0px] whitespace-nowrap"
-              >
-                ระบบตอบประเด็นข้อร้องเรียน
-              </Link>
-              <Link 
-                to="/dashboard" 
-                className="px-4 py-1 text-[#6B7280] hover:text-[#17254D] text-base whitespace-nowrap"
-              >
-                ระบบแสดงผลข้อมูลและสรุปผลผู้บริหาร
-              </Link>
-            </nav>
-          </div>
-        </div>
+    <div className="flex justify-between items-center w-full p-4 bg-white border-b border-gray-200">
+      <div className="flex items-center space-x-2">
+        <img src={logo1} alt="Logo 1" className="h-10" />
+        <img src={logo2} alt="Logo 2" className="h-10" />
       </div>
-    </header>
+      <div className="flex items-center space-x-4">
+        <Button variant="ghost" size="icon" onClick={handleSettingsClick}>
+          <Settings className="h-5 w-5" />
+        </Button>
+        <Button variant="ghost" size="icon">
+          <Bell className="h-5 w-5" />
+        </Button>
+        <Link to="/profile" className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-600 font-medium">
+          U
+        </Link>
+      </div>
+    </div>
   );
 };
 
+// Main component
 const StationCardEdit = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -156,9 +100,21 @@ const StationCardEdit = () => {
   // Get station data from Jotai with the correct types
   const stationData = useStationData();
   
-  // Validate data on component mount with improved error handling
+  // Get setters for location atoms
+  const [currentAmphure, setCurrentAmphure] = useAtom(currentAmphureAtom);
+  const [currentProvince, setCurrentProvince] = useAtom(currentProvinceAtom);
+  
+  // State for tracking unsaved changes
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+  
+  // Initialize Jotai state on component mount
   useEffect(() => {
-    console.log('[StationCardEdit] Checking Jotai state:', {
+    console.log('[StationCardEdit] Initializing component with Jotai state');
+    
+    // Log the current Jotai state
+    console.log('[StationCardEdit] Current Jotai state:', {
       title: complaintData.title,
       description: complaintData.description,
       location: complaintData.location,
@@ -166,34 +122,66 @@ const StationCardEdit = () => {
       province: stationData.currentProvince
     });
     
-    // We don't need to validate the data since we're using Jotai
-    // The data should already be available from the ComplaintForm
-    
-    // Just log a warning if location data is missing
-    if (!stationData.currentAmphure && !stationData.currentProvince) {
-      console.warn('[StationCardEdit] No location data available in Jotai store');
+    // Set location data from complaintData if not already set
+    if ((!currentAmphure || !currentProvince) && complaintData.location) {
+      console.log('[StationCardEdit] Setting location data from complaintData:', complaintData.location);
+      
+      // In the ComplaintData interface, location is a string
+      // We need to extract province and amphure from this string
+      const locationString = complaintData.location;
+      
+      // Try to extract province and amphure from the location string
+      // Format could be "จังหวัดXXX อำเภอYYY" or just "จังหวัดXXX"
+      const provinceMatch = locationString.match(/จังหวัด([^\s]+)/);
+      const amphureMatch = locationString.match(/อำเภอ([^\s]+)/);
+      
+      if (provinceMatch && provinceMatch[1] && !currentProvince) {
+        const province = provinceMatch[1];
+        console.log('[StationCardEdit] Extracted province:', province);
+        setCurrentProvince(province);
+      }
+      
+      if (amphureMatch && amphureMatch[1] && !currentAmphure) {
+        const amphure = amphureMatch[1];
+        console.log('[StationCardEdit] Extracted amphure:', amphure);
+        setCurrentAmphure(amphure);
+      }
+      
+      // If we couldn't extract province or amphure, use the whole location string as province
+      if (!provinceMatch && !amphureMatch && !currentProvince) {
+        console.log('[StationCardEdit] Using full location as province:', locationString);
+        setCurrentProvince(locationString);
+      }
     }
     
-    console.log('[StationCardEdit] Ready to display data from Jotai');
+    // IMPORTANT: Only use data from Jotai, never update from API or location.state
+    // We're only logging the data here, not updating it
     
-    // Set loading to false
+    // Initialize station data queries if needed
+    if (stationData.currentAmphure && stationData.currentProvince) {
+      console.log('[StationCardEdit] Using location data from Jotai for queries:', {
+        amphure: stationData.currentAmphure,
+        province: stationData.currentProvince
+      });
+      
+      // This will trigger the queries in the Jotai atoms
+      // The actual data fetching is handled by the atoms
+    } else {
+      console.warn('[StationCardEdit] No location data available in Jotai store');
+      setLoadError('ไม่พบข้อมูลตำแหน่งที่ตั้ง กรุณากลับไปที่หน้าแบบฟอร์มและลองอีกครั้ง');
+    }
+    
+    // Set loading to false after initialization
     setIsLoading(false);
-  }, [complaintData, stationData]);
+  }, [complaintData, stationData, currentAmphure, currentProvince, setCurrentAmphure, setCurrentProvince]);
   
   const isInitialMount = useRef(true);
-  
-  // Extract location data from Jotai
-  const locationData = {
-    province: stationData.currentProvince ? [stationData.currentProvince] : [],
-    amphure: stationData.currentAmphure ? [stationData.currentAmphure] : [],
-    tumbon: []
-  };
   
   // Store the complaint data when the component mounts
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
-      console.log('StationCardEdit mounted with Jotai data:', {
+      console.log('[StationCardEdit] Component mounted with Jotai data:', {
         title: complaintData.title,
         description: complaintData.description,
         location: complaintData.location,
@@ -203,94 +191,187 @@ const StationCardEdit = () => {
     }
   }, [complaintData, stationData]);
   
-  // Save data and navigate to the next page
+  // Handle changes in the form
+  const handleChangesMade = useCallback(() => {
+    setHasUnsavedChanges(true);
+  }, []);
+  
+  // Save and navigate to document preparation
   const saveAndNavigate = async () => {
     try {
-      // Save the current state
-      if (stationData.saveStationDataForNavigation) {
-        await stationData.saveStationDataForNavigation('saveAndNavigate');
-      }
+      console.log('[StationCardEdit] Saving and navigating to document preparation');
       
-      // Set flag to indicate intentional navigation
-      if (stationData.setNavigatingAfterSave) {
-        stationData.setNavigatingAfterSave(true);
-      }
+      // Log the current Jotai state before navigation
+      console.log('[StationCardEdit] Current Jotai state before navigation:', {
+        title: complaintData.title,
+        description: complaintData.description,
+        location: complaintData.location,
+        amphure: stationData.currentAmphure,
+        province: stationData.currentProvince,
+        monitoringStations: stationData.userSelectedMonitoringStations.length,
+        rainStations: stationData.userSelectedRainStations.length,
+        reservoirs: stationData.userSelectedReservoirs.length
+      });
       
-      // Navigate to the next page
-      navigate('/dashboard');
+      // Navigate to document preparation
+      // We don't need to pass location.state as we're using Jotai for state management
+      navigate('/document-preparation');
+      
+      // Reset unsaved changes flag
+      setHasUnsavedChanges(false);
     } catch (error) {
-      console.error('Error saving data before navigation:', error);
+      console.error('[StationCardEdit] Error saving data:', error);
       toast({
         title: "เกิดข้อผิดพลาด",
-        description: "เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง",
+        description: "ไม่สามารถบันทึกข้อมูลได้ กรุณาลองอีกครั้ง",
         variant: "destructive"
       });
     }
   };
   
-  // Add a saveAndReturn function
+  // Save and return to complaint form
   const saveAndReturn = async () => {
     try {
-      // Save the current state
-      if (stationData.saveStationDataForNavigation) {
-        await stationData.saveStationDataForNavigation('saveAndReturn');
-      }
+      console.log('[StationCardEdit] Saving and returning to complaint form');
       
-      // Set flag to indicate intentional navigation
-      if (stationData.setNavigatingAfterSave) {
-        stationData.setNavigatingAfterSave(true);
-      }
-      
-      // Navigate back to the complaint form
-      navigate('/complaint/create', { 
-        state: { 
-          returnedFromStationEdit: true,
-          preserveState: true,
-          complaintData: complaintData
-        } 
+      // Log the current Jotai state before navigation
+      console.log('[StationCardEdit] Current Jotai state before returning:', {
+        title: complaintData.title,
+        description: complaintData.description,
+        location: complaintData.location,
+        amphure: stationData.currentAmphure,
+        province: stationData.currentProvince,
+        monitoringStations: stationData.userSelectedMonitoringStations.length,
+        rainStations: stationData.userSelectedRainStations.length,
+        reservoirs: stationData.userSelectedReservoirs.length
       });
+      
+      // Navigate back to complaint form
+      // We don't need to pass location.state as we're using Jotai for state management
+      navigate('/complaint/create');
+      
+      // Reset unsaved changes flag
+      setHasUnsavedChanges(false);
     } catch (error) {
-      console.error('Error saving data before return:', error);
+      console.error('[StationCardEdit] Error saving data:', error);
       toast({
         title: "เกิดข้อผิดพลาด",
-        description: "เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง",
+        description: "ไม่สามารถบันทึกข้อมูลได้ กรุณาลองอีกครั้ง",
         variant: "destructive"
       });
     }
   };
   
-  // Handle error state
-  if (loadError) {
+  // Block navigation if there are unsaved changes
+  useBlocker(
+    ({ currentLocation, nextLocation }) => {
+      if (
+        hasUnsavedChanges &&
+        currentLocation.pathname !== nextLocation.pathname
+      ) {
+        setShowUnsavedDialog(true);
+        setPendingNavigation(nextLocation.pathname);
+        return true;
+      }
+      return false;
+    }
+  );
+  
+  // Handle confirming navigation with unsaved changes
+  const handleConfirmNavigation = () => {
+    setShowUnsavedDialog(false);
+    setHasUnsavedChanges(false);
+    
+    if (pendingNavigation) {
+      navigate(pendingNavigation);
+      setPendingNavigation(null);
+    }
+  };
+  
+  // Handle canceling navigation with unsaved changes
+  const handleCancelNavigation = () => {
+    setShowUnsavedDialog(false);
+    setPendingNavigation(null);
+  };
+  
+  // Handle saving changes
+  const handleSave = async () => {
+    try {
+      console.log('[StationCardEdit] Saving changes');
+      
+      // Log the current Jotai state
+      console.log('[StationCardEdit] Current Jotai state after save:', {
+        title: complaintData.title,
+        description: complaintData.description,
+        location: complaintData.location,
+        amphure: stationData.currentAmphure,
+        province: stationData.currentProvince,
+        monitoringStations: stationData.userSelectedMonitoringStations.length,
+        rainStations: stationData.userSelectedRainStations.length,
+        reservoirs: stationData.userSelectedReservoirs.length
+      });
+      
+      // Reset unsaved changes flag
+      setHasUnsavedChanges(false);
+      
+      // Show success toast
+      toast({
+        title: "บันทึกสำเร็จ",
+        description: "บันทึกข้อมูลสถานีเรียบร้อยแล้ว",
+      });
+    } catch (error) {
+      console.error('[StationCardEdit] Error saving data:', error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถบันทึกข้อมูลได้ กรุณาลองอีกครั้ง",
+        variant: "destructive"
+      });
+    }
+  };
+  
+  // Handle discarding changes
+  const handleDiscard = () => {
+    console.log('[StationCardEdit] Discarding changes');
+    setHasUnsavedChanges(false);
+  };
+  
+  // Render loading state for the gray placeholder boxes
+  const renderLoadingState = () => {
     return (
-      <div className="min-h-screen bg-[#F0F8FF] pb-32">
-        <StationCardEditHeader />
-        <div className="container mx-auto px-12 pt-6 pb-4">
-          <Alert variant="destructive" className="mb-6">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>{loadError}</AlertDescription>
-          </Alert>
-          <Button 
-            onClick={() => navigate('/complaint/create')}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            กลับไปยังหน้าข้อร้องเรียน
-          </Button>
-        </div>
+      <div className="space-y-6">
+        <h2 className="text-xl font-semibold mb-4 text-[#17254D]">กำลังโหลดข้อมูลสถานี...</h2>
+        <div className="bg-gray-400 h-[120px] w-full rounded-md mb-4"></div>
+        <div className="bg-gray-400 h-[120px] w-full rounded-md mb-4"></div>
+        <div className="bg-gray-400 h-[120px] w-full rounded-md"></div>
       </div>
     );
-  }
+  };
   
-  // Handle loading state
-  if (isLoading) {
+  // Render error state if no location data
+  if (loadError) {
     return (
-      <div className="min-h-screen bg-[#F0F8FF] pb-32">
+      <div className="flex flex-col min-h-screen">
         <StationCardEditHeader />
-        <div className="container mx-auto px-12 pt-6 pb-4">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-            <div className="h-64 bg-gray-200 rounded mb-4"></div>
-            <div className="h-64 bg-gray-200 rounded"></div>
+        <div className="flex-1 container mx-auto py-8 px-4">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-2xl font-bold mb-6">ข้อมูลสนับสนุน</h1>
+            
+            <Alert variant="destructive" className="mb-6">
+              <AlertTriangle className="h-5 w-5 mr-2" />
+              <AlertDescription>
+                {loadError}
+              </AlertDescription>
+            </Alert>
+            
+            <div className="flex justify-center mt-8">
+              <Button 
+                onClick={() => navigate('/complaint/create')}
+                className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-12 px-8 text-base flex items-center justify-center"
+              >
+                <ArrowLeft className="h-5 w-5 mr-2" />
+                กลับไปที่หน้าแบบฟอร์ม
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -298,53 +379,68 @@ const StationCardEdit = () => {
   }
   
   return (
-    <div className="min-h-screen bg-[#F0F8FF] pb-32">
+    <div className="flex flex-col min-h-screen bg-[#F0F8FF]">
       <StationCardEditHeader />
       
-      {/* Page Title */}
-      <div className="bg-[#EBF5FF]">
-        <div className="container mx-auto px-12 pt-6 pb-4">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-semibold text-[#17254D]">ระบบตอบประเด็นข้อร้องเรียน</h1>
-            <div className="flex gap-2">
+      <div className="container mx-auto px-12 py-6 flex-1">
+        <div className="flex flex-col space-y-6">
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold text-gray-900">แก้ไขข้อมูลสถานี</h1>
+            <div className="flex space-x-2">
               <Button 
+                variant="outline" 
                 onClick={saveAndReturn}
-                variant="outline"
-                className="flex items-center gap-2"
+                className="flex items-center"
               >
-                <ArrowLeft className="h-4 w-4" />
-                บันทึกและกลับ
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                ย้อนกลับ
               </Button>
               <Button 
                 onClick={saveAndNavigate}
-                className="flex items-center gap-2"
+                className="flex items-center"
               >
-                บันทึกและดำเนินการต่อ
-                <ArrowRight className="h-4 w-4" />
+                ดำเนินการต่อ
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
+            </div>
+          </div>
+          
+          {/* Upper half: Only ComplaintInfoCard */}
+          <div className="mb-6">
+            <ComplaintInfoCard 
+              title="ข้อมูลข้อร้องเรียน"
+              editable={false}
+            />
+          </div>
+          
+          {/* Lower half: StationCardEditInfo on left, WaterManagementPlanCard on right */}
+          <div className="grid grid-cols-2 gap-6">
+            {/* Left column - StationCardEditInfo or loading state */}
+            <div>
+              {isLoading ? renderLoadingState() : (
+                <StationCardEditInfo 
+                  onChangesMade={handleChangesMade}
+                  onSave={handleSave}
+                  onDiscard={handleDiscard}
+                />
+              )}
+            </div>
+            
+            {/* Right column - Water Management Plan */}
+            <div>
+              <WaterManagementPlanCard />
             </div>
           </div>
         </div>
       </div>
       
-      <main className="container mx-auto px-12 pt-6">
-        {/* Complaint Data Section */}
-        <div className="mb-6">
-          <ComplaintInfoCard 
-            title="ข้อร้องเรียน"
-            editable={false}
-          />
-        </div>
-        
-        {/* Supporting Data Section */}
-        <div className="mb-6">
-          <StationCardEditInfo 
-            onChangesMade={() => console.log("Changes made")}
-            onSave={saveAndNavigate}
-            onDiscard={saveAndReturn}
-          />
-        </div>
-      </main>
+      <UnsavedChangesDialog
+        open={showUnsavedDialog}
+        onOpenChange={setShowUnsavedDialog}
+        onSave={handleSave}
+        onDiscard={handleDiscard}
+        onCancel={handleCancelNavigation}
+      />
     </div>
   );
 };

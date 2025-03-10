@@ -132,7 +132,6 @@ export const disabledReservoirsAtom = atomWithStorage<Record<string, boolean>>(
 
 // Navigation and UI state
 export const navigatingAfterSaveAtom = atom<boolean>(false);
-export const stationDataUpdateIntentionalAtom = atom<boolean>(false);
 
 // Derived atoms
 export const allStationDataAtom = atom<StationData>((get) => ({
@@ -175,34 +174,20 @@ export const currentProvinceAtom = atom<string | undefined>(undefined);
 // Derived atoms for API data with location dependency
 export const monitoringStationsQueryAtom = atom(
   async (get) => {
-    const userSelected = get(userSelectedMonitoringStationsAtom);
     const amphure = get(currentAmphureAtom);
     const province = get(currentProvinceAtom);
     
     console.log('[monitoringStationsQueryAtom] Fetching monitoring stations:', {
       amphure,
       province,
-      userSelectedLength: userSelected.length,
       timestamp: new Date().toISOString()
     });
     
-    // If we already have user selections, prioritize those
-    if (userSelected.length > 0) {
-      console.log('[monitoringStationsQueryAtom] Using user selected stations:', userSelected.length);
-      return userSelected;
-    }
-    
-    // Check if we have stored stations
-    const storedStations = get(monitoringStationsAtom);
-    if (storedStations.length > 0) {
-      console.log('[monitoringStationsQueryAtom] Using stored stations:', storedStations.length);
-      return storedStations;
-    }
-    
-    // Only fetch if we have location data
+    // Only fetch if we have at least some location data (either amphure or province)
     if (amphure || province) {
       try {
         console.log('[monitoringStationsQueryAtom] Fetching from API with:', { amphure, province });
+        
         const response = await fetchMonitoringStations(amphure, province);
         console.log('[monitoringStationsQueryAtom] API response:', {
           stationsCount: response.stations?.length || 0,
@@ -221,7 +206,7 @@ export const monitoringStationsQueryAtom = atom(
         return response.stations || [];
       } catch (error) {
         console.error('Error fetching monitoring stations:', error);
-        return [];
+        throw error;
       }
     }
     
@@ -232,34 +217,20 @@ export const monitoringStationsQueryAtom = atom(
 
 export const rainStationsQueryAtom = atom(
   async (get) => {
-    const userSelected = get(userSelectedRainStationsAtom);
     const amphure = get(currentAmphureAtom);
     const province = get(currentProvinceAtom);
     
     console.log('[rainStationsQueryAtom] Fetching rain stations:', {
       amphure,
       province,
-      userSelectedLength: userSelected.length,
       timestamp: new Date().toISOString()
     });
     
-    // If we already have user selections, prioritize those
-    if (userSelected.length > 0) {
-      console.log('[rainStationsQueryAtom] Using user selected stations:', userSelected.length);
-      return userSelected;
-    }
-    
-    // Check if we have stored stations
-    const storedStations = get(rainStationsAtom);
-    if (storedStations.length > 0) {
-      console.log('[rainStationsQueryAtom] Using stored stations:', storedStations.length);
-      return storedStations;
-    }
-    
-    // Only fetch if we have location data
+    // Only fetch if we have at least some location data (either amphure or province)
     if (amphure || province) {
       try {
         console.log('[rainStationsQueryAtom] Fetching from API with:', { amphure, province });
+        
         const response = await fetchRainStations(amphure, province);
         console.log('[rainStationsQueryAtom] API response:', {
           stationsCount: response.stations?.length || 0,
@@ -268,7 +239,7 @@ export const rainStationsQueryAtom = atom(
         return response.stations || [];
       } catch (error) {
         console.error('Error fetching rain stations:', error);
-        return [];
+        throw error;
       }
     }
     
@@ -279,34 +250,20 @@ export const rainStationsQueryAtom = atom(
 
 export const reservoirsQueryAtom = atom(
   async (get) => {
-    const userSelected = get(userSelectedReservoirsAtom);
     const amphure = get(currentAmphureAtom);
     const province = get(currentProvinceAtom);
     
     console.log('[reservoirsQueryAtom] Fetching reservoirs:', {
       amphure,
       province,
-      userSelectedLength: userSelected.length,
       timestamp: new Date().toISOString()
     });
     
-    // If we already have user selections, prioritize those
-    if (userSelected.length > 0) {
-      console.log('[reservoirsQueryAtom] Using user selected reservoirs:', userSelected.length);
-      return userSelected;
-    }
-    
-    // Check if we have stored reservoirs
-    const storedReservoirs = get(reservoirsAtom);
-    if (storedReservoirs.length > 0) {
-      console.log('[reservoirsQueryAtom] Using stored reservoirs:', storedReservoirs.length);
-      return storedReservoirs;
-    }
-    
-    // Only fetch if we have location data
+    // Only fetch if we have at least some location data (either amphure or province)
     if (amphure || province) {
       try {
         console.log('[reservoirsQueryAtom] Fetching from API with:', { amphure, province });
+        
         const response = await fetchReservoirs(amphure, province);
         console.log('[reservoirsQueryAtom] API response:', {
           reservoirsCount: response.reservoirs?.length || 0,
@@ -315,7 +272,7 @@ export const reservoirsQueryAtom = atom(
         return response.reservoirs || [];
       } catch (error) {
         console.error('Error fetching reservoirs:', error);
-        return [];
+        throw error;
       }
     }
     
@@ -364,4 +321,103 @@ export const isLoadingReservoirsAtom = atom(
 // Error state atoms
 export const monitoringStationsErrorAtom = atom<Error | null>(null);
 export const rainStationsErrorAtom = atom<Error | null>(null);
-export const reservoirsErrorAtom = atom<Error | null>(null); 
+export const reservoirsErrorAtom = atom<Error | null>(null);
+
+// Synchronization atoms to update stored atoms with fetched data
+export const syncMonitoringStationsAtom = atom(
+  null,
+  async (get, set) => {
+    try {
+      console.log('[syncMonitoringStationsAtom] Syncing monitoring stations');
+      const stations = await get(monitoringStationsQueryAtom);
+      console.log('[syncMonitoringStationsAtom] Fetched stations:', stations.length);
+      
+      // Convert the API response to the expected MonitoringStation type
+      const typedStations = stations.map((station: any) => ({
+        id: station.id || station.station_id,
+        name: station.station_name || station.name || 'Unknown Station',
+        location: station.location || `${station.amphure || ''}, ${station.province || ''}`,
+        coordinates: {
+          lat: station.latitude || 0,
+          lng: station.longitude || 0
+        },
+        status: station.status || 'active',
+        type: 'monitoring' as const,
+        // Include any additional fields from the API response
+        ...station
+      }));
+      
+      set(monitoringStationsAtom, typedStations);
+      set(monitoringStationsErrorAtom, null);
+    } catch (error) {
+      console.error('[syncMonitoringStationsAtom] Error syncing monitoring stations:', error);
+      set(monitoringStationsErrorAtom, error as Error);
+    }
+  }
+);
+
+export const syncRainStationsAtom = atom(
+  null,
+  async (get, set) => {
+    try {
+      console.log('[syncRainStationsAtom] Syncing rain stations');
+      const stations = await get(rainStationsQueryAtom);
+      console.log('[syncRainStationsAtom] Fetched stations:', stations.length);
+      
+      // Convert the API response to the expected RainStation type
+      const typedStations = stations.map((station: any) => ({
+        id: station.id || station.station_id,
+        name: station.station_name || station.name || 'Unknown Station',
+        location: station.location || `${station.amphure || ''}, ${station.province || ''}`,
+        coordinates: {
+          lat: station.latitude || 0,
+          lng: station.longitude || 0
+        },
+        status: station.status || 'active',
+        type: 'rain' as const,
+        // Include any additional fields from the API response
+        ...station
+      }));
+      
+      set(rainStationsAtom, typedStations);
+      set(rainStationsErrorAtom, null);
+    } catch (error) {
+      console.error('[syncRainStationsAtom] Error syncing rain stations:', error);
+      set(rainStationsErrorAtom, error as Error);
+    }
+  }
+);
+
+export const syncReservoirsAtom = atom(
+  null,
+  async (get, set) => {
+    try {
+      console.log('[syncReservoirsAtom] Syncing reservoirs');
+      const reservoirs = await get(reservoirsQueryAtom);
+      console.log('[syncReservoirsAtom] Fetched reservoirs:', reservoirs.length);
+      
+      // Convert the API response to the expected Reservoir type
+      const typedReservoirs = reservoirs.map((reservoir: any) => ({
+        id: reservoir.id || reservoir.reservoir_id,
+        name: reservoir.reservoir_name || reservoir.name || 'Unknown Reservoir',
+        location: reservoir.location || `${reservoir.amphure || ''}, ${reservoir.province || ''}`,
+        coordinates: {
+          lat: reservoir.latitude || 0,
+          lng: reservoir.longitude || 0
+        },
+        status: reservoir.status || 'active',
+        currentLevel: reservoir.current_level || 0,
+        capacity: reservoir.capacity || 0,
+        type: 'reservoir' as const,
+        // Include any additional fields from the API response
+        ...reservoir
+      }));
+      
+      set(reservoirsAtom, typedReservoirs);
+      set(reservoirsErrorAtom, null);
+    } catch (error) {
+      console.error('[syncReservoirsAtom] Error syncing reservoirs:', error);
+      set(reservoirsErrorAtom, error as Error);
+    }
+  }
+); 
