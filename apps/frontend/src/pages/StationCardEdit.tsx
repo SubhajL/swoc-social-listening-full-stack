@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,6 +11,11 @@ import { useStationEditState } from '@/hooks/useStationEditState';
 import { useToast } from '@/components/ui/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { handleError, parseError, createRetryFunction, isTimeoutError, isNetworkError } from '@/utils/errorHandling';
+
+// Create memoized station type components to prevent unnecessary re-renders
+const MemoizedMonitoringTab = React.memo(() => <StationCardEditInfo stationType="monitoring" />);
+const MemoizedRainTab = React.memo(() => <StationCardEditInfo stationType="rain" />);
+const MemoizedReservoirTab = React.memo(() => <StationCardEditInfo stationType="reservoir" />);
 
 /**
  * StationCardEdit component for editing station data
@@ -57,39 +62,36 @@ const StationCardEdit: React.FC = () => {
     cancelNavigation
   } = useStationEditState();
   
-  // Log component mount and props
-  useEffect(() => {
-    console.log('[StationCardEdit] Component mounted');
-    console.log('[StationCardEdit] Location state:', location.state);
-    
-    // Check for edge cases where all stations of a type are disabled
-    if (areAllMonitoringStationsDisabled) {
-      console.warn('[StationCardEdit] All monitoring stations are disabled');
-    }
-    if (areAllRainStationsDisabled) {
-      console.warn('[StationCardEdit] All rain stations are disabled');
-    }
-    if (areAllReservoirsDisabled) {
-      console.warn('[StationCardEdit] All reservoirs are disabled');
-    }
-    
-    // Synchronize all station data on mount
-    synchronizeStationData();
-  }, [
-    location.state, 
-    areAllMonitoringStationsDisabled, 
-    areAllRainStationsDisabled, 
-    areAllReservoirsDisabled
-  ]);
+  // Create stable references for functions
+  const stableFunctionsRef = useRef({
+    synchronizeAllStations,
+    handleBackNavigation,
+    saveChangesAndNavigate,
+    discardChangesAndNavigate,
+    cancelNavigation
+  });
+  
+  // Update refs when functions change
+  stableFunctionsRef.current = {
+    synchronizeAllStations,
+    handleBackNavigation,
+    saveChangesAndNavigate,
+    discardChangesAndNavigate,
+    cancelNavigation
+  };
+  
+  // Memoize the loading state to avoid unnecessary re-renders
+  const isLoading = useMemo(() => 
+    isLoadingMonitoring || isLoadingRain || isLoadingReservoirs,
+    [isLoadingMonitoring, isLoadingRain, isLoadingReservoirs]
+  );
   
   // Function to synchronize station data with enhanced error handling
-  const synchronizeStationData = async () => {
+  const synchronizeStationData = useCallback(async () => {
     try {
       setSyncError(null);
       setSyncErrorMessage('');
       setIsRetrying(false);
-      
-      console.log('[StationCardEdit] Synchronizing station data');
       
       // Set a timeout for the synchronization
       const timeoutPromise = new Promise((_, reject) => {
@@ -98,11 +100,9 @@ const StationCardEdit: React.FC = () => {
       
       // Race the synchronization against the timeout
       await Promise.race([
-        synchronizeAllStations(),
+        stableFunctionsRef.current.synchronizeAllStations(),
         timeoutPromise
       ]);
-      
-      console.log('[StationCardEdit] Station data synchronized successfully');
       
       // Reset retry count on success
       setRetryCount(0);
@@ -167,16 +167,36 @@ const StationCardEdit: React.FC = () => {
         ) : undefined
       });
     }
-  };
+  }, [
+    toast, 
+    retryCount, 
+    areAllMonitoringStationsDisabled, 
+    areAllRainStationsDisabled, 
+    areAllReservoirsDisabled
+  ]);
+  
+  // Log component mount and props
+  useEffect(() => {
+    // Check for edge cases where all stations of a type are disabled
+    if (areAllMonitoringStationsDisabled || areAllRainStationsDisabled || areAllReservoirsDisabled) {
+      console.warn('[StationCardEdit] Some station types are completely disabled');
+    }
+    
+    // Synchronize all station data on mount
+    synchronizeStationData();
+  }, [
+    areAllMonitoringStationsDisabled, 
+    areAllRainStationsDisabled, 
+    areAllReservoirsDisabled,
+    synchronizeStationData
+  ]);
   
   // Function to retry synchronization with exponential backoff
-  const handleRetry = async () => {
+  const handleRetry = useCallback(async () => {
     setIsRetrying(true);
     setRetryCount(prev => prev + 1);
     
     try {
-      console.log(`[StationCardEdit] Retry attempt ${retryCount + 1}/${MAX_RETRY_ATTEMPTS}`);
-      
       // Add exponential backoff
       const backoffDelay = 1000 * Math.pow(2, retryCount);
       await new Promise(resolve => setTimeout(resolve, backoffDelay));
@@ -188,14 +208,12 @@ const StationCardEdit: React.FC = () => {
     } finally {
       setIsRetrying(false);
     }
-  };
+  }, [retryCount, synchronizeStationData]);
   
   // Handle navigation back with enhanced error handling
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     try {
-      console.log('[StationCardEdit] Handling back navigation');
-      
-      const navigationResult = handleBackNavigation('/complaint-form');
+      const navigationResult = stableFunctionsRef.current.handleBackNavigation('/complaint-form');
       
       if (navigationResult) {
         // Navigate using the path from the result, but don't pass state via react-router
@@ -224,17 +242,13 @@ const StationCardEdit: React.FC = () => {
       // Fallback navigation
       navigate('/complaint-form');
     }
-  };
+  }, [navigate, toast]);
   
   // Handle save with enhanced error handling
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     try {
-      console.log('[StationCardEdit] Handling save');
-      
       // Save changes and get navigation info
-      const navigationInfo = saveChangesAndNavigate();
-      
-      console.log('[StationCardEdit] Changes saved, navigating to:', navigationInfo.path);
+      const navigationInfo = stableFunctionsRef.current.saveChangesAndNavigate();
       
       // Navigate using the path from the result, but don't pass state via react-router
       // The navigation state is now stored in Jotai atoms
@@ -280,17 +294,13 @@ const StationCardEdit: React.FC = () => {
         )
       });
     }
-  };
+  }, [navigate, toast, hasUnsavedChanges]);
   
   // Handle discard with enhanced error handling
-  const handleDiscard = () => {
+  const handleDiscard = useCallback(() => {
     try {
-      console.log('[StationCardEdit] Handling discard');
-      
       // Discard changes and get navigation info
-      const navigationInfo = discardChangesAndNavigate();
-      
-      console.log('[StationCardEdit] Changes discarded, navigating to:', navigationInfo.path);
+      const navigationInfo = stableFunctionsRef.current.discardChangesAndNavigate();
       
       // Navigate using the path from the result, but don't pass state via react-router
       // The navigation state is now stored in Jotai atoms
@@ -323,12 +333,11 @@ const StationCardEdit: React.FC = () => {
       // Fallback navigation
       navigate('/complaint-form');
     }
-  };
+  }, [navigate, toast]);
   
   // Handle tab change with enhanced error handling
-  const handleTabChange = (value: string) => {
+  const handleTabChange = useCallback((value: string) => {
     try {
-      console.log('[StationCardEdit] Tab changed to:', value);
       setCurrentStationType(value as 'monitoring' | 'rain' | 'reservoir');
     } catch (error) {
       // Use centralized error handling
@@ -347,10 +356,12 @@ const StationCardEdit: React.FC = () => {
         variant: 'destructive'
       });
     }
-  };
+  }, [setCurrentStationType, toast]);
   
-  // Render error state
-  if (syncError) {
+  // Memoize the error UI to prevent unnecessary re-renders
+  const errorUI = useMemo(() => {
+    if (!syncError) return null;
+    
     return (
       <div className="container mx-auto py-6 space-y-6">
         <Alert variant="destructive" className="mb-4">
@@ -379,10 +390,12 @@ const StationCardEdit: React.FC = () => {
         </div>
       </div>
     );
-  }
+  }, [syncError, syncErrorMessage, handleRetry, handleBack, isRetrying, retryCount, MAX_RETRY_ATTEMPTS]);
   
-  // Render loading state
-  if (isLoadingMonitoring || isLoadingRain || isLoadingReservoirs) {
+  // Memoize the loading UI to prevent unnecessary re-renders
+  const loadingUI = useMemo(() => {
+    if (!isLoading) return null;
+    
     return (
       <div className="container mx-auto py-6 flex items-center justify-center h-64">
         <div className="text-center">
@@ -391,95 +404,126 @@ const StationCardEdit: React.FC = () => {
         </div>
       </div>
     );
+  }, [isLoading]);
+  
+  // Memoize the warning alert to prevent unnecessary re-renders
+  const warningAlert = useMemo(() => {
+    if (!areAllMonitoringStationsDisabled && !areAllRainStationsDisabled && !areAllReservoirsDisabled) {
+      return null;
+    }
+    
+    return (
+      <Alert className="mb-6">
+        <AlertTriangle className="h-4 w-4 mr-2" />
+        <AlertTitle>คำเตือน</AlertTitle>
+        <AlertDescription>
+          {areAllMonitoringStationsDisabled && <p>สถานีตรวจวัดน้ำทั้งหมดถูกปิดใช้งาน</p>}
+          {areAllRainStationsDisabled && <p>สถานีตรวจวัดฝนทั้งหมดถูกปิดใช้งาน</p>}
+          {areAllReservoirsDisabled && <p>อ่างเก็บน้ำทั้งหมดถูกปิดใช้งาน</p>}
+        </AlertDescription>
+      </Alert>
+    );
+  }, [areAllMonitoringStationsDisabled, areAllRainStationsDisabled, areAllReservoirsDisabled]);
+  
+  // Memoize the sync error alert to prevent unnecessary re-renders
+  const syncErrorAlert = useMemo(() => {
+    if (!syncError) return null;
+    
+    return (
+      <Alert variant="destructive" className="mb-6">
+        <AlertTriangle className="h-4 w-4 mr-2" />
+        <AlertTitle>ไม่สามารถซิงโครไนซ์ข้อมูลสถานีได้</AlertTitle>
+        <AlertDescription className="mt-2">
+          <p>เกิดข้อผิดพลาดในการซิงโครไนซ์ข้อมูลสถานี: {syncErrorMessage}</p>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="mt-2" 
+            onClick={handleRetry}
+            disabled={isRetrying || retryCount >= MAX_RETRY_ATTEMPTS}
+          >
+            {isRetrying ? 'กำลังลองใหม่...' : 'ลองใหม่อีกครั้ง'}
+          </Button>
+        </AlertDescription>
+      </Alert>
+    );
+  }, [syncError, syncErrorMessage, handleRetry, isRetrying, retryCount, MAX_RETRY_ATTEMPTS]);
+  
+  // Memoize the header UI to prevent unnecessary re-renders
+  const headerUI = useMemo(() => (
+    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+      <div className="flex items-center mb-4 md:mb-0">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleBack}
+          className="mr-4"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <h2 className="text-2xl font-bold">แก้ไขข้อมูลสถานี</h2>
+      </div>
+      <div className="flex space-x-2">
+        <Button
+          variant="outline"
+          onClick={handleDiscard}
+          disabled={!hasUnsavedChanges}
+        >
+          <X className="h-4 w-4 mr-2" />
+          ยกเลิกการเปลี่ยนแปลง
+        </Button>
+        <Button
+          onClick={handleSave}
+          disabled={!hasUnsavedChanges}
+        >
+          <Save className="h-4 w-4 mr-2" />
+          บันทึกการเปลี่ยนแปลง
+        </Button>
+      </div>
+    </div>
+  ), [handleBack, handleDiscard, handleSave, hasUnsavedChanges]);
+  
+  // Memoize the tabs UI to prevent unnecessary re-renders
+  const tabsUI = useMemo(() => (
+    <Tabs defaultValue="monitoring" onValueChange={handleTabChange}>
+      <TabsList className="mb-4">
+        <TabsTrigger value="monitoring">สถานีตรวจวัดน้ำ</TabsTrigger>
+        <TabsTrigger value="rain">สถานีตรวจวัดฝน</TabsTrigger>
+        <TabsTrigger value="reservoir">อ่างเก็บน้ำ</TabsTrigger>
+      </TabsList>
+      
+      <TabsContent value="monitoring">
+        <MemoizedMonitoringTab />
+      </TabsContent>
+      
+      <TabsContent value="rain">
+        <MemoizedRainTab />
+      </TabsContent>
+      
+      <TabsContent value="reservoir">
+        <MemoizedReservoirTab />
+      </TabsContent>
+    </Tabs>
+  ), [handleTabChange]);
+  
+  // Render error state
+  if (syncError) {
+    return errorUI;
+  }
+  
+  // Render loading state
+  if (isLoading) {
+    return loadingUI;
   }
   
   return (
     <div className="container mx-auto py-6 px-4">
       <Card className="w-full">
         <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-            <div className="flex items-center mb-4 md:mb-0">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleBack}
-                className="mr-4"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <h2 className="text-2xl font-bold">แก้ไขข้อมูลสถานี</h2>
-            </div>
-            <div className="flex space-x-2">
-              <Button
-                variant="outline"
-                onClick={handleDiscard}
-                disabled={!hasUnsavedChanges}
-              >
-                <X className="h-4 w-4 mr-2" />
-                ยกเลิกการเปลี่ยนแปลง
-              </Button>
-              <Button
-                onClick={handleSave}
-                disabled={!hasUnsavedChanges}
-              >
-                <Save className="h-4 w-4 mr-2" />
-                บันทึกการเปลี่ยนแปลง
-              </Button>
-            </div>
-          </div>
-
-          {/* Show error alert if synchronization failed */}
-          {syncError && (
-            <Alert variant="destructive" className="mb-6">
-              <AlertTriangle className="h-4 w-4 mr-2" />
-              <AlertTitle>ไม่สามารถซิงโครไนซ์ข้อมูลสถานีได้</AlertTitle>
-              <AlertDescription className="mt-2">
-                <p>เกิดข้อผิดพลาดในการซิงโครไนซ์ข้อมูลสถานี: {syncErrorMessage}</p>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="mt-2" 
-                  onClick={handleRetry}
-                  disabled={isRetrying || retryCount >= MAX_RETRY_ATTEMPTS}
-                >
-                  {isRetrying ? 'กำลังลองใหม่...' : 'ลองใหม่อีกครั้ง'}
-                </Button>
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {/* Show warning if all stations of a type are disabled */}
-          {(areAllMonitoringStationsDisabled || areAllRainStationsDisabled || areAllReservoirsDisabled) && (
-            <Alert className="mb-6">
-              <AlertTriangle className="h-4 w-4 mr-2" />
-              <AlertTitle>คำเตือน</AlertTitle>
-              <AlertDescription>
-                {areAllMonitoringStationsDisabled && <p>สถานีตรวจวัดน้ำทั้งหมดถูกปิดใช้งาน</p>}
-                {areAllRainStationsDisabled && <p>สถานีตรวจวัดฝนทั้งหมดถูกปิดใช้งาน</p>}
-                {areAllReservoirsDisabled && <p>อ่างเก็บน้ำทั้งหมดถูกปิดใช้งาน</p>}
-              </AlertDescription>
-            </Alert>
-          )}
-
-          <Tabs defaultValue="monitoring" onValueChange={handleTabChange}>
-            <TabsList className="mb-4">
-              <TabsTrigger value="monitoring">สถานีตรวจวัดน้ำ</TabsTrigger>
-              <TabsTrigger value="rain">สถานีตรวจวัดฝน</TabsTrigger>
-              <TabsTrigger value="reservoir">อ่างเก็บน้ำ</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="monitoring">
-              <StationCardEditInfo stationType="monitoring" />
-            </TabsContent>
-            
-            <TabsContent value="rain">
-              <StationCardEditInfo stationType="rain" />
-            </TabsContent>
-            
-            <TabsContent value="reservoir">
-              <StationCardEditInfo stationType="reservoir" />
-            </TabsContent>
-          </Tabs>
+          {headerUI}
+          {syncErrorAlert}
+          {warningAlert}
+          {tabsUI}
         </CardContent>
       </Card>
       
@@ -496,4 +540,5 @@ const StationCardEdit: React.FC = () => {
   );
 };
 
-export default StationCardEdit; 
+// Wrap the component with React.memo to prevent unnecessary re-renders
+export default React.memo(StationCardEdit); 
