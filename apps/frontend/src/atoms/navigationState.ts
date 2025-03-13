@@ -16,6 +16,9 @@ export interface NavigationState {
   
   // Preserved state flag
   preserveState: boolean;
+  
+  // Track which station types were changed
+  changedStationTypes?: Array<'monitoring' | 'rain' | 'reservoir'>;
 }
 
 /**
@@ -27,7 +30,8 @@ const initialNavigationState: NavigationState = {
   returnedFromStationEdit: false,
   editSessionTimestamp: 0,
   discardedChanges: false,
-  preserveState: false
+  preserveState: false,
+  changedStationTypes: []
 };
 
 /**
@@ -121,6 +125,17 @@ export const preserveStateAtom = atom(
   }
 );
 
+// Changed station types atom
+export const changedStationTypesAtom = atom(
+  (get) => get(navigationStateAtom).changedStationTypes || [],
+  (get, set, value: Array<'monitoring' | 'rain' | 'reservoir'>) => {
+    set(navigationStateAtom, {
+      ...get(navigationStateAtom),
+      changedStationTypes: value
+    });
+  }
+);
+
 /**
  * Action atoms for common navigation patterns
  */
@@ -129,13 +144,17 @@ export const preserveStateAtom = atom(
 export const navigateToComplaintFormWithSavedChangesAtom = atom(
   null,
   (get, set) => {
+    // Get the current edit session to access changed station types
+    const currentState = get(navigationStateAtom);
+    
     set(navigationStateAtom, {
       sourceComponent: 'StationCardEdit',
       destinationComponent: 'ComplaintForm',
       returnedFromStationEdit: true,
       editSessionTimestamp: Date.now(),
       discardedChanges: false,
-      preserveState: true
+      preserveState: true,
+      changedStationTypes: currentState.changedStationTypes || []
     });
   }
 );
@@ -150,7 +169,8 @@ export const navigateToComplaintFormWithDiscardedChangesAtom = atom(
       returnedFromStationEdit: false,
       editSessionTimestamp: Date.now(),
       discardedChanges: true,
-      preserveState: true
+      preserveState: true,
+      changedStationTypes: []
     });
   }
 );
@@ -165,7 +185,8 @@ export const navigateToStationCardEditAtom = atom(
       returnedFromStationEdit: false,
       editSessionTimestamp: 0,
       discardedChanges: false,
-      preserveState: true
+      preserveState: true,
+      changedStationTypes: []
     });
   }
 );

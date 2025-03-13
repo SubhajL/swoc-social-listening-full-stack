@@ -49,6 +49,7 @@ export interface NavigationState {
   editSessionTimestamp?: number;
   preserveState?: boolean;
   discardedChanges?: boolean;
+  changedStationTypes?: Array<'monitoring' | 'rain' | 'reservoir'>;
 }
 
 // Create a stable empty object reference to use in dependency arrays
@@ -445,6 +446,9 @@ export function useStationManagement() {
   // Function to save changes
   const saveChanges = useCallback(() => {
     try {
+      // Log current state before saving
+      console.log('[useStationManagement] Saving changes');
+      
       // Mark edit session as saved without resetting the data
       setEditSession(prev => ({
         ...prev,
@@ -454,15 +458,18 @@ export function useStationManagement() {
       // Create navigation state for returning to complaint form
       const navigationState: NavigationState = {
         returnedFromStationEdit: true,
-        editSessionTimestamp: Date.now()
+        editSessionTimestamp: Date.now(),
+        changedStationTypes: editSession.changedStationTypes
       };
+      
+      console.log('[useStationManagement] Changes saved, navigation state:', navigationState);
       
       return navigationState;
     } catch (error) {
       console.error('[useStationManagement] Error saving changes:', error);
       throw error;
     }
-  }, [setEditSession]);
+  }, [setEditSession, editSession.changedStationTypes]);
   
   // Function to discard changes and prepare navigation state
   const discardChanges = useCallback(() => {
@@ -502,41 +509,141 @@ export function useStationManagement() {
   const synchronizeAllStations = useCallback(() => {
     try {
       // Synchronize each type of station data using the stable refs
-      syncFunctionsRef.current.syncMonitoring();
-      syncFunctionsRef.current.syncRain();
-      syncFunctionsRef.current.syncReservoirs();
+      // Wrap void functions in Promise.resolve() to make them properly chainable
+      const monitoringPromise = Promise.resolve(syncFunctionsRef.current.syncMonitoring())
+        .catch((error: Error) => {
+          console.error('[useStationManagement] Error synchronizing monitoring stations:', error);
+          return Promise.resolve(); // Continue with other synchronizations
+        });
       
-      // Return a promise that resolves after a short delay to ensure state updates
-      return new Promise<void>(resolve => {
-        setTimeout(() => {
-          resolve();
-        }, 100);
-      });
+      const rainPromise = Promise.resolve(syncFunctionsRef.current.syncRain())
+        .catch((error: Error) => {
+          console.error('[useStationManagement] Error synchronizing rain stations:', error);
+          return Promise.resolve(); // Continue with other synchronizations
+        });
+      
+      const reservoirsPromise = Promise.resolve(syncFunctionsRef.current.syncReservoirs())
+        .catch((error: Error) => {
+          console.error('[useStationManagement] Error synchronizing reservoirs:', error);
+          return Promise.resolve(); // Continue with other synchronizations
+        });
+      
+      // Return a promise that resolves after all synchronizations complete or fail
+      return Promise.all([monitoringPromise, rainPromise, reservoirsPromise])
+        .then(() => {
+          // Add a small delay to ensure state updates are processed
+          return new Promise<void>(resolve => {
+            setTimeout(() => {
+              // Verify data integrity after synchronization
+              verifyDataIntegrity();
+              resolve();
+            }, 100);
+          });
+        });
     } catch (error) {
       console.error('[useStationManagement] Error synchronizing station data:', error);
       
       // Attempt recovery for each station type
+      const recoveryPromises: Promise<void>[] = [];
+      
       try {
-        syncFunctionsRef.current.syncMonitoring();
+        recoveryPromises.push(
+          Promise.resolve(syncFunctionsRef.current.syncMonitoring())
+            .catch((e: Error) => {
+              console.error('[useStationManagement] Recovery failed for monitoring stations:', e);
+              return Promise.resolve();
+            })
+        );
       } catch (monitoringError) {
         console.error('[useStationManagement] Recovery failed for monitoring stations:', monitoringError);
       }
       
       try {
-        syncFunctionsRef.current.syncRain();
+        recoveryPromises.push(
+          Promise.resolve(syncFunctionsRef.current.syncRain())
+            .catch((e: Error) => {
+              console.error('[useStationManagement] Recovery failed for rain stations:', e);
+              return Promise.resolve();
+            })
+        );
       } catch (rainError) {
         console.error('[useStationManagement] Recovery failed for rain stations:', rainError);
       }
       
       try {
-        syncFunctionsRef.current.syncReservoirs();
+        recoveryPromises.push(
+          Promise.resolve(syncFunctionsRef.current.syncReservoirs())
+            .catch((e: Error) => {
+              console.error('[useStationManagement] Recovery failed for reservoirs:', e);
+              return Promise.resolve();
+            })
+        );
       } catch (reservoirError) {
         console.error('[useStationManagement] Recovery failed for reservoirs:', reservoirError);
       }
       
-      throw new Error(`Failed to synchronize station data: ${error instanceof Error ? error.message : String(error)}`);
+      // Wait for all recovery attempts to complete
+      return Promise.all(recoveryPromises)
+        .then(() => {
+          // Verify data integrity after recovery
+          verifyDataIntegrity();
+          return Promise.resolve();
+        })
+        .catch(() => {
+          // If recovery fails, throw a more descriptive error
+          throw new Error(`Failed to synchronize station data: ${error instanceof Error ? error.message : String(error)}`);
+        });
     }
   }, []);
+  
+  // Function to verify data integrity after synchronization
+  const verifyDataIntegrity = useCallback(() => {
+    // Check if all stations of a type are disabled
+    const allMonitoringDisabled = areAllMonitoringStationsDisabled;
+    const allRainDisabled = areAllRainStationsDisabled;
+    const allReservoirsDisabled = areAllReservoirsDisabled;
+    
+    // Log warnings for disabled station types
+    if (allMonitoringDisabled) {
+      console.warn('[useStationManagement] All monitoring stations are disabled after synchronization');
+    }
+    
+    if (allRainDisabled) {
+      console.warn('[useStationManagement] All rain stations are disabled after synchronization');
+    }
+    
+    if (allReservoirsDisabled) {
+      console.warn('[useStationManagement] All reservoirs are disabled after synchronization');
+    }
+    
+    // If all stations of all types are disabled, attempt to restore defaults
+    if (allMonitoringDisabled && allRainDisabled && allReservoirsDisabled) {
+      console.warn('[useStationManagement] All station types are disabled, attempting to restore defaults');
+      
+      // Reset disabled stations to ensure at least some stations are available
+      setDisabledMonitoring({});
+      setDisabledRain({});
+      setDisabledReservoirs({});
+      
+      // Re-trigger synchronization with a delay to avoid infinite loops
+      setTimeout(() => {
+        try {
+          syncFunctionsRef.current.syncMonitoring();
+          syncFunctionsRef.current.syncRain();
+          syncFunctionsRef.current.syncReservoirs();
+        } catch (error) {
+          console.error('[useStationManagement] Error restoring defaults:', error);
+        }
+      }, 500);
+    }
+  }, [
+    areAllMonitoringStationsDisabled,
+    areAllRainStationsDisabled,
+    areAllReservoirsDisabled,
+    setDisabledMonitoring,
+    setDisabledRain,
+    setDisabledReservoirs
+  ]);
   
   // Function to handle returning from StationCardEdit
   const handleReturnFromStationEdit = useCallback((navigationState: NavigationState) => {
@@ -548,13 +655,79 @@ export function useStationManagement() {
       
       // If returned from station edit, synchronize data
       if (navigationState.returnedFromStationEdit) {
-        synchronizeAllStations();
+        // Check if we have information about which station types were changed
+        const changedTypes = navigationState.changedStationTypes || [];
+        
+        if (changedTypes.length > 0) {
+          console.log('[useStationManagement] Synchronizing specific station types:', changedTypes);
+          
+          // Only synchronize the station types that were changed
+          const syncPromises: Promise<void>[] = [];
+          
+          if (changedTypes.includes('monitoring')) {
+            syncPromises.push(
+              Promise.resolve(syncFunctionsRef.current.syncMonitoring())
+                .catch((error: Error) => {
+                  console.error('[useStationManagement] Error synchronizing monitoring stations:', error);
+                  return Promise.resolve();
+                })
+            );
+          }
+          
+          if (changedTypes.includes('rain')) {
+            syncPromises.push(
+              Promise.resolve(syncFunctionsRef.current.syncRain())
+                .catch((error: Error) => {
+                  console.error('[useStationManagement] Error synchronizing rain stations:', error);
+                  return Promise.resolve();
+                })
+            );
+          }
+          
+          if (changedTypes.includes('reservoir')) {
+            syncPromises.push(
+              Promise.resolve(syncFunctionsRef.current.syncReservoirs())
+                .catch((error: Error) => {
+                  console.error('[useStationManagement] Error synchronizing reservoirs:', error);
+                  return Promise.resolve();
+                })
+            );
+          }
+          
+          // Wait for all synchronizations to complete
+          Promise.all(syncPromises)
+            .then(() => {
+              // Verify data integrity after synchronization
+              setTimeout(verifyDataIntegrity, 100);
+            })
+            .catch((error: Error) => {
+              console.error('[useStationManagement] Error during selective synchronization:', error);
+              // Fall back to full synchronization
+              synchronizeAllStations()
+                .then(() => setTimeout(verifyDataIntegrity, 100))
+                .catch((e: Error) => console.error('[useStationManagement] Fallback synchronization failed:', e));
+            });
+        } else {
+          // If no specific types are specified, synchronize all
+          synchronizeAllStations()
+            .then(() => setTimeout(verifyDataIntegrity, 100))
+            .catch((error: Error) => {
+              console.error('[useStationManagement] Error during full synchronization:', error);
+              // Even if synchronization fails, still verify data integrity
+              setTimeout(verifyDataIntegrity, 100);
+            });
+        }
       }
     } catch (error) {
       console.error('[useStationManagement] Error handling return from StationCardEdit:', error);
-      throw error;
+      
+      // Attempt recovery by verifying data integrity
+      setTimeout(verifyDataIntegrity, 100);
+      
+      // Don't throw the error to prevent UI from breaking
+      // Instead, log it and continue
     }
-  }, [synchronizeAllStations]);
+  }, [synchronizeAllStations, verifyDataIntegrity]);
   
   // Return all station data and functions
   return {
