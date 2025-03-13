@@ -3,6 +3,8 @@ import { MonitoringStationResponse, MonitoringStation } from "@/types/monitoring
 import { API_ENDPOINTS, buildUrl, createApiError } from "@/lib/api";
 import { ridTelemetryService } from "@/services/rid-telemetry.service";
 import { cleanLocationString } from "@/lib/location-utils";
+import { toast } from "sonner";
+import { useState, useEffect } from "react";
 
 export interface MonitoringStationsResponse {
   stations: MonitoringStation[];
@@ -128,11 +130,36 @@ export const fetchMonitoringStations = async (
 };
 
 export const useMonitoringStations = (amphure?: string, province?: string) => {
-  return useQuery({
-    queryKey: ["monitoringStations", cleanLocationString(amphure), cleanLocationString(province)],
+  const [monitoringStations, setMonitoringStations] = useState<MonitoringStation[]>([]);
+  
+  const query = useQuery<MonitoringStationsResponse, Error>({
+    queryKey: ['monitoringStations', amphure, province],
     queryFn: () => fetchMonitoringStations(amphure, province),
-    enabled: Boolean(amphure || province),
-    retry: 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
+
+  // Update local state when query data changes
+  useEffect(() => {
+    if (query.data?.stations) {
+      setMonitoringStations(query.data.stations);
+    }
+  }, [query.data]);
+
+  const deleteUserSelectedStation = (stationId: number) => {
+    setMonitoringStations(prev =>
+      prev.map(station =>
+        station.id === stationId
+          ? { ...station, disabled: true, userSelected: false }
+          : station
+      )
+    );
+    toast.success('Station deleted successfully.');
+  };
+
+  return {
+    ...query,
+    monitoringStations,
+    deleteUserSelectedStation
+  };
 }; 

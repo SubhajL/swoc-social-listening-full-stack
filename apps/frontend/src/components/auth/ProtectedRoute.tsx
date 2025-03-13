@@ -1,72 +1,52 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ProtectedRouteProps {
   children: ReactNode;
+  requiredPermissions?: string[];
+  requiredRole?: 'admin' | 'moderator' | 'user';
 }
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+/**
+ * Protected route component
+ * Redirects unauthenticated users to the login page
+ * Optionally checks for required permissions or roles
+ */
+export function ProtectedRoute({ 
+  children, 
+  requiredPermissions = [], 
+  requiredRole 
+}: ProtectedRouteProps) {
+  const { isAuthenticated, hasPermission, hasRole } = useAuth();
   const location = useLocation();
-
-  useEffect(() => {
-    // Check if user is authenticated
-    const checkAuth = () => {
-      const token = localStorage.getItem('token');
-      const userData = localStorage.getItem('user');
-      
-      if (!token || !userData) {
-        setIsAuthenticated(false);
-        setIsLoading(false);
-        return;
-      }
-      
-      try {
-        const user = JSON.parse(userData);
-        
-        // Check if user needs to change password
-        if (user && !user.password_changed) {
-          // User needs to change password first
-          setIsAuthenticated(false);
-        } else {
-          // User is authenticated
-          setIsAuthenticated(true);
-        }
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-        // Clear potentially corrupted data
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        setIsAuthenticated(false);
-      }
-      
-      setIsLoading(false);
-    };
-    
-    checkAuth();
-  }, []);
-
-  // Show loading while checking authentication
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-[#F0F8FF]">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-t-blue-500 border-b-blue-500 border-l-transparent border-r-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-lg text-[#17254D]">กำลังตรวจสอบสิทธิ์...</p>
-          <p className="mt-2 text-sm text-[#475569]">กรุณารอสักครู่...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Redirect to login if not authenticated
+  
+  // Check if user is authenticated
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    console.log('[ProtectedRoute] User not authenticated, redirecting to login');
+    
+    // Redirect to login page with return URL
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
-
-  // Render children if authenticated
+  
+  // Check if user has required role
+  if (requiredRole && !hasRole(requiredRole)) {
+    console.log('[ProtectedRoute] User does not have required role:', requiredRole);
+    
+    // Redirect to unauthorized page
+    return <Navigate to="/unauthorized" replace />;
+  }
+  
+  // Check if user has all required permissions
+  const missingPermissions = requiredPermissions.filter(permission => !hasPermission(permission));
+  
+  if (missingPermissions.length > 0) {
+    console.log('[ProtectedRoute] User missing required permissions:', missingPermissions);
+    
+    // Redirect to unauthorized page
+    return <Navigate to="/unauthorized" replace />;
+  }
+  
+  // User is authenticated and has required permissions/role
   return <>{children}</>;
-};
-
-export default ProtectedRoute; 
+} 

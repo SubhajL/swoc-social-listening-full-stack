@@ -140,15 +140,34 @@ export const ComplaintInfoCard: React.FC<ComplaintInfoCardProps> = ({
       })
     : null;
   
-  // Use Jotai data exclusively
-  const complaintData: ComplaintType = selectedPost || null;
+  // Use Jotai data exclusively - fallback to form data if no post is selected
+  const complaintData: ComplaintType = selectedPost || {
+    processed_post_id: 0,
+    text: description || 'ไม่มีข้อมูล', // Required for LegacyProcessedPost
+    category_name: 'ข้อร้องเรียนทั่วไป',
+    sub1_category_name: 'ปัญหาน้ำท่วม',
+    profile_name: 'ผู้ใช้งานทั่วไป',
+    post_date: new Date().toISOString(),
+    post_url: '#',
+    latitude: coordinates.lat || 18.7883,
+    longitude: coordinates.lng || 98.9853,
+    tumbon: [],
+    amphure: location.split(',').map(part => part.trim()).filter(Boolean),
+    province: ['เชียงใหม่'],
+    created_at: new Date().toISOString(),
+    status: 'new',
+    coordinate_source: 'manual'
+  } as LegacyProcessedPost;
   
   console.log('ComplaintInfoCard data:', { 
     selectedPost, 
     storeTitle, 
     description, 
     location, 
-    coordinates
+    coordinates,
+    selectedPostIds,
+    processedPosts: processedPosts.length,
+    complaintData
   });
 
   const handleInputChange = useCallback((field: string, value: string) => {

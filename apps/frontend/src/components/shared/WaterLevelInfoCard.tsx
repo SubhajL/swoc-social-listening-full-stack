@@ -10,7 +10,17 @@ import { cn } from "@/lib/utils";
 import { MonitoringStation } from "@/types/monitoring-station";
 import { RainStation } from "@/types/rain-station";
 import { Reservoir } from "@/types/reservoir";
-import { monitoringStationsQueryAtom, rainStationsQueryAtom, reservoirsQueryAtom } from '@/atoms/stationData';
+import { 
+  monitoringStationsQueryAtom, 
+  rainStationsQueryAtom, 
+  reservoirsQueryAtom,
+  userSelectedMonitoringStationsAtom,
+  userSelectedRainStationsAtom,
+  userSelectedReservoirsAtom,
+  disabledMonitoringStationsAtom,
+  disabledRainStationsAtom,
+  disabledReservoirsAtom
+} from '@/atoms/stationData';
 import { useAtom } from 'jotai';
 
 interface FetchedMonitoringStation {
@@ -247,11 +257,14 @@ function mapToStandardizedReservoir(reservoir: FetchedReservoir): StandardizedRe
 
 // Adapter functions to convert from standardized format to component-expected types
 function adaptToMonitoringStationProps(station: StandardizedMonitoringStation): MonitoringStation {
+  // Debug logging - commented out to reduce console noise
+  /*
   console.log('[adaptToMonitoringStationProps] Standardized station ID input:', {
     numericId: station.id,
     stringId: station.stationId,
     stationName: station.name
   });
+  */
   
   // Ensure we have a valid ID (prefer numeric ID if available)
   const id = station.id !== undefined && station.id !== null ? station.id : 
@@ -281,6 +294,8 @@ function adaptToMonitoringStationProps(station: StandardizedMonitoringStation): 
     } : undefined
   };
   
+  // Debug logging - commented out to reduce console noise
+  /*
   console.log('[adaptToMonitoringStationProps] Adapted station ID for UI:', {
     id: adapted.id,
     idType: typeof adapted.id,
@@ -289,16 +304,20 @@ function adaptToMonitoringStationProps(station: StandardizedMonitoringStation): 
     station_name: adapted.station_name,
     originalStationId: station.stationId
   });
+  */
   
   return adapted;
 }
 
 function adaptToRainStationProps(station: StandardizedRainStation): RainStation {
+  // Debug logging - commented out to reduce console noise
+  /*
   console.log('[adaptToRainStationProps] Standardized station ID input:', {
     numericId: station.id,
     stringId: station.stationId,
     stationName: station.name
   });
+  */
   
   // Ensure we have a valid ID (prefer numeric ID if available)
   const id = station.id !== undefined && station.id !== null ? station.id : 
@@ -321,6 +340,8 @@ function adaptToRainStationProps(station: StandardizedRainStation): RainStation 
     rainfall_7d: station.rainfallWeekly || 0
   };
   
+  // Debug logging - commented out to reduce console noise
+  /*
   console.log('[adaptToRainStationProps] Adapted station ID for UI:', {
     id: adapted.id,
     idType: typeof adapted.id,
@@ -329,16 +350,20 @@ function adaptToRainStationProps(station: StandardizedRainStation): RainStation 
     station_name: adapted.station_name,
     originalStationId: station.stationId
   });
+  */
   
   return adapted;
 }
 
 function adaptToReservoirProps(reservoir: StandardizedReservoir): Reservoir {
+  // Debug logging - commented out to reduce console noise
+  /*
   console.log('[adaptToReservoirProps] Standardized reservoir ID input:', {
     numericId: reservoir.id,
     stringId: reservoir.stationId,
     reservoirName: reservoir.name
   });
+  */
   
   // Ensure we have a valid ID (prefer numeric ID if available)
   const id = reservoir.id !== undefined && reservoir.id !== null ? reservoir.id : 
@@ -359,6 +384,8 @@ function adaptToReservoirProps(reservoir: StandardizedReservoir): Reservoir {
     station_id: reservoir.stationId || ''
   };
   
+  // Debug logging - commented out to reduce console noise
+  /*
   console.log('[adaptToReservoirProps] Adapted reservoir ID for UI:', {
     id: adapted.id,
     idType: typeof adapted.id,
@@ -367,6 +394,7 @@ function adaptToReservoirProps(reservoir: StandardizedReservoir): Reservoir {
     reservoir_name: adapted.reservoir_name,
     originalStationId: reservoir.stationId
   });
+  */
   
   return adapted;
 }
@@ -413,9 +441,21 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
   const displayAmphure = amphure ? amphure : cleanedAmphure;
   const displayProvince = province ? province : cleanedProvince;
   
+  // Get stations from query atoms
   const [monitoringStations] = useAtom(monitoringStationsQueryAtom);
   const [rainStations] = useAtom(rainStationsQueryAtom);
   const [reservoirs] = useAtom(reservoirsQueryAtom);
+  
+  // Get user-selected stations
+  const [userSelectedMonitoringStations] = useAtom(userSelectedMonitoringStationsAtom);
+  const [userSelectedRainStations] = useAtom(userSelectedRainStationsAtom);
+  const [userSelectedReservoirs] = useAtom(userSelectedReservoirsAtom);
+  
+  // Get disabled stations
+  const [disabledMonitoringStations] = useAtom(disabledMonitoringStationsAtom);
+  const [disabledRainStations] = useAtom(disabledRainStationsAtom);
+  const [disabledReservoirs] = useAtom(disabledReservoirsAtom);
+  
   const [isLoading, setIsLoading] = useState(true);
 
   // Set loading to false after data is fetched
@@ -425,200 +465,321 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
     }
   }, [monitoringStations, rainStations, reservoirs]);
 
-  // Helper function to extract stations from potentially nested data structures
-  const extractStations = (data: any): any[] => {
-    if (!data) return [];
+  /**
+   * Extracts stations from the data and filters out disabled ones
+   * @param stations The stations to extract
+   * @param disabledStationsMap Map of disabled station IDs
+   * @param stationType Type of station for logging
+   * @returns Array of station IDs
+   */
+  const extractStations = (
+    stations: any[],
+    disabledStationsMap: Record<string, boolean>,
+    stationType: string
+  ): string[] => {
+    console.log(`[WaterLevelInfoCard] Extracting ${stationType} stations:`, {
+      totalStations: stations?.length || 0,
+      disabledCount: Object.keys(disabledStationsMap || {}).length
+    });
     
-    // If it's an array, return it
-    if (Array.isArray(data)) return data;
-    
-    // If it has a 'stations' property that's an array, return that
-    if (data.stations && Array.isArray(data.stations)) return data.stations;
-    
-    // If it has a 'data' property that's an array, return that
-    if (data.data && Array.isArray(data.data)) return data.data;
-    
-    // If it has a 'data' property with a 'stations' property that's an array, return that
-    if (data.data?.stations && Array.isArray(data.data.stations)) return data.data.stations;
-    
-    // If it has a 'reservoirs' property that's an array, return that
-    if (data.reservoirs && Array.isArray(data.reservoirs)) return data.reservoirs;
-    
-    // If it's an object with keys that might be stations, convert to array
-    if (typeof data === 'object' && data !== null) {
-      const possibleStations = Object.values(data);
-      if (possibleStations.length > 0 && possibleStations.every(item => item && typeof item === 'object')) {
-        return possibleStations;
-      }
+    if (!stations || !Array.isArray(stations)) {
+      console.warn(`[WaterLevelInfoCard] No ${stationType} stations data available`);
+      return [];
     }
     
-    // Return empty array if we couldn't find stations
-    console.warn('[extractStations] Could not extract stations from data:', data);
-    return [];
+    // Filter out disabled stations and extract IDs
+    const filteredStations = stations
+      .filter(station => {
+        const stationId = String(station.id);
+        const isDisabled = disabledStationsMap[stationId];
+        
+        if (isDisabled) {
+          console.log(`[WaterLevelInfoCard] Filtering out disabled ${stationType} station:`, {
+            id: stationId,
+            name: station.station_name || station.name || station.reservoir_name
+          });
+        }
+        
+        return !isDisabled;
+      })
+      .map(station => String(station.id));
+    
+    console.log(`[WaterLevelInfoCard] Extracted ${stationType} stations:`, {
+      originalCount: stations.length,
+      filteredCount: filteredStations.length,
+      filteredIds: filteredStations
+    });
+    
+    return filteredStations;
   };
-
-  // Extract stations from potentially nested data structures
-  const extractedMonitoringStations = extractStations(monitoringStations);
-  const extractedRainStations = extractStations(rainStations);
-  const extractedReservoirs = extractStations(reservoirs);
-
-  console.log('[WaterLevelInfoContent] Raw data:', {
+  
+  // Log data for debugging
+  /* 
+  console.log('[WaterLevelInfoCard] Data:', {
     monitoringStations: monitoringStations,
     monitoringStationsType: typeof monitoringStations,
     monitoringStationsIsArray: Array.isArray(monitoringStations),
     monitoringStationsLength: Array.isArray(monitoringStations) ? monitoringStations.length : 'not an array',
-    extractedMonitoringStations,
-    extractedMonitoringStationsLength: extractedMonitoringStations.length,
+    extractedMonitoringStations: extractStations(monitoringStations),
+    extractedMonitoringStationsLength: extractStations(monitoringStations).length,
+    
     rainStations: rainStations,
     rainStationsType: typeof rainStations,
     rainStationsIsArray: Array.isArray(rainStations),
     rainStationsLength: Array.isArray(rainStations) ? rainStations.length : 'not an array',
-    extractedRainStations,
-    extractedRainStationsLength: extractedRainStations.length,
+    extractedRainStations: extractStations(rainStations),
+    extractedRainStationsLength: extractStations(rainStations).length,
+    
     reservoirs: reservoirs,
     reservoirsType: typeof reservoirs,
     reservoirsIsArray: Array.isArray(reservoirs),
     reservoirsLength: Array.isArray(reservoirs) ? reservoirs.length : 'not an array',
-    extractedReservoirs,
-    extractedReservoirsLength: extractedReservoirs.length,
-    isLoading
+    extractedReservoirs: extractStations(reservoirs),
+    extractedReservoirsLength: extractStations(reservoirs).length,
+    
+    userSelectedMonitoringStations,
+    userSelectedRainStations,
+    userSelectedReservoirs
   });
-
-  // Process monitoring stations with type safety
+  */
+  
+  // Extract stations from the data with proper filtering
+  const extractedMonitoringStations = extractStations(monitoringStations, disabledMonitoringStations, 'monitoring');
+  const extractedRainStations = extractStations(rainStations, disabledRainStations, 'rain');
+  const extractedReservoirs = extractStations(reservoirs, disabledReservoirs, 'reservoir');
+  
+  // Convert to standardized format
   const standardizedMonitoringStations: StandardizedMonitoringStation[] = extractedMonitoringStations
-    .filter(station => {
+    .map(station => {
       const isValid = isFetchedMonitoringStation(station);
-      if (!isValid) {
-        console.warn('[WaterLevelInfoContent] Invalid monitoring station:', station);
+      if (isValid) {
+        return mapToStandardizedMonitoringStation(station);
       }
-      return isValid;
+      return null;
     })
-    .map(mapToStandardizedMonitoringStation);
-
-  // Process rain stations with type safety
+    .filter(Boolean) as StandardizedMonitoringStation[];
+  
   const standardizedRainStations: StandardizedRainStation[] = extractedRainStations
-    .filter(station => {
+    .map(station => {
       const isValid = isFetchedRainStation(station);
-      if (!isValid) {
-        console.warn('[WaterLevelInfoContent] Invalid rain station:', station);
+      if (isValid) {
+        return mapToStandardizedRainStation(station);
       }
-      return isValid;
+      return null;
     })
-    .map(mapToStandardizedRainStation);
-
-  // Process reservoirs with type safety
+    .filter(Boolean) as StandardizedRainStation[];
+  
   const standardizedReservoirs: StandardizedReservoir[] = extractedReservoirs
-    .filter(reservoir => {
+    .map(reservoir => {
       const isValid = isFetchedReservoir(reservoir);
-      if (!isValid) {
-        console.warn('[WaterLevelInfoContent] Invalid reservoir:', reservoir);
+      if (isValid) {
+        return mapToStandardizedReservoir(reservoir);
       }
-      return isValid;
+      return null;
     })
-    .map(mapToStandardizedReservoir);
+    .filter(Boolean) as StandardizedReservoir[];
+  
+  // Define proper interfaces for the component props
+  interface ExtendedMonitoringStation {
+    id: string;
+    station_id: string;
+    station_name: string;
+    code: string;
+    irrigation_office: string;
+    river_basin: string;
+    river_name: string;
+    amphure: string;
+    province: string;
+    bank_level_meters: string;
+    ground_level_meters: string;
+    warning_level_meters: string;
+    critical_level_meters: string;
+    telemetry_data?: {
+      timestamp: string;
+      water_level: number | null;
+      flow_rate: number | null;
+      notation: string | null;
+    };
+  }
 
-  // Adapt to component-expected types
-  const validMonitoringStations: MonitoringStation[] = standardizedMonitoringStations.map(adaptToMonitoringStationProps);
-  const validRainStations: RainStation[] = standardizedRainStations.map(adaptToRainStationProps);
-  const validReservoirs: Reservoir[] = standardizedReservoirs.map(adaptToReservoirProps);
+  interface ExtendedRainStation {
+    id: string;
+    sequence_number: string | null;
+    station_id: string | null;
+    station_name: string | null;
+    code: string | null;
+    irrigation_office: string | null;
+    river_basin: string | null;
+    river_name: string | null;
+    amphure: string | null;
+    province: string | null;
+    rainfall_1h?: number;
+    rainfall_24h?: number;
+    rainfall_7d?: number;
+  }
 
-  console.log('[WaterLevelInfoContent] Station IDs ready for UI rendering:', {
-    monitoringStations: validMonitoringStations.map(station => ({
-      id: station.id,
-      idType: typeof station.id,
-      station_id: station.station_id,
-      station_idType: typeof station.station_id,
-      station_name: station.station_name
-    })),
-    rainStations: validRainStations.map(station => ({
-      id: station.id,
-      idType: typeof station.id,
-      station_id: station.station_id,
-      station_idType: typeof station.station_id,
-      station_name: station.station_name
-    })),
-    reservoirs: validReservoirs.map(reservoir => ({
-      id: reservoir.id,
-      idType: typeof reservoir.id,
-      station_id: reservoir.station_id,
-      station_idType: typeof reservoir.station_id,
-      reservoir_name: reservoir.reservoir_name
-    }))
+  interface ExtendedReservoir {
+    id: string;
+    sequence_number: string | null;
+    irrigation_office: string | null;
+    reservoir_name: string | null;
+    river_basin: string | null;
+    river_name: string | null;
+    amphure: string | null;
+    province: string | null;
+    capacity: string | null;
+    current_storage: string | null;
+    percent_storage: string | null;
+    station_id?: string | null;
+  }
+
+  // Convert to component props format with string IDs
+  const validMonitoringStations: ExtendedMonitoringStation[] = standardizedMonitoringStations.map(station => {
+    const adapted = adaptToMonitoringStationProps(station);
+    // Ensure ID is a string
+    return {
+      ...adapted,
+      id: String(adapted.id)
+    };
   });
-
-  console.log('[WaterLevelInfoContent] Standardized data:', {
-    standardizedMonitoringStations,
-    standardizedRainStations,
-    standardizedReservoirs
+  
+  const validRainStations: ExtendedRainStation[] = standardizedRainStations.map(station => {
+    const adapted = adaptToRainStationProps(station);
+    // Ensure ID is a string
+    return {
+      ...adapted,
+      id: String(adapted.id)
+    };
   });
-
-  console.log('[WaterLevelInfoContent] Adapted data:', {
-    validMonitoringStations,
-    validRainStations,
-    validReservoirs
+  
+  const validReservoirs: ExtendedReservoir[] = standardizedReservoirs.map(reservoir => {
+    const adapted = adaptToReservoirProps(reservoir);
+    // Ensure ID is a string
+    return {
+      ...adapted,
+      id: String(adapted.id)
+    };
   });
+  
+  // Get filtered user-selected stations (removing disabled ones)
+  const filteredUserMonitoringStations = userSelectedMonitoringStations.filter(station => {
+    // Filter out disabled stations
+    const stationId = String(station.id);
+    return !disabledMonitoringStations[stationId];
+  });
+  
+  const filteredUserRainStations = userSelectedRainStations.filter(station => {
+    // Filter out disabled stations
+    const stationId = String(station.id);
+    return !disabledRainStations[stationId];
+  });
+  
+  const filteredUserReservoirs = userSelectedReservoirs.filter(reservoir => {
+    // Filter out disabled reservoirs
+    const reservoirId = String(reservoir.id);
+    return !disabledReservoirs[reservoirId];
+  });
+  
+  // Update the combined arrays with proper type casting
+  const allMonitoringStations = [
+    ...filteredUserMonitoringStations,
+    ...validMonitoringStations.filter(station => 
+      !filteredUserMonitoringStations.some(userStation => String(userStation.id) === String(station.id))
+    )
+  ] as unknown as ExtendedMonitoringStation[];
 
+  const allRainStations = [
+    ...filteredUserRainStations,
+    ...validRainStations.filter(station => 
+      !filteredUserRainStations.some(userStation => String(userStation.id) === String(station.id))
+    )
+  ] as unknown as ExtendedRainStation[];
+
+  const allReservoirs = [
+    ...filteredUserReservoirs,
+    ...validReservoirs.filter(reservoir => 
+      !filteredUserReservoirs.some(userReservoir => String(userReservoir.id) === String(reservoir.id))
+    )
+  ] as unknown as ExtendedReservoir[];
+  
+  // Update the station arrays with the correct types
+  const monitoringStationArray: ExtendedMonitoringStation[] = allMonitoringStations;
+  const rainStationArray: ExtendedRainStation[] = allRainStations;
+  const reservoirArray: ExtendedReservoir[] = allReservoirs;
+  
+  // Check if we have any stations to display
+  const hasStations = allMonitoringStations.length > 0 || allRainStations.length > 0 || allReservoirs.length > 0;
+  
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="ml-2">กำลังโหลดข้อมูลสถานี...</span>
+      <div className="flex justify-center items-center py-8">
+        <Loader2 className="w-8 h-8 animate-spin text-[#42A5F5]" />
       </div>
     );
   }
-
-  // Check if we have any stations to display
-  const hasStations = validMonitoringStations.length > 0 || validRainStations.length > 0 || validReservoirs.length > 0;
-
+  
   return (
-    <>
+    <div className="space-y-6">
+      <p className="text-sm text-[#64748B]">
+        กำลังค้นหา: สถานีเฝ้าระวัง {allMonitoringStations.length}, สถานีวัดน้ำฝน {allRainStations.length}, เขื่อน/อ่างเก็บน้ำ {allReservoirs.length}
+      </p>
+      
       {!hasStations ? (
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            ไม่พบข้อมูลสถานีในพื้นที่ {displayAmphure || cleanedAmphure || 'ไม่ระบุอำเภอ'} {displayProvince || cleanedProvince || 'ไม่ระบุจังหวัด'}
-            <div className="text-xs text-gray-500 mt-1">
-              กำลังค้นหา: สถานีเฝ้าระวัง {validMonitoringStations.length}, สถานีวัดน้ำฝน {validRainStations.length}, เขื่อน/อ่างเก็บน้ำ {validReservoirs.length}
-            </div>
+            ไม่พบข้อมูลสถานีในพื้นที่ {displayAmphure || 'ไม่ระบุอำเภอ'} {displayProvince || 'ไม่ระบุจังหวัด'}
           </AlertDescription>
         </Alert>
       ) : (
-        <>
-          {validMonitoringStations.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-base font-medium text-gray-700 mb-3">{getStationLabel('monitoring')} ({validMonitoringStations.length})</h3>
-              <div className="space-y-4">
-                {validMonitoringStations.map(station => (
-                  <MonitoringStationCard key={station.id} station={station} />
+        <div className="space-y-8">
+          {allMonitoringStations.length > 0 && (
+            <div>
+              <h3 className="text-base font-medium text-gray-700 mb-3">{getStationLabel('monitoring')} ({allMonitoringStations.length})</h3>
+              <div className="space-y-8">
+                {monitoringStationArray.map((station) => (
+                  <MonitoringStationCard
+                    key={station.id}
+                    station={station as any}
+                    showButtons={false}
+                  />
                 ))}
               </div>
             </div>
           )}
           
-          {validRainStations.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-base font-medium text-gray-700 mb-3">{getStationLabel('rain')} ({validRainStations.length})</h3>
-              <div className="space-y-4">
-                {validRainStations.map(station => (
-                  <RainStationCard key={station.id} station={station} />
+          {allRainStations.length > 0 && (
+            <div>
+              <h3 className="text-base font-medium text-gray-700 mb-3">{getStationLabel('rain')} ({allRainStations.length})</h3>
+              <div className="space-y-8">
+                {rainStationArray.map((station) => (
+                  <RainStationCard
+                    key={station.id}
+                    station={station as any}
+                    showButtons={false}
+                  />
                 ))}
               </div>
             </div>
           )}
           
-          {validReservoirs.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-base font-medium text-gray-700 mb-3">{getStationLabel('reservoir')} ({validReservoirs.length})</h3>
-              <div className="space-y-4">
-                {validReservoirs.map(reservoir => (
-                  <ReservoirCard key={reservoir.id} reservoir={reservoir} />
+          {allReservoirs.length > 0 && (
+            <div>
+              <h3 className="text-base font-medium text-gray-700 mb-3">{getStationLabel('reservoir')} ({allReservoirs.length})</h3>
+              <div className="space-y-8">
+                {reservoirArray.map((reservoir) => (
+                  <ReservoirCard
+                    key={reservoir.id}
+                    reservoir={reservoir as any}
+                    showButtons={false}
+                  />
                 ))}
               </div>
             </div>
           )}
-        </>
+        </div>
       )}
-    </>
+    </div>
   );
 };
 

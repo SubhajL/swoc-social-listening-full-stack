@@ -20,6 +20,7 @@ export interface MonitoringStation {
     unit: string;
   };
   type: 'monitoring';
+  source?: 'system' | 'user';
 }
 
 export interface RainStation {
@@ -37,6 +38,7 @@ export interface RainStation {
     unit: string;
   };
   type: 'rain';
+  source?: 'system' | 'user';
 }
 
 export interface Reservoir {
@@ -52,6 +54,7 @@ export interface Reservoir {
   currentLevel: number;
   percentFull: number;
   type: 'reservoir';
+  source?: 'system' | 'user';
 }
 
 // Interface for station data (for type safety)
@@ -132,6 +135,15 @@ export const disabledReservoirsAtom = atomWithStorage<Record<string, boolean>>(
 
 // Navigation and UI state
 export const navigatingAfterSaveAtom = atom<boolean>(false);
+export const editSessionStatusAtom = atom<{
+  hasChanges: boolean;
+  lastEditTimestamp: number;
+  changedStationTypes: ('monitoring' | 'rain' | 'reservoir')[];
+}>({
+  hasChanges: false,
+  lastEditTimestamp: 0,
+  changedStationTypes: []
+});
 
 // Derived atoms
 export const allStationDataAtom = atom<StationData>((get) => ({
@@ -323,101 +335,165 @@ export const monitoringStationsErrorAtom = atom<Error | null>(null);
 export const rainStationsErrorAtom = atom<Error | null>(null);
 export const reservoirsErrorAtom = atom<Error | null>(null);
 
-// Synchronization atoms to update stored atoms with fetched data
+// Synchronization atoms - these are used to sync the stored atoms with the query atoms
+// They filter out disabled stations based on their source
+// System-generated stations are kept but marked as disabled
+// User-added stations are removed when disabled
 export const syncMonitoringStationsAtom = atom(
   null,
-  async (get, set) => {
+  (get, set) => {
+    console.log('[stationData] Syncing monitoring stations');
+    
+    // Get the current state
+    const monitoringStations = get(monitoringStationsAtom);
+    const userSelectedMonitoringStations = get(userSelectedMonitoringStationsAtom);
+    const disabledMonitoringStations = get(disabledMonitoringStationsAtom);
+    
+    // Log the current state with detailed information
+    console.log('[stationData] Current monitoring stations state:', {
+      monitoringStations: monitoringStations.length,
+      monitoringStationIds: monitoringStations.map(s => s.id),
+      userSelectedMonitoringStations: userSelectedMonitoringStations.length,
+      userSelectedMonitoringStationIds: userSelectedMonitoringStations.map(s => s.id),
+      disabledMonitoringStations: Object.keys(disabledMonitoringStations).length,
+      disabledMonitoringStationIds: Object.keys(disabledMonitoringStations)
+    });
+    
     try {
-      console.log('[syncMonitoringStationsAtom] Syncing monitoring stations');
-      const stations = await get(monitoringStationsQueryAtom);
-      console.log('[syncMonitoringStationsAtom] Fetched stations:', stations.length);
+      // Filter out user-selected stations that are disabled
+      const filteredUserSelectedStations = userSelectedMonitoringStations.filter(
+        station => !disabledMonitoringStations[station.id]
+      );
       
-      // Convert the API response to the expected MonitoringStation type
-      const typedStations = stations.map((station: any) => ({
-        id: station.id || station.station_id,
-        name: station.station_name || station.name || 'Unknown Station',
-        location: station.location || `${station.amphure || ''}, ${station.province || ''}`,
-        coordinates: {
-          lat: station.latitude || 0,
-          lng: station.longitude || 0
-        },
-        status: station.status || 'active',
-        type: 'monitoring' as const,
-        // Include any additional fields from the API response
-        ...station
-      }));
+      // If the filtered list is different from the current list, update it
+      if (JSON.stringify(filteredUserSelectedStations) !== JSON.stringify(userSelectedMonitoringStations)) {
+        console.log('[stationData] Updating user-selected monitoring stations:', {
+          before: userSelectedMonitoringStations.length,
+          after: filteredUserSelectedStations.length,
+          removedIds: userSelectedMonitoringStations
+            .filter(s => !filteredUserSelectedStations.some(fs => fs.id === s.id))
+            .map(s => s.id)
+        });
+        
+        set(userSelectedMonitoringStationsAtom, filteredUserSelectedStations);
+      } else {
+        console.log('[stationData] No changes needed for user-selected monitoring stations');
+      }
       
-      set(monitoringStationsAtom, typedStations);
-      set(monitoringStationsErrorAtom, null);
+      // Log the updated state
+      console.log('[stationData] Updated monitoring stations state:', {
+        monitoringStations: monitoringStations.length,
+        userSelectedMonitoringStations: filteredUserSelectedStations.length,
+        disabledMonitoringStations: Object.keys(disabledMonitoringStations).length
+      });
     } catch (error) {
-      console.error('[syncMonitoringStationsAtom] Error syncing monitoring stations:', error);
-      set(monitoringStationsErrorAtom, error as Error);
+      console.error('[stationData] Error syncing monitoring stations:', error);
     }
   }
 );
 
 export const syncRainStationsAtom = atom(
   null,
-  async (get, set) => {
+  (get, set) => {
+    console.log('[stationData] Syncing rain stations');
+    
+    // Get the current state
+    const rainStations = get(rainStationsAtom);
+    const userSelectedRainStations = get(userSelectedRainStationsAtom);
+    const disabledRainStations = get(disabledRainStationsAtom);
+    
+    // Log the current state with detailed information
+    console.log('[stationData] Current rain stations state:', {
+      rainStations: rainStations.length,
+      rainStationIds: rainStations.map(s => s.id),
+      userSelectedRainStations: userSelectedRainStations.length,
+      userSelectedRainStationIds: userSelectedRainStations.map(s => s.id),
+      disabledRainStations: Object.keys(disabledRainStations).length,
+      disabledRainStationIds: Object.keys(disabledRainStations)
+    });
+    
     try {
-      console.log('[syncRainStationsAtom] Syncing rain stations');
-      const stations = await get(rainStationsQueryAtom);
-      console.log('[syncRainStationsAtom] Fetched stations:', stations.length);
+      // Filter out user-selected stations that are disabled
+      const filteredUserSelectedStations = userSelectedRainStations.filter(
+        station => !disabledRainStations[station.id]
+      );
       
-      // Convert the API response to the expected RainStation type
-      const typedStations = stations.map((station: any) => ({
-        id: station.id || station.station_id,
-        name: station.station_name || station.name || 'Unknown Station',
-        location: station.location || `${station.amphure || ''}, ${station.province || ''}`,
-        coordinates: {
-          lat: station.latitude || 0,
-          lng: station.longitude || 0
-        },
-        status: station.status || 'active',
-        type: 'rain' as const,
-        // Include any additional fields from the API response
-        ...station
-      }));
+      // If the filtered list is different from the current list, update it
+      if (JSON.stringify(filteredUserSelectedStations) !== JSON.stringify(userSelectedRainStations)) {
+        console.log('[stationData] Updating user-selected rain stations:', {
+          before: userSelectedRainStations.length,
+          after: filteredUserSelectedStations.length,
+          removedIds: userSelectedRainStations
+            .filter(s => !filteredUserSelectedStations.some(fs => fs.id === s.id))
+            .map(s => s.id)
+        });
+        
+        set(userSelectedRainStationsAtom, filteredUserSelectedStations);
+      } else {
+        console.log('[stationData] No changes needed for user-selected rain stations');
+      }
       
-      set(rainStationsAtom, typedStations);
-      set(rainStationsErrorAtom, null);
+      // Log the updated state
+      console.log('[stationData] Updated rain stations state:', {
+        rainStations: rainStations.length,
+        userSelectedRainStations: filteredUserSelectedStations.length,
+        disabledRainStations: Object.keys(disabledRainStations).length
+      });
     } catch (error) {
-      console.error('[syncRainStationsAtom] Error syncing rain stations:', error);
-      set(rainStationsErrorAtom, error as Error);
+      console.error('[stationData] Error syncing rain stations:', error);
     }
   }
 );
 
 export const syncReservoirsAtom = atom(
   null,
-  async (get, set) => {
+  (get, set) => {
+    console.log('[stationData] Syncing reservoirs');
+    
+    // Get the current state
+    const reservoirs = get(reservoirsAtom);
+    const userSelectedReservoirs = get(userSelectedReservoirsAtom);
+    const disabledReservoirs = get(disabledReservoirsAtom);
+    
+    // Log the current state with detailed information
+    console.log('[stationData] Current reservoirs state:', {
+      reservoirs: reservoirs.length,
+      reservoirIds: reservoirs.map(r => r.id),
+      userSelectedReservoirs: userSelectedReservoirs.length,
+      userSelectedReservoirIds: userSelectedReservoirs.map(r => r.id),
+      disabledReservoirs: Object.keys(disabledReservoirs).length,
+      disabledReservoirIds: Object.keys(disabledReservoirs)
+    });
+    
     try {
-      console.log('[syncReservoirsAtom] Syncing reservoirs');
-      const reservoirs = await get(reservoirsQueryAtom);
-      console.log('[syncReservoirsAtom] Fetched reservoirs:', reservoirs.length);
+      // Filter out user-selected reservoirs that are disabled
+      const filteredUserSelectedReservoirs = userSelectedReservoirs.filter(
+        reservoir => !disabledReservoirs[reservoir.id]
+      );
       
-      // Convert the API response to the expected Reservoir type
-      const typedReservoirs = reservoirs.map((reservoir: any) => ({
-        id: reservoir.id || reservoir.reservoir_id,
-        name: reservoir.reservoir_name || reservoir.name || 'Unknown Reservoir',
-        location: reservoir.location || `${reservoir.amphure || ''}, ${reservoir.province || ''}`,
-        coordinates: {
-          lat: reservoir.latitude || 0,
-          lng: reservoir.longitude || 0
-        },
-        status: reservoir.status || 'active',
-        currentLevel: reservoir.current_level || 0,
-        capacity: reservoir.capacity || 0,
-        type: 'reservoir' as const,
-        // Include any additional fields from the API response
-        ...reservoir
-      }));
+      // If the filtered list is different from the current list, update it
+      if (JSON.stringify(filteredUserSelectedReservoirs) !== JSON.stringify(userSelectedReservoirs)) {
+        console.log('[stationData] Updating user-selected reservoirs:', {
+          before: userSelectedReservoirs.length,
+          after: filteredUserSelectedReservoirs.length,
+          removedIds: userSelectedReservoirs
+            .filter(r => !filteredUserSelectedReservoirs.some(fr => fr.id === r.id))
+            .map(r => r.id)
+        });
+        
+        set(userSelectedReservoirsAtom, filteredUserSelectedReservoirs);
+      } else {
+        console.log('[stationData] No changes needed for user-selected reservoirs');
+      }
       
-      set(reservoirsAtom, typedReservoirs);
-      set(reservoirsErrorAtom, null);
+      // Log the updated state
+      console.log('[stationData] Updated reservoirs state:', {
+        reservoirs: reservoirs.length,
+        userSelectedReservoirs: filteredUserSelectedReservoirs.length,
+        disabledReservoirs: Object.keys(disabledReservoirs).length
+      });
     } catch (error) {
-      console.error('[syncReservoirsAtom] Error syncing reservoirs:', error);
-      set(reservoirsErrorAtom, error as Error);
+      console.error('[stationData] Error syncing reservoirs:', error);
     }
   }
 ); 

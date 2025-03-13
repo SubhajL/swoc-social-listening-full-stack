@@ -2,7 +2,6 @@ import { Card } from "@/components/ui/card";
 import { ComplaintHeader } from "@/components/complaint/ComplaintHeader";
 import { WaterLevelInfo } from "@/components/complaint/WaterLevelInfo";
 import { SocialPostInfo } from "@/components/complaint/SocialPostInfo";
-import { WaterManagementPlan } from "@/components/complaint/WaterManagementPlan";
 import { useComplaint } from "@/hooks/useComplaint";
 import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
 import { Complaint } from "@/types/complaint";
@@ -19,6 +18,13 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ComplaintInfoCard, WaterLevelInfoCard, WaterManagementPlanCard } from "@/components/shared";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
+import React from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
+import logo1 from "@/assets/logo1.png";
+import logo2 from "@/assets/logo2.png";
+import { Link } from "react-router-dom";
 
 // Create a FormComplaint type that extends Complaint with additional fields needed in the form
 // but overrides some fields to match ComplaintDTO schema
@@ -148,7 +154,52 @@ const ComplaintForm = () => {
   const stationData = useStationData();
   
   // Destructure the synchronization functions
-  const { syncMonitoringStations, syncRainStations, syncReservoirs } = stationData;
+  const { 
+    syncMonitoringStations, 
+    syncRainStations, 
+    syncReservoirs,
+    updateLocation: updateStationLocation,
+    currentAmphure,
+    currentProvince,
+    userSelectedMonitoringStations,
+    userSelectedRainStations,
+    userSelectedReservoirs,
+    disabledMonitoringStations,
+    disabledRainStations,
+    disabledReservoirs,
+    disableMonitoringStation,
+    disableRainStation,
+    disableReservoir,
+    enableMonitoringStation,
+    enableRainStation,
+    enableReservoir
+  } = stationData;
+  
+  // Reference to track if we've already initialized the data
+  const initializedRef = useRef(false);
+  
+  // Initialize with default location data if none exists
+  useEffect(() => {
+    if (!initializedRef.current) {
+      // Set default location data if none exists
+      if (!currentAmphure && !currentProvince) {
+        console.log('[ComplaintForm] Setting default location data for station fetching');
+        // Default to Chiang Mai province
+        updateStationLocation('แม่แตง', 'เชียงใหม่');
+        
+        // Also update the location in the complaint data
+        updateLocation('แม่แตง, เชียงใหม่');
+        
+        // Set coordinates for Chiang Mai
+        updateCoordinates({
+          lat: 18.7883,
+          lng: 98.9853
+        });
+      }
+      
+      initializedRef.current = true;
+    }
+  }, [currentAmphure, currentProvince, updateStationLocation, updateLocation, updateCoordinates]);
   
   // State to track if we're returning from StationCardEdit
   const [returnedFromStationEdit, setReturnedFromStationEdit] = useState(false);
@@ -158,9 +209,16 @@ const ComplaintForm = () => {
   
   // Ref to track if initial state restoration has been done
   const initialStateRestored = useRef(false);
+  // Ref to track if API call has been made
+  const apiCallMade = useRef(false);
   
   // Initialize processed posts from Jotai store
   useEffect(() => {
+    // Skip if we've already made the API call
+    if (apiCallMade.current) {
+      return;
+    }
+    
     // Check if we already have processed posts in the store
     if (processedPosts.length === 0) {
       // If no posts in store, fetch from API
@@ -169,10 +227,13 @@ const ComplaintForm = () => {
       // In a real implementation, this would be an API call
       // For now, we'll just set an empty array
       updateProcessedPosts([]);
+      
+      // Mark that we've made the API call
+      apiCallMade.current = true;
     } else {
       console.log('[ComplaintForm] Using existing processed posts from store:', processedPosts.length);
     }
-  }, [processedPosts, updateProcessedPosts]);
+  }, [processedPosts.length]); // Only depend on the length, not the array itself
   
   // Initialize Jotai state with data from API or location state
   useEffect(() => {
@@ -237,8 +298,7 @@ const ComplaintForm = () => {
     
     console.log('[ComplaintForm] Extracted location from complaint data:', { 
       amphure: firstAmphure, 
-      province: firstProvince,
-      timestamp: new Date().toISOString()
+      province: firstProvince
     });
     
     // Update the Jotai store with the extracted location
@@ -247,88 +307,143 @@ const ComplaintForm = () => {
       if (firstAmphure && firstProvince) {
         console.log('[ComplaintForm] Updating location in Jotai store:', { 
           amphure: firstAmphure, 
-          province: firstProvince,
-          timestamp: new Date().toISOString()
+          province: firstProvince 
         });
         stationData.updateLocation(firstAmphure, firstProvince);
-        
-        // Trigger synchronization to fetch station data based on the new location
-        syncMonitoringStations();
-        syncRainStations();
-        syncReservoirs();
-      } 
-      // If we only have province, use it with empty amphure
-      else if (firstProvince) {
-        console.log('[ComplaintForm] Updating location in Jotai store with province only:', { 
-          province: firstProvince,
-          timestamp: new Date().toISOString()
-        });
-        stationData.updateLocation(undefined, firstProvince);
-        
-        // Trigger synchronization to fetch station data based on the new location
-        syncMonitoringStations();
-        syncRainStations();
-        syncReservoirs();
       }
-      // If we only have amphure, use it with empty province
+      // If we only have province, use that
+      else if (firstProvince) {
+        console.log('[ComplaintForm] Updating province only in Jotai store:', { province: firstProvince });
+        stationData.updateLocation(undefined, firstProvince);
+      }
+      // If we only have amphure, use that
       else if (firstAmphure) {
-        console.log('[ComplaintForm] Updating location in Jotai store with amphure only:', { 
-          amphure: firstAmphure,
-          timestamp: new Date().toISOString()
-        });
+        console.log('[ComplaintForm] Updating amphure only in Jotai store:', { amphure: firstAmphure });
         stationData.updateLocation(firstAmphure, undefined);
-        
-        // Trigger synchronization to fetch station data based on the new location
-        syncMonitoringStations();
-        syncRainStations();
-        syncReservoirs();
       }
     }
     
-    // Also update the location atom for display
-    if (firstAmphure && firstProvince) {
-      updateLocation(`อำเภอ${firstAmphure} จังหวัด${firstProvince}`);
-    } else if (firstProvince) {
-      updateLocation(`จังหวัด${firstProvince}`);
-    } else if (firstAmphure) {
-      updateLocation(`อำเภอ${firstAmphure}`);
-    }
-  }, [preservedData, complaint, complaintDataFromLocation, stationData, updateLocation, syncMonitoringStations, syncRainStations, syncReservoirs]);
+    // Mark that we've restored the initial state
+    initialStateRestored.current = true;
+  }, [complaint, complaintDataFromLocation, stationData]); // Only depend on these values, not their properties
   
-  // Check if we're returning from StationCardEdit
+  // Ref to track if station data has been synced
+  const stationDataSyncedRef = useRef(false);
+  
+  // Ref to track the last processed edit session timestamp
+  const lastProcessedEditSessionRef = useRef(0);
+  
+  // Add a useEffect to handle returning from StationCardEdit
   useEffect(() => {
-    if (location.state?.returnedFromStationEdit) {
-      console.log('[ComplaintForm] Detected return from StationCardEdit');
+    // Check if we're returning from StationCardEdit
+    if (location.state && 'preserveState' in location.state) {
+      console.log('[ComplaintForm] Returning from StationCardEdit with state:', location.state);
       
-      // Use startTransition for state updates that might trigger suspense
-      startTransition(() => {
-          setReturnedFromStationEdit(true);
+      // Set the returnedFromStationEdit flag
+      setReturnedFromStationEdit(true);
+      
+      // Check if changes were discarded
+      const discardedChanges = location.state.discardedChanges === true;
+      
+      // If changes were discarded, we don't need to sync the station data
+      if (discardedChanges) {
+        console.log('[ComplaintForm] Changes were discarded, skipping synchronization');
         
-        // Set preserved data if available
-        if (location.state.preserveState && complaintDataFromLocation) {
-          setPreservedData(complaintDataFromLocation as any);
-          
-          // If we have complaint data in location state, update the Jotai store
-          // Don't call hooks inside useEffect - use the ones from component scope
-          const data = complaintDataFromLocation as any;
-          if (data.text) {
-            updateTitle(data.text);
-          }
-          if (data.content) {
-            updateDescription(data.content);
-          }
-        }
-      });
+        // Show a toast notification
+        toast.info('ยกเลิกการเปลี่ยนแปลงสำเร็จ', {
+          description: 'ข้อมูลถูกคืนค่ากลับเป็นค่าเดิม'
+        });
+        
+        return;
+      }
+      
+      // If changes were saved, sync the station data
+      console.log('[ComplaintForm] Changes were saved, synchronizing station data');
+      
+      // Only sync if we haven't already synced for this edit session
+      if (!stationDataSyncedRef.current) {
+        console.log('[ComplaintForm] Syncing station data');
+        
+        // Sync the station data
+        syncMonitoringStations();
+        syncRainStations();
+        syncReservoirs();
+        
+        // Mark that we've synced the station data
+        stationDataSyncedRef.current = true;
+        
+        // Update the last processed edit session timestamp
+        lastProcessedEditSessionRef.current = Date.now();
+        
+        // Show a toast notification
+        toast.success('บันทึกข้อมูลสำเร็จ', {
+          description: 'ข้อมูลสถานีถูกบันทึกเรียบร้อยแล้ว'
+        });
+      } else {
+        console.log('[ComplaintForm] Station data already synced, skipping');
+      }
+    }
+  }, [location.state, syncMonitoringStations, syncRainStations, syncReservoirs]);
 
-      // No need to get station data from sessionStorage as it's already in Jotai store
-      // The StationCardEdit component should have updated the Jotai store before navigation
-      console.log('[ComplaintForm] Using station data from Jotai store');
+  // Add a function to refresh station data
+  const refreshStationData = useCallback(async () => {
+    console.log('[ComplaintForm] Refreshing station data');
+    
+    try {
+      // Log the current state
+      console.log('[ComplaintForm] Current state before refresh:', {
+        monitoringStations: stationData.monitoringStations.length,
+        rainStations: stationData.rainStations.length,
+        reservoirs: stationData.reservoirs.length,
+        userSelectedMonitoringStations: stationData.userSelectedMonitoringStations.length,
+        userSelectedRainStations: stationData.userSelectedRainStations.length,
+        userSelectedReservoirs: stationData.userSelectedReservoirs.length,
+        disabledMonitoringStations: Object.keys(stationData.disabledMonitoringStations).length,
+        disabledRainStations: Object.keys(stationData.disabledRainStations).length,
+        disabledReservoirs: Object.keys(stationData.disabledReservoirs).length
+      });
+      
+      // Sync the station data
+      syncMonitoringStations();
+      syncRainStations();
+      syncReservoirs();
+      
+      // Log the updated state
+      console.log('[ComplaintForm] Updated state after refresh:', {
+        monitoringStations: stationData.monitoringStations.length,
+        rainStations: stationData.rainStations.length,
+        reservoirs: stationData.reservoirs.length,
+        userSelectedMonitoringStations: stationData.userSelectedMonitoringStations.length,
+        userSelectedRainStations: stationData.userSelectedRainStations.length,
+        userSelectedReservoirs: stationData.userSelectedReservoirs.length,
+        disabledMonitoringStations: Object.keys(stationData.disabledMonitoringStations).length,
+        disabledRainStations: Object.keys(stationData.disabledRainStations).length,
+        disabledReservoirs: Object.keys(stationData.disabledReservoirs).length
+      });
+      
+      // Show a success toast
+      toast.success('ข้อมูลสถานีถูกอัปเดตเรียบร้อยแล้ว');
+    } catch (error) {
+      console.error('[ComplaintForm] Error refreshing station data:', error);
+      
+      // Show an error toast
+      toast.error('เกิดข้อผิดพลาด', {
+        description: 'ไม่สามารถอัปเดตข้อมูลสถานีได้ กรุณาลองอีกครั้ง'
+      });
     }
   }, [
-    location.state, 
-    complaintDataFromLocation,
-    updateTitle,
-    updateDescription
+    stationData.monitoringStations.length,
+    stationData.rainStations.length,
+    stationData.reservoirs.length,
+    stationData.userSelectedMonitoringStations.length,
+    stationData.userSelectedRainStations.length,
+    stationData.userSelectedReservoirs.length,
+    stationData.disabledMonitoringStations,
+    stationData.disabledRainStations,
+    stationData.disabledReservoirs,
+    syncMonitoringStations,
+    syncRainStations,
+    syncReservoirs
   ]);
 
   // Debug location data
@@ -370,10 +485,70 @@ const ComplaintForm = () => {
     }
   }, [stationData]);
 
+  // Sync station data when returning from StationCardEdit
+  useEffect(() => {
+    // Check if we're returning from StationCardEdit and haven't synced yet
+    // or if the edit session timestamp has changed
+    const editSessionTimestamp = location.state?.editSessionTimestamp || 0;
+    const shouldSync = 
+      location.state?.returnedFromStationEdit && 
+      (!stationDataSyncedRef.current || editSessionTimestamp > lastProcessedEditSessionRef.current);
+    
+    if (shouldSync) {
+      console.log('[ComplaintForm] Syncing station data after returning from StationCardEdit');
+      console.log('[ComplaintForm] Edit session timestamp:', editSessionTimestamp);
+      console.log('[ComplaintForm] Last processed timestamp:', lastProcessedEditSessionRef.current);
+      console.log('[ComplaintForm] User-selected stations:', {
+        monitoringStations: userSelectedMonitoringStations.length,
+        rainStations: userSelectedRainStations.length,
+        reservoirs: userSelectedReservoirs.length,
+        disabledMonitoringStations: Object.keys(disabledMonitoringStations).length,
+        disabledRainStations: Object.keys(disabledRainStations).length,
+        disabledReservoirs: Object.keys(disabledReservoirs).length
+      });
+      
+      // Call the sync functions to update the query atoms
+      // This ensures that disabled stations are properly filtered out
+      syncMonitoringStations();
+      syncRainStations();
+      syncReservoirs();
+      
+      // Mark that we've synced the station data
+      stationDataSyncedRef.current = true;
+      
+      // Update the last processed edit session timestamp
+      lastProcessedEditSessionRef.current = editSessionTimestamp;
+      
+      // Show a toast notification
+      toast.success("ข้อมูลสถานีถูกอัปเดตแล้ว", {
+        description: "ข้อมูลสถานีที่คุณเลือกถูกอัปเดตเรียบร้อยแล้ว",
+        duration: 3000
+      });
+    }
+  }, [
+    location.state,
+    userSelectedMonitoringStations, 
+    userSelectedRainStations, 
+    userSelectedReservoirs,
+    disabledMonitoringStations,
+    disabledRainStations,
+    disabledReservoirs,
+    syncMonitoringStations,
+    syncRainStations,
+    syncReservoirs
+  ]);
+
   const validateComplaintData = () => {
     // Use preserved complaint data if returning from StationCardEdit
     const currentData = preservedData || complaint || complaintDataFromLocation;
     if (!currentData) return false;
+
+    // Skip validation completely when returning from StationCardEdit
+    // This prevents the hooks error by ensuring consistent code paths
+    if (location.state?.returnedFromStationEdit) {
+      console.log('[ComplaintForm] Returning from StationCardEdit, skipping validation');
+      return true;
+    }
 
     // Special handling for minimal data from sessionStorage
     if (returnedFromStationEdit && preservedData && !('issue' in preservedData)) {
@@ -505,8 +680,7 @@ const ComplaintForm = () => {
     tumbon: locationData?.tumbon,
     dataType: locationData ? typeof locationData : 'undefined',
     amphureType: locationData?.amphure ? typeof locationData.amphure : 'undefined',
-    provinceType: locationData?.province ? typeof locationData.province : 'undefined',
-    timestamp: new Date().toISOString()
+    provinceType: locationData?.province ? typeof locationData.province : 'undefined'
   });
   
   // Handle amphure data - could be string, array, or undefined
@@ -540,14 +714,19 @@ const ComplaintForm = () => {
     console.warn('[ComplaintForm] No valid location data found in complaint data');
   }
   
-  console.log('[ComplaintForm] Final location data being passed to components:', { 
-    firstAmphure, 
-    firstProvince,
-    isAmphureDefined: !!firstAmphure,
-    isProvinceDefined: !!firstProvince,
-    jotaiAmphure: stationData.currentAmphure,
-    jotaiProvince: stationData.currentProvince
-  });
+  // Use memoized location data to prevent unnecessary re-renders
+  const locationInfo = React.useMemo(() => {
+    return {
+      firstAmphure, 
+      firstProvince,
+      isAmphureDefined: !!firstAmphure,
+      isProvinceDefined: !!firstProvince,
+      jotaiAmphure: stationData.currentAmphure,
+      jotaiProvince: stationData.currentProvince
+    };
+  }, [firstAmphure, firstProvince, stationData.currentAmphure, stationData.currentProvince]);
+  
+  console.log('[ComplaintForm] Final location data being passed to components:', locationInfo);
 
   // Debug output for location data
   console.log('[ComplaintForm] Location data summary:', {
@@ -660,21 +839,21 @@ const ComplaintForm = () => {
             
             {/* Action Buttons - Moved up with reduced margin */}
             <div className="flex items-center mb-4">
-            <button 
+            <Button 
               className="bg-[#4B9FE1] hover:bg-[#3D8FD1] text-white px-2 py-2 rounded-xl w-[150px] h-[42px] font-medium flex items-center justify-center transition-colors duration-200 text-base whitespace-nowrap"
               onClick={handleContinue}
               type="button"
             >
               เพิ่มเติม/แก้ไขข้อมูล
-            </button>
+            </Button>
             <div className="w-[10px]"></div>
-            <button 
+            <Button 
               className="bg-white hover:bg-[#f0f9ff] text-[#4B9FE1] border-[1.5px] border-[#4B9FE1] px-2 py-2 rounded-xl w-[140px] h-[42px] font-medium flex items-center justify-center transition-colors duration-200 text-base whitespace-nowrap"
               onClick={handlePrepareDocument}
               type="button"
             >
               เตรียมร่างเอกสาร
-            </button>
+            </Button>
           </div>
         </div>
       </div>

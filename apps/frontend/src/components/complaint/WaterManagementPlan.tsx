@@ -1,17 +1,19 @@
-import { Layers, Info as InfoIcon } from "lucide-react";
+import { Layers, Info as InfoIcon, Plus } from "lucide-react";
 import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
 import { useEffect } from "react";
 import { cleanLocationString, formatLocationForDisplay } from "@/lib/location-utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RainStation } from "@/types/rain-station";
+import { Button } from "@/components/ui/button";
 
 interface WaterManagementPlanProps {
   amphure?: string;
   province?: string;
   stationData?: RainStation[];
+  onAddData?: () => void;
 }
 
-export const WaterManagementPlan = ({ amphure, province, stationData }: WaterManagementPlanProps) => {
+export const WaterManagementPlan = ({ amphure, province, stationData, onAddData }: WaterManagementPlanProps) => {
   // Clean location strings for display
   const cleanedAmphure = cleanLocationString(amphure);
   const cleanedProvince = cleanLocationString(province);
@@ -37,7 +39,16 @@ export const WaterManagementPlan = ({ amphure, province, stationData }: WaterMan
   return (
     <ErrorBoundary component="WaterManagementPlan">
       <div className="space-y-6">
-        <h2 className="text-xl font-semibold text-[#17254D]">แผนการบริหารจัดการน้ำ</h2>
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-semibold text-[#17254D]">แผนการบริหารจัดการน้ำ</h2>
+          <Button 
+            onClick={onAddData}
+            className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 h-8 px-3 text-sm"
+          >
+            <Plus className="h-4 w-4" />
+            เพิ่มข้อมูล
+          </Button>
+        </div>
         
         {/* Display water management plan information */}
         <div className="bg-white rounded-lg p-4 border border-gray-200">

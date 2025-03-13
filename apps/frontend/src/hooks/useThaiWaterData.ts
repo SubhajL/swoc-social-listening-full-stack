@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import type { ThaiWaterResponse } from '../types/api';
 
 // Mock data for when the API fails
@@ -53,33 +53,102 @@ const MOCK_THAIWATER_DATA = {
   ]
 };
 
-export const useThaiWaterData = () => {
+interface ThaiWaterParams {
+  province?: string;
+  amphoe?: string;
+  date?: string;
+  min_rainfall?: number;
+}
+
+export const useThaiWaterData = (params?: ThaiWaterParams) => {
   return useQuery({
-    queryKey: ["thaiwater", "rainfall"],
+    queryKey: ["thaiwater", "rainfall", params],
     queryFn: async () => {
-      console.log("[useThaiWaterData] Fetching thaiwater rainfall data");
+      console.log("[useThaiWaterData] Fetching thaiwater rainfall data with params:", params);
       
       try {
         // Add a timeout to the fetch to prevent hanging requests
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
         
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/thaiwater/rainfall`, {
-          signal: controller.signal
+        const endpoint = `${import.meta.env.VITE_API_URL}/api/thaiwater/rainfall`;
+        
+        // Validate required parameters
+        if (!params?.province && !params?.amphoe) {
+          console.warn('[useThaiWaterData] Missing required parameters: province or amphoe');
+          throw new Error('Missing required parameters: province or amphoe');
+        }
+        
+        const response = await axios.get(endpoint, {
+          params: params,
+          signal: controller.signal,
+          timeout: 10000 // 10 second timeout
         });
         
         clearTimeout(timeoutId);
         
+        // Validate response data
+        if (!response.data || !response.data.data) {
+          console.warn('[useThaiWaterData] Invalid response data format:', response.data);
+          throw new Error('Invalid response data format');
+        }
+        
+        console.log('[useThaiWaterData] Successfully fetched data:', {
+          count: response.data.data.length,
+          params: params
+        });
+        
         return response.data;
       } catch (error) {
-        console.log("[useThaiWaterData] Error fetching data:", error);
-        console.log("[useThaiWaterData] Returning mock data due to API error");
+        // Handle different types of errors
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError;
+          
+          if (axiosError.code === 'ECONNABORTED' || axiosError.message.includes('timeout')) {
+            console.error('[useThaiWaterData] Request timeout:', axiosError.message);
+            throw new Error('Request timeout. Please try again later.');
+          }
+          
+          if (axiosError.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.error('[useThaiWaterData] Server error:', {
+              status: axiosError.response.status,
+              data: axiosError.response.data,
+              params: params
+            });
+            
+            if (axiosError.response.status === 400) {
+              throw new Error('Invalid request parameters. Please check your inputs.');
+            } else if (axiosError.response.status === 404) {
+              throw new Error('Rainfall data not found for the specified parameters.');
+            } else if (axiosError.response.status === 500) {
+              console.warn('[useThaiWaterData] Server error, falling back to mock data');
+              return MOCK_THAIWATER_DATA;
+            }
+          } else if (axiosError.request) {
+            // The request was made but no response was received
+            console.error('[useThaiWaterData] No response received:', axiosError.request);
+            throw new Error('No response received from server. Please check your connection.');
+          }
+        }
         
-        // Return mock data when the API fails
-        return MOCK_THAIWATER_DATA;
+        // Generic error handling
+        console.error('[useThaiWaterData] Unexpected error:', error);
+        console.warn('[useThaiWaterData] Falling back to mock data due to error');
+        return MOCK_THAIWATER_DATA; // Explicit fallback
       }
     },
-    retry: 1,
+    retry: (failureCount, error) => {
+      // Only retry for network errors or 5xx errors, not for 4xx errors
+      if (error instanceof Error) {
+        if (error.message.includes('Invalid request parameters') || 
+            error.message.includes('Rainfall data not found')) {
+          return false; // Don't retry for 4xx errors
+        }
+      }
+      return failureCount < 2; // Retry up to 2 times for other errors
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
     refetchOnMount: false,
