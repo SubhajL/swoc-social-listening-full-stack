@@ -1,5 +1,5 @@
 import { useAtom, useSetAtom } from 'jotai';
-import { useCallback } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useStationManagement } from './useStationManagement';
 import { 
   stationSelectionDialogOpenAtom,
@@ -22,6 +22,17 @@ import {
   navigateToComplaintFormWithDiscardedChangesAtom,
   resetNavigationStateAtom
 } from '@/atoms/navigationState';
+import { useToast } from '@/components/ui/use-toast';
+
+// Error types for better error handling
+type ErrorSource = 'navigation' | 'stationManagement' | 'uiState' | 'apiCall';
+
+interface ErrorContext {
+  source: ErrorSource;
+  operation: string;
+  details?: Record<string, any>;
+  originalError?: Error;
+}
 
 /**
  * Custom hook that combines station management and UI state
@@ -30,6 +41,7 @@ import {
 export function useStationEditState() {
   // Get station management state and functions
   const stationManagement = useStationManagement();
+  const { toast } = useToast();
   
   // Get UI state atoms
   const [stationSelectionDialogOpen, setStationSelectionDialogOpen] = useAtom(stationSelectionDialogOpenAtom);
@@ -46,62 +58,150 @@ export function useStationEditState() {
   const navigateToComplaintFormWithDiscardedChanges = useSetAtom(navigateToComplaintFormWithDiscardedChangesAtom);
   const resetNavigationState = useSetAtom(resetNavigationStateAtom);
   
+  // Create stable references for functions
+  const stableFunctionsRef = useRef({
+    resetUIState,
+    resetNavigationState,
+    navigateToComplaintFormWithSavedChanges,
+    navigateToComplaintFormWithDiscardedChanges,
+    saveChanges: stationManagement.saveChanges,
+    discardChanges: stationManagement.discardChanges
+  });
+  
+  // Update refs when functions change
+  stableFunctionsRef.current = {
+    resetUIState,
+    resetNavigationState,
+    navigateToComplaintFormWithSavedChanges,
+    navigateToComplaintFormWithDiscardedChanges,
+    saveChanges: stationManagement.saveChanges,
+    discardChanges: stationManagement.discardChanges
+  };
+  
+  // Helper function for handling errors
+  const handleError = useCallback((context: ErrorContext) => {
+    // Log the error with context
+    console.error(`[useStationEditState] Error in ${context.source}/${context.operation}:`, {
+      ...context.details,
+      error: context.originalError
+    });
+    
+    // Show toast notification based on error type
+    switch (context.source) {
+      case 'navigation':
+        toast({
+          title: 'Navigation Error',
+          description: `Failed to navigate: ${context.originalError?.message || 'Unknown error'}`,
+          variant: 'destructive',
+        });
+        break;
+      case 'stationManagement':
+        toast({
+          title: 'Station Management Error',
+          description: `Failed to ${context.operation}: ${context.originalError?.message || 'Unknown error'}`,
+          variant: 'destructive',
+        });
+        break;
+      case 'apiCall':
+        toast({
+          title: 'API Error',
+          description: `Failed to communicate with server: ${context.originalError?.message || 'Connection error'}`,
+          variant: 'destructive',
+        });
+        break;
+      default:
+        toast({
+          title: 'Error',
+          description: context.originalError?.message || 'An unexpected error occurred',
+          variant: 'destructive',
+        });
+    }
+    
+    // Attempt recovery based on error type
+    if (context.source === 'navigation') {
+      // Reset navigation state to prevent getting stuck
+      try {
+        stableFunctionsRef.current.resetNavigationState();
+      } catch (recoveryError) {
+        console.error('[useStationEditState] Failed to recover from navigation error:', recoveryError);
+      }
+    }
+  }, [toast]);
+  
   // Function to open station selection dialog
   const openStationSelectionDialog = useCallback((stationType: StationType) => {
-    console.log(`[useStationEditState] Opening station selection dialog for ${stationType}`);
-    setCurrentStationType(stationType);
-    setStationSelectionDialogOpen(true);
-    setCurrentPage(1);
-  }, [setCurrentStationType, setStationSelectionDialogOpen, setCurrentPage]);
+    try {
+      setCurrentStationType(stationType);
+      setStationSelectionDialogOpen(true);
+      setCurrentPage(1);
+    } catch (error) {
+      handleError({
+        source: 'uiState',
+        operation: 'openStationSelectionDialog',
+        details: { stationType },
+        originalError: error instanceof Error ? error : new Error(String(error))
+      });
+    }
+  }, [setCurrentStationType, setStationSelectionDialogOpen, setCurrentPage, handleError]);
   
   // Function to close station selection dialog
   const closeStationSelectionDialog = useCallback(() => {
-    console.log('[useStationEditState] Closing station selection dialog');
-    setStationSelectionDialogOpen(false);
-  }, [setStationSelectionDialogOpen]);
+    try {
+      setStationSelectionDialogOpen(false);
+    } catch (error) {
+      handleError({
+        source: 'uiState',
+        operation: 'closeStationSelectionDialog',
+        originalError: error instanceof Error ? error : new Error(String(error))
+      });
+    }
+  }, [setStationSelectionDialogOpen, handleError]);
   
   // Function to handle back navigation
   const handleBackNavigation = useCallback((path: string) => {
-    console.log(`[useStationEditState] Handling back navigation to ${path}`);
-    
-    // If there are unsaved changes, show dialog
-    if (stationManagement.hasUnsavedChanges) {
-      console.log('[useStationEditState] Unsaved changes detected, showing dialog');
-      setUnsavedChangesDialogOpen(true);
-      setPendingNavigation(path);
-    } else {
-      // No unsaved changes, prepare navigation state
-      console.log('[useStationEditState] No unsaved changes, preparing navigation state');
+    try {
+      // If there are unsaved changes, show dialog
+      if (stationManagement.hasUnsavedChanges) {
+        setUnsavedChangesDialogOpen(true);
+        setPendingNavigation(path);
+      } else {
+        // No unsaved changes, prepare navigation state
+        // Reset navigation state since we're navigating without changes
+        stableFunctionsRef.current.resetNavigationState();
+        
+        return { path, state: null };
+      }
       
-      // Reset navigation state since we're navigating without changes
-      resetNavigationState();
+      return null;
+    } catch (error) {
+      handleError({
+        source: 'navigation',
+        operation: 'handleBackNavigation',
+        details: { path },
+        originalError: error instanceof Error ? error : new Error(String(error))
+      });
       
+      // Return a safe fallback
       return { path, state: null };
     }
-    
-    return null;
   }, [
     stationManagement.hasUnsavedChanges, 
     setUnsavedChangesDialogOpen, 
     setPendingNavigation,
-    resetNavigationState
+    handleError
   ]);
   
   // Function to save changes and navigate
   const saveChangesAndNavigate = useCallback(() => {
-    console.log('[useStationEditState] Saving changes and navigating');
-    
     try {
       // Save changes using station management
-      stationManagement.saveChanges();
+      stableFunctionsRef.current.saveChanges();
       
       // Update navigation state using Jotai atom
-      navigateToComplaintFormWithSavedChanges();
+      stableFunctionsRef.current.navigateToComplaintFormWithSavedChanges();
       
       // Reset UI state
-      resetUIState();
-      
-      console.log('[useStationEditState] Changes saved, navigation state updated:', navigationState);
+      stableFunctionsRef.current.resetUIState();
       
       // Return navigation info
       return {
@@ -109,35 +209,40 @@ export function useStationEditState() {
         state: null // No longer need to pass state via react-router
       };
     } catch (error) {
-      console.error('[useStationEditState] Error saving changes:', error);
-      throw error;
+      // Enhanced error handling with context
+      handleError({
+        source: 'stationManagement',
+        operation: 'saveChanges',
+        details: { pendingNavigation, navigationState },
+        originalError: error instanceof Error ? error : new Error(String(error))
+      });
+      
+      // Return a safe fallback to prevent UI from getting stuck
+      return {
+        path: pendingNavigation || '/complaint-form',
+        state: null
+      };
     }
   }, [
-    stationManagement.saveChanges, 
-    pendingNavigation, 
-    resetUIState, 
-    navigateToComplaintFormWithSavedChanges,
-    navigationState
+    pendingNavigation,
+    navigationState,
+    handleError
   ]);
   
   // Function to discard changes and navigate
   const discardChangesAndNavigate = useCallback(() => {
-    console.log('[useStationEditState] Discarding changes and navigating');
-    
     try {
       // Discard changes using station management
-      stationManagement.discardChanges();
+      stableFunctionsRef.current.discardChanges();
       
       // Update navigation state using Jotai atom
-      navigateToComplaintFormWithDiscardedChanges();
+      stableFunctionsRef.current.navigateToComplaintFormWithDiscardedChanges();
       
       // Close dialog
       setUnsavedChangesDialogOpen(false);
       
       // Reset UI state
-      resetUIState();
-      
-      console.log('[useStationEditState] Changes discarded, navigation state updated:', navigationState);
+      stableFunctionsRef.current.resetUIState();
       
       // Return navigation info
       return {
@@ -145,56 +250,76 @@ export function useStationEditState() {
         state: null // No longer need to pass state via react-router
       };
     } catch (error) {
-      console.error('[useStationEditState] Error discarding changes:', error);
-      throw error;
+      // Enhanced error handling with context
+      handleError({
+        source: 'stationManagement',
+        operation: 'discardChanges',
+        details: { pendingNavigation, navigationState },
+        originalError: error instanceof Error ? error : new Error(String(error))
+      });
+      
+      // Return a safe fallback to prevent UI from getting stuck
+      return {
+        path: pendingNavigation || '/complaint-form',
+        state: null
+      };
     }
   }, [
-    stationManagement.discardChanges, 
-    pendingNavigation, 
+    pendingNavigation,
     setUnsavedChangesDialogOpen,
-    resetUIState,
-    navigateToComplaintFormWithDiscardedChanges,
-    navigationState
+    navigationState,
+    handleError
   ]);
   
   // Function to cancel navigation
   const cancelNavigation = useCallback(() => {
-    console.log('[useStationEditState] Canceling navigation');
-    
-    // Close dialog
-    setUnsavedChangesDialogOpen(false);
-    
-    // Reset pending navigation
-    setPendingNavigation(null);
-  }, [setUnsavedChangesDialogOpen, setPendingNavigation]);
+    try {
+      // Close dialog
+      setUnsavedChangesDialogOpen(false);
+      
+      // Reset pending navigation
+      setPendingNavigation(null);
+    } catch (error) {
+      handleError({
+        source: 'navigation',
+        operation: 'cancelNavigation',
+        originalError: error instanceof Error ? error : new Error(String(error))
+      });
+    }
+  }, [setUnsavedChangesDialogOpen, setPendingNavigation, handleError]);
+  
+  // Memoize the station type checking functions
+  const stationTypeCheckers = useMemo(() => ({
+    isMonitoringStation,
+    isRainStation,
+    isReservoir
+  }), []);
   
   // Function to handle stations selected from dialog
   const handleStationsFromDialog = useCallback((stations: any[]) => {
-    console.log(`[useStationEditState] Adding ${stations.length} ${currentStationType} stations from dialog`);
-    
     try {
       if (currentStationType === 'monitoring') {
         stations.forEach(station => {
-          if (isMonitoringStation(station)) {
+          if (stationTypeCheckers.isMonitoringStation(station)) {
             stationManagement.addMonitoringStation(station);
           } else {
-            console.warn('[useStationEditState] Received invalid monitoring station:', station);
+            throw new Error(`Invalid monitoring station data: ${JSON.stringify(station)}`);
           }
         });
       } else if (currentStationType === 'rain') {
         stations.forEach(station => {
-          if (isRainStation(station)) {
+          if (stationTypeCheckers.isRainStation(station)) {
             stationManagement.addRainStation(station);
           } else {
-            console.warn('[useStationEditState] Received invalid rain station:', station);
+            throw new Error(`Invalid rain station data: ${JSON.stringify(station)}`);
           }
         });
       } else if (currentStationType === 'reservoir') {
         stations.forEach(reservoir => {
-          if (isReservoir(reservoir)) {
+          if (stationTypeCheckers.isReservoir(reservoir)) {
             stationManagement.addReservoir(reservoir);
           } else {
-            console.warn('[useStationEditState] Received invalid reservoir:', reservoir);
+            throw new Error(`Invalid reservoir data: ${JSON.stringify(reservoir)}`);
           }
         });
       }
@@ -204,7 +329,17 @@ export function useStationEditState() {
       
       return true;
     } catch (error) {
-      console.error(`[useStationEditState] Error adding ${currentStationType} stations:`, error);
+      // Enhanced error handling with context
+      handleError({
+        source: 'stationManagement',
+        operation: `add${currentStationType}Stations`,
+        details: { stationCount: stations.length },
+        originalError: error instanceof Error ? error : new Error(String(error))
+      });
+      
+      // Close dialog even on error to prevent UI from getting stuck
+      closeStationSelectionDialog();
+      
       return false;
     }
   }, [
@@ -212,7 +347,9 @@ export function useStationEditState() {
     stationManagement.addMonitoringStation,
     stationManagement.addRainStation,
     stationManagement.addReservoir,
-    closeStationSelectionDialog
+    closeStationSelectionDialog,
+    handleError,
+    stationTypeCheckers
   ]);
   
   // Return combined state and functions
@@ -247,6 +384,9 @@ export function useStationEditState() {
     saveChangesAndNavigate,
     discardChangesAndNavigate,
     cancelNavigation,
-    handleStationsFromDialog
+    handleStationsFromDialog,
+    
+    // Error handling
+    handleError
   };
 } 
