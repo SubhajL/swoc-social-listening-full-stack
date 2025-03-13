@@ -573,16 +573,116 @@ export function useStationManagement() {
     console.log('[useStationManagement] Synchronizing all station data');
     
     try {
+      // Log current state before synchronization
+      console.log('[useStationManagement] Current state before synchronization:', {
+        monitoringStations: monitoringStations.length,
+        rainStations: rainStations.length,
+        reservoirs: reservoirs.length,
+        userSelectedMonitoring: userSelectedMonitoring.length,
+        userSelectedRain: userSelectedRain.length,
+        userSelectedReservoirs: userSelectedReservoirs.length,
+        disabledMonitoring: Object.keys(disabledMonitoring).length,
+        disabledRain: Object.keys(disabledRain).length,
+        disabledReservoirs: Object.keys(disabledReservoirs).length
+      });
+      
+      // Check for edge cases before synchronization
+      const allMonitoringDisabled = monitoringStations.every(station => disabledMonitoring[station.id]);
+      const allRainDisabled = rainStations.every(station => disabledRain[station.id]);
+      const allReservoirsDisabled = reservoirs.every(reservoir => disabledReservoirs[reservoir.id]);
+      
+      if (allMonitoringDisabled) {
+        console.warn('[useStationManagement] All monitoring stations are disabled before synchronization');
+      }
+      
+      if (allRainDisabled) {
+        console.warn('[useStationManagement] All rain stations are disabled before synchronization');
+      }
+      
+      if (allReservoirsDisabled) {
+        console.warn('[useStationManagement] All reservoirs are disabled before synchronization');
+      }
+      
+      // Synchronize each type of station data
       syncMonitoring();
       syncRain();
       syncReservoirs();
       
-      console.log('[useStationManagement] All station data synchronized');
+      // Add a small delay to ensure state updates are processed
+      setTimeout(() => {
+        // Check for edge cases after synchronization
+        const updatedAllMonitoringDisabled = monitoringStations.every(station => disabledMonitoring[station.id]);
+        const updatedAllRainDisabled = rainStations.every(station => disabledRain[station.id]);
+        const updatedAllReservoirsDisabled = reservoirs.every(reservoir => disabledReservoirs[reservoir.id]);
+        
+        if (updatedAllMonitoringDisabled) {
+          console.warn('[useStationManagement] All monitoring stations are still disabled after synchronization');
+        }
+        
+        if (updatedAllRainDisabled) {
+          console.warn('[useStationManagement] All rain stations are still disabled after synchronization');
+        }
+        
+        if (updatedAllReservoirsDisabled) {
+          console.warn('[useStationManagement] All reservoirs are still disabled after synchronization');
+        }
+        
+        // Log final state after synchronization
+        console.log('[useStationManagement] Final state after synchronization:', {
+          monitoringStations: monitoringStations.length,
+          rainStations: rainStations.length,
+          reservoirs: reservoirs.length,
+          userSelectedMonitoring: userSelectedMonitoring.length,
+          userSelectedRain: userSelectedRain.length,
+          userSelectedReservoirs: userSelectedReservoirs.length,
+          disabledMonitoring: Object.keys(disabledMonitoring).length,
+          disabledRain: Object.keys(disabledRain).length,
+          disabledReservoirs: Object.keys(disabledReservoirs).length
+        });
+        
+        console.log('[useStationManagement] All station data synchronized successfully');
+      }, 100);
     } catch (error) {
       console.error('[useStationManagement] Error synchronizing station data:', error);
-      throw error;
+      
+      // Attempt recovery for each station type
+      try {
+        console.warn('[useStationManagement] Attempting recovery synchronization for monitoring stations');
+        syncMonitoring();
+      } catch (monitoringError) {
+        console.error('[useStationManagement] Recovery failed for monitoring stations:', monitoringError);
+      }
+      
+      try {
+        console.warn('[useStationManagement] Attempting recovery synchronization for rain stations');
+        syncRain();
+      } catch (rainError) {
+        console.error('[useStationManagement] Recovery failed for rain stations:', rainError);
+      }
+      
+      try {
+        console.warn('[useStationManagement] Attempting recovery synchronization for reservoirs');
+        syncReservoirs();
+      } catch (reservoirError) {
+        console.error('[useStationManagement] Recovery failed for reservoirs:', reservoirError);
+      }
+      
+      throw new Error(`Failed to synchronize station data: ${error instanceof Error ? error.message : String(error)}`);
     }
-  }, [syncMonitoring, syncRain, syncReservoirs]);
+  }, [
+    monitoringStations,
+    rainStations,
+    reservoirs,
+    userSelectedMonitoring,
+    userSelectedRain,
+    userSelectedReservoirs,
+    disabledMonitoring,
+    disabledRain,
+    disabledReservoirs,
+    syncMonitoring,
+    syncRain,
+    syncReservoirs
+  ]);
   
   // Function to handle returning from StationCardEdit
   const handleReturnFromStationEdit = useCallback((navigationState: NavigationState) => {

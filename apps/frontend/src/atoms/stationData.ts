@@ -344,26 +344,54 @@ export const syncMonitoringStationsAtom = atom(
   (get, set) => {
     console.log('[stationData] Syncing monitoring stations');
     
-    // Get the current state
-    const monitoringStations = get(monitoringStationsAtom);
-    const userSelectedMonitoringStations = get(userSelectedMonitoringStationsAtom);
-    const disabledMonitoringStations = get(disabledMonitoringStationsAtom);
-    
-    // Log the current state with detailed information
-    console.log('[stationData] Current monitoring stations state:', {
-      monitoringStations: monitoringStations.length,
-      monitoringStationIds: monitoringStations.map(s => s.id),
-      userSelectedMonitoringStations: userSelectedMonitoringStations.length,
-      userSelectedMonitoringStationIds: userSelectedMonitoringStations.map(s => s.id),
-      disabledMonitoringStations: Object.keys(disabledMonitoringStations).length,
-      disabledMonitoringStationIds: Object.keys(disabledMonitoringStations)
-    });
-    
     try {
+      // Get the current state
+      const monitoringStations = get(monitoringStationsAtom) || [];
+      const userSelectedMonitoringStations = get(userSelectedMonitoringStationsAtom) || [];
+      const disabledMonitoringStations = get(disabledMonitoringStationsAtom) || {};
+      
+      // Log the current state with detailed information
+      console.log('[stationData] Current monitoring stations state:', {
+        monitoringStations: monitoringStations.length,
+        monitoringStationIds: monitoringStations.map(s => s.id),
+        userSelectedMonitoringStations: userSelectedMonitoringStations.length,
+        userSelectedMonitoringStationIds: userSelectedMonitoringStations.map(s => s.id),
+        disabledMonitoringStations: Object.keys(disabledMonitoringStations).length,
+        disabledMonitoringStationIds: Object.keys(disabledMonitoringStations)
+      });
+      
+      // Check for invalid data
+      const invalidMonitoringStations = monitoringStations.filter(s => !s.id);
+      const invalidUserSelectedStations = userSelectedMonitoringStations.filter(s => !s.id);
+      
+      if (invalidMonitoringStations.length > 0) {
+        console.warn('[stationData] Found invalid monitoring stations without IDs:', invalidMonitoringStations);
+      }
+      
+      if (invalidUserSelectedStations.length > 0) {
+        console.warn('[stationData] Found invalid user-selected monitoring stations without IDs:', invalidUserSelectedStations);
+      }
+      
       // Filter out user-selected stations that are disabled
       const filteredUserSelectedStations = userSelectedMonitoringStations.filter(
-        station => !disabledMonitoringStations[station.id]
+        station => station && station.id && !disabledMonitoringStations[station.id]
       );
+      
+      // Check for duplicate IDs
+      const userSelectedIds = new Set<string>();
+      const duplicateUserSelectedIds: string[] = [];
+      
+      filteredUserSelectedStations.forEach(station => {
+        if (userSelectedIds.has(station.id)) {
+          duplicateUserSelectedIds.push(station.id);
+        } else {
+          userSelectedIds.add(station.id);
+        }
+      });
+      
+      if (duplicateUserSelectedIds.length > 0) {
+        console.warn('[stationData] Found duplicate user-selected monitoring station IDs:', duplicateUserSelectedIds);
+      }
       
       // If the filtered list is different from the current list, update it
       if (JSON.stringify(filteredUserSelectedStations) !== JSON.stringify(userSelectedMonitoringStations)) {
@@ -388,6 +416,12 @@ export const syncMonitoringStationsAtom = atom(
       });
     } catch (error) {
       console.error('[stationData] Error syncing monitoring stations:', error);
+      // Attempt recovery by setting to empty array if needed
+      const userSelectedMonitoringStations = get(userSelectedMonitoringStationsAtom);
+      if (!userSelectedMonitoringStations || !Array.isArray(userSelectedMonitoringStations)) {
+        console.warn('[stationData] Attempting recovery by resetting user-selected monitoring stations');
+        set(userSelectedMonitoringStationsAtom, []);
+      }
     }
   }
 );
@@ -397,26 +431,54 @@ export const syncRainStationsAtom = atom(
   (get, set) => {
     console.log('[stationData] Syncing rain stations');
     
-    // Get the current state
-    const rainStations = get(rainStationsAtom);
-    const userSelectedRainStations = get(userSelectedRainStationsAtom);
-    const disabledRainStations = get(disabledRainStationsAtom);
-    
-    // Log the current state with detailed information
-    console.log('[stationData] Current rain stations state:', {
-      rainStations: rainStations.length,
-      rainStationIds: rainStations.map(s => s.id),
-      userSelectedRainStations: userSelectedRainStations.length,
-      userSelectedRainStationIds: userSelectedRainStations.map(s => s.id),
-      disabledRainStations: Object.keys(disabledRainStations).length,
-      disabledRainStationIds: Object.keys(disabledRainStations)
-    });
-    
     try {
+      // Get the current state
+      const rainStations = get(rainStationsAtom) || [];
+      const userSelectedRainStations = get(userSelectedRainStationsAtom) || [];
+      const disabledRainStations = get(disabledRainStationsAtom) || {};
+      
+      // Log the current state with detailed information
+      console.log('[stationData] Current rain stations state:', {
+        rainStations: rainStations.length,
+        rainStationIds: rainStations.map(s => s.id),
+        userSelectedRainStations: userSelectedRainStations.length,
+        userSelectedRainStationIds: userSelectedRainStations.map(s => s.id),
+        disabledRainStations: Object.keys(disabledRainStations).length,
+        disabledRainStationIds: Object.keys(disabledRainStations)
+      });
+      
+      // Check for invalid data
+      const invalidRainStations = rainStations.filter(s => !s.id);
+      const invalidUserSelectedStations = userSelectedRainStations.filter(s => !s.id);
+      
+      if (invalidRainStations.length > 0) {
+        console.warn('[stationData] Found invalid rain stations without IDs:', invalidRainStations);
+      }
+      
+      if (invalidUserSelectedStations.length > 0) {
+        console.warn('[stationData] Found invalid user-selected rain stations without IDs:', invalidUserSelectedStations);
+      }
+      
       // Filter out user-selected stations that are disabled
       const filteredUserSelectedStations = userSelectedRainStations.filter(
-        station => !disabledRainStations[station.id]
+        station => station && station.id && !disabledRainStations[station.id]
       );
+      
+      // Check for duplicate IDs
+      const userSelectedIds = new Set<string>();
+      const duplicateUserSelectedIds: string[] = [];
+      
+      filteredUserSelectedStations.forEach(station => {
+        if (userSelectedIds.has(station.id)) {
+          duplicateUserSelectedIds.push(station.id);
+        } else {
+          userSelectedIds.add(station.id);
+        }
+      });
+      
+      if (duplicateUserSelectedIds.length > 0) {
+        console.warn('[stationData] Found duplicate user-selected rain station IDs:', duplicateUserSelectedIds);
+      }
       
       // If the filtered list is different from the current list, update it
       if (JSON.stringify(filteredUserSelectedStations) !== JSON.stringify(userSelectedRainStations)) {
@@ -441,6 +503,12 @@ export const syncRainStationsAtom = atom(
       });
     } catch (error) {
       console.error('[stationData] Error syncing rain stations:', error);
+      // Attempt recovery by setting to empty array if needed
+      const userSelectedRainStations = get(userSelectedRainStationsAtom);
+      if (!userSelectedRainStations || !Array.isArray(userSelectedRainStations)) {
+        console.warn('[stationData] Attempting recovery by resetting user-selected rain stations');
+        set(userSelectedRainStationsAtom, []);
+      }
     }
   }
 );
@@ -450,26 +518,54 @@ export const syncReservoirsAtom = atom(
   (get, set) => {
     console.log('[stationData] Syncing reservoirs');
     
-    // Get the current state
-    const reservoirs = get(reservoirsAtom);
-    const userSelectedReservoirs = get(userSelectedReservoirsAtom);
-    const disabledReservoirs = get(disabledReservoirsAtom);
-    
-    // Log the current state with detailed information
-    console.log('[stationData] Current reservoirs state:', {
-      reservoirs: reservoirs.length,
-      reservoirIds: reservoirs.map(r => r.id),
-      userSelectedReservoirs: userSelectedReservoirs.length,
-      userSelectedReservoirIds: userSelectedReservoirs.map(r => r.id),
-      disabledReservoirs: Object.keys(disabledReservoirs).length,
-      disabledReservoirIds: Object.keys(disabledReservoirs)
-    });
-    
     try {
+      // Get the current state
+      const reservoirs = get(reservoirsAtom) || [];
+      const userSelectedReservoirs = get(userSelectedReservoirsAtom) || [];
+      const disabledReservoirs = get(disabledReservoirsAtom) || {};
+      
+      // Log the current state with detailed information
+      console.log('[stationData] Current reservoirs state:', {
+        reservoirs: reservoirs.length,
+        reservoirIds: reservoirs.map(r => r.id),
+        userSelectedReservoirs: userSelectedReservoirs.length,
+        userSelectedReservoirIds: userSelectedReservoirs.map(r => r.id),
+        disabledReservoirs: Object.keys(disabledReservoirs).length,
+        disabledReservoirIds: Object.keys(disabledReservoirs)
+      });
+      
+      // Check for invalid data
+      const invalidReservoirs = reservoirs.filter(r => !r.id);
+      const invalidUserSelectedReservoirs = userSelectedReservoirs.filter(r => !r.id);
+      
+      if (invalidReservoirs.length > 0) {
+        console.warn('[stationData] Found invalid reservoirs without IDs:', invalidReservoirs);
+      }
+      
+      if (invalidUserSelectedReservoirs.length > 0) {
+        console.warn('[stationData] Found invalid user-selected reservoirs without IDs:', invalidUserSelectedReservoirs);
+      }
+      
       // Filter out user-selected reservoirs that are disabled
       const filteredUserSelectedReservoirs = userSelectedReservoirs.filter(
-        reservoir => !disabledReservoirs[reservoir.id]
+        reservoir => reservoir && reservoir.id && !disabledReservoirs[reservoir.id]
       );
+      
+      // Check for duplicate IDs
+      const userSelectedIds = new Set<string>();
+      const duplicateUserSelectedIds: string[] = [];
+      
+      filteredUserSelectedReservoirs.forEach(reservoir => {
+        if (userSelectedIds.has(reservoir.id)) {
+          duplicateUserSelectedIds.push(reservoir.id);
+        } else {
+          userSelectedIds.add(reservoir.id);
+        }
+      });
+      
+      if (duplicateUserSelectedIds.length > 0) {
+        console.warn('[stationData] Found duplicate user-selected reservoir IDs:', duplicateUserSelectedIds);
+      }
       
       // If the filtered list is different from the current list, update it
       if (JSON.stringify(filteredUserSelectedReservoirs) !== JSON.stringify(userSelectedReservoirs)) {
@@ -494,6 +590,12 @@ export const syncReservoirsAtom = atom(
       });
     } catch (error) {
       console.error('[stationData] Error syncing reservoirs:', error);
+      // Attempt recovery by setting to empty array if needed
+      const userSelectedReservoirs = get(userSelectedReservoirsAtom);
+      if (!userSelectedReservoirs || !Array.isArray(userSelectedReservoirs)) {
+        console.warn('[stationData] Attempting recovery by resetting user-selected reservoirs');
+        set(userSelectedReservoirsAtom, []);
+      }
     }
   }
 ); 
