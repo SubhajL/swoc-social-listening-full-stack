@@ -17,6 +17,7 @@ import {
   isReservoir,
   ensureStringId
 } from '@/utils/stationTypeGuards';
+import { useLocation } from '@/hooks/useLocation';
 
 interface FetchedMonitoringStation {
   id: string;
@@ -426,15 +427,50 @@ interface WaterLevelInfoContentProps {
 }
 
 const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location }) => {
-  const { amphure, province } = location || {};
+  // Get location data from props or from Jotai state
+  const { amphure: propAmphure, province: propProvince } = location || {};
+  
+  // Use the useLocation hook to access and manage location state
+  const locationState = useLocation();
   
   // Clean location strings for display
-  const cleanedAmphure = amphure?.replace(/อำเภอ/g, '').trim();
-  const cleanedProvince = province?.replace(/จังหวัด/g, '').trim();
+  const cleanedPropAmphure = propAmphure?.replace(/อำเภอ/g, '').trim();
+  const cleanedPropProvince = propProvince?.replace(/จังหวัด/g, '').trim();
   
-  // Format locations for display
-  const displayAmphure = amphure ? amphure : cleanedAmphure;
-  const displayProvince = province ? province : cleanedProvince;
+  // Prioritize props over Jotai state, but use Jotai state as fallback
+  const displayAmphure = propAmphure || cleanedPropAmphure || locationState.amphure;
+  const displayProvince = propProvince || cleanedPropProvince || locationState.province;
+  
+  // Check if we have valid location data
+  const hasValidLocationData = !!displayAmphure || !!displayProvince;
+  
+  // Log location data for debugging
+  console.log('[WaterLevelInfoCard] Location data:', {
+    propAmphure,
+    propProvince,
+    cleanedPropAmphure,
+    cleanedPropProvince,
+    jotaiAmphure: locationState.amphure,
+    jotaiProvince: locationState.province,
+    displayAmphure,
+    displayProvince,
+    hasValidLocationData
+  });
+  
+  // Update Jotai location state if props are provided
+  useEffect(() => {
+    if ((propAmphure || propProvince) && locationState.updateLocationData) {
+      console.log('[WaterLevelInfoCard] Updating location state from props:', {
+        amphure: propAmphure || cleanedPropAmphure,
+        province: propProvince || cleanedPropProvince
+      });
+      
+      locationState.updateLocationData(
+        propAmphure || cleanedPropAmphure,
+        propProvince || cleanedPropProvince
+      );
+    }
+  }, [propAmphure, propProvince, cleanedPropAmphure, cleanedPropProvince, locationState]);
   
   // Use the useStationManagement hook to get all station data and filtering logic
   const {
@@ -451,8 +487,23 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
     // Station status checks
     areAllMonitoringStationsDisabled,
     areAllRainStationsDisabled,
-    areAllReservoirsDisabled
+    areAllReservoirsDisabled,
+    
+    // Location update function
+    updateLocation
   } = useStationManagement();
+  
+  // Update location data in useStationManagement when component mounts or location changes
+  useEffect(() => {
+    console.log('[WaterLevelInfoCard] Setting location data in station management:', {
+      amphure: displayAmphure,
+      province: displayProvince
+    });
+    
+    // Update location using the provided function from useStationManagement
+    updateLocation(displayAmphure, displayProvince);
+    
+  }, [displayAmphure, displayProvince, updateLocation]);
   
   // Memoize the loading state
   const isLoading = useMemo(() => 
@@ -623,10 +674,24 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
     );
   }, [adaptedReservoirs]);
   
+  if (!hasValidLocationData) {
+    return (
+      <Alert className="mt-4">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          กรุณาระบุตำแหน่งที่ต้องการค้นหาข้อมูลสถานี (อำเภอหรือจังหวัด)
+        </AlertDescription>
+      </Alert>
+    );
+  }
+  
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-8">
+      <div className="flex flex-col justify-center items-center py-8 space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-[#42A5F5]" />
+        <p className="text-sm text-[#64748B]">
+          กำลังค้นหาสถานีในพื้นที่ {displayAmphure || ''} {displayProvince || ''}
+        </p>
       </div>
     );
   }
@@ -673,7 +738,13 @@ export const WaterLevelInfoCard: React.FC<WaterLevelInfoCardProps> = ({
   title = "ข้อมูลระดับน้ำ",
   location
 }) => {
-  const { amphure, province } = location || {};
+  // Use the useLocation hook to access location state
+  const locationState = useLocation();
+  
+  // Get location from props or from Jotai state
+  const { amphure: propAmphure, province: propProvince } = location || {};
+  const amphure = propAmphure || locationState.amphure;
+  const province = propProvince || locationState.province;
   
   return (
     <Card className={cn("w-full min-h-[500px]", className)}>
@@ -682,7 +753,7 @@ export const WaterLevelInfoCard: React.FC<WaterLevelInfoCardProps> = ({
         <CardDescription>
           {amphure && province 
             ? `${amphure} ${province}` 
-            : 'ไม่ระบุตำแหน่ง'}
+            : locationState.getFormattedLocation()}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -694,7 +765,10 @@ export const WaterLevelInfoCard: React.FC<WaterLevelInfoCardProps> = ({
             </AlertDescription>
           </Alert>
         }>
-          <WaterLevelInfoContent location={location || {}} />
+          <WaterLevelInfoContent location={location || {
+            amphure: locationState.amphure,
+            province: locationState.province
+          }} />
         </ErrorBoundary>
       </CardContent>
     </Card>
