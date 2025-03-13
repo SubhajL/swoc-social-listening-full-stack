@@ -144,11 +144,162 @@ const contentTextStyle = "px-4"; // Reduced horizontal padding for more compact 
 const labelStyle = "text-[#64748B] font-medium text-base bg-white px-2 z-10";
 const labelContainerStyle = "flex justify-between items-center absolute -top-4 left-3 z-10";
 
+// Memoized MonitoringStationCardWrapper component
+const MonitoringStationCardWrapper = React.memo(({ 
+  station, 
+  disabledStations, 
+  onToggleDisabled, 
+  onRemove 
+}: { 
+  station: MonitoringStation, 
+  disabledStations: Record<string, boolean>,
+  onToggleDisabled: (id: string | number, isDisabled: boolean) => void,
+  onRemove: (id: string | number) => void
+}) => {
+  // Skip invalid stations
+  if (!isMonitoringStation(station)) {
+    console.error('[MonitoringStationCardWrapper] Invalid monitoring station:', station);
+    return null;
+  }
+  
+  const stringId = ensureStringId(station.id);
+  const adaptedStation = adaptMonitoringStation(station);
+  const isDisabled = !!disabledStations[stringId];
+  
+  return (
+    <MonitoringStationCard
+      key={stringId}
+      station={adaptedStation}
+      showButtons={true}
+      disabled={isDisabled}
+      onToggleDisabled={() => onToggleDisabled(station.id, isDisabled)}
+      onDeleteData={() => onRemove(station.id)}
+      hideUnitLabels={false}
+    />
+  );
+});
+
+// Memoized RainStationCardWrapper component
+const RainStationCardWrapper = React.memo(({ 
+  station, 
+  disabledStations, 
+  onToggleDisabled, 
+  onRemove 
+}: { 
+  station: RainStation, 
+  disabledStations: Record<string, boolean>,
+  onToggleDisabled: (id: string | number, isDisabled: boolean) => void,
+  onRemove: (id: string | number) => void
+}) => {
+  // Skip invalid stations
+  if (!isRainStation(station)) {
+    console.error('[RainStationCardWrapper] Invalid rain station:', station);
+    return null;
+  }
+  
+  const stringId = ensureStringId(station.id);
+  const adaptedStation = adaptRainStation(station);
+  const isDisabled = !!disabledStations[stringId];
+  
+  return (
+    <RainStationCard
+      key={stringId}
+      station={adaptedStation}
+      showButtons={true}
+      disabled={isDisabled}
+      onToggleDisabled={() => onToggleDisabled(station.id, isDisabled)}
+      onDeleteData={() => onRemove(station.id)}
+      hideUnitLabels={true}
+    />
+  );
+});
+
+// Memoized ReservoirCardWrapper component
+const ReservoirCardWrapper = React.memo(({ 
+  reservoir, 
+  disabledStations, 
+  onToggleDisabled, 
+  onRemove 
+}: { 
+  reservoir: Reservoir, 
+  disabledStations: Record<string, boolean>,
+  onToggleDisabled: (id: string | number, isDisabled: boolean) => void,
+  onRemove: (id: string | number) => void
+}) => {
+  // Skip invalid reservoirs
+  if (!isReservoir(reservoir)) {
+    console.error('[ReservoirCardWrapper] Invalid reservoir:', reservoir);
+    return null;
+  }
+  
+  const stringId = ensureStringId(reservoir.id);
+  const adaptedReservoir = adaptReservoir(reservoir);
+  const isDisabled = !!disabledStations[stringId];
+  
+  return (
+    <ReservoirCard
+      key={stringId}
+      reservoir={adaptedReservoir}
+      showButtons={true}
+      disabled={isDisabled}
+      onToggleDisabled={() => onToggleDisabled(reservoir.id, isDisabled)}
+      onDeleteData={() => onRemove(reservoir.id)}
+      hideUnitLabels={true}
+    />
+  );
+});
+
+// Memoized EmptyState component
+const EmptyState = React.memo(({ 
+  onAddStation 
+}: { 
+  onAddStation: () => void 
+}) => (
+  <div className="flex flex-col items-center justify-center h-64 space-y-4">
+    <p className="text-gray-500">ไม่พบข้อมูลสถานี</p>
+    <Button onClick={onAddStation}>
+      <Plus className="h-4 w-4 mr-2" />
+      เพิ่มสถานี
+    </Button>
+  </div>
+));
+
+// Memoized LoadingState component
+const LoadingState = React.memo(() => (
+  <div className="flex items-center justify-center h-64">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+      <p className="mt-4 text-sm text-gray-500">กำลังโหลดข้อมูล...</p>
+    </div>
+  </div>
+));
+
+// Memoized HeaderSection component
+const HeaderSection = React.memo(({ 
+  stationType, 
+  onAddStation 
+}: { 
+  stationType: StationType, 
+  onAddStation: () => void 
+}) => (
+  <div className="flex justify-between items-center">
+    <h2 className="text-lg font-semibold">
+      {stationType === 'monitoring' && 'สถานีตรวจวัดน้ำ'}
+      {stationType === 'rain' && 'สถานีวัดน้ำฝน'}
+      {stationType === 'reservoir' && 'อ่างเก็บน้ำ'}
+    </h2>
+    <Button onClick={onAddStation}>
+      <Plus className="h-4 w-4 mr-2" />
+      เพิ่มสถานี
+    </Button>
+  </div>
+));
+
 /**
  * StationCardEditInfo component for editing station data
  * Uses the useStationManagement hook for state management
  */
-export const StationCardEditInfo: React.FC<StationCardEditInfoProps> = ({ 
+export const StationCardEditInfo: React.FC<StationCardEditInfoProps> = React.memo(({ 
   stationType
 }) => {
   const { toast } = useToast();
@@ -296,7 +447,7 @@ export const StationCardEditInfo: React.FC<StationCardEditInfoProps> = ({
     }
   }, [resetChanges, toast]);
   
-  // Get stations based on type
+  // Get stations based on type - memoized to prevent unnecessary recalculations
   const stations = useMemo(() => {
     if (stationType === 'monitoring') {
       return allAvailableMonitoringStations;
@@ -308,7 +459,7 @@ export const StationCardEditInfo: React.FC<StationCardEditInfoProps> = ({
     return [];
   }, [stationType, allAvailableMonitoringStations, allAvailableRainStations, allAvailableReservoirs]);
   
-  // Get loading state based on type
+  // Get loading state based on type - memoized to prevent unnecessary recalculations
   const isLoading = useMemo(() => {
     if (stationType === 'monitoring') {
       return isLoadingMonitoring;
@@ -320,7 +471,7 @@ export const StationCardEditInfo: React.FC<StationCardEditInfoProps> = ({
     return false;
   }, [stationType, isLoadingMonitoring, isLoadingRain, isLoadingReservoirs]);
   
-  // Get disabled stations based on type
+  // Get disabled stations based on type - memoized to prevent unnecessary recalculations
   const disabledStations = useMemo(() => {
     if (stationType === 'monitoring') {
       return disabledMonitoring;
@@ -332,27 +483,67 @@ export const StationCardEditInfo: React.FC<StationCardEditInfoProps> = ({
     return {};
   }, [stationType, disabledMonitoring, disabledRain, disabledReservoirs]);
   
-  // Render loading state
-  if (isLoading) {
+  // Memoize the station cards to prevent unnecessary re-renders
+  const stationCards = useMemo(() => {
+    if (stations.length === 0) return null;
+    
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-sm text-gray-500">กำลังโหลดข้อมูล...</p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {stationType === 'monitoring' && 
+          stations.map(station => (
+            <MonitoringStationCardWrapper
+              key={ensureStringId(station.id)}
+              station={station as MonitoringStation}
+              disabledStations={disabledStations}
+              onToggleDisabled={handleToggleStationDisabled}
+              onRemove={handleRemoveStation}
+            />
+          ))
+        }
+        
+        {stationType === 'rain' && 
+          stations.map(station => (
+            <RainStationCardWrapper
+              key={ensureStringId(station.id)}
+              station={station as RainStation}
+              disabledStations={disabledStations}
+              onToggleDisabled={handleToggleStationDisabled}
+              onRemove={handleRemoveStation}
+            />
+          ))
+        }
+        
+        {stationType === 'reservoir' && 
+          stations.map(reservoir => (
+            <ReservoirCardWrapper
+              key={ensureStringId(reservoir.id)}
+              reservoir={reservoir as Reservoir}
+              disabledStations={disabledStations}
+              onToggleDisabled={handleToggleStationDisabled}
+              onRemove={handleRemoveStation}
+            />
+          ))
+        }
       </div>
     );
+  }, [
+    stationType, 
+    stations, 
+    disabledStations, 
+    handleToggleStationDisabled, 
+    handleRemoveStation
+  ]);
+  
+  // Render loading state
+  if (isLoading) {
+    return <LoadingState />;
   }
   
   // Render empty state
   if (stations.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 space-y-4">
-        <p className="text-gray-500">ไม่พบข้อมูลสถานี</p>
-        <Button onClick={handleAddStation}>
-          <Plus className="h-4 w-4 mr-2" />
-          เพิ่มสถานี
-        </Button>
+      <>
+        <EmptyState onAddStation={handleAddStation} />
         
         {/* Station Selection Dialog */}
         <StationSelectionDialog
@@ -361,101 +552,19 @@ export const StationCardEditInfo: React.FC<StationCardEditInfoProps> = ({
           stationType={stationType}
           onStationSelect={handleStationsFromDialog}
         />
-      </div>
+      </>
     );
   }
   
   // Render stations based on type
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold">
-          {stationType === 'monitoring' && 'สถานีตรวจวัดน้ำ'}
-          {stationType === 'rain' && 'สถานีวัดน้ำฝน'}
-          {stationType === 'reservoir' && 'อ่างเก็บน้ำ'}
-        </h2>
-        <Button onClick={handleAddStation}>
-          <Plus className="h-4 w-4 mr-2" />
-          เพิ่มสถานี
-        </Button>
-      </div>
+      <HeaderSection 
+        stationType={stationType} 
+        onAddStation={handleAddStation} 
+      />
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {stationType === 'monitoring' && (
-          stations.map(station => {
-            // Type assertion with runtime check
-            if (!isMonitoringStation(station)) {
-              console.error('[StationCardEditInfo] Invalid monitoring station:', station);
-              return null;
-            }
-            
-            const stringId = ensureStringId(station.id);
-            const adaptedStation = adaptMonitoringStation(station);
-            
-            return (
-              <MonitoringStationCard
-                key={stringId}
-                station={adaptedStation}
-                showButtons={true}
-                disabled={!!disabledStations[stringId]}
-                onToggleDisabled={() => handleToggleStationDisabled(station.id, !!disabledStations[stringId])}
-                onDeleteData={() => handleRemoveStation(station.id)}
-                hideUnitLabels={false}
-              />
-            );
-          })
-        )}
-        
-        {stationType === 'rain' && (
-          stations.map(station => {
-            // Type assertion with runtime check
-            if (!isRainStation(station)) {
-              console.error('[StationCardEditInfo] Invalid rain station:', station);
-              return null;
-            }
-            
-            const stringId = ensureStringId(station.id);
-            const adaptedStation = adaptRainStation(station);
-            
-            return (
-              <RainStationCard
-                key={stringId}
-                station={adaptedStation}
-                showButtons={true}
-                disabled={!!disabledStations[stringId]}
-                onToggleDisabled={() => handleToggleStationDisabled(station.id, !!disabledStations[stringId])}
-                onDeleteData={() => handleRemoveStation(station.id)}
-                hideUnitLabels={true}
-              />
-            );
-          })
-        )}
-        
-        {stationType === 'reservoir' && (
-          stations.map(reservoir => {
-            // Type assertion with runtime check
-            if (!isReservoir(reservoir)) {
-              console.error('[StationCardEditInfo] Invalid reservoir:', reservoir);
-              return null;
-            }
-            
-            const stringId = ensureStringId(reservoir.id);
-            const adaptedReservoir = adaptReservoir(reservoir);
-            
-            return (
-              <ReservoirCard
-                key={stringId}
-                reservoir={adaptedReservoir}
-                showButtons={true}
-                disabled={!!disabledStations[stringId]}
-                onToggleDisabled={() => handleToggleStationDisabled(reservoir.id, !!disabledStations[stringId])}
-                onDeleteData={() => handleRemoveStation(reservoir.id)}
-                hideUnitLabels={true}
-              />
-            );
-          })
-        )}
-      </div>
+      {stationCards}
       
       {/* Station Selection Dialog */}
       <StationSelectionDialog
@@ -466,4 +575,7 @@ export const StationCardEditInfo: React.FC<StationCardEditInfoProps> = ({
       />
     </div>
   );
-}; 
+});
+
+// Add display name for debugging
+StationCardEditInfo.displayName = 'StationCardEditInfo'; 
