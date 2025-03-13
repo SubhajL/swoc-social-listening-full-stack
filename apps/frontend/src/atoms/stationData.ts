@@ -217,7 +217,7 @@ export const monitoringStationsQueryAtom = atom(
         
         return response.stations || [];
       } catch (error) {
-        console.error('Error fetching monitoring stations:', error);
+        console.error('[monitoringStationsQueryAtom] Error fetching monitoring stations:', error);
         throw error;
       }
     }
@@ -341,7 +341,7 @@ export const reservoirsErrorAtom = atom<Error | null>(null);
 // User-added stations are removed when disabled
 export const syncMonitoringStationsAtom = atom(
   null,
-  (get, set) => {
+  async (get, set) => {
     console.log('[stationData] Syncing monitoring stations');
     
     try {
@@ -349,6 +349,55 @@ export const syncMonitoringStationsAtom = atom(
       const monitoringStations = get(monitoringStationsAtom) || [];
       const userSelectedMonitoringStations = get(userSelectedMonitoringStationsAtom) || [];
       const disabledMonitoringStations = get(disabledMonitoringStationsAtom) || {};
+      
+      // Get current location
+      const amphure = get(currentAmphureAtom);
+      const province = get(currentProvinceAtom);
+      
+      console.log('[stationData] Current location for monitoring stations:', { amphure, province });
+      
+      // Force a refetch of monitoring stations if we have location data
+      if (amphure || province) {
+        try {
+          console.log('[stationData] Forcing refetch of monitoring stations with location:', { amphure, province });
+          
+          // Directly fetch from API to bypass any caching
+          const response = await fetchMonitoringStations(amphure, province);
+          
+          console.log('[stationData] Refetched monitoring stations:', {
+            count: response.stations?.length || 0,
+            stationIds: response.stations?.map((s: any) => s.id) || []
+          });
+          
+          // Update the atom with the new data
+          if (response.stations && Array.isArray(response.stations)) {
+            // Map API response to our MonitoringStation type
+            const mappedStations = response.stations.map((station: any) => ({
+              id: station.id || station.station_id || String(Math.random()),
+              name: station.station_name || station.name || `Station ${station.id || station.station_id}`,
+              location: station.location || `${amphure || ''}, ${province || ''}`,
+              coordinates: station.coordinates || { lat: 0, lng: 0 },
+              status: station.status || 'active',
+              lastReading: station.lastReading || {
+                timestamp: new Date().toISOString(),
+                value: station.water_level || 0,
+                unit: 'm'
+              },
+              type: 'monitoring' as const,
+              source: 'system' as const
+            }));
+            
+            console.log('[stationData] Mapped monitoring stations:', {
+              count: mappedStations.length,
+              sample: mappedStations.length > 0 ? mappedStations[0] : null
+            });
+            
+            set(monitoringStationsAtom, mappedStations);
+          }
+        } catch (error) {
+          console.error('[stationData] Error refetching monitoring stations:', error);
+        }
+      }
       
       // Log the current state with detailed information
       console.log('[stationData] Current monitoring stations state:', {

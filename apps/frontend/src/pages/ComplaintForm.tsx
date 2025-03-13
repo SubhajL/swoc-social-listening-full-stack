@@ -912,6 +912,12 @@ const ComplaintForm = () => {
     
     console.log('[ComplaintForm] Rendering WaterLevelInfoCard with location:', locationInfo);
     
+    // Ensure station management location is updated
+    if (stationData.updateLocation) {
+      console.log('[ComplaintForm] Updating station management location:', locationInfo);
+      stationData.updateLocation(locationInfo.amphure, locationInfo.province);
+    }
+    
     // Pass the location data to the WaterLevelInfoCard component
     return (
       <WaterLevelInfoCard

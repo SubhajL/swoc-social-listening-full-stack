@@ -429,14 +429,38 @@ export function useStationManagement() {
   
   // Function to update location
   const updateLocation = useCallback((amphure?: string, province?: string) => {
-    if (amphure !== undefined) {
+    console.log('[useStationManagement] Updating location:', { amphure, province });
+    
+    // Track if location actually changed
+    let locationChanged = false;
+    
+    if (amphure !== undefined && amphure !== currentAmphure) {
+      console.log('[useStationManagement] Setting amphure:', amphure);
       setCurrentAmphure(amphure);
+      locationChanged = true;
     }
     
-    if (province !== undefined) {
+    if (province !== undefined && province !== currentProvince) {
+      console.log('[useStationManagement] Setting province:', province);
       setCurrentProvince(province);
+      locationChanged = true;
     }
-  }, [setCurrentAmphure, setCurrentProvince]);
+    
+    // Force a refetch if location changed
+    if (locationChanged) {
+      console.log('[useStationManagement] Location changed, triggering refetch');
+      
+      // Use a small timeout to ensure the location update has been processed
+      setTimeout(() => {
+        // Trigger refetch by calling sync functions
+        syncFunctionsRef.current.syncMonitoring();
+        syncFunctionsRef.current.syncRain();
+        syncFunctionsRef.current.syncReservoirs();
+        
+        console.log('[useStationManagement] Refetch triggered for all station types');
+      }, 50);
+    }
+  }, [currentAmphure, currentProvince, setCurrentAmphure, setCurrentProvince]);
   
   // Function to check if there are unsaved changes
   const hasUnsavedChanges = useMemo(() => {

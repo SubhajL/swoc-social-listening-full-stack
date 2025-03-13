@@ -490,8 +490,39 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
     areAllReservoirsDisabled,
     
     // Location update function
-    updateLocation
+    updateLocation,
+    
+    // Current location from station management
+    currentAmphure,
+    currentProvince
   } = useStationManagement();
+  
+  // Debug log for station management location state
+  useEffect(() => {
+    console.log('[WaterLevelInfoCard] Station management location state:', {
+      currentAmphure,
+      currentProvince,
+      stationsCount: {
+        monitoring: allAvailableMonitoringStations.length,
+        rain: allAvailableRainStations.length,
+        reservoirs: allAvailableReservoirs.length
+      },
+      loading: {
+        monitoring: isLoadingMonitoring,
+        rain: isLoadingRain,
+        reservoirs: isLoadingReservoirs
+      }
+    });
+  }, [
+    currentAmphure, 
+    currentProvince, 
+    allAvailableMonitoringStations.length, 
+    allAvailableRainStations.length, 
+    allAvailableReservoirs.length,
+    isLoadingMonitoring,
+    isLoadingRain,
+    isLoadingReservoirs
+  ]);
   
   // Update location data in useStationManagement when component mounts or location changes
   useEffect(() => {
@@ -500,9 +531,27 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
       province: displayProvince
     });
     
-    // Update location using the provided function from useStationManagement
-    updateLocation(displayAmphure, displayProvince);
-    
+    // Force update location using the provided function from useStationManagement
+    // This ensures the station data atoms are updated with the current location
+    if (displayAmphure || displayProvince) {
+      updateLocation(displayAmphure, displayProvince);
+      
+      // Force a refetch by triggering the sync functions
+      if (typeof window !== 'undefined') {
+        // Use a small timeout to ensure the location update has been processed
+        const timeoutId = setTimeout(() => {
+          console.log('[WaterLevelInfoCard] Forcing station data refetch with location:', {
+            amphure: displayAmphure,
+            province: displayProvince
+          });
+          
+          // Manually trigger a refetch by updating the location again
+          updateLocation(displayAmphure, displayProvince);
+        }, 100);
+        
+        return () => clearTimeout(timeoutId);
+      }
+    }
   }, [displayAmphure, displayProvince, updateLocation]);
   
   // Memoize the loading state
