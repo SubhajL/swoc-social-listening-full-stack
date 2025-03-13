@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import React, { useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAtom } from 'jotai';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -11,6 +12,16 @@ import { useStationEditState } from '@/hooks/useStationEditState';
 import { useToast } from '@/components/ui/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { handleError, parseError, createRetryFunction, isTimeoutError, isNetworkError } from '@/utils/errorHandling';
+import { 
+  syncErrorAtom, 
+  syncErrorMessageAtom, 
+  isRetryingAtom, 
+  retryCountAtom, 
+  maxRetryAttemptsAtom,
+  resetErrorStateAtom,
+  setErrorStateAtom,
+  incrementRetryCountAtom
+} from '@/atoms/errorHandlingUI';
 
 // Create memoized station type components to prevent unnecessary re-renders
 const MemoizedMonitoringTab = React.memo(() => <StationCardEditInfo stationType="monitoring" />);
@@ -26,12 +37,15 @@ const StationCardEdit: React.FC = () => {
   const location = useLocation();
   const { toast } = useToast();
   
-  // State for tracking errors
-  const [syncError, setSyncError] = useState<Error | null>(null);
-  const [syncErrorMessage, setSyncErrorMessage] = useState<string>('');
-  const [isRetrying, setIsRetrying] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
-  const MAX_RETRY_ATTEMPTS = 3;
+  // Use Jotai atoms for error handling UI state instead of local state
+  const [syncError, setSyncError] = useAtom(syncErrorAtom);
+  const [syncErrorMessage, setSyncErrorMessage] = useAtom(syncErrorMessageAtom);
+  const [isRetrying, setIsRetrying] = useAtom(isRetryingAtom);
+  const [retryCount, setRetryCount] = useAtom(retryCountAtom);
+  const [MAX_RETRY_ATTEMPTS] = useAtom(maxRetryAttemptsAtom);
+  const resetErrorState = useAtom(resetErrorStateAtom)[1];
+  const setErrorState = useAtom(setErrorStateAtom)[1];
+  const incrementRetryCount = useAtom(incrementRetryCountAtom)[1];
   
   // Get station management functions and state from hook
   const {
@@ -89,9 +103,8 @@ const StationCardEdit: React.FC = () => {
   // Function to synchronize station data with enhanced error handling
   const synchronizeStationData = useCallback(async () => {
     try {
-      setSyncError(null);
-      setSyncErrorMessage('');
-      setIsRetrying(false);
+      // Reset error state using the atom action
+      resetErrorState();
       
       // Set a timeout for the synchronization
       const timeoutPromise = new Promise((_, reject) => {
@@ -116,9 +129,8 @@ const StationCardEdit: React.FC = () => {
       const typedError = parseError(error);
       console.error('[StationCardEdit] Error synchronizing station data:', typedError);
       
-      // Set the error state
-      setSyncError(typedError);
-      setSyncErrorMessage(typedError.message || 'Unknown error');
+      // Set the error state using the atom action
+      setErrorState(typedError, typedError.message || 'Unknown error');
       
       // Determine error type for better user feedback
       let errorTitle = 'ไม่สามารถซิงโครไนซ์ข้อมูลสถานีได้';
@@ -172,7 +184,11 @@ const StationCardEdit: React.FC = () => {
     retryCount, 
     areAllMonitoringStationsDisabled, 
     areAllRainStationsDisabled, 
-    areAllReservoirsDisabled
+    areAllReservoirsDisabled,
+    resetErrorState,
+    setErrorState,
+    setRetryCount,
+    MAX_RETRY_ATTEMPTS
   ]);
   
   // Log component mount and props
@@ -194,7 +210,7 @@ const StationCardEdit: React.FC = () => {
   // Function to retry synchronization with exponential backoff
   const handleRetry = useCallback(async () => {
     setIsRetrying(true);
-    setRetryCount(prev => prev + 1);
+    incrementRetryCount();
     
     try {
       // Add exponential backoff
@@ -208,7 +224,7 @@ const StationCardEdit: React.FC = () => {
     } finally {
       setIsRetrying(false);
     }
-  }, [retryCount, synchronizeStationData]);
+  }, [retryCount, synchronizeStationData, setIsRetrying, incrementRetryCount]);
   
   // Handle navigation back with enhanced error handling
   const handleBack = useCallback(() => {

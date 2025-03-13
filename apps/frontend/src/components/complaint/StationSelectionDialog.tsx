@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useAtom } from "jotai";
 import { 
   Dialog, 
   DialogContent, 
@@ -10,13 +11,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useMonitoringStations } from "@/hooks/useMonitoringStations";
 import { useRainStations } from "@/hooks/useRainStations";
 import { useReservoirs } from "@/hooks/useReservoirs";
 import { MonitoringStation } from "@/types/monitoring-station";
 import { RainStation } from "@/types/rain-station";
 import { Reservoir } from "@/types/reservoir";
+import {
+  selectedStationsAtom,
+  startIndexAtom,
+  toggleStationSelectionAtom,
+  resetStationSelectionAtom,
+  incrementStartIndexAtom
+} from "@/atoms/stationSelectionUI";
 
 /**
  * CODE LOCK: 2025-02-28
@@ -56,8 +64,13 @@ export const StationSelectionDialog = ({
   onStationSelect,
   currentStations = [] // Default to empty array if not provided
 }: StationSelectionDialogProps) => {
-  const [selectedStations, setSelectedStations] = useState<any[]>([]);
-  const [startIndex, setStartIndex] = useState(0);
+  // Use Jotai atoms for UI state instead of local state
+  const [selectedStations, setSelectedStations] = useAtom(selectedStationsAtom);
+  const [startIndex, setStartIndex] = useAtom(startIndexAtom);
+  const toggleStationSelection = useAtom(toggleStationSelectionAtom)[1];
+  const resetStationSelection = useAtom(resetStationSelectionAtom)[1];
+  const incrementStartIndex = useAtom(incrementStartIndexAtom)[1];
+  
   const stationsContainerRef = useRef<HTMLDivElement>(null);
   
   // Fetch stations for current location
@@ -79,22 +92,13 @@ export const StationSelectionDialog = ({
   // Reset state when dialog opens
   useEffect(() => {
     if (open) {
-      setSelectedStations([]);
-      setStartIndex(0);
+      resetStationSelection();
     }
-  }, [open]);
+  }, [open, resetStationSelection]);
 
   // Handle station selection
   const handleStationToggle = (station: any) => {
-    setSelectedStations(prev => {
-      const isSelected = prev.some(s => s.id === station.id);
-      
-      if (isSelected) {
-        return prev.filter(s => s.id !== station.id);
-      } else {
-        return [...prev, station];
-      }
-    });
+    toggleStationSelection(station);
   };
 
   // Get stations based on station type and filter out current stations
@@ -186,14 +190,14 @@ export const StationSelectionDialog = ({
   // Handle navigation
   const handleScrollLeft = () => {
     if (startIndex > 0) {
-      setStartIndex(startIndex - 5); // Move by 5 stations at a time
+      incrementStartIndex(-5); // Move by 5 stations at a time
     }
   };
 
   const handleScrollRight = () => {
     const stations = getStations();
     if (startIndex + 5 < stations.length) {
-      setStartIndex(startIndex + 5); // Move by 5 stations at a time
+      incrementStartIndex(5); // Move by 5 stations at a time
     }
   };
 
