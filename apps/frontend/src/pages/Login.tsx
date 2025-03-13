@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { apiClient } from '@/lib/api-client';
 import LoginSvg from '@/assets/icon/Login.svg';
 import { useAuth } from '@/hooks/useAuth';
-import { checkAuthAtom } from '@/atoms/authState';
+import { checkAuthAtom, loginAtom } from '@/atoms/authState';
 import { useAtom } from 'jotai';
 
 const Login = () => {
@@ -16,19 +16,75 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRestoringSession, setIsRestoringSession] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const [, checkAuth] = useAtom(checkAuthAtom);
+  const [, loginWithJotai] = useAtom(loginAtom);
   const location = useLocation();
   const from = location.state?.from || '/dashboard';
+  const restoreSession = location.state?.restoreSession || false;
   
   // Add debugging log on component mount
   useEffect(() => {
     console.log('🔍 [Login] Component mounted', {
       redirectFrom: location.state?.from,
+      restoreSession: location.state?.restoreSession,
       localStorageToken: !!localStorage.getItem('token'),
       localStorageUser: !!localStorage.getItem('user'),
     });
+    
+    // Check if we need to restore session
+    if (restoreSession) {
+      console.log('🔍 [Login] Restore session flag detected, attempting to restore session');
+      setIsRestoringSession(true);
+      
+      // Try to restore session from localStorage
+      const existingToken = localStorage.getItem('token');
+      const userJson = localStorage.getItem('user');
+      
+      if (existingToken && userJson) {
+        try {
+          const userData = JSON.parse(userJson);
+          
+          // Create user object for Jotai
+          const user = {
+            id: String(userData.id),
+            name: userData.name || '',
+            email: userData.email || '',
+            rbacRole: userData.position || 1,
+            organizationId: userData.office_id || '',
+            organizationName: userData.office_name || ''
+          };
+          
+          // Update Jotai state directly
+          loginWithJotai({ user, token: existingToken });
+          
+          console.log('✅ [Login] Session restored from localStorage, redirecting to:', from);
+          
+          // Small delay to ensure state is updated
+          setTimeout(() => {
+            navigate(from, { replace: true });
+            setIsRestoringSession(false);
+          }, 100);
+          
+          return;
+        } catch (error) {
+          console.error('❌ [Login] Error restoring session:', error);
+          setIsRestoringSession(false);
+        }
+      } else {
+        console.log('❌ [Login] Cannot restore session, missing token or user data');
+        setIsRestoringSession(false);
+      }
+    }
+    
+    // If user is already authenticated, redirect to the target page
+    if (isAuthenticated) {
+      console.log('✅ [Login] User is already authenticated, redirecting to:', from);
+      navigate(from, { replace: true });
+      return;
+    }
     
     // Check for existing token in localStorage
     const existingToken = localStorage.getItem('token');
@@ -60,8 +116,39 @@ const Login = () => {
             if (now > expiry) {
               console.warn('⚠️ [Login] Token is expired, clearing token');
               localStorage.removeItem('token');
+              localStorage.removeItem('user');
               // Check auth will handle logout if needed
               checkAuth();
+            } else {
+              // Token is valid, try to restore session
+              const userJson = localStorage.getItem('user');
+              if (userJson) {
+                try {
+                  const userData = JSON.parse(userJson);
+                  
+                  // Create user object for Jotai
+                  const user = {
+                    id: String(userData.id),
+                    name: userData.name || '',
+                    email: userData.email || '',
+                    rbacRole: userData.position || 1,
+                    organizationId: userData.office_id || '',
+                    organizationName: userData.office_name || ''
+                  };
+                  
+                  // Update Jotai state directly
+                  loginWithJotai({ user, token: existingToken });
+                  
+                  console.log('✅ [Login] Session restored from localStorage, redirecting to:', from);
+                  
+                  // Small delay to ensure state is updated
+                  setTimeout(() => {
+                    navigate(from, { replace: true });
+                  }, 100);
+                } catch (error) {
+                  console.error('❌ [Login] Error restoring session from localStorage:', error);
+                }
+              }
             }
           } catch (error) {
             console.error('❌ [Login] Error parsing token payload:', error);
@@ -73,7 +160,7 @@ const Login = () => {
     } else {
       console.log('🔍 [Login] No existing token found in localStorage');
     }
-  }, [location.state, checkAuth]);
+  }, [location.state, checkAuth, isAuthenticated, navigate, from, restoreSession, loginWithJotai]);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -156,7 +243,7 @@ const Login = () => {
         console.error('❌ [Login] Invalid response structure:', response);
         toast.error(response?.message || 'เข้าสู่ระบบไม่สำเร็จ: ข้อมูลตอบกลับไม่ถูกต้อง');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('❌ [Login] Login error:', error);
       console.error('❌ [Login] Error details:', {
         message: error.message,
@@ -170,6 +257,18 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
+  // If we're restoring the session, show a loading indicator
+  if (isRestoringSession) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-t-blue-500 border-b-blue-500 border-l-transparent border-r-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-gray-600">กำลังเข้าสู่ระบบอัตโนมัติ...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">

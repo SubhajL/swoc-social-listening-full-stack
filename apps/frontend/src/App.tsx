@@ -33,6 +33,7 @@ import { handleError } from "@/utils/errorHandling";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QueryClient } from "@tanstack/react-query";
+import { useAuth } from "./contexts/AuthContext";
 
 // Create a new query client
 const queryClient = new QueryClient({
@@ -66,6 +67,12 @@ const router = createBrowserRouter(
       <Route path="/complaint/create" element={
         <ProtectedRoute>
           <ComplaintForm />
+        </ProtectedRoute>
+      } />
+      {/* Add a redirect route for /complaints/create to handle both URL patterns */}
+      <Route path="/complaints/create" element={
+        <ProtectedRoute>
+          <Navigate to="/complaint/create" replace />
         </ProtectedRoute>
       } />
       <Route path="/station-card-edit" element={
@@ -109,8 +116,11 @@ const App = () => {
   const [isHydrating, setIsHydrating] = useState(true);
   // State to track API status check
   const [apiStatus, setApiStatus] = useState<'checking' | 'available' | 'unavailable'>('checking');
+  // State to track auth initialization
+  const [isAuthInitialized, setIsAuthInitialized] = useState(false);
   const { toast } = useToast();
   const isHydrated = useHydrateStore();
+  const { checkAuth } = useAuth();
 
   // Handle global errors
   const handleGlobalError = useCallback((error: Error, errorInfo: React.ErrorInfo) => {
@@ -128,12 +138,31 @@ const App = () => {
     });
   }, []);
 
+  // Initialize authentication state
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        console.log('[App] Initializing authentication state');
+        // Migrate localStorage auth data to Jotai if needed
+        migrateLocalStorageToJotai();
+        
+        // Check authentication status
+        const isValid = await checkAuth();
+        console.log('[App] Authentication check result:', isValid);
+        
+        setIsAuthInitialized(true);
+      } catch (error) {
+        console.error('[App] Error initializing authentication:', error);
+        setIsAuthInitialized(true); // Still mark as initialized to prevent blocking the app
+      }
+    };
+    
+    initializeAuth();
+  }, [checkAuth]);
+
   // Hydrate the Zustand store after React is initialized
   useEffect(() => {
     let isMounted = true;
-    
-    // Migrate localStorage auth data to Jotai if needed
-    migrateLocalStorageToJotai();
     
     if (isHydrated) {
       const checkConnection = async () => {
@@ -199,8 +228,8 @@ const App = () => {
     };
   }, [isHydrated]);
 
-  // Show loading state while hydrating
-  if (isHydrating) {
+  // Show loading state while hydrating or initializing auth
+  if (isHydrating || !isAuthInitialized) {
     return (
       <ErrorBoundary onError={handleGlobalError}>
         <div className="flex items-center justify-center min-h-screen bg-[#F0F8FF]">

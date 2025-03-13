@@ -105,7 +105,7 @@ export const logoutAtom = atom(
 
 export const checkAuthAtom = atom(
   null,
-  (get, set) => {
+  async (get, set) => {
     const { token, isAuthenticated } = get(authStateAtom);
     
     console.log('🔍 [Auth] Checking authentication status', { 
@@ -113,8 +113,69 @@ export const checkAuthAtom = atom(
       hasToken: !!token 
     });
     
-    // If not authenticated, nothing to check
+    // If not authenticated, check if we have a token in localStorage
     if (!isAuthenticated || !token) {
+      const localStorageToken = localStorage.getItem('token');
+      const userJson = localStorage.getItem('user');
+      
+      if (localStorageToken && userJson) {
+        console.log('🔍 [Auth] Found token in localStorage but not in auth state');
+        
+        try {
+          // Check if token is a JWT and if it's expired
+          const tokenParts = localStorageToken.split('.');
+          if (tokenParts.length === 3) {
+            const payload = JSON.parse(atob(tokenParts[1]));
+            const expiry = payload.exp * 1000; // Convert to milliseconds
+            const now = Date.now();
+            
+            console.log('🔍 [Auth] localStorage token validation', {
+              isExpired: now > expiry,
+              expiryTime: new Date(expiry).toISOString(),
+              currentTime: new Date(now).toISOString(),
+              timeRemaining: Math.floor((expiry - now) / 1000 / 60) + ' minutes'
+            });
+            
+            if (now < expiry) {
+              // Token is valid, try to restore session
+              try {
+                const userData = JSON.parse(userJson);
+                
+                // Create user object for Jotai
+                const user = {
+                  id: String(userData.id),
+                  name: userData.name || '',
+                  email: userData.email || '',
+                  rbacRole: userData.position || 1,
+                  organizationId: userData.office_id || '',
+                  organizationName: userData.office_name || ''
+                };
+                
+                // Update auth state
+                set(authStateAtom, {
+                  user,
+                  token: localStorageToken,
+                  isAuthenticated: true,
+                  isLoading: false,
+                  error: null
+                });
+                
+                console.log('✅ [Auth] Session restored from localStorage');
+                return true;
+              } catch (error) {
+                console.error('❌ [Auth] Error restoring session from localStorage:', error);
+              }
+            } else {
+              console.log('⚠️ [Auth] localStorage token expired, clearing');
+              localStorage.removeItem('token');
+              localStorage.removeItem('user');
+            }
+          }
+        } catch (error) {
+          console.error('❌ [Auth] Error checking localStorage token:', error);
+        }
+      }
+      
       return false;
     }
     
