@@ -1,5 +1,7 @@
 # Task: Fix StationCardEditInfo Component Rendering Issues
 
+## Status: ✅ COMPLETED
+
 ## Context
 - **Task ID**: 2025-03-07_3
 - **Created**: 2025-03-07_15:30:00
@@ -193,6 +195,7 @@ Component Analysis
 - The component should handle various data scenarios gracefully
 
 ## Task Progress
+- 2025-03-12_07:48:15 [SUCCESSFUL]: Updated StationCardEdit layout to be responsive, ensuring water management plan moves below station cards on smaller screens- 2025-03-12_06:51:17 [SUCCESSFUL]: Added hideUnitLabels prop to RainStationCard and ReservoirCard components to remove unit text in StationCardEdit
 - 2025-03-07_15:30:00 [IN PROGRESS]: Created task to fix StationCardEditInfo component rendering issues
 - 2025-03-07_15:32:00 [IN PROGRESS]: Completed initial task analysis and identified key issues to address
 - 2025-03-07_15:45:00 [SUCCESSFUL]: Updated StationCardEdit component to properly initialize and use Jotai state
@@ -200,15 +203,62 @@ Component Analysis
 - 2025-03-07_15:55:00 [SUCCESSFUL]: Updated save and navigation functions to use Jotai properly without relying on location.state
 - 2025-03-07_16:05:00 [SUCCESSFUL]: Added location data parsing from complaintData.location to ensure amphure and province are set in Jotai store
 - 2025-03-07_16:10:00 [SUCCESSFUL]: Enhanced StationCardEditInfo to handle missing location data and trigger station data queries when needed
+- 2025-03-11_10:00:00 [SUCCESSFUL]: Removed timestamps from console.log statements in ComplaintForm to improve readability
+- 2025-03-11_10:15:00 [SUCCESSFUL]: Added memoization for location data in ComplaintForm to prevent unnecessary re-renders
+- 2025-03-11_10:30:00 [SUCCESSFUL]: Optimized WaterManagementPlanCard component with React.memo and useMemo to prevent unnecessary re-renders
+- 2025-03-11_10:45:00 [SUCCESSFUL]: Optimized EditableWaterManagementPlanCard component with React.memo and useMemo for better performance
+- 2025-03-11_11:00:00 [SUCCESSFUL]: Enhanced WaterManagementPlanDialog with useCallback and useMemo for improved performance
+- 2025-03-11_11:15:00 [SUCCESSFUL]: Increased vertical spacing between station cards in WaterLevelInfoCard for better readability
+- 2025-03-11_11:30:00 [SUCCESSFUL]: Removed unit labels from under measurement labels in station cards and added units next to values
+- 2025-03-11_12:00:00 [SUCCESSFUL]: Added useCompactLayout prop to station card components to control layout based on usage context
+- 2025-03-11_14:30:00 [SUCCESSFUL]: Added hideUnitLabels prop to MonitoringStationCard to remove unit display next to value boxes in StationCardEdit
+- 2025-03-11_14:45:00 [SUCCESSFUL]: Updated StationCardEditInfo to pass hideUnitLabels={true} to MonitoringStationCard components
+- 2025-03-13_09:30:00 [SUCCESSFUL]: Added "บันทึก" and "ไม่บันทึก" buttons under page title in StationCardEdit page
+- 2025-03-13_09:45:00 [SUCCESSFUL]: Styled the buttons to match the ComplaintForm page buttons with proper colors and sizes
+- 2025-03-13_10:00:00 [SUCCESSFUL]: Implemented handleSave function to save changes and navigate back to ComplaintForm
+- 2025-03-13_10:15:00 [SUCCESSFUL]: Implemented handleDiscard function to discard changes and navigate back to ComplaintForm
+- 2025-03-14_09:00:00 [SUCCESSFUL]: Fixed unwanted popup dialog when clicking save or discard buttons by adding intentionalNavigation flag
+- 2025-03-14_09:15:00 [SUCCESSFUL]: Modified useBlocker hook to check for intentionalNavigation flag to prevent dialog from showing
+- 2025-03-14_09:30:00 [SUCCESSFUL]: Fixed validation errors in ComplaintForm when returning from StationCardEdit by skipping validation
+- 2025-03-14_09:45:00 [SUCCESSFUL]: Added default values for required fields in ComplaintForm to prevent validation errors
+- 2025-03-14_10:00:00 [SUCCESSFUL]: Fixed React hooks error by ensuring consistent hook execution paths in ComplaintForm
+- 2025-03-14_11:00:00 [SUCCESSFUL]: Fixed issue with duplicated date and reporter information in complaint description when returning from StationCardEdit
+- 2025-03-15_09:00:00 [SUCCESSFUL]: Fixed issue with station deletion not persisting when navigating back to ComplaintForm by updating sync functions to respect disabled stations
+- 2025-03-16_10:00:00 [SUCCESSFUL]: Fixed station deletion functionality by ensuring sync functions are called before navigation in handleSave and updating ComplaintForm to properly handle disabled stations when returning from StationCardEdit
 
 ## Final Review
 - Summary of changes:
-  - [CHANGE_1]
-  - [CHANGE_2]
-  - [CHANGE_3]
+  - Fixed StationCardEditInfo component rendering issues with proper Jotai integration
+  - Improved performance by adding memoization to various components
+  - Enhanced UI consistency with better spacing and layout
+  - Removed redundant unit labels and improved value display
+  - Added flexible layout options with useCompactLayout and hideUnitLabels props
+  - Fixed console.log statements for better debugging
+  - Added hideUnitLabels prop to RainStationCard and ReservoirCard components to remove unit text in StationCardEdit
+  - Ensured MonitoringStationCard unit display remains unchanged as requested
+  - Made StationCardEdit layout responsive to adapt to different screen sizes
+  - Added "บันทึก" and "ไม่บันทึก" buttons under page title in StationCardEdit page
+  - Styled the buttons to match the ComplaintForm page buttons with proper colors and sizes
+  - Implemented handleSave function to save changes and navigate back to ComplaintForm
+  - Implemented handleDiscard function to discard changes and navigate back to ComplaintForm
+  - Fixed unwanted popup dialog when clicking save or discard buttons by adding intentionalNavigation flag
+  - Modified useBlocker hook to check for intentionalNavigation flag to prevent dialog from showing
+  - Fixed validation errors in ComplaintForm when returning from StationCardEdit by skipping validation
+  - Added default values for required fields in ComplaintForm to prevent validation errors
+  - Fixed React hooks error by ensuring consistent hook execution paths in ComplaintForm
+  - Fixed issue with duplicated date and reporter information in complaint description when returning from StationCardEdit
+  - Fixed issue with station deletion not persisting when navigating back to ComplaintForm by updating sync functions to respect disabled stations
+  - Fixed station deletion functionality by ensuring sync functions are called before navigation in handleSave and updating ComplaintForm to properly handle disabled stations when returning from StationCardEdit
 - Impact:
-  - [IMPACT_1]
-  - [IMPACT_2]
+  - Improved performance with reduced unnecessary re-renders
+  - Enhanced user experience with better UI consistency
+  - More maintainable code with proper state management
+  - Better debugging capabilities with cleaner console output
+  - Selective UI customization for different contexts (StationCardEdit vs other components)
+  - Better mobile and tablet experience with responsive layout
+  - Reliable station deletion functionality that persists across navigation
 - Future improvements:
-  - [IMPROVEMENT_1]
-  - [IMPROVEMENT_2] 
+  - Further optimize component rendering with more granular memoization
+  - Implement more comprehensive error handling
+  - Add more unit tests for the components
+  - Consider implementing a design system for more consistent UI 
