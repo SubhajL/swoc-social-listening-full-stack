@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import {
   // Station data atoms
   monitoringStationsAtom,
@@ -51,6 +51,9 @@ export interface NavigationState {
   discardedChanges?: boolean;
 }
 
+// Create a stable empty object reference to use in dependency arrays
+const EMPTY_OBJECT = {};
+
 /**
  * Custom hook for consolidated station data management
  * Provides a comprehensive interface for accessing and manipulating station data
@@ -98,6 +101,30 @@ export function useStationManagement() {
   // Get edit session atom
   const [editSession, setEditSession] = useAtom(editSessionStatusAtom);
   
+  // Create refs for stable function references
+  const syncFunctionsRef = useRef({
+    syncMonitoring,
+    syncRain,
+    syncReservoirs
+  });
+  
+  // Update refs when functions change
+  syncFunctionsRef.current = {
+    syncMonitoring,
+    syncRain,
+    syncReservoirs
+  };
+  
+  // Memoize the keys of disabled stations for dependency tracking
+  const disabledMonitoringKeys = useMemo(() => 
+    Object.keys(disabledMonitoring), [disabledMonitoring]);
+  
+  const disabledRainKeys = useMemo(() => 
+    Object.keys(disabledRain), [disabledRain]);
+  
+  const disabledReservoirsKeys = useMemo(() => 
+    Object.keys(disabledReservoirs), [disabledReservoirs]);
+  
   // Derived state for available stations (filtering out disabled)
   const availableMonitoringStations = useMemo(() => {
     return monitoringStations.filter(station => !disabledMonitoring[station.id]);
@@ -113,65 +140,38 @@ export function useStationManagement() {
   
   // Derived state for all available stations (including user-selected)
   const allAvailableMonitoringStations = useMemo(() => {
-    return [
-      ...availableMonitoringStations,
-      ...userSelectedMonitoring.filter(station => !disabledMonitoring[station.id])
-    ];
+    const filteredUserSelected = userSelectedMonitoring.filter(station => !disabledMonitoring[station.id]);
+    return [...availableMonitoringStations, ...filteredUserSelected];
   }, [availableMonitoringStations, userSelectedMonitoring, disabledMonitoring]);
   
   const allAvailableRainStations = useMemo(() => {
-    return [
-      ...availableRainStations,
-      ...userSelectedRain.filter(station => !disabledRain[station.id])
-    ];
+    const filteredUserSelected = userSelectedRain.filter(station => !disabledRain[station.id]);
+    return [...availableRainStations, ...filteredUserSelected];
   }, [availableRainStations, userSelectedRain, disabledRain]);
   
   const allAvailableReservoirs = useMemo(() => {
-    return [
-      ...availableReservoirs,
-      ...userSelectedReservoirs.filter(reservoir => !disabledReservoirs[reservoir.id])
-    ];
+    const filteredUserSelected = userSelectedReservoirs.filter(reservoir => !disabledReservoirs[reservoir.id]);
+    return [...availableReservoirs, ...filteredUserSelected];
   }, [availableReservoirs, userSelectedReservoirs, disabledReservoirs]);
   
   // Check if all stations of a type are disabled
   const areAllMonitoringStationsDisabled = useMemo(() => {
     const totalStations = monitoringStations.length + userSelectedMonitoring.length;
-    const disabledCount = Object.keys(disabledMonitoring).length;
-    
-    console.log('[useStationManagement] Checking if all monitoring stations are disabled:', {
-      totalStations,
-      disabledCount,
-      allDisabled: totalStations > 0 && disabledCount >= totalStations
-    });
-    
+    const disabledCount = disabledMonitoringKeys.length;
     return totalStations > 0 && disabledCount >= totalStations;
-  }, [monitoringStations, userSelectedMonitoring, disabledMonitoring]);
+  }, [monitoringStations.length, userSelectedMonitoring.length, disabledMonitoringKeys.length]);
   
   const areAllRainStationsDisabled = useMemo(() => {
     const totalStations = rainStations.length + userSelectedRain.length;
-    const disabledCount = Object.keys(disabledRain).length;
-    
-    console.log('[useStationManagement] Checking if all rain stations are disabled:', {
-      totalStations,
-      disabledCount,
-      allDisabled: totalStations > 0 && disabledCount >= totalStations
-    });
-    
+    const disabledCount = disabledRainKeys.length;
     return totalStations > 0 && disabledCount >= totalStations;
-  }, [rainStations, userSelectedRain, disabledRain]);
+  }, [rainStations.length, userSelectedRain.length, disabledRainKeys.length]);
   
   const areAllReservoirsDisabled = useMemo(() => {
     const totalStations = reservoirs.length + userSelectedReservoirs.length;
-    const disabledCount = Object.keys(disabledReservoirs).length;
-    
-    console.log('[useStationManagement] Checking if all reservoirs are disabled:', {
-      totalStations,
-      disabledCount,
-      allDisabled: totalStations > 0 && disabledCount >= totalStations
-    });
-    
+    const disabledCount = disabledReservoirsKeys.length;
     return totalStations > 0 && disabledCount >= totalStations;
-  }, [reservoirs, userSelectedReservoirs, disabledReservoirs]);
+  }, [reservoirs.length, userSelectedReservoirs.length, disabledReservoirsKeys.length]);
   
   // Function to mark edit session as changed
   const markChanged = useCallback((type: 'monitoring' | 'rain' | 'reservoir') => {
@@ -187,8 +187,6 @@ export function useStationManagement() {
           : [...prev.changedStationTypes, type]
       };
     });
-    
-    console.log(`[useStationManagement] Marked ${type} as changed`);
   }, [setEditSession]);
   
   // Function to add a monitoring station
@@ -197,11 +195,9 @@ export function useStationManagement() {
       // Check if station already exists
       const exists = prev.some(s => s.id === station.id);
       if (exists) {
-        console.log(`[useStationManagement] Monitoring station ${station.id} already exists, skipping`);
         return prev;
       }
       
-      console.log(`[useStationManagement] Adding monitoring station ${station.id}`);
       return [...prev, station];
     });
     
@@ -224,11 +220,9 @@ export function useStationManagement() {
       // Check if station already exists
       const exists = prev.some(s => s.id === station.id);
       if (exists) {
-        console.log(`[useStationManagement] Rain station ${station.id} already exists, skipping`);
         return prev;
       }
       
-      console.log(`[useStationManagement] Adding rain station ${station.id}`);
       return [...prev, station];
     });
     
@@ -251,11 +245,9 @@ export function useStationManagement() {
       // Check if reservoir already exists
       const exists = prev.some(r => r.id === reservoir.id);
       if (exists) {
-        console.log(`[useStationManagement] Reservoir ${reservoir.id} already exists, skipping`);
         return prev;
       }
       
-      console.log(`[useStationManagement] Adding reservoir ${reservoir.id}`);
       return [...prev, reservoir];
     });
     
@@ -272,62 +264,69 @@ export function useStationManagement() {
     markChanged('reservoir');
   }, [setUserSelectedReservoirs, disabledReservoirs, setDisabledReservoirs, markChanged]);
   
+  // Memoize the station ID lookup functions for better performance
+  const userSelectedMonitoringIds = useMemo(() => {
+    return new Set(userSelectedMonitoring.map(s => s.id));
+  }, [userSelectedMonitoring]);
+  
+  const userSelectedRainIds = useMemo(() => {
+    return new Set(userSelectedRain.map(s => s.id));
+  }, [userSelectedRain]);
+  
+  const userSelectedReservoirIds = useMemo(() => {
+    return new Set(userSelectedReservoirs.map(r => r.id));
+  }, [userSelectedReservoirs]);
+  
   // Function to remove a monitoring station
   const removeMonitoringStation = useCallback((stationId: string) => {
-    // Check if station is user-selected
-    const isUserSelected = userSelectedMonitoring.some(s => s.id === stationId);
+    // Check if station is user-selected using the memoized Set
+    const isUserSelected = userSelectedMonitoringIds.has(stationId);
     
     if (isUserSelected) {
       // Remove from user-selected stations
       setUserSelectedMonitoring(prev => prev.filter(s => s.id !== stationId));
-      console.log(`[useStationManagement] Removed user-selected monitoring station ${stationId}`);
     } else {
       // Disable system station
       setDisabledMonitoring(prev => ({ ...prev, [stationId]: true }));
-      console.log(`[useStationManagement] Disabled system monitoring station ${stationId}`);
     }
     
     // Mark edit session as changed
     markChanged('monitoring');
-  }, [userSelectedMonitoring, setUserSelectedMonitoring, setDisabledMonitoring, markChanged]);
+  }, [userSelectedMonitoringIds, setUserSelectedMonitoring, setDisabledMonitoring, markChanged]);
   
   // Function to remove a rain station
   const removeRainStation = useCallback((stationId: string) => {
-    // Check if station is user-selected
-    const isUserSelected = userSelectedRain.some(s => s.id === stationId);
+    // Check if station is user-selected using the memoized Set
+    const isUserSelected = userSelectedRainIds.has(stationId);
     
     if (isUserSelected) {
       // Remove from user-selected stations
       setUserSelectedRain(prev => prev.filter(s => s.id !== stationId));
-      console.log(`[useStationManagement] Removed user-selected rain station ${stationId}`);
     } else {
       // Disable system station
       setDisabledRain(prev => ({ ...prev, [stationId]: true }));
-      console.log(`[useStationManagement] Disabled system rain station ${stationId}`);
     }
     
     // Mark edit session as changed
     markChanged('rain');
-  }, [userSelectedRain, setUserSelectedRain, setDisabledRain, markChanged]);
+  }, [userSelectedRainIds, setUserSelectedRain, setDisabledRain, markChanged]);
   
   // Function to remove a reservoir
   const removeReservoir = useCallback((reservoirId: string) => {
-    // Check if reservoir is user-selected
-    const isUserSelected = userSelectedReservoirs.some(r => r.id === reservoirId);
+    // Check if reservoir is user-selected using the memoized Set
+    const isUserSelected = userSelectedReservoirIds.has(reservoirId);
     
     if (isUserSelected) {
       // Remove from user-selected reservoirs
       setUserSelectedReservoirs(prev => prev.filter(r => r.id !== reservoirId));
-      console.log(`[useStationManagement] Removed user-selected reservoir ${reservoirId}`);
     } else {
       // Disable system reservoir
       setDisabledReservoirs(prev => ({ ...prev, [reservoirId]: true }));
-      console.log(`[useStationManagement] Disabled system reservoir ${reservoirId}`);
     }
     
     // Mark edit session as changed
     markChanged('reservoir');
-  }, [userSelectedReservoirs, setUserSelectedReservoirs, setDisabledReservoirs, markChanged]);
+  }, [userSelectedReservoirIds, setUserSelectedReservoirs, setDisabledReservoirs, markChanged]);
   
   // Function to toggle monitoring station disabled state
   const toggleMonitoringStationDisabled = useCallback((stationId: string) => {
@@ -340,11 +339,9 @@ export function useStationManagement() {
         delete newDisabled[stationId];
         return newDisabled;
       });
-      console.log(`[useStationManagement] Enabled monitoring station ${stationId}`);
     } else {
       // Disable station
       setDisabledMonitoring(prev => ({ ...prev, [stationId]: true }));
-      console.log(`[useStationManagement] Disabled monitoring station ${stationId}`);
     }
     
     // Mark edit session as changed
@@ -362,11 +359,9 @@ export function useStationManagement() {
         delete newDisabled[stationId];
         return newDisabled;
       });
-      console.log(`[useStationManagement] Enabled rain station ${stationId}`);
     } else {
       // Disable station
       setDisabledRain(prev => ({ ...prev, [stationId]: true }));
-      console.log(`[useStationManagement] Disabled rain station ${stationId}`);
     }
     
     // Mark edit session as changed
@@ -384,11 +379,9 @@ export function useStationManagement() {
         delete newDisabled[reservoirId];
         return newDisabled;
       });
-      console.log(`[useStationManagement] Enabled reservoir ${reservoirId}`);
     } else {
       // Disable reservoir
       setDisabledReservoirs(prev => ({ ...prev, [reservoirId]: true }));
-      console.log(`[useStationManagement] Disabled reservoir ${reservoirId}`);
     }
     
     // Mark edit session as changed
@@ -397,22 +390,7 @@ export function useStationManagement() {
   
   // Function to reset all changes
   const resetChanges = useCallback(() => {
-    console.log('[useStationManagement] Resetting all changes');
-    
     try {
-      // Log current state before reset
-      console.log('[useStationManagement] Current state before reset:', {
-        monitoringStations: monitoringStations.length,
-        rainStations: rainStations.length,
-        reservoirs: reservoirs.length,
-        userSelectedMonitoring: userSelectedMonitoring.length,
-        userSelectedRain: userSelectedRain.length,
-        userSelectedReservoirs: userSelectedReservoirs.length,
-        disabledMonitoring: Object.keys(disabledMonitoring).length,
-        disabledRain: Object.keys(disabledRain).length,
-        disabledReservoirs: Object.keys(disabledReservoirs).length
-      });
-      
       // Reset edit session status
       setEditSession({
         hasChanges: false,
@@ -430,42 +408,26 @@ export function useStationManagement() {
       setUserSelectedRain([]);
       setUserSelectedReservoirs([]);
       
-      // Trigger synchronization
-      syncMonitoring();
-      syncRain();
-      syncReservoirs();
-      
-      console.log('[useStationManagement] Reset complete');
+      // Trigger synchronization using the stable refs
+      syncFunctionsRef.current.syncMonitoring();
+      syncFunctionsRef.current.syncRain();
+      syncFunctionsRef.current.syncReservoirs();
     } catch (error) {
       console.error('[useStationManagement] Error resetting changes:', error);
       throw error;
     }
   }, [
-    monitoringStations,
-    rainStations,
-    reservoirs,
-    userSelectedMonitoring,
-    userSelectedRain,
-    userSelectedReservoirs,
-    disabledMonitoring,
-    disabledRain,
-    disabledReservoirs,
     setEditSession,
     setDisabledMonitoring,
     setDisabledRain,
     setDisabledReservoirs,
     setUserSelectedMonitoring,
     setUserSelectedRain,
-    setUserSelectedReservoirs,
-    syncMonitoring,
-    syncRain,
-    syncReservoirs
+    setUserSelectedReservoirs
   ]);
   
   // Function to update location
   const updateLocation = useCallback((amphure?: string, province?: string) => {
-    console.log('[useStationManagement] Updating location:', { amphure, province });
-    
     if (amphure !== undefined) {
       setCurrentAmphure(amphure);
     }
@@ -478,26 +440,11 @@ export function useStationManagement() {
   // Function to check if there are unsaved changes
   const hasUnsavedChanges = useMemo(() => {
     return editSession.hasChanges;
-  }, [editSession]);
+  }, [editSession.hasChanges]);
   
   // Function to save changes
   const saveChanges = useCallback(() => {
-    console.log('[useStationManagement] Saving changes');
-    
     try {
-      // Log current state before saving
-      console.log('[useStationManagement] Current state before saving:', {
-        monitoringStations: monitoringStations.length,
-        rainStations: rainStations.length,
-        reservoirs: reservoirs.length,
-        userSelectedMonitoring: userSelectedMonitoring.length,
-        userSelectedRain: userSelectedRain.length,
-        userSelectedReservoirs: userSelectedReservoirs.length,
-        disabledMonitoring: Object.keys(disabledMonitoring).length,
-        disabledRain: Object.keys(disabledRain).length,
-        disabledReservoirs: Object.keys(disabledReservoirs).length
-      });
-      
       // Mark edit session as saved without resetting the data
       setEditSession(prev => ({
         ...prev,
@@ -510,30 +457,15 @@ export function useStationManagement() {
         editSessionTimestamp: Date.now()
       };
       
-      console.log('[useStationManagement] Changes saved, navigation state:', navigationState);
-      
       return navigationState;
     } catch (error) {
       console.error('[useStationManagement] Error saving changes:', error);
       throw error;
     }
-  }, [
-    monitoringStations,
-    rainStations,
-    reservoirs,
-    userSelectedMonitoring,
-    userSelectedRain,
-    userSelectedReservoirs,
-    disabledMonitoring,
-    disabledRain,
-    disabledReservoirs,
-    setEditSession
-  ]);
+  }, [setEditSession]);
   
   // Function to discard changes and prepare navigation state
   const discardChanges = useCallback(() => {
-    console.log('[useStationManagement] Discarding changes and preparing navigation state');
-    
     try {
       // Reset all changes
       resetChanges();
@@ -543,8 +475,6 @@ export function useStationManagement() {
         preserveState: true,
         discardedChanges: true
       };
-      
-      console.log('[useStationManagement] Changes discarded, navigation state:', navigationState);
       
       return navigationState;
     } catch (error) {
@@ -570,134 +500,54 @@ export function useStationManagement() {
   
   // Function to synchronize all station data
   const synchronizeAllStations = useCallback(() => {
-    console.log('[useStationManagement] Synchronizing all station data');
-    
     try {
-      // Log current state before synchronization
-      console.log('[useStationManagement] Current state before synchronization:', {
-        monitoringStations: monitoringStations.length,
-        rainStations: rainStations.length,
-        reservoirs: reservoirs.length,
-        userSelectedMonitoring: userSelectedMonitoring.length,
-        userSelectedRain: userSelectedRain.length,
-        userSelectedReservoirs: userSelectedReservoirs.length,
-        disabledMonitoring: Object.keys(disabledMonitoring).length,
-        disabledRain: Object.keys(disabledRain).length,
-        disabledReservoirs: Object.keys(disabledReservoirs).length
+      // Synchronize each type of station data using the stable refs
+      syncFunctionsRef.current.syncMonitoring();
+      syncFunctionsRef.current.syncRain();
+      syncFunctionsRef.current.syncReservoirs();
+      
+      // Return a promise that resolves after a short delay to ensure state updates
+      return new Promise<void>(resolve => {
+        setTimeout(() => {
+          resolve();
+        }, 100);
       });
-      
-      // Check for edge cases before synchronization
-      const allMonitoringDisabled = monitoringStations.every(station => disabledMonitoring[station.id]);
-      const allRainDisabled = rainStations.every(station => disabledRain[station.id]);
-      const allReservoirsDisabled = reservoirs.every(reservoir => disabledReservoirs[reservoir.id]);
-      
-      if (allMonitoringDisabled) {
-        console.warn('[useStationManagement] All monitoring stations are disabled before synchronization');
-      }
-      
-      if (allRainDisabled) {
-        console.warn('[useStationManagement] All rain stations are disabled before synchronization');
-      }
-      
-      if (allReservoirsDisabled) {
-        console.warn('[useStationManagement] All reservoirs are disabled before synchronization');
-      }
-      
-      // Synchronize each type of station data
-      syncMonitoring();
-      syncRain();
-      syncReservoirs();
-      
-      // Add a small delay to ensure state updates are processed
-      setTimeout(() => {
-        // Check for edge cases after synchronization
-        const updatedAllMonitoringDisabled = monitoringStations.every(station => disabledMonitoring[station.id]);
-        const updatedAllRainDisabled = rainStations.every(station => disabledRain[station.id]);
-        const updatedAllReservoirsDisabled = reservoirs.every(reservoir => disabledReservoirs[reservoir.id]);
-        
-        if (updatedAllMonitoringDisabled) {
-          console.warn('[useStationManagement] All monitoring stations are still disabled after synchronization');
-        }
-        
-        if (updatedAllRainDisabled) {
-          console.warn('[useStationManagement] All rain stations are still disabled after synchronization');
-        }
-        
-        if (updatedAllReservoirsDisabled) {
-          console.warn('[useStationManagement] All reservoirs are still disabled after synchronization');
-        }
-        
-        // Log final state after synchronization
-        console.log('[useStationManagement] Final state after synchronization:', {
-          monitoringStations: monitoringStations.length,
-          rainStations: rainStations.length,
-          reservoirs: reservoirs.length,
-          userSelectedMonitoring: userSelectedMonitoring.length,
-          userSelectedRain: userSelectedRain.length,
-          userSelectedReservoirs: userSelectedReservoirs.length,
-          disabledMonitoring: Object.keys(disabledMonitoring).length,
-          disabledRain: Object.keys(disabledRain).length,
-          disabledReservoirs: Object.keys(disabledReservoirs).length
-        });
-        
-        console.log('[useStationManagement] All station data synchronized successfully');
-      }, 100);
     } catch (error) {
       console.error('[useStationManagement] Error synchronizing station data:', error);
       
       // Attempt recovery for each station type
       try {
-        console.warn('[useStationManagement] Attempting recovery synchronization for monitoring stations');
-        syncMonitoring();
+        syncFunctionsRef.current.syncMonitoring();
       } catch (monitoringError) {
         console.error('[useStationManagement] Recovery failed for monitoring stations:', monitoringError);
       }
       
       try {
-        console.warn('[useStationManagement] Attempting recovery synchronization for rain stations');
-        syncRain();
+        syncFunctionsRef.current.syncRain();
       } catch (rainError) {
         console.error('[useStationManagement] Recovery failed for rain stations:', rainError);
       }
       
       try {
-        console.warn('[useStationManagement] Attempting recovery synchronization for reservoirs');
-        syncReservoirs();
+        syncFunctionsRef.current.syncReservoirs();
       } catch (reservoirError) {
         console.error('[useStationManagement] Recovery failed for reservoirs:', reservoirError);
       }
       
       throw new Error(`Failed to synchronize station data: ${error instanceof Error ? error.message : String(error)}`);
     }
-  }, [
-    monitoringStations,
-    rainStations,
-    reservoirs,
-    userSelectedMonitoring,
-    userSelectedRain,
-    userSelectedReservoirs,
-    disabledMonitoring,
-    disabledRain,
-    disabledReservoirs,
-    syncMonitoring,
-    syncRain,
-    syncReservoirs
-  ]);
+  }, []);
   
   // Function to handle returning from StationCardEdit
   const handleReturnFromStationEdit = useCallback((navigationState: NavigationState) => {
-    console.log('[useStationManagement] Handling return from StationCardEdit:', navigationState);
-    
     try {
       // If changes were discarded, don't synchronize
       if (navigationState.discardedChanges) {
-        console.log('[useStationManagement] Changes were discarded, skipping synchronization');
         return;
       }
       
       // If returned from station edit, synchronize data
       if (navigationState.returnedFromStationEdit) {
-        console.log('[useStationManagement] Returned from station edit, synchronizing data');
         synchronizeAllStations();
       }
     } catch (error) {
