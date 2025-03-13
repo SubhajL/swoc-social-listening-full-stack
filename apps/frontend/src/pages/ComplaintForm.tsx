@@ -25,6 +25,12 @@ import { AlertTriangle } from "lucide-react";
 import logo1 from "@/assets/logo1.png";
 import logo2 from "@/assets/logo2.png";
 import { Link } from "react-router-dom";
+import {
+  navigationStateAtom,
+  navigateToStationCardEditAtom,
+  resetNavigationStateAtom
+} from '@/atoms/navigationState';
+import { useAtom, useSetAtom } from 'jotai';
 
 // Create a FormComplaint type that extends Complaint with additional fields needed in the form
 // but overrides some fields to match ComplaintDTO schema
@@ -333,57 +339,42 @@ const ComplaintForm = () => {
   // Ref to track the last processed edit session timestamp
   const lastProcessedEditSessionRef = useRef(0);
   
+  // Get navigation state from Jotai
+  const [navigationState, setNavigationState] = useAtom(navigationStateAtom);
+  const navigateToStationCardEdit = useSetAtom(navigateToStationCardEditAtom);
+  const resetNavigationState = useSetAtom(resetNavigationStateAtom);
+  
   // Add a useEffect to handle returning from StationCardEdit
   useEffect(() => {
-    // Check if we're returning from StationCardEdit
-    if (location.state && 'preserveState' in location.state) {
-      console.log('[ComplaintForm] Returning from StationCardEdit with state:', location.state);
+    console.log('[ComplaintForm] Checking navigation state:', navigationState);
+    
+    // Check if we're returning from StationCardEdit with saved changes
+    if (navigationState.returnedFromStationEdit && !navigationState.discardedChanges) {
+      console.log('[ComplaintForm] Returned from StationCardEdit with saved changes');
       
-      // Set the returnedFromStationEdit flag
-      setReturnedFromStationEdit(true);
+      // Synchronize station data
+      syncMonitoringStations();
+      syncRainStations();
+      syncReservoirs();
       
-      // Check if changes were discarded
-      const discardedChanges = location.state.discardedChanges === true;
-      
-      // If changes were discarded, we don't need to sync the station data
-      if (discardedChanges) {
-        console.log('[ComplaintForm] Changes were discarded, skipping synchronization');
-        
-        // Show a toast notification
-        toast.info('ยกเลิกการเปลี่ยนแปลงสำเร็จ', {
-          description: 'ข้อมูลถูกคืนค่ากลับเป็นค่าเดิม'
-        });
-        
-        return;
-      }
-      
-      // If changes were saved, sync the station data
-      console.log('[ComplaintForm] Changes were saved, synchronizing station data');
-      
-      // Only sync if we haven't already synced for this edit session
-      if (!stationDataSyncedRef.current) {
-        console.log('[ComplaintForm] Syncing station data');
-        
-        // Sync the station data
-        syncMonitoringStations();
-        syncRainStations();
-        syncReservoirs();
-        
-        // Mark that we've synced the station data
-        stationDataSyncedRef.current = true;
-        
-        // Update the last processed edit session timestamp
-        lastProcessedEditSessionRef.current = Date.now();
-        
-        // Show a toast notification
-        toast.success('บันทึกข้อมูลสำเร็จ', {
-          description: 'ข้อมูลสถานีถูกบันทึกเรียบร้อยแล้ว'
-        });
-      } else {
-        console.log('[ComplaintForm] Station data already synced, skipping');
-      }
+      // Reset navigation state after handling
+      resetNavigationState();
     }
-  }, [location.state, syncMonitoringStations, syncRainStations, syncReservoirs]);
+    
+    // Check if we're returning from StationCardEdit with discarded changes
+    if (navigationState.discardedChanges) {
+      console.log('[ComplaintForm] Returned from StationCardEdit with discarded changes');
+      
+      // No need to synchronize, just reset navigation state
+      resetNavigationState();
+    }
+  }, [
+    navigationState,
+    syncMonitoringStations,
+    syncRainStations,
+    syncReservoirs,
+    resetNavigationState
+  ]);
 
   // Add a function to refresh station data
   const refreshStationData = useCallback(async () => {
@@ -577,8 +568,12 @@ const ComplaintForm = () => {
     try {
       console.log('[ComplaintForm] Navigating to StationCardEdit using Jotai state');
       
+      // Update navigation state using Jotai atom
+      navigateToStationCardEdit();
+      
       // Log the current Jotai state for debugging
       console.log('[ComplaintForm] Current Jotai state for navigation:', {
+        navigationState,
         title,
         description,
         location: {
@@ -637,7 +632,12 @@ const ComplaintForm = () => {
   // Handler functions for WaterLevelInfoCard
   const handleAddStation = (type: string) => {
     console.log('[ComplaintForm] Add station:', type);
-    navigate('/station-card-edit', { state: { type, returnUrl: '/complaint/create' } });
+    
+    // Update navigation state using Jotai atom
+    navigateToStationCardEdit();
+    
+    // Navigate to StationCardEdit
+    navigate('/station-card-edit');
   };
 
   const handleDeleteStation = (type: string) => {

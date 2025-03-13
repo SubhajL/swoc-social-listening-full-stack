@@ -91,7 +91,9 @@ const StationCardEdit: React.FC = () => {
     const navigationResult = handleBackNavigation('/complaint-form');
     
     if (navigationResult) {
-      navigate(navigationResult.path, { state: navigationResult.state });
+      // Navigate using the path from the result, but don't pass state via react-router
+      // The navigation state is now stored in Jotai atoms
+      navigate(navigationResult.path);
     }
   };
   
@@ -103,10 +105,11 @@ const StationCardEdit: React.FC = () => {
       // Save changes and get navigation info
       const navigationInfo = saveChangesAndNavigate();
       
-      console.log('[StationCardEdit] Changes saved, navigating to:', navigationInfo);
+      console.log('[StationCardEdit] Changes saved, navigating to:', navigationInfo.path);
       
-      // Navigate with state
-      navigate(navigationInfo.path, { state: navigationInfo.state });
+      // Navigate using the path from the result, but don't pass state via react-router
+      // The navigation state is now stored in Jotai atoms
+      navigate(navigationInfo.path);
       
       // Show success toast
       toast({
@@ -133,10 +136,11 @@ const StationCardEdit: React.FC = () => {
       // Discard changes and get navigation info
       const navigationInfo = discardChangesAndNavigate();
       
-      console.log('[StationCardEdit] Changes discarded, navigating to:', navigationInfo);
+      console.log('[StationCardEdit] Changes discarded, navigating to:', navigationInfo.path);
       
-      // Navigate with state
-      navigate(navigationInfo.path, { state: navigationInfo.state });
+      // Navigate using the path from the result, but don't pass state via react-router
+      // The navigation state is now stored in Jotai atoms
+      navigate(navigationInfo.path);
     } catch (error) {
       console.error('[StationCardEdit] Error discarding changes:', error);
       

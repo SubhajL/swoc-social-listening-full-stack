@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
 import { useStationManagement } from './useStationManagement';
 import { 
@@ -11,12 +11,17 @@ import {
   resetUIStateAtom
 } from '@/atoms/stationEditUI';
 import { StationType } from '@/components/complaint/StationCardEditInfo';
-import { NavigationState } from './useStationManagement';
 import { 
   isMonitoringStation, 
   isRainStation, 
   isReservoir 
 } from '@/utils/stationTypeGuards';
+import {
+  navigationStateAtom,
+  navigateToComplaintFormWithSavedChangesAtom,
+  navigateToComplaintFormWithDiscardedChangesAtom,
+  resetNavigationStateAtom
+} from '@/atoms/navigationState';
 
 /**
  * Custom hook that combines station management and UI state
@@ -34,6 +39,12 @@ export function useStationEditState() {
   const [pendingNavigation, setPendingNavigation] = useAtom(pendingNavigationAtom);
   const [currentPage, setCurrentPage] = useAtom(currentPageAtom);
   const resetUIState = useAtom(resetUIStateAtom)[1];
+  
+  // Get navigation state atoms
+  const [navigationState, setNavigationState] = useAtom(navigationStateAtom);
+  const navigateToComplaintFormWithSavedChanges = useSetAtom(navigateToComplaintFormWithSavedChangesAtom);
+  const navigateToComplaintFormWithDiscardedChanges = useSetAtom(navigateToComplaintFormWithDiscardedChangesAtom);
+  const resetNavigationState = useSetAtom(resetNavigationStateAtom);
   
   // Function to open station selection dialog
   const openStationSelectionDialog = useCallback((stationType: StationType) => {
@@ -59,8 +70,12 @@ export function useStationEditState() {
       setUnsavedChangesDialogOpen(true);
       setPendingNavigation(path);
     } else {
-      // No unsaved changes, return navigation state
-      console.log('[useStationEditState] No unsaved changes, returning navigation state');
+      // No unsaved changes, prepare navigation state
+      console.log('[useStationEditState] No unsaved changes, preparing navigation state');
+      
+      // Reset navigation state since we're navigating without changes
+      resetNavigationState();
+      
       return { path, state: null };
     }
     
@@ -68,7 +83,8 @@ export function useStationEditState() {
   }, [
     stationManagement.hasUnsavedChanges, 
     setUnsavedChangesDialogOpen, 
-    setPendingNavigation
+    setPendingNavigation,
+    resetNavigationState
   ]);
   
   // Function to save changes and navigate
@@ -76,32 +92,44 @@ export function useStationEditState() {
     console.log('[useStationEditState] Saving changes and navigating');
     
     try {
-      // Save changes and get navigation state
-      const navigationState = stationManagement.saveChanges();
+      // Save changes using station management
+      stationManagement.saveChanges();
+      
+      // Update navigation state using Jotai atom
+      navigateToComplaintFormWithSavedChanges();
       
       // Reset UI state
       resetUIState();
       
-      console.log('[useStationEditState] Changes saved, returning navigation state:', navigationState);
+      console.log('[useStationEditState] Changes saved, navigation state updated:', navigationState);
       
       // Return navigation info
       return {
         path: pendingNavigation || '/complaint-form',
-        state: navigationState
+        state: null // No longer need to pass state via react-router
       };
     } catch (error) {
       console.error('[useStationEditState] Error saving changes:', error);
       throw error;
     }
-  }, [stationManagement.saveChanges, pendingNavigation, resetUIState]);
+  }, [
+    stationManagement.saveChanges, 
+    pendingNavigation, 
+    resetUIState, 
+    navigateToComplaintFormWithSavedChanges,
+    navigationState
+  ]);
   
   // Function to discard changes and navigate
   const discardChangesAndNavigate = useCallback(() => {
     console.log('[useStationEditState] Discarding changes and navigating');
     
     try {
-      // Discard changes and get navigation state
-      const navigationState = stationManagement.discardChanges();
+      // Discard changes using station management
+      stationManagement.discardChanges();
+      
+      // Update navigation state using Jotai atom
+      navigateToComplaintFormWithDiscardedChanges();
       
       // Close dialog
       setUnsavedChangesDialogOpen(false);
@@ -109,12 +137,12 @@ export function useStationEditState() {
       // Reset UI state
       resetUIState();
       
-      console.log('[useStationEditState] Changes discarded, returning navigation state:', navigationState);
+      console.log('[useStationEditState] Changes discarded, navigation state updated:', navigationState);
       
       // Return navigation info
       return {
         path: pendingNavigation || '/complaint-form',
-        state: navigationState
+        state: null // No longer need to pass state via react-router
       };
     } catch (error) {
       console.error('[useStationEditState] Error discarding changes:', error);
@@ -124,7 +152,9 @@ export function useStationEditState() {
     stationManagement.discardChanges, 
     pendingNavigation, 
     setUnsavedChangesDialogOpen,
-    resetUIState
+    resetUIState,
+    navigateToComplaintFormWithDiscardedChanges,
+    navigationState
   ]);
   
   // Function to cancel navigation
@@ -197,6 +227,9 @@ export function useStationEditState() {
     currentStationType,
     pendingNavigation,
     currentPage,
+    
+    // Navigation state
+    navigationState,
     
     // UI state functions
     setStationSelectionDialogOpen,
