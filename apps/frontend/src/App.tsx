@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { 
   RouterProvider, 
   createBrowserRouter,
@@ -20,16 +20,21 @@ import Login from "./pages/Login";
 import ChangePassword from "./pages/ChangePassword";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { useHydrateStore } from "./stores/storeHydration";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useCallback } from "react";
 import { JotaiProvider } from "./providers/JotaiProvider";
 import { checkApiStatus } from "./utils/api-status";
 import { RealTimeProvider } from "./contexts/RealTimeContext";
 import { ApiConnectionError } from "./components/ApiConnectionError";
-import { toast } from "@/components/ui/use-toast";
+import { toast, useToast } from "@/components/ui/use-toast";
 import AuthTest from '@/pages/AuthTest';
 import { migrateLocalStorageToJotai } from "./utils/auth-migration";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { handleError } from "@/utils/errorHandling";
+import { AlertTriangle, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { QueryClient } from "@tanstack/react-query";
 
-// Create a new query client with optimized configuration
+// Create a new query client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -99,155 +104,161 @@ const router = createBrowserRouter(
   }
 );
 
-// Check API connection on app start
-const checkApiConnection = async () => {
-  try {
-    const response = await fetch('/api');
-    if (!response.ok) {
-      throw new Error(`API health check failed: ${response.status}`);
-    }
-    console.log('✅ API connection successful');
-  } catch (error) {
-    console.error('❌ API connection failed:', error);
-    toast({
-      title: "API Connection Error",
-      description: "Could not connect to the API. Please check your connection.",
-    });
-  }
-};
-
-// Call API check on app start
-checkApiConnection();
-
 const App = () => {
   // State to track hydration status
   const [isHydrating, setIsHydrating] = useState(true);
   // State to track API status check
-  const [isCheckingApi, setIsCheckingApi] = useState(true);
-  // State to track API connection status
-  const [isApiConnected, setIsApiConnected] = useState(true);
-  
-  // Hydrate the Zustand store after React is initialized
+  const [apiStatus, setApiStatus] = useState<'checking' | 'available' | 'unavailable'>('checking');
+  const { toast } = useToast();
   const isHydrated = useHydrateStore();
-  
-  // Migrate auth state from localStorage to Jotai format
-  useEffect(() => {
-    migrateLocalStorageToJotai();
+
+  // Handle global errors
+  const handleGlobalError = useCallback((error: Error, errorInfo: React.ErrorInfo) => {
+    console.error('Global error caught:', error, errorInfo);
+    
+    // Use centralized error handling
+    handleError({
+      source: 'unknown',
+      operation: 'globalError',
+      originalError: error,
+      component: 'App',
+      details: {
+        componentStack: errorInfo.componentStack
+      }
+    });
   }, []);
-  
-  // Check API status on startup - only once
+
+  // Hydrate the Zustand store after React is initialized
   useEffect(() => {
     let isMounted = true;
     
-    const checkApi = async () => {
-      try {
-        console.log('[App] Checking API status on startup');
-        const isConnected = await checkApiStatus();
-        
-        if (isMounted) {
-          setIsApiConnected(isConnected);
-          setIsCheckingApi(false);
+    // Migrate localStorage auth data to Jotai if needed
+    migrateLocalStorageToJotai();
+    
+    if (isHydrated) {
+      const checkConnection = async () => {
+        try {
+          console.log('[App] Checking API status...');
+          const isConnected = await checkApiStatus();
+          console.log('[App] API status check result:', isConnected);
           
-          if (!isConnected) {
+          if (isMounted) {
+            setApiStatus(isConnected ? 'available' : 'unavailable');
+            setIsHydrating(false);
+            
+            if (!isConnected) {
+              console.error('[App] API server is not running');
+              
+              // Use centralized error handling
+              handleError({
+                source: 'apiCall',
+                operation: 'checkApiStatus',
+                originalError: new Error('API server is not running'),
+                component: 'App'
+              });
+              
+              // Show toast notification
+              toast({
+                title: "API เซิร์ฟเวอร์ไม่พร้อมใช้งาน",
+                description: "ไม่สามารถเชื่อมต่อกับ API เซิร์ฟเวอร์ได้ กรุณาตรวจสอบว่า API เซิร์ฟเวอร์กำลังทำงานอยู่",
+                variant: "destructive",
+                duration: 10000, // Show for 10 seconds
+              });
+            }
+          }
+        } catch (error) {
+          console.error('[App] Error checking API status:', error);
+          if (isMounted) {
+            setApiStatus('unavailable');
+            setIsHydrating(false);
+            
+            // Use centralized error handling
+            handleError({
+              source: 'apiCall',
+              operation: 'checkApiStatus',
+              originalError: error instanceof Error ? error : new Error(String(error)),
+              component: 'App'
+            });
+            
             // Show toast notification
             toast({
-              title: "API เซิร์ฟเวอร์ไม่พร้อมใช้งาน",
-              description: "ไม่สามารถเชื่อมต่อกับ API เซิร์ฟเวอร์ได้ กรุณาตรวจสอบว่า API เซิร์ฟเวอร์กำลังทำงานอยู่",
+              title: "ไม่สามารถตรวจสอบสถานะ API เซิร์ฟเวอร์",
+              description: "เกิดข้อผิดพลาดในการตรวจสอบสถานะ API เซิร์ฟเวอร์ กรุณาตรวจสอบว่า API เซิร์ฟเวอร์กำลังทำงานอยู่",
               variant: "destructive",
               duration: 10000, // Show for 10 seconds
             });
           }
         }
-      } catch (error) {
-        console.error('[App] Error checking API status:', error);
-        if (isMounted) {
-          setIsApiConnected(false);
-          setIsCheckingApi(false);
-          
-          // Show toast notification
-          toast({
-            title: "ไม่สามารถตรวจสอบสถานะ API เซิร์ฟเวอร์",
-            description: "เกิดข้อผิดพลาดในการตรวจสอบสถานะ API เซิร์ฟเวอร์ กรุณาตรวจสอบว่า API เซิร์ฟเวอร์กำลังทำงานอยู่",
-            variant: "destructive",
-            duration: 10000, // Show for 10 seconds
-          });
-        }
-      }
-    };
+      };
+      
+      checkConnection();
+    }
     
-    checkApi();
-    
-    // Cleanup function to prevent state updates if component unmounts
     return () => {
       isMounted = false;
     };
-  }, []);
-  
-  // Set hydration status once complete
-  useEffect(() => {
-    if (isHydrated) {
-      console.log('[App] Store hydration complete, rendering app');
-      
-      // Add a small delay to ensure all hydration effects are complete
-      const timer = setTimeout(() => {
-        setIsHydrating(false);
-      }, 100);
-      
-      // Cleanup timer if component unmounts
-      return () => clearTimeout(timer);
-    }
   }, [isHydrated]);
-  
-  // Show loading state while hydrating or checking API
-  if (isHydrating || isCheckingApi) {
+
+  // Show loading state while hydrating
+  if (isHydrating) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#F0F8FF]">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-t-blue-500 border-b-blue-500 border-l-transparent border-r-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-lg text-[#17254D]">
-            {isHydrating ? 'กำลังโหลดข้อมูล...' : 'กำลังตรวจสอบการเชื่อมต่อ...'}
-          </p>
-          <p className="mt-2 text-sm text-[#475569]">กรุณารอสักครู่...</p>
+      <ErrorBoundary onError={handleGlobalError}>
+        <div className="flex items-center justify-center min-h-screen bg-[#F0F8FF]">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-t-blue-500 border-b-blue-500 border-l-transparent border-r-transparent rounded-full animate-spin mx-auto"></div>
+            <p className="mt-4 text-lg text-[#17254D]">
+              กำลังโหลดข้อมูล...
+            </p>
+            <p className="mt-2 text-sm text-[#475569]">กรุณารอสักครู่...</p>
+          </div>
         </div>
-      </div>
+      </ErrorBoundary>
     );
   }
-  
+
   // Show API connection error if API is not connected
-  if (!isApiConnected) {
+  if (apiStatus === 'unavailable') {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#F0F8FF]">
-        <div className="w-full max-w-3xl px-4">
-          <ApiConnectionError 
-            onRetry={async () => {
-              setIsCheckingApi(true);
-              try {
-                const isConnected = await checkApiStatus();
-                setIsApiConnected(isConnected);
-              } catch (error) {
-                setIsApiConnected(false);
-              } finally {
-                setIsCheckingApi(false);
-              }
-            }}
-            message="ไม่สามารถเชื่อมต่อกับ API เซิร์ฟเวอร์ได้ กรุณาตรวจสอบว่า API เซิร์ฟเวอร์กำลังทำงานอยู่"
-          />
+      <ErrorBoundary onError={handleGlobalError}>
+        <div className="flex items-center justify-center min-h-screen bg-[#F0F8FF]">
+          <div className="w-full max-w-3xl px-4">
+            <ApiConnectionError 
+              onRetry={async () => {
+                setApiStatus('checking');
+                try {
+                  const isConnected = await checkApiStatus();
+                  setApiStatus(isConnected ? 'available' : 'unavailable');
+                } catch (error) {
+                  setApiStatus('unavailable');
+                  
+                  // Use centralized error handling
+                  handleError({
+                    source: 'apiCall',
+                    operation: 'retryApiConnection',
+                    originalError: error instanceof Error ? error : new Error(String(error)),
+                    component: 'App'
+                  });
+                }
+              }}
+              message="ไม่สามารถเชื่อมต่อกับ API เซิร์ฟเวอร์ได้ กรุณาตรวจสอบว่า API เซิร์ฟเวอร์กำลังทำงานอยู่"
+            />
+          </div>
         </div>
-      </div>
+      </ErrorBoundary>
     );
   }
 
   return (
-    <JotaiProvider>
-      <QueryClientProvider client={queryClient}>
-        <RealTimeProvider>
-          <TooltipProvider>
-            <div className="relative">
+    <ErrorBoundary onError={handleGlobalError}>
+      <JotaiProvider>
+        <QueryClientProvider client={queryClient}>
+          <RealTimeProvider>
+            <TooltipProvider>
               <Suspense fallback={
-                <div className="flex items-center justify-center min-h-screen bg-[#F0F8FF]">
+                <div className="flex items-center justify-center min-h-screen">
                   <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
-                    <p className="mt-4 text-lg text-gray-600">กำลังโหลด...</p>
+                    <div className="w-12 h-12 border-4 border-t-blue-500 border-b-blue-500 border-l-transparent border-r-transparent rounded-full animate-spin mx-auto"></div>
+                    <p className="mt-4 text-gray-600">กำลังโหลด...</p>
                   </div>
                 </div>
               }>
@@ -255,12 +266,11 @@ const App = () => {
               </Suspense>
               <Toaster />
               <Sonner />
-              <div id="radix-hover-card-portal" className="fixed top-0 left-0 z-[9999]" />
-            </div>
-          </TooltipProvider>
-        </RealTimeProvider>
-      </QueryClientProvider>
-    </JotaiProvider>
+            </TooltipProvider>
+          </RealTimeProvider>
+        </QueryClientProvider>
+      </JotaiProvider>
+    </ErrorBoundary>
   );
 };
 
