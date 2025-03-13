@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -7,12 +7,12 @@ import { ArrowLeft, Save, X } from 'lucide-react';
 import { StationCardEditInfo } from '@/components/complaint/StationCardEditInfo';
 import ComplaintInfoCard from '@/components/shared/ComplaintInfoCard';
 import { UnsavedChangesDialog } from '@/components/complaint/UnsavedChangesDialog';
-import { useStationManagement } from '@/hooks/useStationManagement';
+import { useStationEditState } from '@/hooks/useStationEditState';
 import { useToast } from '@/components/ui/use-toast';
 
 /**
  * StationCardEdit component for editing station data
- * Uses the useStationManagement hook for state management
+ * Uses the useStationEditState hook for state management
  */
 const StationCardEdit: React.FC = () => {
   const navigate = useNavigate();
@@ -21,19 +21,32 @@ const StationCardEdit: React.FC = () => {
   
   // Get station management functions and state from hook
   const {
+    // Station data status
     hasUnsavedChanges,
-    saveChanges,
-    discardChanges,
-    synchronizeAllStations,
     areAllMonitoringStationsDisabled,
     areAllRainStationsDisabled,
-    areAllReservoirsDisabled
-  } = useStationManagement();
-  
-  // Local state for UI
-  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
-  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
-  const [waterManagementDialogOpen, setWaterManagementDialogOpen] = useState(false);
+    areAllReservoirsDisabled,
+    
+    // Loading states
+    isLoadingMonitoring,
+    isLoadingRain,
+    isLoadingReservoirs,
+    
+    // UI state
+    unsavedChangesDialogOpen,
+    setUnsavedChangesDialogOpen,
+    currentStationType,
+    setCurrentStationType,
+    
+    // Station management functions
+    synchronizeAllStations,
+    
+    // Navigation functions
+    handleBackNavigation,
+    saveChangesAndNavigate,
+    discardChangesAndNavigate,
+    cancelNavigation
+  } = useStationEditState();
   
   // Log component mount and props
   useEffect(() => {
@@ -72,33 +85,28 @@ const StationCardEdit: React.FC = () => {
   ]);
   
   // Handle navigation back
-  const handleBack = useCallback(() => {
+  const handleBack = () => {
     console.log('[StationCardEdit] Handling back navigation');
     
-    // If there are unsaved changes, show dialog
-    if (hasUnsavedChanges) {
-      console.log('[StationCardEdit] Unsaved changes detected, showing dialog');
-      setShowUnsavedDialog(true);
-      setPendingNavigation('/complaint-form');
-    } else {
-      // No unsaved changes, navigate back
-      console.log('[StationCardEdit] No unsaved changes, navigating back');
-      navigate('/complaint-form');
+    const navigationResult = handleBackNavigation('/complaint-form');
+    
+    if (navigationResult) {
+      navigate(navigationResult.path, { state: navigationResult.state });
     }
-  }, [hasUnsavedChanges, navigate]);
+  };
   
   // Handle save
-  const handleSave = useCallback(() => {
+  const handleSave = () => {
     console.log('[StationCardEdit] Handling save');
     
     try {
-      // Save changes and get navigation state
-      const navigationState = saveChanges();
+      // Save changes and get navigation info
+      const navigationInfo = saveChangesAndNavigate();
       
-      console.log('[StationCardEdit] Changes saved, navigating back with state:', navigationState);
+      console.log('[StationCardEdit] Changes saved, navigating to:', navigationInfo);
       
-      // Navigate back with state
-      navigate('/complaint-form', { state: navigationState });
+      // Navigate with state
+      navigate(navigationInfo.path, { state: navigationInfo.state });
       
       // Show success toast
       toast({
@@ -115,28 +123,20 @@ const StationCardEdit: React.FC = () => {
         variant: 'destructive'
       });
     }
-  }, [saveChanges, navigate, toast]);
+  };
   
   // Handle discard
-  const handleDiscard = useCallback(() => {
+  const handleDiscard = () => {
     console.log('[StationCardEdit] Handling discard');
     
     try {
-      // Discard changes and get navigation state
-      const navigationState = discardChanges();
+      // Discard changes and get navigation info
+      const navigationInfo = discardChangesAndNavigate();
       
-      console.log('[StationCardEdit] Changes discarded, navigating back with state:', navigationState);
+      console.log('[StationCardEdit] Changes discarded, navigating to:', navigationInfo);
       
-      // Close dialog
-      setShowUnsavedDialog(false);
-      
-      // Navigate back with state
-      if (pendingNavigation) {
-        navigate(pendingNavigation, { state: navigationState });
-      }
-      
-      // Reset pending navigation
-      setPendingNavigation(null);
+      // Navigate with state
+      navigate(navigationInfo.path, { state: navigationInfo.state });
     } catch (error) {
       console.error('[StationCardEdit] Error discarding changes:', error);
       
@@ -147,31 +147,25 @@ const StationCardEdit: React.FC = () => {
         variant: 'destructive'
       });
     }
-  }, [discardChanges, navigate, pendingNavigation, toast]);
+  };
   
-  // Handle cancel (keep editing)
-  const handleCancel = useCallback(() => {
-    console.log('[StationCardEdit] Handling cancel (keep editing)');
-    
-    // Close dialog
-    setShowUnsavedDialog(false);
-    
-    // Reset pending navigation
-    setPendingNavigation(null);
-  }, []);
+  // Handle tab change
+  const handleTabChange = (value: string) => {
+    console.log('[StationCardEdit] Tab changed to:', value);
+    setCurrentStationType(value as 'monitoring' | 'rain' | 'reservoir');
+  };
   
-  // Handle dialog open change
-  const handleDialogOpenChange = useCallback((open: boolean) => {
-    console.log('[StationCardEdit] Dialog open change:', open);
-    
-    // If dialog is being closed, reset pending navigation
-    if (!open) {
-      setPendingNavigation(null);
-    }
-    
-    // Update dialog state
-    setShowUnsavedDialog(open);
-  }, []);
+  // Render loading state
+  if (isLoadingMonitoring || isLoadingRain || isLoadingReservoirs) {
+    return (
+      <div className="container mx-auto py-6 flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-sm text-gray-500">กำลังโหลดข้อมูล...</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -209,7 +203,10 @@ const StationCardEdit: React.FC = () => {
         <div className="md:col-span-2 space-y-6">
           <Card>
             <CardContent className="p-6">
-              <Tabs defaultValue="monitoring">
+              <Tabs 
+                defaultValue={currentStationType}
+                onValueChange={handleTabChange}
+              >
                 <TabsList className="mb-4">
                   <TabsTrigger value="monitoring">สถานีตรวจวัดน้ำ</TabsTrigger>
                   <TabsTrigger value="rain">สถานีวัดน้ำฝน</TabsTrigger>
@@ -217,15 +214,15 @@ const StationCardEdit: React.FC = () => {
                 </TabsList>
                 
                 <TabsContent value="monitoring">
-                  <StationCardEditInfo type="monitoring" />
+                  <StationCardEditInfo stationType="monitoring" />
                 </TabsContent>
                 
                 <TabsContent value="rain">
-                  <StationCardEditInfo type="rain" />
+                  <StationCardEditInfo stationType="rain" />
                 </TabsContent>
                 
                 <TabsContent value="reservoir">
-                  <StationCardEditInfo type="reservoir" />
+                  <StationCardEditInfo stationType="reservoir" />
                 </TabsContent>
               </Tabs>
             </CardContent>
@@ -235,11 +232,11 @@ const StationCardEdit: React.FC = () => {
       
       {/* Unsaved changes dialog */}
       <UnsavedChangesDialog
-        open={showUnsavedDialog}
-        onOpenChange={handleDialogOpenChange}
+        open={unsavedChangesDialogOpen}
+        onOpenChange={setUnsavedChangesDialogOpen}
         onSave={handleSave}
         onDiscard={handleDiscard}
-        onCancel={handleCancel}
+        onCancel={cancelNavigation}
       />
     </div>
   );

@@ -1,44 +1,36 @@
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 
-// Define user interface
+// Define user interface with RBAC role
 export interface User {
   id: string;
-  username: string;
+  name: string;
   email: string;
-  fullName: string;
-  role: 'admin' | 'moderator' | 'user';
-  department?: string;
-  permissions: string[];
-  avatarUrl?: string;
-  lastLogin?: string;
+  rbacRole: number; // 1, 2, or 3
+  organizationId: string;
+  organizationName: string;
 }
 
 // Define authentication state interface
 export interface AuthState {
-  isAuthenticated: boolean;
   user: User | null;
   token: string | null;
-  refreshToken: string | null;
-  expiresAt: number | null; // Timestamp when token expires
+  isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
 }
 
 // Initial authentication state
 const initialAuthState: AuthState = {
-  isAuthenticated: false,
   user: null,
   token: null,
-  refreshToken: null,
-  expiresAt: null,
+  isAuthenticated: false,
   isLoading: false,
   error: null
 };
 
 // Create persistent auth state atom using localStorage
-// Note: We use atomWithStorage to persist auth state across page refreshes
-export const authStateAtom = atomWithStorage<AuthState>('auth', initialAuthState);
+export const authStateAtom = atomWithStorage<AuthState>('auth-storage', initialAuthState);
 
 // Create derived atoms for specific auth state properties
 export const isAuthenticatedAtom = atom(
@@ -49,171 +41,236 @@ export const userAtom = atom(
   (get) => get(authStateAtom).user
 );
 
-export const userRoleAtom = atom(
-  (get) => get(authStateAtom).user?.role
-);
-
-export const userPermissionsAtom = atom(
-  (get) => get(authStateAtom).user?.permissions || []
-);
-
-export const authTokenAtom = atom(
+export const tokenAtom = atom(
   (get) => get(authStateAtom).token
 );
 
-export const authLoadingAtom = atom(
+export const isLoadingAtom = atom(
   (get) => get(authStateAtom).isLoading
 );
 
-export const authErrorAtom = atom(
+export const errorAtom = atom(
   (get) => get(authStateAtom).error
 );
 
 // Create atoms for auth actions
 export const loginAtom = atom(
   null,
-  (get, set, credentials: { username: string; password: string }) => {
-    // Set loading state
+  (get, set, { user, token }: { user: User, token: string }) => {
+    console.log('🔑 [Auth] Login action triggered', { 
+      userId: user.id, 
+      email: user.email,
+      rbacRole: user.rbacRole
+    });
+    
+    // Update auth state
     set(authStateAtom, {
-      ...get(authStateAtom),
-      isLoading: true,
+      user,
+      token,
+      isAuthenticated: true,
+      isLoading: false,
       error: null
     });
-
-    // In a real implementation, this would be an API call
-    // For now, we'll simulate a login with a timeout
-    return new Promise<void>((resolve, reject) => {
-      setTimeout(() => {
-        try {
-          // Simulate API response
-          // In a real implementation, this would be the response from the API
-          if (credentials.username === 'admin' && credentials.password === 'password') {
-            const user: User = {
-              id: '1',
-              username: 'admin',
-              email: 'admin@example.com',
-              fullName: 'Admin User',
-              role: 'admin',
-              department: 'IT',
-              permissions: ['read', 'write', 'delete'],
-              avatarUrl: 'https://i.pravatar.cc/150?u=admin',
-              lastLogin: new Date().toISOString()
-            };
-
-            const token = 'fake-jwt-token';
-            const refreshToken = 'fake-refresh-token';
-            const expiresAt = Date.now() + 3600000; // 1 hour from now
-
-            // Update auth state
-            set(authStateAtom, {
-              isAuthenticated: true,
-              user,
-              token,
-              refreshToken,
-              expiresAt,
-              isLoading: false,
-              error: null
-            });
-
-            // Log successful login
-            console.log('[Auth] Login successful:', { username: user.username, role: user.role });
-
-            resolve();
-          } else {
-            // Simulate login failure
-            set(authStateAtom, {
-              ...initialAuthState,
-              isLoading: false,
-              error: 'Invalid username or password'
-            });
-
-            // Log login failure
-            console.error('[Auth] Login failed:', { username: credentials.username });
-
-            reject(new Error('Invalid username or password'));
-          }
-        } catch (error) {
-          // Handle unexpected errors
-          const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-          
-          set(authStateAtom, {
-            ...initialAuthState,
-            isLoading: false,
-            error: errorMessage
-          });
-
-          // Log error
-          console.error('[Auth] Login error:', error);
-
-          reject(error);
-        }
-      }, 1000); // Simulate network delay
-    });
+    
+    // For backward compatibility, also store in localStorage directly
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      position: user.rbacRole,
+      office_id: user.organizationId,
+      office_name: user.organizationName
+    }));
+    
+    console.log('✅ [Auth] Login successful');
   }
 );
 
 export const logoutAtom = atom(
   null,
   (get, set) => {
-    // Log logout attempt
-    console.log('[Auth] Logging out user:', get(authStateAtom).user?.username);
-
+    console.log('🔑 [Auth] Logout action triggered');
+    
     // Reset auth state to initial state
     set(authStateAtom, initialAuthState);
-
-    // In a real implementation, you might want to invalidate the token on the server
-    // and perform other cleanup tasks
-
-    // Log successful logout
-    console.log('[Auth] Logout successful');
+    
+    // Clear localStorage items
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    console.log('✅ [Auth] Logout successful');
   }
 );
 
 export const checkAuthAtom = atom(
   null,
   (get, set) => {
-    const authState = get(authStateAtom);
+    const { token, isAuthenticated } = get(authStateAtom);
+    
+    console.log('🔍 [Auth] Checking authentication status', { 
+      isAuthenticated, 
+      hasToken: !!token 
+    });
     
     // If not authenticated, nothing to check
-    if (!authState.isAuthenticated) {
+    if (!isAuthenticated || !token) {
       return false;
     }
-
-    // Check if token is expired
-    const isTokenExpired = authState.expiresAt ? Date.now() > authState.expiresAt : true;
     
-    if (isTokenExpired) {
-      console.log('[Auth] Token expired, logging out');
-      set(authStateAtom, initialAuthState);
+    try {
+      // Check if token is a JWT and if it's expired
+      const tokenParts = token.split('.');
+      if (tokenParts.length === 3) {
+        const payload = JSON.parse(atob(tokenParts[1]));
+        const expiry = payload.exp * 1000; // Convert to milliseconds
+        const now = Date.now();
+        
+        console.log('🔍 [Auth] Token validation', {
+          isExpired: now > expiry,
+          expiryTime: new Date(expiry).toISOString(),
+          currentTime: new Date(now).toISOString(),
+          timeRemaining: Math.floor((expiry - now) / 1000 / 60) + ' minutes'
+        });
+        
+        if (now > expiry) {
+          console.log('⚠️ [Auth] Token expired, logging out');
+          set(logoutAtom);
+          return false;
+        }
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('❌ [Auth] Error checking token:', error);
       return false;
     }
-
-    return true;
   }
 );
 
-// Permission check function
-export const hasPermission = (permissions: string[], permission: string): boolean => {
+export const updateUserAtom = atom(
+  null,
+  (get, set, userData: Partial<User>) => {
+    const { user } = get(authStateAtom);
+    
+    if (!user) {
+      console.warn('⚠️ [Auth] Cannot update user: No user is logged in');
+      return;
+    }
+    
+    console.log('🔄 [Auth] Updating user data', userData);
+    
+    // Update auth state with new user data
+    set(authStateAtom, (prev) => ({
+      ...prev,
+      user: { ...user, ...userData }
+    }));
+    
+    // Update localStorage user data for backward compatibility
+    const localUser = localStorage.getItem('user');
+    if (localUser) {
+      try {
+        const parsedUser = JSON.parse(localUser);
+        localStorage.setItem('user', JSON.stringify({
+          ...parsedUser,
+          ...userData,
+          position: userData.rbacRole || parsedUser.position,
+          office_id: userData.organizationId || parsedUser.office_id,
+          office_name: userData.organizationName || parsedUser.office_name
+        }));
+      } catch (error) {
+        console.error('❌ [Auth] Error updating localStorage user:', error);
+      }
+    }
+    
+    console.log('✅ [Auth] User data updated successfully');
+  }
+);
+
+// Helper functions for role and permission checks
+export const hasPermission = (user: User | null, permission: string): boolean => {
+  if (!user) return false;
+  
+  // Define permissions based on RBAC role
+  const permissions: string[] = ['read']; // Base permission for all users
+  
+  switch (user.rbacRole) {
+    case 3: // Admin
+      permissions.push('write', 'delete', 'admin');
+      break;
+    case 2: // Moderator
+      permissions.push('write');
+      break;
+    // case 1: User already has read permission
+  }
+  
   return permissions.includes(permission);
 };
 
-// Create a permission check atom that takes a permission as a parameter
-export const createHasPermissionAtom = (permission: string) => atom(
-  (get) => {
-    const permissions = get(userPermissionsAtom);
-    return hasPermission(permissions, permission);
+export const hasRole = (user: User | null, role: 'admin' | 'moderator' | 'user'): boolean => {
+  if (!user) return false;
+  
+  const roleMap: Record<number, string> = {
+    3: 'admin',
+    2: 'moderator',
+    1: 'user'
+  };
+  
+  return roleMap[user.rbacRole] === role;
+};
+
+// Create atoms for permission and role checks
+export const hasPermissionAtom = atom(
+  (get) => (permission: string) => {
+    const user = get(userAtom);
+    return hasPermission(user, permission);
   }
 );
 
-// Role check function
-export const hasRole = (userRole: string | undefined, role: 'admin' | 'moderator' | 'user'): boolean => {
-  return userRole === role;
-};
-
-// Create a role check atom that takes a role as a parameter
-export const createHasRoleAtom = (role: 'admin' | 'moderator' | 'user') => atom(
-  (get) => {
-    const userRole = get(userRoleAtom);
-    return hasRole(userRole, role);
+export const hasRoleAtom = atom(
+  (get) => (role: 'admin' | 'moderator' | 'user') => {
+    const user = get(userAtom);
+    return hasRole(user, role);
   }
-); 
+);
+
+// Initialize auth state from localStorage on page load
+export const initAuthFromLocalStorage = () => {
+  try {
+    const token = localStorage.getItem('token');
+    const userJson = localStorage.getItem('user');
+    
+    if (token && userJson) {
+      const userData = JSON.parse(userJson);
+      
+      // Convert to User format
+      const user: User = {
+        id: String(userData.id),
+        name: userData.name,
+        email: userData.email,
+        rbacRole: userData.position || 1,
+        organizationId: userData.office_id || '',
+        organizationName: userData.office_name || ''
+      };
+      
+      // Create the initial state to be stored in localStorage
+      const initializedState: AuthState = {
+        user,
+        token,
+        isAuthenticated: true,
+        isLoading: false,
+        error: null
+      };
+      
+      // Store the initialized state in localStorage
+      localStorage.setItem('auth-storage', JSON.stringify({
+        state: initializedState,
+        version: 0
+      }));
+      
+      console.log('✅ [Auth] Initialized auth state from localStorage');
+    }
+  } catch (error) {
+    console.error('❌ [Auth] Error initializing auth state from localStorage:', error);
+  }
+}; 

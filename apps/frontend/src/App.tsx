@@ -18,7 +18,7 @@ import ApprovalStep from "./pages/ApprovalStep";
 import SystemSetting from "./pages/SystemSetting";
 import Login from "./pages/Login";
 import ChangePassword from "./pages/ChangePassword";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { useHydrateStore } from "./stores/storeHydration";
 import { useEffect, useState, Suspense } from "react";
 import { JotaiProvider } from "./providers/JotaiProvider";
@@ -27,6 +27,7 @@ import { RealTimeProvider } from "./contexts/RealTimeContext";
 import { ApiConnectionError } from "./components/ApiConnectionError";
 import { toast } from "@/components/ui/use-toast";
 import AuthTest from '@/pages/AuthTest';
+import { migrateLocalStorageToJotai } from "./utils/auth-migration";
 
 // Create a new query client with optimized configuration
 const queryClient = new QueryClient({
@@ -44,7 +45,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       {/* Redirect root to login */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<Login />} />
       
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
@@ -101,7 +102,7 @@ const router = createBrowserRouter(
 // Check API connection on app start
 const checkApiConnection = async () => {
   try {
-    const response = await fetch('/api/health');
+    const response = await fetch('/api');
     if (!response.ok) {
       throw new Error(`API health check failed: ${response.status}`);
     }
@@ -128,6 +129,11 @@ const App = () => {
   
   // Hydrate the Zustand store after React is initialized
   const isHydrated = useHydrateStore();
+  
+  // Migrate auth state from localStorage to Jotai format
+  useEffect(() => {
+    migrateLocalStorageToJotai();
+  }, []);
   
   // Check API status on startup - only once
   useEffect(() => {

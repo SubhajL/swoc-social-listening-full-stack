@@ -2,18 +2,17 @@ import { useAtom, useAtomValue } from 'jotai';
 import { useCallback } from 'react';
 import {
   authStateAtom,
+  isAuthenticatedAtom,
+  userAtom,
+  tokenAtom,
+  isLoadingAtom,
+  errorAtom,
   loginAtom,
   logoutAtom,
   checkAuthAtom,
-  isAuthenticatedAtom,
-  userAtom,
-  userRoleAtom,
-  userPermissionsAtom,
-  authTokenAtom,
-  authLoadingAtom,
-  authErrorAtom,
-  createHasPermissionAtom,
-  createHasRoleAtom,
+  updateUserAtom,
+  hasPermissionAtom,
+  hasRoleAtom,
   User
 } from '../atoms/authState';
 
@@ -25,52 +24,66 @@ export function useAuth() {
   // Get auth state atoms
   const isAuthenticated = useAtomValue(isAuthenticatedAtom);
   const user = useAtomValue(userAtom);
-  const userRole = useAtomValue(userRoleAtom);
-  const userPermissions = useAtomValue(userPermissionsAtom);
-  const token = useAtomValue(authTokenAtom);
-  const isLoading = useAtomValue(authLoadingAtom);
-  const error = useAtomValue(authErrorAtom);
+  const token = useAtomValue(tokenAtom);
+  const isLoading = useAtomValue(isLoadingAtom);
+  const error = useAtomValue(errorAtom);
   
   // Get auth action atoms
   const [, login] = useAtom(loginAtom);
   const [, logout] = useAtom(logoutAtom);
   const [, checkAuth] = useAtom(checkAuthAtom);
+  const [, updateUser] = useAtom(updateUserAtom);
   
-  // Check if user has a specific permission
-  const hasPermission = useCallback((permission: string): boolean => {
-    if (!isAuthenticated || !userPermissions) return false;
-    return userPermissions.includes(permission);
-  }, [isAuthenticated, userPermissions]);
+  // Get permission and role check functions
+  const hasPermissionFn = useAtomValue(hasPermissionAtom);
+  const hasRoleFn = useAtomValue(hasRoleAtom);
   
-  // Check if user has a specific role
-  const hasRole = useCallback((role: 'admin' | 'moderator' | 'user'): boolean => {
-    if (!isAuthenticated || !userRole) return false;
-    return userRole === role;
-  }, [isAuthenticated, userRole]);
+  // Map RBAC role number to role string
+  const userRole = useCallback((): 'admin' | 'moderator' | 'user' | undefined => {
+    if (!user) return undefined;
+    
+    switch (user.rbacRole) {
+      case 3: return 'admin';
+      case 2: return 'moderator';
+      case 1: return 'user';
+      default: return 'user';
+    }
+  }, [user]);
+  
+  // Define permissions based on RBAC role
+  const userPermissions = useCallback((): string[] => {
+    if (!user) return [];
+    
+    const basePermissions = ['read'];
+    
+    switch (user.rbacRole) {
+      case 3: // Admin
+        return [...basePermissions, 'write', 'delete', 'admin'];
+      case 2: // Moderator
+        return [...basePermissions, 'write'];
+      case 1: // User
+        return basePermissions;
+      default:
+        return basePermissions;
+    }
+  }, [user]);
   
   // Check if user has admin role
   const isAdmin = useCallback((): boolean => {
-    return hasRole('admin');
-  }, [hasRole]);
+    return hasRoleFn('admin');
+  }, [hasRoleFn]);
   
   // Check if user has moderator role
   const isModerator = useCallback((): boolean => {
-    return hasRole('moderator');
-  }, [hasRole]);
-  
-  // Update user profile
-  const updateProfile = useCallback((updatedUser: Partial<User>) => {
-    // This would typically be an API call
-    console.log('[Auth] Updating user profile:', updatedUser);
-    // For now, we'll just log the update
-  }, []);
+    return hasRoleFn('moderator');
+  }, [hasRoleFn]);
   
   return {
     // Auth state
     isAuthenticated,
     user,
-    userRole,
-    userPermissions,
+    userRole: userRole(),
+    userPermissions: userPermissions(),
     token,
     isLoading,
     error,
@@ -81,11 +94,11 @@ export function useAuth() {
     checkAuth,
     
     // Helper functions
-    hasPermission,
-    hasRole,
+    hasPermission: hasPermissionFn,
+    hasRole: hasRoleFn,
     isAdmin,
     isModerator,
-    updateProfile
+    updateProfile: updateUser
   };
 }
 
@@ -95,8 +108,10 @@ export function useAuth() {
  * @returns A hook that returns a boolean indicating if the user has the permission
  */
 export function createUseHasPermission(permission: string) {
-  const permissionAtom = createHasPermissionAtom(permission);
-  return () => useAtomValue(permissionAtom);
+  return () => {
+    const { hasPermission } = useAuth();
+    return hasPermission(permission);
+  };
 }
 
 /**
@@ -105,8 +120,10 @@ export function createUseHasPermission(permission: string) {
  * @returns A hook that returns a boolean indicating if the user has the role
  */
 export function createUseHasRole(role: 'admin' | 'moderator' | 'user') {
-  const roleAtom = createHasRoleAtom(role);
-  return () => useAtomValue(roleAtom);
+  return () => {
+    const { hasRole } = useAuth();
+    return hasRole(role);
+  };
 }
 
 // Pre-created hooks for common permissions and roles

@@ -8,10 +8,18 @@ import { RainStationCard } from '@/components/monitoring/RainStationCard';
 import { ReservoirCard } from '@/components/monitoring/ReservoirCard';
 import { StationSelectionDialog } from '@/components/complaint/StationSelectionDialog';
 import { useStationManagement } from '@/hooks/useStationManagement';
-import { MonitoringStation } from '@/types/monitoring-station';
-import { RainStation } from '@/types/rain-station';
-import { Reservoir } from '@/types/reservoir';
+import { useStationEditState } from '@/hooks/useStationEditState';
+import { MonitoringStation as MonitoringStationType } from '@/types/monitoring-station';
+import { RainStation as RainStationType } from '@/types/rain-station';
+import { Reservoir as ReservoirType } from '@/types/reservoir';
+import { MonitoringStation, RainStation, Reservoir } from '@/atoms/stationData';
 import { useToast } from '@/components/ui/use-toast';
+import { 
+  isMonitoringStation, 
+  isRainStation, 
+  isReservoir,
+  ensureStringId
+} from '@/utils/stationTypeGuards';
 
 // Define station type
 export type StationType = 'monitoring' | 'rain' | 'reservoir';
@@ -20,6 +28,115 @@ export type StationType = 'monitoring' | 'rain' | 'reservoir';
 interface StationCardEditInfoProps {
   stationType: StationType;
 }
+
+// Define interfaces for the card component props
+interface ExtendedMonitoringStationProps {
+  id: string;
+  station_id?: string;
+  station_name?: string;
+  name?: string;
+  water_level?: number;
+  flow_rate?: number;
+  telemetry_data?: {
+    water_level: number;
+    flow_rate: number;
+    timestamp: string;
+    notation?: string;
+  };
+  source?: 'system' | 'user';
+  status: 'active' | 'inactive' | 'maintenance';
+  location?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+}
+
+interface ExtendedRainStationProps {
+  id: string;
+  name?: string;
+  station_name?: string;
+  location?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  status: 'active' | 'inactive' | 'maintenance';
+  source?: 'system' | 'user';
+  rainfall_24h?: number;
+  rainfall_today?: number;
+  lastReading?: {
+    timestamp: string;
+    value: number;
+    unit: string;
+  };
+  type: 'rain';
+}
+
+interface ExtendedReservoirProps {
+  id: string;
+  name?: string;
+  reservoir_name?: string;
+  location?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  status: 'active' | 'inactive' | 'maintenance';
+  source?: 'system' | 'user';
+  capacity?: number;
+  currentLevel?: number;
+  percentFull?: number;
+  type: 'reservoir';
+}
+
+// Adapter functions to convert between different station interfaces
+const adaptMonitoringStation = (station: MonitoringStation): ExtendedMonitoringStationProps => {
+  return {
+    id: ensureStringId(station.id),
+    name: station.name,
+    location: station.location,
+    coordinates: station.coordinates,
+    status: station.status,
+    source: station.source,
+    // Map lastReading to telemetry_data if available
+    ...(station.lastReading && {
+      telemetry_data: {
+        water_level: station.lastReading.value,
+        flow_rate: 0, // Default value as it might not be available
+        timestamp: station.lastReading.timestamp,
+      }
+    })
+  };
+};
+
+const adaptRainStation = (station: RainStation): ExtendedRainStationProps => {
+  return {
+    id: ensureStringId(station.id),
+    name: station.name,
+    location: station.location,
+    coordinates: station.coordinates,
+    status: station.status,
+    source: station.source,
+    lastReading: station.lastReading,
+    type: 'rain'
+  };
+};
+
+const adaptReservoir = (reservoir: Reservoir): ExtendedReservoirProps => {
+  return {
+    id: ensureStringId(reservoir.id),
+    name: reservoir.name,
+    location: reservoir.location,
+    coordinates: reservoir.coordinates,
+    status: reservoir.status,
+    source: reservoir.source,
+    capacity: reservoir.capacity,
+    currentLevel: reservoir.currentLevel,
+    percentFull: reservoir.percentFull,
+    type: 'reservoir'
+  };
+};
 
 // Common content box styles
 const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-md p-4 bg-white text-[#17254D] text-sm font-normal";
@@ -77,12 +194,17 @@ export const StationCardEditInfo: React.FC<StationCardEditInfoProps> = ({
     hasUnsavedChanges,
     
     // State management functions
-    resetChanges
-  } = useStationManagement();
-  
-  // Local state for UI
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+    resetChanges,
+    
+    // UI state
+    stationSelectionDialogOpen,
+    setStationSelectionDialogOpen,
+    
+    // Combined functions
+    openStationSelectionDialog,
+    closeStationSelectionDialog,
+    handleStationsFromDialog
+  } = useStationEditState();
   
   // Log component mount and props
   console.log("[StationCardEditInfo] Rendering with stationType:", stationType);
@@ -90,66 +212,21 @@ export const StationCardEditInfo: React.FC<StationCardEditInfoProps> = ({
   // Handle add station button click
   const handleAddStation = useCallback(() => {
     console.log(`[StationCardEditInfo] Opening dialog to add ${stationType} station`);
-    setDialogOpen(true);
-  }, [stationType]);
-  
-  // Handle dialog close
-  const handleDialogClose = useCallback(() => {
-    console.log(`[StationCardEditInfo] Closing ${stationType} station dialog`);
-    setDialogOpen(false);
-    setCurrentPage(1);
-  }, [stationType]);
-  
-  // Handle stations selected from dialog
-  const handleStationsFromDialog = useCallback((stations: any[]) => {
-    console.log(`[StationCardEditInfo] Adding ${stations.length} ${stationType} stations from dialog`);
-    
-    try {
-      if (stationType === 'monitoring') {
-        (stations as MonitoringStation[]).forEach(station => {
-          addMonitoringStation(station as any);
-        });
-      } else if (stationType === 'rain') {
-        (stations as RainStation[]).forEach(station => {
-          addRainStation(station as any);
-        });
-      } else if (stationType === 'reservoir') {
-        (stations as Reservoir[]).forEach(reservoir => {
-          addReservoir(reservoir as any);
-        });
-      }
-      
-      // Close dialog
-      handleDialogClose();
-      
-      // Show success toast
-      toast({
-        title: 'Success',
-        description: `Added ${stations.length} ${stationType} stations successfully`,
-      });
-    } catch (error) {
-      console.error(`[StationCardEditInfo] Error adding ${stationType} stations:`, error);
-      
-      // Show error toast
-      toast({
-        title: 'Error',
-        description: `Failed to add ${stationType} stations. Please try again.`,
-        variant: 'destructive'
-      });
-    }
-  }, [stationType, addMonitoringStation, addRainStation, addReservoir, handleDialogClose, toast]);
+    openStationSelectionDialog(stationType);
+  }, [stationType, openStationSelectionDialog]);
   
   // Handle remove station
-  const handleRemoveStation = useCallback((id: string) => {
-    console.log(`[StationCardEditInfo] Removing ${stationType} station ${id}`);
+  const handleRemoveStation = useCallback((id: string | number) => {
+    const stringId = ensureStringId(id);
+    console.log(`[StationCardEditInfo] Removing ${stationType} station ${stringId}`);
     
     try {
       if (stationType === 'monitoring') {
-        removeMonitoringStation(id);
+        removeMonitoringStation(stringId);
       } else if (stationType === 'rain') {
-        removeRainStation(id);
+        removeRainStation(stringId);
       } else if (stationType === 'reservoir') {
-        removeReservoir(id);
+        removeReservoir(stringId);
       }
       
       // Show success toast
@@ -170,16 +247,17 @@ export const StationCardEditInfo: React.FC<StationCardEditInfoProps> = ({
   }, [stationType, removeMonitoringStation, removeRainStation, removeReservoir, toast]);
   
   // Handle toggle station disabled
-  const handleToggleStationDisabled = useCallback((id: string, isDisabled: boolean) => {
-    console.log(`[StationCardEditInfo] Toggling ${stationType} station ${id} disabled state to ${!isDisabled}`);
+  const handleToggleStationDisabled = useCallback((id: string | number, isDisabled: boolean) => {
+    const stringId = ensureStringId(id);
+    console.log(`[StationCardEditInfo] Toggling ${stationType} station ${stringId} disabled state to ${!isDisabled}`);
     
     try {
       if (stationType === 'monitoring') {
-        toggleMonitoringStationDisabled(id);
+        toggleMonitoringStationDisabled(stringId);
       } else if (stationType === 'rain') {
-        toggleRainStationDisabled(id);
+        toggleRainStationDisabled(stringId);
       } else if (stationType === 'reservoir') {
-        toggleReservoirDisabled(id);
+        toggleReservoirDisabled(stringId);
       }
     } catch (error) {
       console.error(`[StationCardEditInfo] Error toggling ${stationType} station disabled state:`, error);
@@ -278,8 +356,8 @@ export const StationCardEditInfo: React.FC<StationCardEditInfoProps> = ({
         
         {/* Station Selection Dialog */}
         <StationSelectionDialog
-          open={dialogOpen}
-          onOpenChange={setDialogOpen}
+          open={stationSelectionDialogOpen}
+          onOpenChange={setStationSelectionDialogOpen}
           stationType={stationType}
           onStationSelect={handleStationsFromDialog}
         />
@@ -304,49 +382,85 @@ export const StationCardEditInfo: React.FC<StationCardEditInfoProps> = ({
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {stationType === 'monitoring' && (
-          (stations as MonitoringStation[]).map(station => (
-            <MonitoringStationCard
-              key={station.id}
-              station={station}
-              onRemove={() => handleRemoveStation(station.id)}
-              onToggleVisibility={() => handleToggleStationDisabled(station.id, !!disabledStations[station.id])}
-              isDisabled={!!disabledStations[station.id]}
-              hideUnitLabels={false}
-            />
-          ))
+          stations.map(station => {
+            // Type assertion with runtime check
+            if (!isMonitoringStation(station)) {
+              console.error('[StationCardEditInfo] Invalid monitoring station:', station);
+              return null;
+            }
+            
+            const stringId = ensureStringId(station.id);
+            const adaptedStation = adaptMonitoringStation(station);
+            
+            return (
+              <MonitoringStationCard
+                key={stringId}
+                station={adaptedStation}
+                showButtons={true}
+                disabled={!!disabledStations[stringId]}
+                onToggleDisabled={() => handleToggleStationDisabled(station.id, !!disabledStations[stringId])}
+                onDeleteData={() => handleRemoveStation(station.id)}
+                hideUnitLabels={false}
+              />
+            );
+          })
         )}
         
         {stationType === 'rain' && (
-          (stations as RainStation[]).map(station => (
-            <RainStationCard
-              key={station.id}
-              station={station}
-              onRemove={() => handleRemoveStation(station.id)}
-              onToggleVisibility={() => handleToggleStationDisabled(station.id, !!disabledStations[station.id])}
-              isDisabled={!!disabledStations[station.id]}
-              hideUnitLabels={true}
-            />
-          ))
+          stations.map(station => {
+            // Type assertion with runtime check
+            if (!isRainStation(station)) {
+              console.error('[StationCardEditInfo] Invalid rain station:', station);
+              return null;
+            }
+            
+            const stringId = ensureStringId(station.id);
+            const adaptedStation = adaptRainStation(station);
+            
+            return (
+              <RainStationCard
+                key={stringId}
+                station={adaptedStation}
+                showButtons={true}
+                disabled={!!disabledStations[stringId]}
+                onToggleDisabled={() => handleToggleStationDisabled(station.id, !!disabledStations[stringId])}
+                onDeleteData={() => handleRemoveStation(station.id)}
+                hideUnitLabels={true}
+              />
+            );
+          })
         )}
         
         {stationType === 'reservoir' && (
-          (stations as Reservoir[]).map(reservoir => (
-            <ReservoirCard
-              key={reservoir.id}
-              reservoir={reservoir}
-              onRemove={() => handleRemoveStation(reservoir.id)}
-              onToggleVisibility={() => handleToggleStationDisabled(reservoir.id, !!disabledStations[reservoir.id])}
-              isDisabled={!!disabledStations[reservoir.id]}
-              hideUnitLabels={true}
-            />
-          ))
+          stations.map(reservoir => {
+            // Type assertion with runtime check
+            if (!isReservoir(reservoir)) {
+              console.error('[StationCardEditInfo] Invalid reservoir:', reservoir);
+              return null;
+            }
+            
+            const stringId = ensureStringId(reservoir.id);
+            const adaptedReservoir = adaptReservoir(reservoir);
+            
+            return (
+              <ReservoirCard
+                key={stringId}
+                reservoir={adaptedReservoir}
+                showButtons={true}
+                disabled={!!disabledStations[stringId]}
+                onToggleDisabled={() => handleToggleStationDisabled(reservoir.id, !!disabledStations[stringId])}
+                onDeleteData={() => handleRemoveStation(reservoir.id)}
+                hideUnitLabels={true}
+              />
+            );
+          })
         )}
       </div>
       
       {/* Station Selection Dialog */}
       <StationSelectionDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
+        open={stationSelectionDialogOpen}
+        onOpenChange={setStationSelectionDialogOpen}
         stationType={stationType}
         onStationSelect={handleStationsFromDialog}
       />
