@@ -1,0 +1,50 @@
+[
+  {
+    "id": 2232,
+    "name": "พลิ้ว",
+    "province": "ชลบุรี",
+    "amphure": "เมืองชลบุรี",
+    "data_source": "TMD",
+    "source": "database",
+    "coordinates": {
+      "latitude": "12.524500",
+      "longitude": "102.182000"
+    }
+  },
+  {
+    "id": 2233,
+    "name": "นราธิวาส",
+    "province": "สงขลา",
+    "amphure": "เมืองสงขลา",
+    "data_source": "TMD",
+    "source": "database",
+    "coordinates": {
+      "latitude": "6.186700",
+      "longitude": "101.738000"
+    }
+  },
+  {
+    "id": 2235,
+    "name": "ปทุมธานี",
+    "province": "ปทุมธานี",
+    "amphure": "คลองหลวง",
+    "data_source": "TMD",
+    "source": "database",
+    "coordinates": {
+      "latitude": "14.053300",
+      "longitude": "100.739000"
+    }
+  },
+  {
+    "id": 2236,
+    "name": "เกาะสมุย",
+    "province": "นครศรีธรรมราช",
+    "amphure": "เมืองนครศรีธรรมราช",
+    "data_source": "TMD",
+    "source": "database",
+    "coordinates": {
+      "latitude": "9.466800",
+      "longitude": "100.045000"
+    }
+  }
+]

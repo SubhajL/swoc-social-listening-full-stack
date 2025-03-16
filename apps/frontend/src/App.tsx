@@ -1,6 +1,8 @@
+import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { 
   RouterProvider, 
@@ -21,19 +23,18 @@ import ChangePassword from "./pages/ChangePassword";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { useHydrateStore } from "./stores/storeHydration";
 import { useEffect, useState, Suspense, useCallback } from "react";
-import { JotaiProvider } from "./providers/JotaiProvider";
 import { checkApiStatus } from "./utils/api-status";
 import { RealTimeProvider } from "./contexts/RealTimeContext";
 import { ApiConnectionError } from "./components/ApiConnectionError";
 import { toast, useToast } from "@/components/ui/use-toast";
 import AuthTest from '@/pages/AuthTest';
 import { migrateLocalStorageToJotai } from "./utils/auth-migration";
-import ErrorBoundary from "@/components/ErrorBoundary";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { handleError } from "@/utils/errorHandling";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QueryClient } from "@tanstack/react-query";
-import { useAuth } from "./contexts/AuthContext";
+import { useAuth } from "./hooks/useAuth";
 
 // Create a new query client
 const queryClient = new QueryClient({
@@ -279,7 +280,7 @@ const App = () => {
 
   return (
     <ErrorBoundary onError={handleGlobalError}>
-      <JotaiProvider>
+      <ThemeProvider defaultTheme="light">
         <QueryClientProvider client={queryClient}>
           <RealTimeProvider>
             <TooltipProvider>
@@ -298,7 +299,7 @@ const App = () => {
             </TooltipProvider>
           </RealTimeProvider>
         </QueryClientProvider>
-      </JotaiProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 };

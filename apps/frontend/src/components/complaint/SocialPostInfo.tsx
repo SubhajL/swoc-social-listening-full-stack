@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ProcessedPost } from "@/types/processed-post";
 import { Complaint } from "@/types/complaint";
-import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { useAtomValue } from 'jotai';
 import { processedPostsAtom } from '@/atoms/complaintData';
 
 interface SocialPostInfoProps {
-  complaint: ProcessedPost | Complaint | null;
+  complaint: ProcessedPost | ExtendedComplaint | null;
   onSave?: () => void;
   onDiscard?: () => void;
   selectedPostIds?: string[];
@@ -37,7 +37,7 @@ const isProcessedPost = (complaint: any): complaint is ProcessedPost => {
   return complaint && ('processed_post_id' in complaint || 'text' in complaint);
 };
 
-const getIssue = (complaint: ProcessedPost | Complaint | null): string => {
+const getIssue = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isExtendedComplaint(complaint)) {
     return complaint.issue || '';
@@ -48,7 +48,7 @@ const getIssue = (complaint: ProcessedPost | Complaint | null): string => {
   return complaint.content || '';
 };
 
-const getCategory = (complaint: ProcessedPost | Complaint | null): string => {
+const getCategory = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isExtendedComplaint(complaint)) {
     return complaint.category || '';
@@ -59,7 +59,7 @@ const getCategory = (complaint: ProcessedPost | Complaint | null): string => {
   return '';
 };
 
-const getSubCategory = (complaint: ProcessedPost | Complaint | null): string => {
+const getSubCategory = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isExtendedComplaint(complaint)) {
     return complaint.sub1_category_name || '';
@@ -67,7 +67,7 @@ const getSubCategory = (complaint: ProcessedPost | Complaint | null): string => 
   return '';
 };
 
-const getReporter = (complaint: ProcessedPost | Complaint | null): string => {
+const getReporter = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isExtendedComplaint(complaint)) {
     return complaint.reporter || '';
@@ -78,7 +78,7 @@ const getReporter = (complaint: ProcessedPost | Complaint | null): string => {
   return '';
 };
 
-const getDate = (complaint: ProcessedPost | Complaint | null): string => {
+const getDate = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isExtendedComplaint(complaint)) {
     return complaint.date || '';
@@ -93,7 +93,7 @@ const getDate = (complaint: ProcessedPost | Complaint | null): string => {
   return '';
 };
 
-const getLink = (complaint: ProcessedPost | Complaint | null): string => {
+const getLink = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isExtendedComplaint(complaint)) {
     return complaint.link || '';
@@ -104,7 +104,7 @@ const getLink = (complaint: ProcessedPost | Complaint | null): string => {
   return '';
 };
 
-const getLatitude = (complaint: ProcessedPost | Complaint | null): string => {
+const getLatitude = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isExtendedComplaint(complaint)) {
     return complaint.coordinates?.lat?.toString() || '';
@@ -115,7 +115,7 @@ const getLatitude = (complaint: ProcessedPost | Complaint | null): string => {
   return '';
 };
 
-const getLongitude = (complaint: ProcessedPost | Complaint | null): string => {
+const getLongitude = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isExtendedComplaint(complaint)) {
     return complaint.coordinates?.lng?.toString() || '';
@@ -126,7 +126,7 @@ const getLongitude = (complaint: ProcessedPost | Complaint | null): string => {
   return '';
 };
 
-const getProvince = (complaint: ProcessedPost | Complaint | null): string => {
+const getProvince = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isExtendedComplaint(complaint)) {
     return Array.isArray(complaint.province) && complaint.province.length > 0 
@@ -141,7 +141,7 @@ const getProvince = (complaint: ProcessedPost | Complaint | null): string => {
   return '';
 };
 
-const getAmphure = (complaint: ProcessedPost | Complaint | null): string => {
+const getAmphure = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isExtendedComplaint(complaint)) {
     return Array.isArray(complaint.amphure) && complaint.amphure.length > 0 
@@ -156,7 +156,7 @@ const getAmphure = (complaint: ProcessedPost | Complaint | null): string => {
   return '';
 };
 
-const getTumbon = (complaint: ProcessedPost | Complaint | null): string => {
+const getTumbon = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isExtendedComplaint(complaint)) {
     return Array.isArray(complaint.tumbon) && complaint.tumbon.length > 0 

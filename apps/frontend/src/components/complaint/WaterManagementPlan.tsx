@@ -1,5 +1,5 @@
 import { Layers, Info as InfoIcon, Plus } from "lucide-react";
-import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { useEffect } from "react";
 import { cleanLocationString, formatLocationForDisplay } from "@/lib/location-utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";

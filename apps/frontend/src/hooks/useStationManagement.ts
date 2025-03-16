@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef, useEffect } from 'react';
 import {
   // Station data atoms
   monitoringStationsAtom,
@@ -11,6 +11,24 @@ import {
   disabledMonitoringStationsAtom,
   disabledRainStationsAtom,
   disabledReservoirsAtom,
+  
+  // Original state atoms
+  originalMonitoringStationsAtom,
+  originalRainStationsAtom,
+  originalReservoirsAtom,
+  originalUserSelectedMonitoringStationsAtom,
+  originalUserSelectedRainStationsAtom,
+  originalUserSelectedReservoirsAtom,
+  originalDisabledMonitoringStationsAtom,
+  originalDisabledRainStationsAtom,
+  originalDisabledReservoirsAtom,
+  
+  // State management atoms
+  isEditModeAtom,
+  hasUnsavedChangesAtom,
+  saveOriginalStateAtom,
+  restoreOriginalStateAtom,
+  trackStationChangesAtom,
   
   // Location atoms
   currentAmphureAtom,
@@ -42,6 +60,7 @@ import {
   RainStation,
   Reservoir
 } from '../atoms/stationData';
+import { useToast } from '@/components/ui/use-toast';
 
 // Define navigation state type
 export interface NavigationState {
@@ -75,6 +94,26 @@ export function useStationManagement() {
   const [disabledRain, setDisabledRain] = useAtom(disabledRainStationsAtom);
   const [disabledReservoirs, setDisabledReservoirs] = useAtom(disabledReservoirsAtom);
   
+  // Get original state atoms
+  const [originalMonitoring] = useAtom(originalMonitoringStationsAtom);
+  const [originalRain] = useAtom(originalRainStationsAtom);
+  const [originalReservoirs] = useAtom(originalReservoirsAtom);
+  
+  const [originalUserSelectedMonitoring] = useAtom(originalUserSelectedMonitoringStationsAtom);
+  const [originalUserSelectedRain] = useAtom(originalUserSelectedRainStationsAtom);
+  const [originalUserSelectedReservoirs] = useAtom(originalUserSelectedReservoirsAtom);
+  
+  const [originalDisabledMonitoring] = useAtom(originalDisabledMonitoringStationsAtom);
+  const [originalDisabledRain] = useAtom(originalDisabledRainStationsAtom);
+  const [originalDisabledReservoirs] = useAtom(originalDisabledReservoirsAtom);
+  
+  // Get state management atoms
+  const [isEditMode, setIsEditMode] = useAtom(isEditModeAtom);
+  const [hasUnsavedChanges] = useAtom(hasUnsavedChangesAtom);
+  const saveOriginalState = useSetAtom(saveOriginalStateAtom);
+  const restoreOriginalState = useSetAtom(restoreOriginalStateAtom);
+  const trackStationChanges = useSetAtom(trackStationChangesAtom);
+  
   // Get location atoms
   const [currentAmphure, setCurrentAmphure] = useAtom(currentAmphureAtom);
   const [currentProvince, setCurrentProvince] = useAtom(currentProvinceAtom);
@@ -100,7 +139,10 @@ export function useStationManagement() {
   const syncReservoirs = useSetAtom(syncReservoirsAtom);
   
   // Get edit session atom
-  const [editSession, setEditSession] = useAtom(editSessionStatusAtom);
+  const [editSessionStatus, setEditSessionStatus] = useAtom(editSessionStatusAtom);
+  
+  // Get toast function
+  const { toast } = useToast();
   
   // Create refs for stable function references
   const syncFunctionsRef = useRef({
@@ -176,7 +218,7 @@ export function useStationManagement() {
   
   // Function to mark edit session as changed
   const markChanged = useCallback((type: 'monitoring' | 'rain' | 'reservoir') => {
-    setEditSession(prev => {
+    setEditSessionStatus(prev => {
       // Check if this station type is already in the array
       const hasStationType = prev.changedStationTypes.includes(type);
       
@@ -188,7 +230,7 @@ export function useStationManagement() {
           : [...prev.changedStationTypes, type]
       };
     });
-  }, [setEditSession]);
+  }, [setEditSessionStatus]);
   
   // Function to add a monitoring station
   const addMonitoringStation = useCallback((station: MonitoringStation) => {
@@ -393,7 +435,7 @@ export function useStationManagement() {
   const resetChanges = useCallback(() => {
     try {
       // Reset edit session status
-      setEditSession({
+      setEditSessionStatus({
         hasChanges: false,
         lastEditTimestamp: 0,
         changedStationTypes: []
@@ -418,7 +460,7 @@ export function useStationManagement() {
       throw error;
     }
   }, [
-    setEditSession,
+    setEditSessionStatus,
     setDisabledMonitoring,
     setDisabledRain,
     setDisabledReservoirs,
@@ -462,72 +504,65 @@ export function useStationManagement() {
     }
   }, [currentAmphure, currentProvince, setCurrentAmphure, setCurrentProvince]);
   
-  // Function to check if there are unsaved changes
-  const hasUnsavedChanges = useMemo(() => {
-    return editSession.hasChanges;
-  }, [editSession.hasChanges]);
+  // Function to enter edit mode and save the original state
+  const enterEditMode = useCallback(() => {
+    console.log('[useStationManagement] Entering edit mode and saving original state');
+    saveOriginalState();
+  }, [saveOriginalState]);
   
-  // Function to save changes
-  const saveChanges = useCallback(() => {
-    try {
-      // Log current state before saving
-      console.log('[useStationManagement] Saving changes');
-      
-      // Mark edit session as saved without resetting the data
-      setEditSession(prev => ({
-        ...prev,
-        hasChanges: false
-      }));
-      
-      // Create navigation state for returning to complaint form
-      const navigationState: NavigationState = {
-        returnedFromStationEdit: true,
-        editSessionTimestamp: Date.now(),
-        changedStationTypes: editSession.changedStationTypes
-      };
-      
-      console.log('[useStationManagement] Changes saved, navigation state:', navigationState);
-      
-      return navigationState;
-    } catch (error) {
-      console.error('[useStationManagement] Error saving changes:', error);
-      throw error;
-    }
-  }, [setEditSession, editSession.changedStationTypes]);
-  
-  // Function to discard changes and prepare navigation state
+  // Function to exit edit mode without saving changes (discard)
   const discardChanges = useCallback(() => {
-    try {
-      // Reset all changes
-      resetChanges();
-      
-      // Create navigation state for returning to complaint form
-      const navigationState: NavigationState = {
-        preserveState: true,
-        discardedChanges: true
-      };
-      
-      return navigationState;
-    } catch (error) {
-      console.error('[useStationManagement] Error discarding changes:', error);
-      throw error;
-    }
-  }, [resetChanges]);
+    console.log('[useStationManagement] Discarding changes and restoring original state');
+    restoreOriginalState();
+    
+    // Show toast notification
+    toast({
+      title: "การเปลี่ยนแปลงถูกยกเลิก",
+      description: "การเปลี่ยนแปลงทั้งหมดถูกยกเลิกและคืนค่ากลับเป็นค่าเดิม",
+      variant: "default",
+    });
+    
+    return true; // Return true to indicate successful discard
+  }, [restoreOriginalState, toast]);
   
-  // Function to handle navigation from StationCardEdit to ComplaintForm
-  const prepareNavigationState = useCallback((saveChanges: boolean) => {
-    if (saveChanges) {
-      return {
-        returnedFromStationEdit: true,
-        editSessionTimestamp: Date.now()
-      };
-    } else {
-      return {
-        preserveState: true,
-        discardedChanges: true
-      };
+  // Function to save changes and exit edit mode
+  const saveChanges = useCallback(() => {
+    console.log('[useStationManagement] Saving changes and exiting edit mode');
+    
+    // Update the original state to match the current state
+    saveOriginalState();
+    
+    // Reset edit mode
+    setIsEditMode(false);
+    
+    // Show toast notification
+    toast({
+      title: "บันทึกการเปลี่ยนแปลงสำเร็จ",
+      description: "การเปลี่ยนแปลงทั้งหมดถูกบันทึกเรียบร้อยแล้ว",
+      variant: "default",
+    });
+    
+    return true; // Return true to indicate successful save
+  }, [saveOriginalState, setIsEditMode, toast]);
+  
+  // Track changes whenever station data changes
+  useEffect(() => {
+    if (isEditMode) {
+      trackStationChanges();
     }
-  }, []);
+  }, [
+    isEditMode,
+    trackStationChanges,
+    monitoringStations,
+    rainStations,
+    reservoirs,
+    userSelectedMonitoring,
+    userSelectedRain,
+    userSelectedReservoirs,
+    disabledMonitoring,
+    disabledRain,
+    disabledReservoirs
+  ]);
   
   // Function to synchronize all station data
   const synchronizeAllStations = useCallback(() => {
@@ -797,7 +832,7 @@ export function useStationManagement() {
     reservoirsError,
     
     // Edit session state
-    editSession,
+    editSessionStatus,
     hasUnsavedChanges,
     
     // Station management functions
@@ -816,10 +851,24 @@ export function useStationManagement() {
     updateLocation,
     markChanged,
     
-    // Navigation functions
-    saveChanges,
+    // Original state
+    originalMonitoring,
+    originalRain,
+    originalReservoirs,
+    originalUserSelectedMonitoring,
+    originalUserSelectedRain,
+    originalUserSelectedReservoirs,
+    originalDisabledMonitoring,
+    originalDisabledRain,
+    originalDisabledReservoirs,
+    
+    // State management
+    isEditMode,
+    enterEditMode,
     discardChanges,
-    prepareNavigationState,
+    saveChanges,
+    
+    // Navigation functions
     handleReturnFromStationEdit,
     
     // Synchronization functions

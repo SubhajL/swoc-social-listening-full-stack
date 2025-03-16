@@ -35,6 +35,15 @@ interface ExtendedRainStation {
   rainfall_3d?: number;
   rainfall_7d?: number;
   source?: 'system' | 'user';
+  // Add new fields for TMD and HII stations
+  data_source?: string;
+  rainfall10m?: number | null;
+  rainfall1h?: number | null;
+  rainfall3h?: number | null;
+  rainfall24h?: number | null;
+  rainfall_today?: number | null;
+  rainfall_date_calc?: string | null;
+  rainfall_datetime?: string | null;
 }
 
 interface RainStationCardProps {
@@ -140,33 +149,80 @@ const RainStationCardComponent = ({
     return data;
   }, [thaiWaterStationId, thaiWaterApiData]);
 
+  // Helper function to parse numeric values safely
+  const parseNumericValue = (value: any): number => {
+    if (value === null || value === undefined) return 0;
+    if (typeof value === 'number') return value;
+    if (typeof value === 'string') {
+      const parsed = parseFloat(value);
+      return isNaN(parsed) ? 0 : parsed;
+    }
+    return 0;
+  };
+
   // Get rainfall data from station or fallback to defaults
   const rainfallData = useMemo(() => {
     // First try to use ThaiWater data if available
     if (thaiWaterData) {
       return {
-        dailyRainfall: thaiWaterData.rainfall_today || 0,
-        hourlyRainfall: thaiWaterData.rainfall1h || 0,
+        rainfall24h: parseNumericValue(thaiWaterData.rainfall24h),
+        rainfallToday: parseNumericValue(thaiWaterData.rainfall_today),
         rainfallTimestamp: thaiWaterData.rainfall_datetime || new Date().toISOString()
+      };
+    }
+    
+    // Check if this is a TMD station
+    if (station.data_source === 'TMD') {
+      return {
+        rainfall24h: parseNumericValue(station.rainfall24h),
+        rainfallToday: null, // No rainfall_today data for TMD stations
+        rainfallTimestamp: station.rainfall_datetime || new Date().toISOString()
+      };
+    }
+    
+    // Check if this is an HII station
+    if (station.data_source === 'HII') {
+      return {
+        rainfall24h: parseNumericValue(station.rainfall24h),
+        rainfallToday: parseNumericValue(station.rainfall_today),
+        rainfallTimestamp: station.rainfall_datetime || new Date().toISOString()
       };
     }
     
     // Then try to use station's own rainfall data if available
     if (station.rainfall) {
       return {
-        dailyRainfall: station.rainfall.daily ?? 0,
-        hourlyRainfall: station.rainfall.hourly ?? 0,
+        rainfall24h: parseNumericValue(station.rainfall.daily),
+        rainfallToday: parseNumericValue(station.rainfall.daily), // Use daily as fallback for today
         rainfallTimestamp: station.rainfall.timestamp ?? new Date().toISOString()
       };
     }
     
     // Finally, use station's rainfall_3d and rainfall_7d as fallbacks
     return {
-      dailyRainfall: station.rainfall_3d ?? 0,
-      hourlyRainfall: 0, // No hourly data available in this case
+      rainfall24h: parseNumericValue(station.rainfall_3d),
+      rainfallToday: parseNumericValue(station.rainfall_3d), // Use 3d as fallback for today
       rainfallTimestamp: new Date().toISOString()
     };
-  }, [thaiWaterData, station.rainfall, station.rainfall_3d, station.rainfall_7d]);
+  }, [thaiWaterData, station]);
+
+  // Format timestamp for display
+  const formattedTimestamp = useMemo(() => {
+    try {
+      if (!rainfallData.rainfallTimestamp) return '';
+      const date = new Date(rainfallData.rainfallTimestamp);
+      return date.toLocaleString('th-TH', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      console.error('Error formatting timestamp:', e);
+      return '';
+    }
+  }, [rainfallData.rainfallTimestamp]);
 
   return (
     <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-1.5">
@@ -178,6 +234,11 @@ const RainStationCardComponent = ({
         {station.station_id && (
           <span className="text-sm text-gray-500 ml-2">
             (ID: {station.station_id})
+          </span>
+        )}
+        {station.data_source && (
+          <span className="text-xs text-gray-500 ml-2">
+            ({station.data_source})
           </span>
         )}
       </Label>
@@ -195,14 +256,10 @@ const RainStationCardComponent = ({
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center whitespace-nowrap overflow-hidden">
-                    <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">วันนี้</span>
+                    <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">24 ชั่วโมง</span>
                     <div className="flex items-center flex-shrink-0">
                       <Input 
-                        value={
-                          (station.rainfall_3d !== undefined && station.rainfall_3d !== null) 
-                            ? station.rainfall_3d.toFixed(2) 
-                            : rainfallData.dailyRainfall.toFixed(2)
-                        } 
+                        value={rainfallData.rainfall24h !== null ? rainfallData.rainfall24h.toFixed(2) : "0.00"} 
                         readOnly 
                         disabled={disabled}
                         className="w-[70px] h-8 text-right"
@@ -211,22 +268,40 @@ const RainStationCardComponent = ({
                     </div>
                   </div>
                   <div className="flex items-center whitespace-nowrap overflow-hidden">
-                    <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">เมื่อวาน</span>
+                    <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">
+                      วันนี้
+                    </span>
                     <div className="flex items-center flex-shrink-0">
-                      <Input 
-                        value={
-                          (station.rainfall_7d !== undefined && station.rainfall_7d !== null) 
-                            ? station.rainfall_7d.toFixed(2) 
-                            : '0.00'
-                        } 
-                        readOnly 
-                        disabled={disabled}
-                        className="w-[70px] h-8 text-right"
-                      />
-                      <span className="text-sm whitespace-nowrap ml-1">มม.</span>
+                      {station.data_source === 'TMD' ? (
+                        <div className="text-sm text-gray-500">ไม่มีข้อมูล</div>
+                      ) : (
+                        <>
+                          <Input 
+                            value={rainfallData.rainfallToday !== null ? rainfallData.rainfallToday.toFixed(2) : "0.00"} 
+                            readOnly 
+                            disabled={disabled}
+                            className="w-[70px] h-8 text-right"
+                          />
+                          <span className="text-sm whitespace-nowrap ml-1">มม.</span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
+                
+                {/* Add timestamp display */}
+                {formattedTimestamp && (
+                  <div className="text-xs text-gray-500 mt-2">
+                    อัพเดทล่าสุด: {formattedTimestamp}
+                  </div>
+                )}
+                
+                {/* Add note for TMD stations */}
+                {station.data_source === 'TMD' && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    สถานี TMD ไม่มีข้อมูลปริมาณน้ำฝนวันนี้
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { Layers, Info as InfoIcon, AlertCircle, Plus, FileText } from "lucide-react";
-import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { cleanLocationString, formatLocationForDisplay } from "@/lib/location-utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { currentAmphureAtom, currentProvinceAtom } from "@/atoms/stationData";
@@ -8,7 +8,7 @@ import { useAtomValue } from "jotai";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { waterManagementPlanDataAtom } from "@/components/complaint/WaterManagementPlanDialog";
-import React, { useMemo } from "react";
+import { useMemo, memo } from "react";
 
 interface WaterManagementPlanCardProps {
   className?: string;
@@ -16,7 +16,7 @@ interface WaterManagementPlanCardProps {
   onAddData?: () => void;
 }
 
-export const WaterManagementPlanCard = React.memo(({ 
+export const WaterManagementPlanCard = memo(({ 
   className = "",
   title = "แผนการบริหารจัดการน้ำ",
   onAddData

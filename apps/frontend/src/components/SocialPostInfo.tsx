@@ -1,3 +1,4 @@
+import React from 'react';
 import { ProcessedPost, ComplaintWithOrganization } from '../types';
 import { Card } from './ui/card';
 import { MessageSquare, MapPin, Calendar } from 'lucide-react';

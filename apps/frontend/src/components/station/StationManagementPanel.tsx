@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Box, Button, Card, CardContent, CardHeader, Chip, CircularProgress, Divider, Grid, IconButton, List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText, Tab, Tabs, Typography } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon, Refresh as RefreshIcon, Save as SaveIcon, Undo as UndoIcon } from '@mui/icons-material';
 import { useStationManagement } from '../../hooks/useStationManagement';
-import { MonitoringStation, RainStation, Reservoir } from '../../atoms/stationData';
+import { MonitoringStation, RainStation, Reservoir, selectedRainDataSourceAtom, filteredRainStationsAtom } from '../../atoms/stationData';
 import { useTranslation } from 'react-i18next';
+import RainDataSourceSelector from '../monitoring/RainDataSourceSelector';
+import { useAtom } from 'jotai';
 
 interface StationManagementPanelProps {
   onSave?: () => void;
@@ -144,6 +146,9 @@ export const StationManagementPanel: React.FC<StationManagementPanelProps> = ({ 
   
   // Render rain stations list
   const renderRainStations = () => {
+    const [dataSource] = useAtom(selectedRainDataSourceAtom);
+    const [filteredStations] = useAtom(filteredRainStationsAtom);
+    
     if (isLoadingRain) {
       return (
         <Box display="flex" justifyContent="center" alignItems="center" p={3}>
@@ -162,7 +167,10 @@ export const StationManagementPanel: React.FC<StationManagementPanelProps> = ({ 
       );
     }
     
-    if (allAvailableRainStations.length === 0) {
+    // Use filtered stations instead of all available stations
+    const stationsToDisplay = filteredStations.length > 0 ? filteredStations : allAvailableRainStations;
+    
+    if (stationsToDisplay.length === 0) {
       return (
         <Box p={2}>
           <Typography color="textSecondary">
@@ -173,32 +181,41 @@ export const StationManagementPanel: React.FC<StationManagementPanelProps> = ({ 
     }
     
     return (
-      <List>
-        {allAvailableRainStations.map((station) => (
-          <ListItem key={station.id}>
-            <ListItemIcon>
-              <Chip 
-                label={station.type.charAt(0).toUpperCase()} 
-                color="info" 
-                size="small" 
+      <>
+        <Box p={2}>
+          <RainDataSourceSelector className="mb-4" />
+          <Typography variant="subtitle2" color="textSecondary" className="mt-2">
+            {t('Showing')} {stationsToDisplay.length} {t('stations')} 
+            {dataSource !== 'ALL' ? ` ${t('from')} ${dataSource}` : ''}
+          </Typography>
+        </Box>
+        <List>
+          {stationsToDisplay.map((station) => (
+            <ListItem key={station.id}>
+              <ListItemIcon>
+                <Chip 
+                  label={station.data_source || 'R'} 
+                  color="info" 
+                  size="small" 
+                />
+              </ListItemIcon>
+              <ListItemText 
+                primary={station.name} 
+                secondary={`${station.province || ''}, ${station.amphure || ''} (${station.latitude?.toFixed(4) || '0'}, ${station.longitude?.toFixed(4) || '0'})`} 
               />
-            </ListItemIcon>
-            <ListItemText 
-              primary={station.name} 
-              secondary={`${station.location} (${station.coordinates.lat.toFixed(4)}, ${station.coordinates.lng.toFixed(4)})`} 
-            />
-            <ListItemSecondaryAction>
-              <IconButton 
-                edge="end" 
-                aria-label="delete" 
-                onClick={() => removeRainStation(station.id)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))}
-      </List>
+              <ListItemSecondaryAction>
+                <IconButton 
+                  edge="end" 
+                  aria-label="delete" 
+                  onClick={() => removeRainStation(station.id)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+      </>
     );
   };
   

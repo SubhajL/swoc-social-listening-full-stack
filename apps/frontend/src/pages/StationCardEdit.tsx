@@ -1,17 +1,15 @@
-import React, { useEffect, useCallback, useMemo, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useCallback, useMemo, useRef, useState } from 'react';
 import { useAtom } from 'jotai';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useBlocker } from '@/hooks/useBlocker';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Save, X, AlertTriangle } from 'lucide-react';
 import { StationCardEditInfo } from '@/components/complaint/StationCardEditInfo';
-import ComplaintInfoCard from '@/components/shared/ComplaintInfoCard';
+import { useStationManagement } from '@/hooks/useStationManagement';
 import { UnsavedChangesDialog } from '@/components/complaint/UnsavedChangesDialog';
-import { useStationEditState } from '@/hooks/useStationEditState';
-import { useToast } from '@/components/ui/use-toast';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { handleError, parseError, createRetryFunction, isTimeoutError, isNetworkError } from '@/utils/errorHandling';
+import { ComplaintInfoCard } from '@/components/shared/ComplaintInfoCard';
+import { useComplaintData } from '@/atoms/hooks';
 import { 
   syncErrorAtom, 
   syncErrorMessageAtom, 
@@ -22,539 +20,339 @@ import {
   setErrorStateAtom,
   incrementRetryCountAtom
 } from '@/atoms/errorHandlingUI';
+import { AlertCircle, RefreshCw, Settings, ArrowLeft, Save, X, Bell } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/components/ui/use-toast';
+import { useAuth } from "@/hooks/useAuth";
+import logo1 from "@/assets/logo1.png";
+import logo2 from "@/assets/logo2.png";
+import { WaterLevelInfoCard, WaterManagementPlanCard } from "@/components/shared";
+import { currentAmphureAtom, currentProvinceAtom } from "@/atoms/stationData";
 
 // Create memoized station type components to prevent unnecessary re-renders
-const MemoizedMonitoringTab = React.memo(() => <StationCardEditInfo stationType="monitoring" />);
-const MemoizedRainTab = React.memo(() => <StationCardEditInfo stationType="rain" />);
-const MemoizedReservoirTab = React.memo(() => <StationCardEditInfo stationType="reservoir" />);
+const MonitoringStationTab = () => (
+  <TabsContent value="monitoring">
+    <StationCardEditInfo stationType="monitoring" />
+  </TabsContent>
+);
+
+const RainStationTab = () => (
+  <TabsContent value="rain">
+    <StationCardEditInfo stationType="rain" />
+  </TabsContent>
+);
+
+const ReservoirTab = () => (
+  <TabsContent value="reservoir">
+    <StationCardEditInfo stationType="reservoir" />
+  </TabsContent>
+);
+
+// Header component with settings button and navigation
+const StationCardEditHeader = () => {
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
+  
+  const handleSettingsClick = () => {
+    navigate('/settings');
+  };
+  
+  return (
+    <div className="flex justify-between items-center w-full p-4 bg-white border-b border-gray-200">
+      <div className="flex items-center space-x-2">
+        <img src={logo1} alt="Logo 1" className="h-10" />
+        <img src={logo2} alt="Logo 2" className="h-10" />
+      </div>
+      <div className="flex items-center space-x-4">
+        <div className="flex space-x-4">
+          <Link to="/system-online" className="text-gray-600 hover:text-blue-600">
+            ระบบจัดการข้อมูลสื่อสังคมออนไลน์
+          </Link>
+          <Link to="/system-complaint" className="text-blue-600 font-medium">
+            ระบบตอบประเด็นข้อร้องเรียน
+          </Link>
+          <Link to="/system-dashboard" className="text-gray-600 hover:text-blue-600">
+            ระบบแสดงผลข้อมูลและสรุปผลผู้บริหาร
+          </Link>
+        </div>
+        <Button variant="ghost" size="icon" onClick={handleSettingsClick}>
+          <Settings className="h-5 w-5" />
+        </Button>
+        <Button variant="ghost" size="icon">
+          <Bell className="h-5 w-5" />
+        </Button>
+        {isAuthenticated && (
+          <Link to="/profile" className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-600 font-medium">
+            {user?.name?.charAt(0) || 'U'}
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+};
 
 /**
  * StationCardEdit component for editing station data
  * Uses the useStationEditState hook for state management
  */
-const StationCardEdit: React.FC = () => {
+const StationCardEdit = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
   
   // Use Jotai atoms for error handling UI state instead of local state
-  const [syncError, setSyncError] = useAtom(syncErrorAtom);
-  const [syncErrorMessage, setSyncErrorMessage] = useAtom(syncErrorMessageAtom);
-  const [isRetrying, setIsRetrying] = useAtom(isRetryingAtom);
-  const [retryCount, setRetryCount] = useAtom(retryCountAtom);
+  const [syncError] = useAtom(syncErrorAtom);
+  const [syncErrorMessage] = useAtom(syncErrorMessageAtom);
+  const [isRetrying] = useAtom(isRetryingAtom);
+  const [retryCount] = useAtom(retryCountAtom);
   const [MAX_RETRY_ATTEMPTS] = useAtom(maxRetryAttemptsAtom);
   const resetErrorState = useAtom(resetErrorStateAtom)[1];
   const setErrorState = useAtom(setErrorStateAtom)[1];
   const incrementRetryCount = useAtom(incrementRetryCountAtom)[1];
   
-  // Get station management functions and state from hook
-  const {
-    // Station data status
-    hasUnsavedChanges,
-    areAllMonitoringStationsDisabled,
-    areAllRainStationsDisabled,
-    areAllReservoirsDisabled,
-    
-    // Loading states
-    isLoadingMonitoring,
-    isLoadingRain,
-    isLoadingReservoirs,
-    
-    // UI state
-    unsavedChangesDialogOpen,
-    setUnsavedChangesDialogOpen,
-    currentStationType,
-    setCurrentStationType,
-    
-    // Station management functions
-    synchronizeAllStations,
-    
-    // Navigation functions
-    handleBackNavigation,
-    saveChangesAndNavigate,
-    discardChangesAndNavigate,
-    cancelNavigation
-  } = useStationEditState();
+  // Get complaint data from Jotai store
+  const complaintData = useComplaintData();
   
-  // Create stable references for functions
-  const stableFunctionsRef = useRef({
-    synchronizeAllStations,
-    handleBackNavigation,
-    saveChangesAndNavigate,
-    discardChangesAndNavigate,
-    cancelNavigation
+  // Get station management functions
+  const {
+    hasUnsavedChanges,
+    enterEditMode,
+    discardChanges,
+    saveChanges,
+    isEditMode
+  } = useStationManagement();
+  
+  // State for the unsaved changes dialog
+  const [showUnsavedChangesDialog, setShowUnsavedChangesDialog] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+  
+  // Initialize edit mode when component mounts
+  useEffect(() => {
+    console.log('[StationCardEdit] Component mounted, entering edit mode');
+    enterEditMode();
+  }, [enterEditMode]);
+  
+  // Define handleError function
+  const handleError = useCallback((error: Error) => {
+    console.error('Operation failed:', error);
+    setErrorState(error, error.message || 'An unknown error occurred');
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: error.message || 'An unknown error occurred',
+    });
+  }, [toast, setErrorState]);
+  
+  // Fix the useBlocker hook usage
+  const blocker = useBlocker(({ currentLocation, nextLocation }: { 
+    currentLocation: { pathname: string }, 
+    nextLocation: { pathname: string } 
+  }) => {
+    return hasUnsavedChanges && currentLocation.pathname !== nextLocation.pathname;
   });
   
-  // Update refs when functions change
-  stableFunctionsRef.current = {
-    synchronizeAllStations,
-    handleBackNavigation,
-    saveChangesAndNavigate,
-    discardChangesAndNavigate,
-    cancelNavigation
-  };
-  
-  // Memoize the loading state to avoid unnecessary re-renders
-  const isLoading = useMemo(() => 
-    isLoadingMonitoring || isLoadingRain || isLoadingReservoirs,
-    [isLoadingMonitoring, isLoadingRain, isLoadingReservoirs]
-  );
-  
-  // Function to synchronize station data with enhanced error handling
-  const synchronizeStationData = useCallback(async () => {
-    try {
-      // Reset error state using the atom action
-      resetErrorState();
-      
-      // Set a timeout for the synchronization
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Synchronization timed out')), 15000);
-      });
-      
-      // Race the synchronization against the timeout
-      await Promise.race([
-        stableFunctionsRef.current.synchronizeAllStations(),
-        timeoutPromise
-      ]);
-      
-      // Reset retry count on success
-      setRetryCount(0);
-      
-      // Show success toast
-      toast({
-        title: 'ซิงโครไนซ์ข้อมูลสำเร็จ',
-        description: 'ข้อมูลสถานีได้รับการอัปเดตเรียบร้อยแล้ว',
-      });
-    } catch (error) {
-      const typedError = parseError(error);
-      console.error('[StationCardEdit] Error synchronizing station data:', typedError);
-      
-      // Set the error state using the atom action
-      setErrorState(typedError, typedError.message || 'Unknown error');
-      
-      // Determine error type for better user feedback
-      let errorTitle = 'ไม่สามารถซิงโครไนซ์ข้อมูลสถานีได้';
-      let errorDescription = 'เกิดข้อผิดพลาดในการซิงโครไนซ์ข้อมูลสถานี กรุณาลองใหม่อีกครั้ง';
-      
-      if (isTimeoutError(typedError)) {
-        errorTitle = 'การซิงโครไนซ์ข้อมูลใช้เวลานานเกินไป';
-        errorDescription = 'การเชื่อมต่อกับเซิร์ฟเวอร์ใช้เวลานานเกินไป กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตและลองใหม่อีกครั้ง';
-      } else if (isNetworkError(typedError)) {
-        errorTitle = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้';
-        errorDescription = 'เกิดปัญหาการเชื่อมต่อเครือข่าย กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตและลองใหม่อีกครั้ง';
-      }
-      
-      // Create an async wrapper for handleRetry to match the expected Promise<any> type
-      const asyncRetry = async () => {
-        await handleRetry();
-        return true;
-      };
-      
-      // Use centralized error handling with recovery options
-      handleError({
-        source: 'apiCall',
-        operation: 'synchronizeAllStations',
-        originalError: typedError,
-        component: 'StationCardEdit',
-        details: {
-          monitoringDisabled: areAllMonitoringStationsDisabled,
-          rainDisabled: areAllRainStationsDisabled,
-          reservoirsDisabled: areAllReservoirsDisabled,
-          retryCount
-        },
-        recoveryOptions: {
-          retry: retryCount < MAX_RETRY_ATTEMPTS ? asyncRetry : undefined
-        }
-      });
-      
-      // Show error toast with retry button
-      toast({
-        title: errorTitle,
-        description: errorDescription,
-        variant: 'destructive',
-        action: retryCount < MAX_RETRY_ATTEMPTS ? (
-          <Button variant="outline" size="sm" onClick={handleRetry}>
-            ลองใหม่
-          </Button>
-        ) : undefined
-      });
-    }
-  }, [
-    toast, 
-    retryCount, 
-    areAllMonitoringStationsDisabled, 
-    areAllRainStationsDisabled, 
-    areAllReservoirsDisabled,
-    resetErrorState,
-    setErrorState,
-    setRetryCount,
-    MAX_RETRY_ATTEMPTS
-  ]);
-  
-  // Log component mount and props
+  // Handle blocked navigation
   useEffect(() => {
-    // Check for edge cases where all stations of a type are disabled
-    if (areAllMonitoringStationsDisabled || areAllRainStationsDisabled || areAllReservoirsDisabled) {
-      console.warn('[StationCardEdit] Some station types are completely disabled');
+    if (blocker.state === 'blocked') {
+      setShowUnsavedChangesDialog(true);
+      setPendingNavigation(blocker.location?.pathname || '');
     }
-    
-    // Synchronize all station data on mount
-    synchronizeStationData();
-  }, [
-    areAllMonitoringStationsDisabled, 
-    areAllRainStationsDisabled, 
-    areAllReservoirsDisabled,
-    synchronizeStationData
-  ]);
+  }, [blocker]);
   
-  // Function to retry synchronization with exponential backoff
-  const handleRetry = useCallback(async () => {
-    setIsRetrying(true);
-    incrementRetryCount();
-    
+  // Handle save button click
+  const handleSave = useCallback(async () => {
     try {
-      // Add exponential backoff
-      const backoffDelay = 1000 * Math.pow(2, retryCount);
-      await new Promise(resolve => setTimeout(resolve, backoffDelay));
+      console.log('[StationCardEdit] Save button clicked');
       
-      await synchronizeStationData();
-    } catch (error) {
-      // Error is already handled in synchronizeStationData
-      console.error('[StationCardEdit] Retry failed:', error);
-    } finally {
-      setIsRetrying(false);
-    }
-  }, [retryCount, synchronizeStationData, setIsRetrying, incrementRetryCount]);
-  
-  // Handle navigation back with enhanced error handling
-  const handleBack = useCallback(() => {
-    try {
-      const navigationResult = stableFunctionsRef.current.handleBackNavigation('/complaint-form');
+      // Save changes
+      const result = saveChanges();
       
-      if (navigationResult) {
-        // Navigate using the path from the result, but don't pass state via react-router
-        // The navigation state is now stored in Jotai atoms
-        navigate(navigationResult.path);
+      if (result) {
+        // Navigate back to the complaint form
+        navigate('/complaint/create', { 
+          state: { 
+            returnedFromStationEdit: true,
+            editSessionTimestamp: Date.now()
+          } 
+        });
       }
     } catch (error) {
-      // Use centralized error handling with fallback navigation
-      handleError({
-        source: 'navigation',
-        operation: 'handleBack',
-        originalError: parseError(error),
-        component: 'StationCardEdit',
-        recoveryOptions: {
-          fallback: () => navigate('/complaint-form')
-        }
-      });
-      
-      // Show error toast
-      toast({
-        title: 'ไม่สามารถย้อนกลับได้',
-        description: 'เกิดข้อผิดพลาดในการนำทางย้อนกลับ กำลังนำทางไปยังหน้าแบบฟอร์มร้องเรียน',
-        variant: 'destructive'
-      });
-      
-      // Fallback navigation
-      navigate('/complaint-form');
-    }
-  }, [navigate, toast]);
-  
-  // Handle save with enhanced error handling
-  const handleSave = useCallback(() => {
-    try {
-      // Save changes and get navigation info
-      const navigationInfo = stableFunctionsRef.current.saveChangesAndNavigate();
-      
-      // Navigate using the path from the result, but don't pass state via react-router
-      // The navigation state is now stored in Jotai atoms
-      navigate(navigationInfo.path);
-      
-      // Show success toast
-      toast({
-        title: 'บันทึกการเปลี่ยนแปลงสำเร็จ',
-        description: 'บันทึกการเปลี่ยนแปลงสถานีเรียบร้อยแล้ว',
-      });
-    } catch (error) {
-      const typedError = parseError(error);
-      
-      // Create an async wrapper for handleSave to match the expected Promise<any> type
-      const asyncRetry = async () => {
-        handleSave();
-        return true;
-      };
+      console.error('[StationCardEdit] Error saving changes:', error);
       
       // Use centralized error handling
-      handleError({
-        source: 'stationManagement',
-        operation: 'saveChanges',
-        originalError: typedError,
-        component: 'StationCardEdit',
-        details: {
-          hasUnsavedChanges
-        },
-        recoveryOptions: {
-          retry: asyncRetry
-        }
-      });
-      
-      // Show error toast with retry button
-      toast({
-        title: 'ไม่สามารถบันทึกการเปลี่ยนแปลงได้',
-        description: 'เกิดข้อผิดพลาดในการบันทึกการเปลี่ยนแปลง กรุณาลองใหม่อีกครั้ง',
-        variant: 'destructive',
-        action: (
-          <Button variant="outline" size="sm" onClick={handleSave}>
-            ลองใหม่
-          </Button>
-        )
-      });
+      handleError(error instanceof Error ? error : new Error(String(error)));
     }
-  }, [navigate, toast, hasUnsavedChanges]);
+  }, [saveChanges, navigate, handleError]);
   
-  // Handle discard with enhanced error handling
+  // Handle discard button click
   const handleDiscard = useCallback(() => {
     try {
-      // Discard changes and get navigation info
-      const navigationInfo = stableFunctionsRef.current.discardChangesAndNavigate();
+      console.log('[StationCardEdit] Discard button clicked');
       
-      // Navigate using the path from the result, but don't pass state via react-router
-      // The navigation state is now stored in Jotai atoms
-      navigate(navigationInfo.path);
+      // Discard changes
+      const result = discardChanges();
       
-      // Show success toast
-      toast({
-        title: 'ยกเลิกการเปลี่ยนแปลงสำเร็จ',
-        description: 'ยกเลิกการเปลี่ยนแปลงสถานีเรียบร้อยแล้ว',
-      });
+      if (result) {
+        // Navigate back to the complaint form
+        navigate('/complaint/create', { 
+          state: { 
+            preserveState: true,
+            discardedChanges: true
+          } 
+        });
+      }
     } catch (error) {
+      console.error('[StationCardEdit] Error discarding changes:', error);
+      
       // Use centralized error handling
-      handleError({
-        source: 'stationManagement',
-        operation: 'discardChanges',
-        originalError: parseError(error),
-        component: 'StationCardEdit',
-        recoveryOptions: {
-          fallback: () => navigate('/complaint-form')
-        }
-      });
-      
-      // Show error toast
-      toast({
-        title: 'ไม่สามารถยกเลิกการเปลี่ยนแปลงได้',
-        description: 'เกิดข้อผิดพลาดในการยกเลิกการเปลี่ยนแปลง กำลังนำทางไปยังหน้าแบบฟอร์มร้องเรียน',
-        variant: 'destructive'
-      });
-      
-      // Fallback navigation
-      navigate('/complaint-form');
+      handleError(error instanceof Error ? error : new Error(String(error)));
     }
-  }, [navigate, toast]);
+  }, [discardChanges, navigate, handleError]);
   
-  // Handle tab change with enhanced error handling
-  const handleTabChange = useCallback((value: string) => {
-    try {
-      setCurrentStationType(value as 'monitoring' | 'rain' | 'reservoir');
-    } catch (error) {
-      // Use centralized error handling
-      handleError({
-        source: 'uiState',
-        operation: 'changeTab',
-        originalError: parseError(error),
-        component: 'StationCardEdit',
-        details: { newTab: value }
-      });
+  // Handle continue navigation (from unsaved changes dialog)
+  const handleContinueNavigation = useCallback(() => {
+    if (pendingNavigation) {
+      // Discard changes
+      discardChanges();
       
-      // Show error toast
-      toast({
-        title: 'ไม่สามารถเปลี่ยนแท็บได้',
-        description: 'เกิดข้อผิดพลาดในการเปลี่ยนแท็บ กรุณาลองใหม่อีกครั้ง',
-        variant: 'destructive'
-      });
+      // Close dialog
+      setShowUnsavedChangesDialog(false);
+      
+      // Navigate to the pending location
+      navigate(pendingNavigation);
+      
+      // Reset pending navigation
+      setPendingNavigation(null);
     }
-  }, [setCurrentStationType, toast]);
+  }, [pendingNavigation, discardChanges, navigate]);
   
-  // Memoize the error UI to prevent unnecessary re-renders
-  const errorUI = useMemo(() => {
-    if (!syncError) return null;
+  // Handle cancel navigation (from unsaved changes dialog)
+  const handleCancelNavigation = useCallback(() => {
+    // Close dialog
+    setShowUnsavedChangesDialog(false);
     
-    return (
-      <div className="container mx-auto py-6 space-y-6">
-        <Alert variant="destructive" className="mb-4">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Error Loading Station Data</AlertTitle>
-          <AlertDescription>
-            {syncErrorMessage}
-          </AlertDescription>
-        </Alert>
-        
-        <div className="flex justify-center">
-          <Button 
-            onClick={handleRetry} 
-            disabled={isRetrying || retryCount >= MAX_RETRY_ATTEMPTS}
-            className="mx-2"
-          >
-            {isRetrying ? 'Retrying...' : `Retry Loading (${retryCount + 1}/${MAX_RETRY_ATTEMPTS})`}
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={handleBack}
-            className="mx-2"
-          >
-            Return to Previous Page
-          </Button>
-        </div>
-      </div>
-    );
-  }, [syncError, syncErrorMessage, handleRetry, handleBack, isRetrying, retryCount, MAX_RETRY_ATTEMPTS]);
-  
-  // Memoize the loading UI to prevent unnecessary re-renders
-  const loadingUI = useMemo(() => {
-    if (!isLoading) return null;
+    // Reset pending navigation
+    setPendingNavigation(null);
     
-    return (
-      <div className="container mx-auto py-6 flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-sm text-gray-500">กำลังโหลดข้อมูล...</p>
-        </div>
-      </div>
-    );
-  }, [isLoading]);
-  
-  // Memoize the warning alert to prevent unnecessary re-renders
-  const warningAlert = useMemo(() => {
-    if (!areAllMonitoringStationsDisabled && !areAllRainStationsDisabled && !areAllReservoirsDisabled) {
-      return null;
+    // Reset blocker
+    if (blocker.state === 'blocked') {
+      blocker.reset();
+    }
+  }, [blocker]);
+
+  // Get location data from complaint
+  const locationData = useMemo(() => {
+    // Extract amphure and province from location string if possible
+    if (complaintData && complaintData.location) {
+      const locationParts = complaintData.location.split(',').map(part => part.trim());
+      let amphure, province;
+      
+      if (locationParts.length >= 2) {
+        // Assume format is "amphure, province"
+        amphure = locationParts[0];
+        province = locationParts[1];
+      } else if (locationParts.length === 1) {
+        // Only one part, assume it's province
+        province = locationParts[0];
+      }
+      
+      return { amphure, province };
     }
     
-    return (
-      <Alert className="mb-6">
-        <AlertTriangle className="h-4 w-4 mr-2" />
-        <AlertTitle>คำเตือน</AlertTitle>
-        <AlertDescription>
-          {areAllMonitoringStationsDisabled && <p>สถานีตรวจวัดน้ำทั้งหมดถูกปิดใช้งาน</p>}
-          {areAllRainStationsDisabled && <p>สถานีตรวจวัดฝนทั้งหมดถูกปิดใช้งาน</p>}
-          {areAllReservoirsDisabled && <p>อ่างเก็บน้ำทั้งหมดถูกปิดใช้งาน</p>}
-        </AlertDescription>
-      </Alert>
-    );
-  }, [areAllMonitoringStationsDisabled, areAllRainStationsDisabled, areAllReservoirsDisabled]);
-  
-  // Memoize the sync error alert to prevent unnecessary re-renders
-  const syncErrorAlert = useMemo(() => {
-    if (!syncError) return null;
-    
-    return (
-      <Alert variant="destructive" className="mb-6">
-        <AlertTriangle className="h-4 w-4 mr-2" />
-        <AlertTitle>ไม่สามารถซิงโครไนซ์ข้อมูลสถานีได้</AlertTitle>
-        <AlertDescription className="mt-2">
-          <p>เกิดข้อผิดพลาดในการซิงโครไนซ์ข้อมูลสถานี: {syncErrorMessage}</p>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="mt-2" 
-            onClick={handleRetry}
-            disabled={isRetrying || retryCount >= MAX_RETRY_ATTEMPTS}
-          >
-            {isRetrying ? 'กำลังลองใหม่...' : 'ลองใหม่อีกครั้ง'}
-          </Button>
-        </AlertDescription>
-      </Alert>
-    );
-  }, [syncError, syncErrorMessage, handleRetry, isRetrying, retryCount, MAX_RETRY_ATTEMPTS]);
-  
-  // Memoize the header UI to prevent unnecessary re-renders
-  const headerUI = useMemo(() => (
-    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-      <div className="flex items-center mb-4 md:mb-0">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleBack}
-          className="mr-4"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <h2 className="text-2xl font-bold">แก้ไขข้อมูลสถานี</h2>
-      </div>
-      <div className="flex space-x-2">
-        <Button
-          variant="outline"
-          onClick={handleDiscard}
-          disabled={!hasUnsavedChanges}
-        >
-          <X className="h-4 w-4 mr-2" />
-          ยกเลิกการเปลี่ยนแปลง
-        </Button>
-        <Button
-          onClick={handleSave}
-          disabled={!hasUnsavedChanges}
-        >
-          <Save className="h-4 w-4 mr-2" />
-          บันทึกการเปลี่ยนแปลง
-        </Button>
-      </div>
-    </div>
-  ), [handleBack, handleDiscard, handleSave, hasUnsavedChanges]);
-  
-  // Memoize the tabs UI to prevent unnecessary re-renders
-  const tabsUI = useMemo(() => (
-    <Tabs defaultValue="monitoring" onValueChange={handleTabChange}>
-      <TabsList className="mb-4">
-        <TabsTrigger value="monitoring">สถานีตรวจวัดน้ำ</TabsTrigger>
-        <TabsTrigger value="rain">สถานีตรวจวัดฝน</TabsTrigger>
-        <TabsTrigger value="reservoir">อ่างเก็บน้ำ</TabsTrigger>
-      </TabsList>
-      
-      <TabsContent value="monitoring">
-        <MemoizedMonitoringTab />
-      </TabsContent>
-      
-      <TabsContent value="rain">
-        <MemoizedRainTab />
-      </TabsContent>
-      
-      <TabsContent value="reservoir">
-        <MemoizedReservoirTab />
-      </TabsContent>
-    </Tabs>
-  ), [handleTabChange]);
-  
-  // Render error state
-  if (syncError) {
-    return errorUI;
-  }
-  
-  // Render loading state
-  if (isLoading) {
-    return loadingUI;
-  }
-  
+    return { amphure: undefined, province: undefined };
+  }, [complaintData]);
+
   return (
-    <div className="container mx-auto py-6 px-4">
-      <Card className="w-full">
-        <CardContent className="p-6">
-          {headerUI}
-          {syncErrorAlert}
-          {warningAlert}
-          {tabsUI}
-        </CardContent>
-      </Card>
+    <div className="flex flex-col min-h-screen bg-[#F8FAFC]">
+      <StationCardEditHeader />
       
-      <UnsavedChangesDialog
-        open={unsavedChangesDialogOpen}
-        onOpenChange={setUnsavedChangesDialogOpen}
+      <div className="container mx-auto px-4 py-6 flex-grow">
+        <div className="flex items-center mb-6">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="mr-2"
+            onClick={() => {
+              if (hasUnsavedChanges) {
+                setShowUnsavedChangesDialog(true);
+                setPendingNavigation('/complaint/create');
+              } else {
+                navigate('/complaint/create');
+              }
+            }}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            กลับ
+          </Button>
+          <h1 className="text-2xl font-semibold text-[#17254D]">แก้ไขข้อมูลสถานี</h1>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <Card className="mb-6">
+              <CardContent className="p-6">
+                <Tabs defaultValue="monitoring" className="w-full">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="monitoring">สถานีเฝ้าระวัง</TabsTrigger>
+                    <TabsTrigger value="rain">สถานีวัดน้ำฝน</TabsTrigger>
+                    <TabsTrigger value="reservoir">เขื่อน/อ่างเก็บน้ำ</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="monitoring">
+                    <MonitoringStationTab />
+                  </TabsContent>
+                  <TabsContent value="rain">
+                    <RainStationTab />
+                  </TabsContent>
+                  <TabsContent value="reservoir">
+                    <ReservoirTab />
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+            
+            <div className="flex justify-between mb-6">
+              <Button 
+                variant="outline" 
+                onClick={handleDiscard}
+                disabled={!hasUnsavedChanges}
+              >
+                <X className="h-4 w-4 mr-2" />
+                ยกเลิกการเปลี่ยนแปลง
+              </Button>
+              <Button 
+                onClick={handleSave}
+                disabled={!hasUnsavedChanges}
+              >
+                <Save className="h-4 w-4 mr-2" />
+                บันทึกการเปลี่ยนแปลง
+              </Button>
+            </div>
+          </div>
+          
+          <div>
+            <ComplaintInfoCard 
+              className="mb-6"
+            />
+            <WaterLevelInfoCard 
+              title="ข้อมูลระดับน้ำ" 
+              location={locationData}
+            />
+          </div>
+        </div>
+      </div>
+      
+      {/* Unsaved changes dialog */}
+      <UnsavedChangesDialog 
+        open={showUnsavedChangesDialog} 
+        onOpenChange={setShowUnsavedChangesDialog}
         onSave={handleSave}
-        onDiscard={handleDiscard}
-        onCancel={cancelNavigation}
+        onDiscard={handleContinueNavigation}
+        onCancel={handleCancelNavigation}
       />
-      
-      <ComplaintInfoCard className="mt-6" />
     </div>
   );
 };
 
-// Wrap the component with React.memo to prevent unnecessary re-renders
-export default React.memo(StationCardEdit); 
+export default StationCardEdit; 

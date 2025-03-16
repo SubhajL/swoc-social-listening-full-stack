@@ -1,0 +1,31 @@
+{
+  "totalTMDStations": 1294,
+  "tmdStationsWithoutNames": 2,
+  "tmdStationsWithoutNamesPercentage": 0.15,
+  "tmdStationsWithoutType": 1294,
+  "tmdStationsWithoutTypePercentage": 100,
+  "sampleStationsWithoutNames": [
+    {
+      "agency_id": 13,
+      "id": 453636,
+      "tele_station_lat": null,
+      "tele_station_long": null,
+      "tele_station_name": {
+        "en": "Khon Kaen Airport",
+        "th": ""
+      },
+      "tele_station_oldcode": "4001001202"
+    },
+    {
+      "agency_id": 13,
+      "id": 453684,
+      "tele_station_lat": null,
+      "tele_station_long": null,
+      "tele_station_name": {
+        "en": "Khao Kho Agromet",
+        "th": ""
+      },
+      "tele_station_oldcode": "6711001301"
+    }
+  ]
+}
