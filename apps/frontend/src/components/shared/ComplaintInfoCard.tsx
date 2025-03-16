@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState, useCallback, FC } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertCircle, MapPin, Image as ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { useComplaintData } from "@/atoms/hooks";
-import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { ProcessedPost, Complaint, ComplaintWithOrganization } from '@/types/complaint';
 import { useAtomValue } from 'jotai';
 import { processedPostsAtom } from '@/atoms/complaintData';
-import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ComplaintInfoCardProps {
@@ -96,7 +96,7 @@ const getIssue = (complaint: ComplaintType): string => {
   return '';
 };
 
-export const ComplaintInfoCard: React.FC<ComplaintInfoCardProps> = ({
+export const ComplaintInfoCard: FC<ComplaintInfoCardProps> = ({
   title = "ข้อร้องเรียน",
   className = "",
   editable = false,
@@ -253,7 +253,8 @@ export const ComplaintInfoCard: React.FC<ComplaintInfoCardProps> = ({
       // Handle the case where amphure might be an array
       const amphureValue = complaintData.amphure;
       if (Array.isArray(amphureValue)) {
-        return amphureValue.join(', ');
+        // Return only the first element (the actual amphure name)
+        return amphureValue[0] || '';
       }
       return amphureValue || '';
     }
