@@ -4,8 +4,8 @@ import { RainStationCard } from "@/components/monitoring/RainStationCard";
 import { ReservoirCard } from "@/components/monitoring/ReservoirCard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
-import { useEffect, useState, useMemo } from "react";
-import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
+import { useEffect, useState, useMemo, FC } from "react";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { cn } from "@/lib/utils";
 import { MonitoringStation } from "@/types/monitoring-station";
 import { RainStation } from "@/types/rain-station";
@@ -395,17 +395,17 @@ function adaptToReservoirProps(reservoir: StandardizedReservoir): Reservoir {
   return adapted;
 }
 
-// Helper function to get appropriate station label based on type
-const getStationLabel = (type: string) => {
+// Helper function to get station type labels
+const getStationLabel = (type: 'monitoring' | 'rain' | 'reservoir') => {
   switch (type) {
-    case "monitoring":
-      return "สถานีเฝ้าระวัง";
-    case "rain":
-      return "สถานีวัดน้ำฝน";
-    case "reservoir":
-      return "เขื่อน/อ่างเก็บน้ำ";
+    case 'monitoring':
+      return 'สถานีเฝ้าระวัง';
+    case 'rain':
+      return 'สถานีวัดน้ำฝน';
+    case 'reservoir':
+      return 'เขื่อน/อ่างเก็บน้ำ';
     default:
-      return "Unknown station";
+      return 'สถานี';
   }
 };
 
@@ -426,7 +426,7 @@ interface WaterLevelInfoContentProps {
   };
 }
 
-const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location }) => {
+const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => {
   // Get location data from props or from Jotai state
   const { amphure: propAmphure, province: propProvince } = location || {};
   
@@ -444,34 +444,6 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
   // Check if we have valid location data
   const hasValidLocationData = !!displayAmphure || !!displayProvince;
   
-  // Log location data for debugging
-  console.log('[WaterLevelInfoCard] Location data:', {
-    propAmphure,
-    propProvince,
-    cleanedPropAmphure,
-    cleanedPropProvince,
-    jotaiAmphure: locationState.amphure,
-    jotaiProvince: locationState.province,
-    displayAmphure,
-    displayProvince,
-    hasValidLocationData
-  });
-  
-  // Update Jotai location state if props are provided
-  useEffect(() => {
-    if ((propAmphure || propProvince) && locationState.updateLocationData) {
-      console.log('[WaterLevelInfoCard] Updating location state from props:', {
-        amphure: propAmphure || cleanedPropAmphure,
-        province: propProvince || cleanedPropProvince
-      });
-      
-      locationState.updateLocationData(
-        propAmphure || cleanedPropAmphure,
-        propProvince || cleanedPropProvince
-      );
-    }
-  }, [propAmphure, propProvince, cleanedPropAmphure, cleanedPropProvince, locationState]);
-  
   // Use the useStationManagement hook to get all station data and filtering logic
   const {
     // Available stations (already filtered to exclude disabled ones)
@@ -484,6 +456,11 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
     isLoadingRain,
     isLoadingReservoirs,
     
+    // Error states
+    monitoringError,
+    rainError,
+    reservoirsError,
+    
     // Station status checks
     areAllMonitoringStationsDisabled,
     areAllRainStationsDisabled,
@@ -494,65 +471,33 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
     
     // Current location from station management
     currentAmphure,
-    currentProvince
+    currentProvince,
+    
+    // User-selected stations
+    userSelectedMonitoring,
+    userSelectedRain,
+    userSelectedReservoirs
   } = useStationManagement();
-  
-  // Debug log for station management location state
-  useEffect(() => {
-    console.log('[WaterLevelInfoCard] Station management location state:', {
-      currentAmphure,
-      currentProvince,
-      stationsCount: {
-        monitoring: allAvailableMonitoringStations.length,
-        rain: allAvailableRainStations.length,
-        reservoirs: allAvailableReservoirs.length
-      },
-      loading: {
-        monitoring: isLoadingMonitoring,
-        rain: isLoadingRain,
-        reservoirs: isLoadingReservoirs
-      }
-    });
-  }, [
-    currentAmphure, 
-    currentProvince, 
-    allAvailableMonitoringStations.length, 
-    allAvailableRainStations.length, 
-    allAvailableReservoirs.length,
-    isLoadingMonitoring,
-    isLoadingRain,
-    isLoadingReservoirs
-  ]);
   
   // Update location data in useStationManagement when component mounts or location changes
   useEffect(() => {
-    console.log('[WaterLevelInfoCard] Setting location data in station management:', {
-      amphure: displayAmphure,
-      province: displayProvince
-    });
-    
-    // Force update location using the provided function from useStationManagement
-    // This ensures the station data atoms are updated with the current location
     if (displayAmphure || displayProvince) {
+      console.log('[WaterLevelInfoCard] Setting location data:', {
+        amphure: displayAmphure,
+        province: displayProvince
+      });
+      
+      // Update location and trigger data fetching
       updateLocation(displayAmphure, displayProvince);
       
-      // Force a refetch by triggering the sync functions
-      if (typeof window !== 'undefined') {
-        // Use a small timeout to ensure the location update has been processed
-        const timeoutId = setTimeout(() => {
-          console.log('[WaterLevelInfoCard] Forcing station data refetch with location:', {
-            amphure: displayAmphure,
-            province: displayProvince
-          });
-          
-          // Manually trigger a refetch by updating the location again
-          updateLocation(displayAmphure, displayProvince);
-        }, 100);
-        
-        return () => clearTimeout(timeoutId);
-      }
+      // Log the current state of user-selected stations
+      console.log('[WaterLevelInfoCard] Current user-selected stations:', {
+        monitoringStations: userSelectedMonitoring.length,
+        rainStations: userSelectedRain.length,
+        reservoirs: userSelectedReservoirs.length
+      });
     }
-  }, [displayAmphure, displayProvince, updateLocation]);
+  }, [displayAmphure, displayProvince, updateLocation, userSelectedMonitoring, userSelectedRain, userSelectedReservoirs]);
   
   // Memoize the loading state
   const isLoading = useMemo(() => 
@@ -560,8 +505,30 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
     [isLoadingMonitoring, isLoadingRain, isLoadingReservoirs]
   );
   
+  // Memoize the error state
+  const hasError = useMemo(() => 
+    !!monitoringError || !!rainError || !!reservoirsError,
+    [monitoringError, rainError, reservoirsError]
+  );
+  
+  // Get the most relevant error message
+  const errorMessage = useMemo(() => {
+    if (monitoringError) return monitoringError.message;
+    if (rainError) return rainError.message;
+    if (reservoirsError) return reservoirsError.message;
+    return 'เกิดข้อผิดพลาดในการโหลดข้อมูล';
+  }, [monitoringError, rainError, reservoirsError]);
+  
   // Memoize the adapted monitoring stations for rendering
   const adaptedMonitoringStations = useMemo(() => {
+    // Log all available monitoring stations including user-selected ones
+    console.log('[WaterLevelInfoCard] All available monitoring stations:', {
+      systemStations: allAvailableMonitoringStations.filter(s => (s as any).source === 'system').length,
+      userSelectedStations: allAvailableMonitoringStations.filter(s => (s as any).source === 'user').length,
+      totalStations: allAvailableMonitoringStations.length,
+      stationIds: allAvailableMonitoringStations.map(s => s.id)
+    });
+    
     return allAvailableMonitoringStations.map(station => {
       // Use type assertion to access properties that might not exist in the type definition
       const stationAny = station as any;
@@ -590,6 +557,13 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
   
   // Memoize the adapted rain stations for rendering
   const adaptedRainStations = useMemo(() => {
+    // Log all available rain stations
+    console.log('[WaterLevelInfoCard] All available rain stations:', {
+      count: allAvailableRainStations.length,
+      stationIds: allAvailableRainStations.map(s => s.id),
+      dataSources: allAvailableRainStations.map(s => (s as any).data_source)
+    });
+    
     return allAvailableRainStations.map(station => {
       // Use type assertion to access properties that might not exist in the type definition
       const stationAny = station as any;
@@ -601,23 +575,37 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
         station_name: stationAny.name || stationAny.station_name || `สถานีวัดน้ำฝน ${station.id}`,
         name: stationAny.name || stationAny.station_name || `สถานีวัดน้ำฝน ${station.id}`,
         status: stationAny.status || 'active',
-        rainfall_24h: stationAny.rainfall_24h || stationAny.lastReading?.value || 0,
-        rainfall_today: stationAny.rainfall_today || 0,
-        lastReading: stationAny.lastReading || {
-          timestamp: new Date().toISOString(),
-          value: stationAny.rainfall_24h || 0,
-          unit: 'mm'
+        telemetry_data: stationAny.telemetry_data || {
+          rainfall_24h: stationAny.rainfall_24h || 0,
+          timestamp: stationAny.lastReading?.timestamp || new Date().toISOString()
         },
+        rainfall_24h: stationAny.rainfall_24h || stationAny.telemetry_data?.rainfall_24h || 0,
         amphure: stationAny.amphure || displayAmphure || '',
         province: stationAny.province || displayProvince || '',
         coordinates: stationAny.coordinates || { lat: 0, lng: 0 },
-        type: 'rain' as const
+        // Add new fields for TMD and HII stations
+        data_source: stationAny.data_source || '',
+        rainfall10m: stationAny.rainfall10m || null,
+        rainfall1h: stationAny.rainfall1h || null,
+        rainfall3h: stationAny.rainfall3h || null,
+        rainfall24h: stationAny.rainfall24h || null,
+        rainfall_today: stationAny.rainfall_today || null,
+        rainfall_date_calc: stationAny.rainfall_date_calc || null,
+        rainfall_datetime: stationAny.rainfall_datetime || null
       };
     });
   }, [allAvailableRainStations, displayAmphure, displayProvince]);
   
   // Memoize the adapted reservoirs for rendering
   const adaptedReservoirs = useMemo(() => {
+    // Log all available reservoirs
+    console.log('[WaterLevelInfoCard] All available reservoirs:', {
+      systemReservoirs: allAvailableReservoirs.filter(r => (r as any).source === 'system').length,
+      userSelectedReservoirs: allAvailableReservoirs.filter(r => (r as any).source === 'user').length,
+      totalReservoirs: allAvailableReservoirs.length,
+      reservoirIds: allAvailableReservoirs.map(r => r.id)
+    });
+    
     return allAvailableReservoirs.map(reservoir => {
       // Use type assertion to access properties that might not exist in the type definition
       const reservoirAny = reservoir as any;
@@ -625,17 +613,20 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
       // Ensure the reservoir has the required properties for the ReservoirCard
       return {
         id: ensureStringId(reservoir.id),
-        station_id: reservoirAny.station_id || String(reservoir.id),
+        reservoir_id: reservoirAny.reservoir_id || String(reservoir.id),
         reservoir_name: reservoirAny.name || reservoirAny.reservoir_name || `เขื่อน/อ่างเก็บน้ำ ${reservoir.id}`,
         name: reservoirAny.name || reservoirAny.reservoir_name || `เขื่อน/อ่างเก็บน้ำ ${reservoir.id}`,
         status: reservoirAny.status || 'active',
-        capacity: reservoirAny.capacity || 0,
-        currentLevel: reservoirAny.currentLevel || reservoirAny.current_volume || 0,
-        percentFull: reservoirAny.percentFull || reservoirAny.percent_full || 0,
+        telemetry_data: reservoirAny.telemetry_data || {
+          storage_percent: reservoirAny.storage_percent || 0,
+          storage_volume: reservoirAny.storage_volume || 0,
+          timestamp: reservoirAny.lastReading?.timestamp || new Date().toISOString()
+        },
+        storage_percent: reservoirAny.storage_percent || reservoirAny.telemetry_data?.storage_percent || 0,
+        storage_volume: reservoirAny.storage_volume || reservoirAny.telemetry_data?.storage_volume || 0,
         amphure: reservoirAny.amphure || displayAmphure || '',
         province: reservoirAny.province || displayProvince || '',
-        coordinates: reservoirAny.coordinates || { lat: 0, lng: 0 },
-        type: 'reservoir' as const
+        coordinates: reservoirAny.coordinates || { lat: 0, lng: 0 }
       };
     });
   }, [allAvailableReservoirs, displayAmphure, displayProvince]);
@@ -646,12 +637,6 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
     adaptedRainStations.length > 0 || 
     adaptedReservoirs.length > 0,
     [adaptedMonitoringStations.length, adaptedRainStations.length, adaptedReservoirs.length]
-  );
-  
-  // Check if all stations are disabled
-  const allStationsDisabled = useMemo(() => 
-    (areAllMonitoringStationsDisabled && areAllRainStationsDisabled && areAllReservoirsDisabled),
-    [areAllMonitoringStationsDisabled, areAllRainStationsDisabled, areAllReservoirsDisabled]
   );
   
   // Memoize the monitoring stations section
@@ -745,6 +730,25 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
     );
   }
   
+  if (hasError) {
+    return (
+      <Alert variant="destructive" className="mt-4">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          เกิดข้อผิดพลาดในการโหลดข้อมูล: {errorMessage}
+          <div className="mt-2">
+            <button 
+              className="text-sm underline"
+              onClick={() => updateLocation(displayAmphure, displayProvince)}
+            >
+              ลองใหม่อีกครั้ง
+            </button>
+          </div>
+        </AlertDescription>
+      </Alert>
+    );
+  }
+  
   return (
     <div className="space-y-6">
       <p className="text-sm text-[#64748B]">
@@ -753,16 +757,7 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
         เขื่อน/อ่างเก็บน้ำ {adaptedReservoirs.length}
       </p>
       
-      {allStationsDisabled && (
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            สถานีทั้งหมดถูกปิดใช้งาน กรุณาเปิดใช้งานสถานีในหน้าแก้ไขข้อมูลสถานี
-          </AlertDescription>
-        </Alert>
-      )}
-      
-      {!hasStations && !allStationsDisabled && (
+      {!hasStations && (
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
@@ -782,7 +777,7 @@ const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location 
   );
 };
 
-export const WaterLevelInfoCard: React.FC<WaterLevelInfoCardProps> = ({ 
+export const WaterLevelInfoCard: FC<WaterLevelInfoCardProps> = ({ 
   className = "",
   title = "ข้อมูลระดับน้ำ",
   location

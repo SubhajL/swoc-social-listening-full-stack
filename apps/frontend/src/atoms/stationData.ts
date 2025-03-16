@@ -1,8 +1,9 @@
-import { atom } from 'jotai';
+import { atom, useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import { fetchMonitoringStations } from '@/hooks/useMonitoringStations';
 import { fetchRainStations } from '@/hooks/useRainStations';
+import { fetchMonitoringStations } from '@/hooks/useMonitoringStations';
 import { fetchReservoirs } from '@/hooks/useReservoirs';
+import { locationAtom } from './location';
 
 // Define types for station data
 export interface MonitoringStation {
@@ -26,19 +27,30 @@ export interface MonitoringStation {
 export interface RainStation {
   id: string;
   name: string;
-  location: string;
-  coordinates: {
-    lat: number;
-    lng: number;
+  name_th?: string | null;
+  latitude: number;
+  longitude: number;
+  station_type?: string;
+  data_source?: string;
+  province?: string | null;
+  amphure?: string | null;
+  tambon?: string | null;
+  rainfall?: {
+    daily?: number;
+    hourly?: number;
+    tenMinutes?: number;
+    threeHours?: number;
+    timestamp?: string;
   };
-  status: 'active' | 'inactive' | 'maintenance';
-  lastReading?: {
-    timestamp: string;
-    value: number;
-    unit: string;
-  };
-  type: 'rain';
-  source?: 'system' | 'user';
+  rainfall_3d?: number;
+  rainfall_7d?: number;
+  rainfall10m?: number | null;
+  rainfall1h?: number | null;
+  rainfall3h?: number | null;
+  rainfall24h?: number | null;
+  rainfall_today?: number | null;
+  rainfall_date_calc?: string | null;
+  rainfall_datetime?: string | null;
 }
 
 export interface Reservoir {
@@ -235,28 +247,47 @@ export const rainStationsQueryAtom = atom(
     console.log('[rainStationsQueryAtom] Fetching rain stations:', {
       amphure,
       province,
-      timestamp: new Date().toISOString()
     });
+
+    // If no location is selected, return empty array
+    if (!amphure && !province) {
+      console.log('[rainStationsQueryAtom] No location data, returning empty array');
+      return [];
+    }
+
+    try {
+      console.log('[rainStationsQueryAtom] Fetching from API with:', { amphure, province });
+      
+      // Fetch both TMD and HII stations
+      const response = await fetchRainStations(amphure, province, 'ALL');
+      console.log('[rainStationsQueryAtom] API response:', {
+        success: response.success,
+        total: response.total,
+        meta: response.meta
+      });
+      
+      return response.stations;
+    } catch (error) {
+      console.error('[rainStationsQueryAtom] Error fetching rain stations:', error);
+      return [];
+    }
+  }
+);
+
+// Add a new atom for filtering by data source
+export const selectedRainDataSourceAtom = atomWithStorage<'TMD' | 'HII' | 'ALL'>('selectedRainDataSource', 'ALL');
+
+// Add a new atom for filtered rain stations
+export const filteredRainStationsAtom = atom(
+  (get) => {
+    const rainStations = get(rainStationsAtom);
+    const dataSource = get(selectedRainDataSourceAtom);
     
-    // Only fetch if we have at least some location data (either amphure or province)
-    if (amphure || province) {
-      try {
-        console.log('[rainStationsQueryAtom] Fetching from API with:', { amphure, province });
-        
-        const response = await fetchRainStations(amphure, province);
-        console.log('[rainStationsQueryAtom] API response:', {
-          stationsCount: response.stations?.length || 0,
-          success: !!response.stations
-        });
-        return response.stations || [];
-      } catch (error) {
-        console.error('Error fetching rain stations:', error);
-        throw error;
-      }
+    if (dataSource === 'ALL') {
+      return rainStations;
     }
     
-    console.log('[rainStationsQueryAtom] No location data, returning empty array');
-    return [];
+    return rainStations.filter(station => station.data_source === dataSource);
   }
 );
 
@@ -293,9 +324,17 @@ export const reservoirsQueryAtom = atom(
   }
 );
 
-// Loading state atoms
+// Create a writable loading state atom
+export const loadingMonitoringStationsAtom = atom(false);
+
+// Update the isLoadingMonitoringStationsAtom to use the writable atom
 export const isLoadingMonitoringStationsAtom = atom(
   (get) => {
+    // Check the explicit loading state first
+    const isExplicitlyLoading = get(loadingMonitoringStationsAtom);
+    if (isExplicitlyLoading) return true;
+    
+    // Otherwise use the derived logic
     const amphure = get(currentAmphureAtom);
     const province = get(currentProvinceAtom);
     const userSelected = get(userSelectedMonitoringStationsAtom);
@@ -335,229 +374,142 @@ export const monitoringStationsErrorAtom = atom<Error | null>(null);
 export const rainStationsErrorAtom = atom<Error | null>(null);
 export const reservoirsErrorAtom = atom<Error | null>(null);
 
-// Synchronization atoms - these are used to sync the stored atoms with the query atoms
-// They filter out disabled stations based on their source
-// System-generated stations are kept but marked as disabled
-// User-added stations are removed when disabled
+// Update the syncMonitoringStationsAtom to simplify the data fetching logic
 export const syncMonitoringStationsAtom = atom(
   null,
   async (get, set) => {
-    console.log('[stationData] Syncing monitoring stations');
+    // Get current location
+    const amphure = get(currentAmphureAtom);
+    const province = get(currentProvinceAtom);
     
-    try {
-      // Get the current state
-      const monitoringStations = get(monitoringStationsAtom) || [];
-      const userSelectedMonitoringStations = get(userSelectedMonitoringStationsAtom) || [];
-      const disabledMonitoringStations = get(disabledMonitoringStationsAtom) || {};
-      
-      // Get current location
-      const amphure = get(currentAmphureAtom);
-      const province = get(currentProvinceAtom);
-      
-      console.log('[stationData] Current location for monitoring stations:', { amphure, province });
-      
-      // Force a refetch of monitoring stations if we have location data
-      if (amphure || province) {
-        try {
-          console.log('[stationData] Forcing refetch of monitoring stations with location:', { amphure, province });
-          
-          // Directly fetch from API to bypass any caching
-          const response = await fetchMonitoringStations(amphure, province);
-          
-          console.log('[stationData] Refetched monitoring stations:', {
-            count: response.stations?.length || 0,
-            stationIds: response.stations?.map((s: any) => s.id) || []
+    console.log('[syncMonitoringStationsAtom] Syncing monitoring stations with location:', { 
+      amphure, 
+      province 
+    });
+    
+    // Only fetch if we have location data
+    if (amphure || province) {
+      try {
+        // Set loading state
+        set(loadingMonitoringStationsAtom, true);
+        
+        // Clear previous error
+        set(monitoringStationsErrorAtom, null);
+        
+        // Directly fetch from API
+        const response = await fetchMonitoringStations(amphure, province);
+        
+        if (response.stations && Array.isArray(response.stations)) {
+          console.log('[syncMonitoringStationsAtom] Fetched stations:', {
+            count: response.stations.length
           });
           
+          // Convert API response to our internal MonitoringStation type
+          const mappedStations = response.stations.map((station: any) => ({
+            id: station.id,
+            name: station.station_name || station.name || `Station ${station.id}`,
+            location: station.location || `${amphure || ''}, ${province || ''}`,
+            coordinates: station.coordinates || { lat: 0, lng: 0 },
+            status: station.status || 'active',
+            lastReading: {
+              timestamp: station.telemetry_data?.timestamp || new Date().toISOString(),
+              value: station.telemetry_data?.water_level || 0,
+              unit: 'm'
+            },
+            type: 'monitoring' as const,
+            source: 'system' as const
+          }));
+          
           // Update the atom with the new data
-          if (response.stations && Array.isArray(response.stations)) {
-            // Map API response to our MonitoringStation type
-            const mappedStations = response.stations.map((station: any) => ({
-              id: station.id || station.station_id || String(Math.random()),
-              name: station.station_name || station.name || `Station ${station.id || station.station_id}`,
-              location: station.location || `${amphure || ''}, ${province || ''}`,
-              coordinates: station.coordinates || { lat: 0, lng: 0 },
-              status: station.status || 'active',
-              lastReading: station.lastReading || {
-                timestamp: new Date().toISOString(),
-                value: station.water_level || 0,
-                unit: 'm'
-              },
-              type: 'monitoring' as const,
-              source: 'system' as const
-            }));
-            
-            console.log('[stationData] Mapped monitoring stations:', {
-              count: mappedStations.length,
-              sample: mappedStations.length > 0 ? mappedStations[0] : null
-            });
-            
-            set(monitoringStationsAtom, mappedStations);
-          }
-        } catch (error) {
-          console.error('[stationData] Error refetching monitoring stations:', error);
-        }
-      }
-      
-      // Log the current state with detailed information
-      console.log('[stationData] Current monitoring stations state:', {
-        monitoringStations: monitoringStations.length,
-        monitoringStationIds: monitoringStations.map(s => s.id),
-        userSelectedMonitoringStations: userSelectedMonitoringStations.length,
-        userSelectedMonitoringStationIds: userSelectedMonitoringStations.map(s => s.id),
-        disabledMonitoringStations: Object.keys(disabledMonitoringStations).length,
-        disabledMonitoringStationIds: Object.keys(disabledMonitoringStations)
-      });
-      
-      // Check for invalid data
-      const invalidMonitoringStations = monitoringStations.filter(s => !s.id);
-      const invalidUserSelectedStations = userSelectedMonitoringStations.filter(s => !s.id);
-      
-      if (invalidMonitoringStations.length > 0) {
-        console.warn('[stationData] Found invalid monitoring stations without IDs:', invalidMonitoringStations);
-      }
-      
-      if (invalidUserSelectedStations.length > 0) {
-        console.warn('[stationData] Found invalid user-selected monitoring stations without IDs:', invalidUserSelectedStations);
-      }
-      
-      // Filter out user-selected stations that are disabled
-      const filteredUserSelectedStations = userSelectedMonitoringStations.filter(
-        station => station && station.id && !disabledMonitoringStations[station.id]
-      );
-      
-      // Check for duplicate IDs
-      const userSelectedIds = new Set<string>();
-      const duplicateUserSelectedIds: string[] = [];
-      
-      filteredUserSelectedStations.forEach(station => {
-        if (userSelectedIds.has(station.id)) {
-          duplicateUserSelectedIds.push(station.id);
+          set(monitoringStationsAtom, mappedStations);
         } else {
-          userSelectedIds.add(station.id);
+          console.warn('[syncMonitoringStationsAtom] No stations returned from API');
+          // Set empty array to clear previous data
+          set(monitoringStationsAtom, []);
         }
-      });
-      
-      if (duplicateUserSelectedIds.length > 0) {
-        console.warn('[stationData] Found duplicate user-selected monitoring station IDs:', duplicateUserSelectedIds);
+      } catch (error) {
+        console.error('[syncMonitoringStationsAtom] Error fetching stations:', error);
+        // Set error atom
+        set(monitoringStationsErrorAtom, error instanceof Error ? error : new Error(String(error)));
+      } finally {
+        // Reset loading state
+        set(loadingMonitoringStationsAtom, false);
       }
-      
-      // If the filtered list is different from the current list, update it
-      if (JSON.stringify(filteredUserSelectedStations) !== JSON.stringify(userSelectedMonitoringStations)) {
-        console.log('[stationData] Updating user-selected monitoring stations:', {
-          before: userSelectedMonitoringStations.length,
-          after: filteredUserSelectedStations.length,
-          removedIds: userSelectedMonitoringStations
-            .filter(s => !filteredUserSelectedStations.some(fs => fs.id === s.id))
-            .map(s => s.id)
-        });
-        
-        set(userSelectedMonitoringStationsAtom, filteredUserSelectedStations);
-      } else {
-        console.log('[stationData] No changes needed for user-selected monitoring stations');
-      }
-      
-      // Log the updated state
-      console.log('[stationData] Updated monitoring stations state:', {
-        monitoringStations: monitoringStations.length,
-        userSelectedMonitoringStations: filteredUserSelectedStations.length,
-        disabledMonitoringStations: Object.keys(disabledMonitoringStations).length
-      });
-    } catch (error) {
-      console.error('[stationData] Error syncing monitoring stations:', error);
-      // Attempt recovery by setting to empty array if needed
-      const userSelectedMonitoringStations = get(userSelectedMonitoringStationsAtom);
-      if (!userSelectedMonitoringStations || !Array.isArray(userSelectedMonitoringStations)) {
-        console.warn('[stationData] Attempting recovery by resetting user-selected monitoring stations');
-        set(userSelectedMonitoringStationsAtom, []);
-      }
+    } else {
+      console.log('[syncMonitoringStationsAtom] No location data, skipping fetch');
     }
   }
 );
 
 export const syncRainStationsAtom = atom(
   null,
-  (get, set) => {
-    console.log('[stationData] Syncing rain stations');
+  async (get, set) => {
+    // Get current location
+    const amphure = get(currentAmphureAtom);
+    const province = get(currentProvinceAtom);
     
-    try {
-      // Get the current state
-      const rainStations = get(rainStationsAtom) || [];
-      const userSelectedRainStations = get(userSelectedRainStationsAtom) || [];
-      const disabledRainStations = get(disabledRainStationsAtom) || {};
-      
-      // Log the current state with detailed information
-      console.log('[stationData] Current rain stations state:', {
-        rainStations: rainStations.length,
-        rainStationIds: rainStations.map(s => s.id),
-        userSelectedRainStations: userSelectedRainStations.length,
-        userSelectedRainStationIds: userSelectedRainStations.map(s => s.id),
-        disabledRainStations: Object.keys(disabledRainStations).length,
-        disabledRainStationIds: Object.keys(disabledRainStations)
-      });
-      
-      // Check for invalid data
-      const invalidRainStations = rainStations.filter(s => !s.id);
-      const invalidUserSelectedStations = userSelectedRainStations.filter(s => !s.id);
-      
-      if (invalidRainStations.length > 0) {
-        console.warn('[stationData] Found invalid rain stations without IDs:', invalidRainStations);
-      }
-      
-      if (invalidUserSelectedStations.length > 0) {
-        console.warn('[stationData] Found invalid user-selected rain stations without IDs:', invalidUserSelectedStations);
-      }
-      
-      // Filter out user-selected stations that are disabled
-      const filteredUserSelectedStations = userSelectedRainStations.filter(
-        station => station && station.id && !disabledRainStations[station.id]
-      );
-      
-      // Check for duplicate IDs
-      const userSelectedIds = new Set<string>();
-      const duplicateUserSelectedIds: string[] = [];
-      
-      filteredUserSelectedStations.forEach(station => {
-        if (userSelectedIds.has(station.id)) {
-          duplicateUserSelectedIds.push(station.id);
-        } else {
-          userSelectedIds.add(station.id);
-        }
-      });
-      
-      if (duplicateUserSelectedIds.length > 0) {
-        console.warn('[stationData] Found duplicate user-selected rain station IDs:', duplicateUserSelectedIds);
-      }
-      
-      // If the filtered list is different from the current list, update it
-      if (JSON.stringify(filteredUserSelectedStations) !== JSON.stringify(userSelectedRainStations)) {
-        console.log('[stationData] Updating user-selected rain stations:', {
-          before: userSelectedRainStations.length,
-          after: filteredUserSelectedStations.length,
-          removedIds: userSelectedRainStations
-            .filter(s => !filteredUserSelectedStations.some(fs => fs.id === s.id))
-            .map(s => s.id)
-        });
+    console.log('[syncRainStationsAtom] Syncing rain stations with location:', { 
+      amphure, 
+      province 
+    });
+    
+    // Only fetch if we have location data
+    if (amphure || province) {
+      try {
+        // Clear previous error
+        set(rainStationsErrorAtom, null);
         
-        set(userSelectedRainStationsAtom, filteredUserSelectedStations);
-      } else {
-        console.log('[stationData] No changes needed for user-selected rain stations');
+        // Directly fetch from API
+        const response = await fetchRainStations(amphure, province);
+        
+        if (response.stations && Array.isArray(response.stations)) {
+          console.log('[syncRainStationsAtom] Fetched rain stations:', {
+            count: response.stations.length,
+            dataSources: response.stations.map((s: any) => s.data_source || 'unknown')
+          });
+          
+          // Convert API response to our internal RainStation type
+          const mappedStations = response.stations.map((station: any) => ({
+            id: station.id,
+            name: station.name || station.station_name || `Rain Station ${station.id}`,
+            name_th: station.name_th || null,
+            latitude: station.latitude || 0,
+            longitude: station.longitude || 0,
+            station_type: station.station_type || 'unknown',
+            data_source: station.data_source || 'unknown',
+            province: station.province || province || null,
+            amphure: station.amphure || amphure || null,
+            tambon: station.tambon || null,
+            rainfall10m: station.rainfall10m || null,
+            rainfall1h: station.rainfall1h || null,
+            rainfall3h: station.rainfall3h || null,
+            rainfall24h: station.rainfall24h || null,
+            rainfall_today: station.rainfall_today || null,
+            rainfall_date_calc: station.rainfall_date_calc || null,
+            rainfall_datetime: station.rainfall_datetime || null,
+            rainfall: {
+              daily: station.rainfall?.daily || station.rainfall_today || 0,
+              hourly: station.rainfall?.hourly || station.rainfall1h || 0,
+              tenMinutes: station.rainfall?.tenMinutes || station.rainfall10m || 0,
+              threeHours: station.rainfall?.threeHours || station.rainfall3h || 0,
+              timestamp: station.rainfall?.timestamp || station.rainfall_datetime || new Date().toISOString()
+            }
+          }));
+          
+          // Update the atom with the new data
+          set(rainStationsAtom, mappedStations);
+        } else {
+          console.warn('[syncRainStationsAtom] No rain stations returned from API');
+          // Set empty array to clear previous data
+          set(rainStationsAtom, []);
+        }
+      } catch (error) {
+        console.error('[syncRainStationsAtom] Error fetching rain stations:', error);
+        // Set error atom
+        set(rainStationsErrorAtom, error instanceof Error ? error : new Error(String(error)));
       }
-      
-      // Log the updated state
-      console.log('[stationData] Updated rain stations state:', {
-        rainStations: rainStations.length,
-        userSelectedRainStations: filteredUserSelectedStations.length,
-        disabledRainStations: Object.keys(disabledRainStations).length
-      });
-    } catch (error) {
-      console.error('[stationData] Error syncing rain stations:', error);
-      // Attempt recovery by setting to empty array if needed
-      const userSelectedRainStations = get(userSelectedRainStationsAtom);
-      if (!userSelectedRainStations || !Array.isArray(userSelectedRainStations)) {
-        console.warn('[stationData] Attempting recovery by resetting user-selected rain stations');
-        set(userSelectedRainStationsAtom, []);
-      }
+    } else {
+      console.log('[syncRainStationsAtom] No location data, skipping fetch');
     }
   }
 );
@@ -646,5 +598,118 @@ export const syncReservoirsAtom = atom(
         set(userSelectedReservoirsAtom, []);
       }
     }
+  }
+);
+
+// Original state snapshot atoms for rollback functionality
+export const originalMonitoringStationsAtom = atom<MonitoringStation[]>([]);
+export const originalRainStationsAtom = atom<RainStation[]>([]);
+export const originalReservoirsAtom = atom<Reservoir[]>([]);
+
+export const originalUserSelectedMonitoringStationsAtom = atom<MonitoringStation[]>([]);
+export const originalUserSelectedRainStationsAtom = atom<RainStation[]>([]);
+export const originalUserSelectedReservoirsAtom = atom<Reservoir[]>([]);
+
+export const originalDisabledMonitoringStationsAtom = atom<Record<string, boolean>>({});
+export const originalDisabledRainStationsAtom = atom<Record<string, boolean>>({});
+export const originalDisabledReservoirsAtom = atom<Record<string, boolean>>({});
+
+// Atom to track if we're in edit mode
+export const isEditModeAtom = atom<boolean>(false);
+
+// Atom to track if there are unsaved changes
+export const hasUnsavedChangesAtom = atom<boolean>(false);
+
+// Function to save the current state as the original state
+export const saveOriginalStateAtom = atom(
+  null,
+  (get, set) => {
+    // Save the current state of all station atoms
+    set(originalMonitoringStationsAtom, get(monitoringStationsAtom));
+    set(originalRainStationsAtom, get(rainStationsAtom));
+    set(originalReservoirsAtom, get(reservoirsAtom));
+    
+    set(originalUserSelectedMonitoringStationsAtom, get(userSelectedMonitoringStationsAtom));
+    set(originalUserSelectedRainStationsAtom, get(userSelectedRainStationsAtom));
+    set(originalUserSelectedReservoirsAtom, get(userSelectedReservoirsAtom));
+    
+    set(originalDisabledMonitoringStationsAtom, get(disabledMonitoringStationsAtom));
+    set(originalDisabledRainStationsAtom, get(disabledRainStationsAtom));
+    set(originalDisabledReservoirsAtom, get(disabledReservoirsAtom));
+    
+    // Set edit mode to true
+    set(isEditModeAtom, true);
+    
+    // Reset unsaved changes flag
+    set(hasUnsavedChangesAtom, false);
+    
+    console.log('[stationData] Original state saved for rollback');
+  }
+);
+
+// Function to restore the original state (rollback)
+export const restoreOriginalStateAtom = atom(
+  null,
+  (get, set) => {
+    // Restore the original state of all station atoms
+    set(monitoringStationsAtom, get(originalMonitoringStationsAtom));
+    set(rainStationsAtom, get(originalRainStationsAtom));
+    set(reservoirsAtom, get(originalReservoirsAtom));
+    
+    set(userSelectedMonitoringStationsAtom, get(originalUserSelectedMonitoringStationsAtom));
+    set(userSelectedRainStationsAtom, get(originalUserSelectedRainStationsAtom));
+    set(userSelectedReservoirsAtom, get(originalUserSelectedReservoirsAtom));
+    
+    set(disabledMonitoringStationsAtom, get(originalDisabledMonitoringStationsAtom));
+    set(disabledRainStationsAtom, get(originalDisabledRainStationsAtom));
+    set(disabledReservoirsAtom, get(originalDisabledReservoirsAtom));
+    
+    // Reset edit mode
+    set(isEditModeAtom, false);
+    
+    // Reset unsaved changes flag
+    set(hasUnsavedChangesAtom, false);
+    
+    console.log('[stationData] Original state restored (rollback completed)');
+  }
+);
+
+// Atom to track changes to station data
+export const trackStationChangesAtom = atom(
+  null,
+  (get, set) => {
+    // Check if there are any changes by comparing current state with original state
+    const monitoringChanged = JSON.stringify(get(monitoringStationsAtom)) !== JSON.stringify(get(originalMonitoringStationsAtom)) ||
+                             JSON.stringify(get(userSelectedMonitoringStationsAtom)) !== JSON.stringify(get(originalUserSelectedMonitoringStationsAtom)) ||
+                             JSON.stringify(get(disabledMonitoringStationsAtom)) !== JSON.stringify(get(originalDisabledMonitoringStationsAtom));
+    
+    const rainChanged = JSON.stringify(get(rainStationsAtom)) !== JSON.stringify(get(originalRainStationsAtom)) ||
+                       JSON.stringify(get(userSelectedRainStationsAtom)) !== JSON.stringify(get(originalUserSelectedRainStationsAtom)) ||
+                       JSON.stringify(get(disabledRainStationsAtom)) !== JSON.stringify(get(originalDisabledRainStationsAtom));
+    
+    const reservoirsChanged = JSON.stringify(get(reservoirsAtom)) !== JSON.stringify(get(originalReservoirsAtom)) ||
+                             JSON.stringify(get(userSelectedReservoirsAtom)) !== JSON.stringify(get(originalUserSelectedReservoirsAtom)) ||
+                             JSON.stringify(get(disabledReservoirsAtom)) !== JSON.stringify(get(originalDisabledReservoirsAtom));
+    
+    // Update the unsaved changes flag
+    set(hasUnsavedChangesAtom, monitoringChanged || rainChanged || reservoirsChanged);
+    
+    // Update the edit session status
+    set(editSessionStatusAtom, {
+      hasChanges: monitoringChanged || rainChanged || reservoirsChanged,
+      lastEditTimestamp: Date.now(),
+      changedStationTypes: [
+        ...(monitoringChanged ? ['monitoring'] : []),
+        ...(rainChanged ? ['rain'] : []),
+        ...(reservoirsChanged ? ['reservoir'] : [])
+      ] as ('monitoring' | 'rain' | 'reservoir')[]
+    });
+    
+    console.log('[stationData] Changes tracked:', {
+      monitoringChanged,
+      rainChanged,
+      reservoirsChanged,
+      hasChanges: monitoringChanged || rainChanged || reservoirsChanged
+    });
   }
 ); 
