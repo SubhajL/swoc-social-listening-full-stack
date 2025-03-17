@@ -1220,17 +1220,67 @@ const SystemSetting = () => {
     {
       id: "social-media-import",
       label: "การนำเข้าข้อมูลสื่อสังคมออนไลน์",
-      content: (
-        <div className="p-6">
-          <h3 className="text-xl font-semibold mb-4">การนำเข้าข้อมูลสื่อสังคมออนไลน์</h3>
-          <p className="text-gray-600">จัดการการนำเข้าข้อมูลจากสื่อสังคมออนไลน์ต่างๆ และกำหนดค่าการเชื่อมต่อ API</p>
-          
-          {/* Placeholder for social media import content */}
-          <div className="mt-6 bg-gray-50 p-6 rounded-lg border border-gray-200">
-            <p className="text-gray-500 text-center">อยู่ระหว่างการพัฒนา</p>
+      content: (() => {
+        // Local state for iframe loading status
+        const [iframeLoading, setIframeLoading] = useState(true);
+        const [iframeError, setIframeError] = useState(false);
+        const setupUrl = import.meta.env.SETUP_WEBSITE_NLP_ETL_URL || "http://localhost:3001/setup";
+        
+        // Function to handle iframe load event
+        const handleIframeLoad = () => {
+          setIframeLoading(false);
+        };
+        
+        // Function to handle iframe error
+        const handleIframeError = () => {
+          setIframeLoading(false);
+          setIframeError(true);
+        };
+        
+        return (
+          <div className="p-6">
+            <h3 className="text-xl font-semibold mb-4">การนำเข้าข้อมูลสื่อสังคมออนไลน์</h3>
+            <p className="text-gray-600 mb-4">จัดการการนำเข้าข้อมูลจากสื่อสังคมออนไลน์ต่างๆ และกำหนดค่าการเชื่อมต่อ API</p>
+            
+            {/* External content loaded in iframe */}
+            <div className="mt-4 bg-white rounded-lg border border-gray-200 overflow-hidden" style={{ height: "70vh" }}>
+              {iframeLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-50 bg-opacity-80">
+                  <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-t-blue-500 border-b-blue-500 border-l-transparent border-r-transparent rounded-full animate-spin mx-auto"></div>
+                    <p className="mt-4 text-lg text-gray-600">กำลังโหลด...</p>
+                  </div>
+                </div>
+              )}
+              
+              {iframeError ? (
+                <div className="flex items-center justify-center h-full bg-gray-50">
+                  <div className="text-center max-w-md p-6">
+                    <div className="text-red-500 text-5xl mb-4">⚠️</div>
+                    <h2 className="text-xl font-semibold text-red-600 mb-2">ไม่สามารถโหลดเนื้อหาได้</h2>
+                    <p className="text-gray-600 mb-4">ไม่สามารถเชื่อมต่อกับระบบตั้งค่าได้ กรุณาตรวจสอบว่าเซิร์ฟเวอร์กำลังทำงานที่ {setupUrl}</p>
+                    <button 
+                      onClick={() => window.location.reload()}
+                      className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                    >
+                      ลองใหม่
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <iframe 
+                  src={setupUrl} 
+                  className="w-full h-full border-0"
+                  title="ระบบตั้งค่าการนำเข้าข้อมูล"
+                  sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+                  onLoad={handleIframeLoad}
+                  onError={handleIframeError}
+                />
+              )}
+            </div>
           </div>
-        </div>
-      )
+        );
+      })()
     },
     {
       id: "comment-response",
