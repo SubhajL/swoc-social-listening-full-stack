@@ -14,7 +14,6 @@ import {
   disabledRainStationsAtom,
   disabledReservoirsAtom,
   navigatingAfterSaveAtom,
-  stationDataUpdateIntentionalAtom,
   allStationDataAtom,
   stationCountsAtom,
   StationData,
@@ -31,7 +30,11 @@ import {
   isLoadingReservoirsAtom,
   monitoringStationsErrorAtom,
   rainStationsErrorAtom,
-  reservoirsErrorAtom
+  reservoirsErrorAtom,
+  syncMonitoringStationsAtom,
+  syncRainStationsAtom,
+  syncReservoirsAtom,
+  editSessionStatusAtom
 } from './stationData';
 
 // Complaint data atoms
@@ -85,7 +88,6 @@ export function useStationData() {
   const [disabledRainStations, setDisabledRainStations] = useAtom(disabledRainStationsAtom);
   const [disabledReservoirs, setDisabledReservoirs] = useAtom(disabledReservoirsAtom);
   const [navigatingAfterSave, setNavigatingAfterSave] = useAtom(navigatingAfterSaveAtom);
-  const [stationDataUpdateIntentional, setStationDataUpdateIntentional] = useAtom(stationDataUpdateIntentionalAtom);
   
   // New atoms for location
   const [currentAmphure, setCurrentAmphure] = useAtom(currentAmphureAtom);
@@ -106,112 +108,161 @@ export function useStationData() {
   const [rainStationsError, setRainStationsError] = useAtom(rainStationsErrorAtom);
   const [reservoirsError, setReservoirsError] = useAtom(reservoirsErrorAtom);
   
+  // Synchronization functions
+  const syncMonitoringStations = useSetAtom(syncMonitoringStationsAtom);
+  const syncRainStations = useSetAtom(syncRainStationsAtom);
+  const syncReservoirs = useSetAtom(syncReservoirsAtom);
+  
+  // New atom for edit session status
+  const [editSessionStatus, setEditSessionStatus] = useAtom(editSessionStatusAtom);
+  
   // Helper functions to update station data
   const updateMonitoringStations = useCallback((stations: MonitoringStation[]) => {
-    setStationDataUpdateIntentional(true);
     setMonitoringStations(stations);
-    setStationDataUpdateIntentional(false);
-  }, [setMonitoringStations, setStationDataUpdateIntentional]);
+  }, [setMonitoringStations]);
   
   const updateRainStations = useCallback((stations: RainStation[]) => {
-    setStationDataUpdateIntentional(true);
     setRainStations(stations);
-    setStationDataUpdateIntentional(false);
-  }, [setRainStations, setStationDataUpdateIntentional]);
+  }, [setRainStations]);
   
   const updateReservoirs = useCallback((reservoirs: Reservoir[]) => {
-    setStationDataUpdateIntentional(true);
     setReservoirs(reservoirs);
-    setStationDataUpdateIntentional(false);
-  }, [setReservoirs, setStationDataUpdateIntentional]);
+  }, [setReservoirs]);
   
   const addUserSelectedMonitoringStation = useCallback((station: MonitoringStation) => {
-    setStationDataUpdateIntentional(true);
     setUserSelectedMonitoringStations((prev: MonitoringStation[]) => [...prev, station]);
-    setStationDataUpdateIntentional(false);
-  }, [setUserSelectedMonitoringStations, setStationDataUpdateIntentional]);
+  }, [setUserSelectedMonitoringStations]);
   
   const addUserSelectedRainStation = useCallback((station: RainStation) => {
-    setStationDataUpdateIntentional(true);
     setUserSelectedRainStations((prev: RainStation[]) => [...prev, station]);
-    setStationDataUpdateIntentional(false);
-  }, [setUserSelectedRainStations, setStationDataUpdateIntentional]);
+  }, [setUserSelectedRainStations]);
   
   const addUserSelectedReservoir = useCallback((reservoir: Reservoir) => {
-    setStationDataUpdateIntentional(true);
     setUserSelectedReservoirs((prev: Reservoir[]) => [...prev, reservoir]);
-    setStationDataUpdateIntentional(false);
-  }, [setUserSelectedReservoirs, setStationDataUpdateIntentional]);
+  }, [setUserSelectedReservoirs]);
   
   const removeUserSelectedMonitoringStation = useCallback((stationId: string) => {
-    setStationDataUpdateIntentional(true);
     setUserSelectedMonitoringStations((prev: MonitoringStation[]) => prev.filter(s => s.id !== stationId));
-    setStationDataUpdateIntentional(false);
-  }, [setUserSelectedMonitoringStations, setStationDataUpdateIntentional]);
+  }, [setUserSelectedMonitoringStations]);
   
   const removeUserSelectedRainStation = useCallback((stationId: string) => {
-    setStationDataUpdateIntentional(true);
     setUserSelectedRainStations((prev: RainStation[]) => prev.filter(s => s.id !== stationId));
-    setStationDataUpdateIntentional(false);
-  }, [setUserSelectedRainStations, setStationDataUpdateIntentional]);
+  }, [setUserSelectedRainStations]);
   
   const removeUserSelectedReservoir = useCallback((reservoirId: string) => {
-    setStationDataUpdateIntentional(true);
     setUserSelectedReservoirs((prev: Reservoir[]) => prev.filter(r => r.id !== reservoirId));
-    setStationDataUpdateIntentional(false);
-  }, [setUserSelectedReservoirs, setStationDataUpdateIntentional]);
+  }, [setUserSelectedReservoirs]);
   
+  // Function to mark that changes were made in the edit session
+  const markEditSessionChanged = useCallback((stationType: 'monitoring' | 'rain' | 'reservoir') => {
+    setEditSessionStatus(prev => {
+      // Check if this station type is already in the array
+      const hasStationType = prev.changedStationTypes.includes(stationType);
+      
+      return {
+        hasChanges: true,
+        lastEditTimestamp: Date.now(),
+        changedStationTypes: hasStationType 
+          ? prev.changedStationTypes 
+          : [...prev.changedStationTypes, stationType]
+      };
+    });
+  }, [setEditSessionStatus]);
+  
+  // Function to reset the edit session status
+  const resetEditSessionStatus = useCallback(() => {
+    console.log('[resetEditSessionStatus] Resetting edit session status and reverting changes');
+    
+    // Get the current edit session status to know which station types were changed
+    const changedTypes = editSessionStatus.changedStationTypes;
+    
+    // Reset the edit session status first
+    setEditSessionStatus({
+      hasChanges: false,
+      lastEditTimestamp: 0,
+      changedStationTypes: []
+    });
+    
+    // Reset disabled stations maps regardless of what changed
+    setDisabledMonitoringStations({});
+    setDisabledRainStations({});
+    setDisabledReservoirs({});
+    
+    // Reset user selected stations arrays
+    setUserSelectedMonitoringStations([]);
+    setUserSelectedRainStations([]);
+    setUserSelectedReservoirs([]);
+    
+    // Force a refresh of the data by triggering the synchronization functions
+    syncMonitoringStations();
+    syncRainStations();
+    syncReservoirs();
+    
+    console.log('[resetEditSessionStatus] Edit session reset complete');
+  }, [
+    editSessionStatus, 
+    setEditSessionStatus, 
+    setDisabledMonitoringStations, 
+    setDisabledRainStations, 
+    setDisabledReservoirs,
+    syncMonitoringStations,
+    syncRainStations,
+    syncReservoirs,
+    setUserSelectedMonitoringStations,
+    setUserSelectedRainStations,
+    setUserSelectedReservoirs
+  ]);
+  
+  // Update the disableMonitoringStation function to mark edit session changed
   const disableMonitoringStation = useCallback((stationId: string) => {
-    setStationDataUpdateIntentional(true);
     setDisabledMonitoringStations((prev: Record<string, boolean>) => ({ ...prev, [stationId]: true }));
-    setStationDataUpdateIntentional(false);
-  }, [setDisabledMonitoringStations, setStationDataUpdateIntentional]);
+    markEditSessionChanged('monitoring');
+  }, [setDisabledMonitoringStations, markEditSessionChanged]);
   
+  // Update the disableRainStation function to mark edit session changed
   const disableRainStation = useCallback((stationId: string) => {
-    setStationDataUpdateIntentional(true);
     setDisabledRainStations((prev: Record<string, boolean>) => ({ ...prev, [stationId]: true }));
-    setStationDataUpdateIntentional(false);
-  }, [setDisabledRainStations, setStationDataUpdateIntentional]);
+    markEditSessionChanged('rain');
+  }, [setDisabledRainStations, markEditSessionChanged]);
   
+  // Update the disableReservoir function to mark edit session changed
   const disableReservoir = useCallback((reservoirId: string) => {
-    setStationDataUpdateIntentional(true);
     setDisabledReservoirs((prev: Record<string, boolean>) => ({ ...prev, [reservoirId]: true }));
-    setStationDataUpdateIntentional(false);
-  }, [setDisabledReservoirs, setStationDataUpdateIntentional]);
+    markEditSessionChanged('reservoir');
+  }, [setDisabledReservoirs, markEditSessionChanged]);
   
+  // Update the enableMonitoringStation function to mark edit session changed
   const enableMonitoringStation = useCallback((stationId: string) => {
-    setStationDataUpdateIntentional(true);
     setDisabledMonitoringStations((prev: Record<string, boolean>) => {
       const newDisabled = { ...prev };
       delete newDisabled[stationId];
       return newDisabled;
     });
-    setStationDataUpdateIntentional(false);
-  }, [setDisabledMonitoringStations, setStationDataUpdateIntentional]);
+    markEditSessionChanged('monitoring');
+  }, [setDisabledMonitoringStations, markEditSessionChanged]);
   
+  // Update the enableRainStation function to mark edit session changed
   const enableRainStation = useCallback((stationId: string) => {
-    setStationDataUpdateIntentional(true);
     setDisabledRainStations((prev: Record<string, boolean>) => {
       const newDisabled = { ...prev };
       delete newDisabled[stationId];
       return newDisabled;
     });
-    setStationDataUpdateIntentional(false);
-  }, [setDisabledRainStations, setStationDataUpdateIntentional]);
+    markEditSessionChanged('rain');
+  }, [setDisabledRainStations, markEditSessionChanged]);
   
+  // Update the enableReservoir function to mark edit session changed
   const enableReservoir = useCallback((reservoirId: string) => {
-    setStationDataUpdateIntentional(true);
     setDisabledReservoirs((prev: Record<string, boolean>) => {
       const newDisabled = { ...prev };
       delete newDisabled[reservoirId];
       return newDisabled;
     });
-    setStationDataUpdateIntentional(false);
-  }, [setDisabledReservoirs, setStationDataUpdateIntentional]);
+    markEditSessionChanged('reservoir');
+  }, [setDisabledReservoirs, markEditSessionChanged]);
   
   // Function to reset all station data
   const resetStationData = useCallback(() => {
-    setStationDataUpdateIntentional(true);
     setMonitoringStations([]);
     setRainStations([]);
     setReservoirs([]);
@@ -221,7 +272,6 @@ export function useStationData() {
     setDisabledMonitoringStations({});
     setDisabledRainStations({});
     setDisabledReservoirs({});
-    setStationDataUpdateIntentional(false);
   }, [
     setMonitoringStations, 
     setRainStations, 
@@ -231,8 +281,7 @@ export function useStationData() {
     setUserSelectedReservoirs, 
     setDisabledMonitoringStations, 
     setDisabledRainStations, 
-    setDisabledReservoirs,
-    setStationDataUpdateIntentional
+    setDisabledReservoirs
   ]);
   
   // Function to adapt a reservoir object for compatibility
@@ -330,7 +379,6 @@ export function useStationData() {
     disabledRainStations,
     disabledReservoirs,
     navigatingAfterSave,
-    stationDataUpdateIntentional,
     monitoringStationsQuery,
     rainStationsQuery,
     reservoirsQuery,
@@ -362,11 +410,16 @@ export function useStationData() {
     getStationData,
     saveStationDataForNavigation,
     setNavigatingAfterSave,
-    setStationDataUpdateIntentional,
     updateLocation,
     setMonitoringStationsError,
     setRainStationsError,
-    setReservoirsError
+    setReservoirsError,
+    syncMonitoringStations,
+    syncRainStations,
+    syncReservoirs,
+    editSessionStatus,
+    markEditSessionChanged,
+    resetEditSessionStatus
   };
 }
 

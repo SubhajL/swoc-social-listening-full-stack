@@ -21,7 +21,6 @@ import {
   pingServer
 } from '@/utils/map-core';
 import type { Feature, GeoJSON, Point } from 'geojson';
-import React from 'react';
 import { useComplaintData } from '@/atoms/hooks';
 
 interface MapProps {

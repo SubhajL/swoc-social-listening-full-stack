@@ -1,0 +1,821 @@
+Reading Excel file from: /Users/subhajlimanond/dev/swoc-social-listening-fullstack/Report_dam_station_2025-02-05_V0.5 LH.xlsx
+Found 470 records in sheet 'อ่างเก็บน้ำ-เขื่อน'
+Found 35 large reservoirs
+
+Large reservoirs to be imported:
+1. เขื่อนแม่งัดสมบูรณ์ชล - เชียงใหม่ แม่แตง
+2. เขื่อนแม่กวงอุดมธารา - เชียงใหม่ ดอยสะเก็ด
+3. เขื่อนกิ่วลม - ลำปาง เมืองลำปาง
+4. เขื่อนกิ่วคอหมา - ลำปาง แจ้ห่ม
+5. เขื่อนแม่มอก - ลำปาง เถิน
+6. เขื่อนสิริกิติ์ - อุตรดิตถ์ ท่าปลา
+7. เขื่อนแควน้อยบำรุงแดน - พิษณุโลก วัดโบสถ์ 
+8. เขื่อนภูมิพล - ตาก สามเงา
+9. เขื่อนน้ำพุง - สกลนคร ภูพาน
+10. เขื่อนน้ำอูน - สกลนคร พังโคน
+11. เขื่อนห้วยหลวง - อุดรธานี  เมืองอุดรธานี 
+12. เขื่อนจุฬาภรณ์ - ชัยภูมิ คอนสาร
+13. เขื่อนลำปาว - กาฬสินธุ์ เมืองกาฬสินธุ์
+14. เขื่อนอุบลรัตน์ - ขอนแก่น อุบลรัตน์
+15. เขื่อนสิรินธร - อุบลราชธานี สิรินธร
+16. เขื่อนลำนางรอง - บุรีรัมย์ โนนดินแดง
+17. เขื่อนลำตะคอง - นครราชสีมา สีคิ้ว
+18. เขื่อนลำพระเพลิง - นครราชสีมา ปักธงชัย 
+19. เขื่อนมูลบน - นครราชสีมา ครบุรี
+20. เขื่อนลำแซะ - นครราชสีมา ครบุรี
+21. เขื่อนคลองสียัด - ฉะเชิงเทรา ท่าตะเกียบ
+22. เขื่อนบางพระ - ชลบุรี ศรีราชา
+23. เขื่อนนฤบดินทรจินดา - ปราจีนบุรี นาดี
+24. เขื่อนหนองปลาไหล - ระยอง ปลวกแดง
+25. เขื่อนประแสร์ - ระยอง วังจันทร์
+26. เขื่อนขุนด่านปราการชล - นครนายก เมืองนครนายก
+27. เขื่อนป่าสักชลสิทธิ์ - ลพบุรี พัฒนานิคม
+28. เขื่อนทับเสลา - อุทัยธานี ลานสัก
+29. เขื่อนกระเสียว - สุพรรณบุรี ด่านช้าง
+30. เขื่อนศรีนครินทร์ - กาญจนบุรี ศรีสวัสดิ์
+31. เขื่อนวชิราลงกรณ - กาญจนบุรี ทองผาภูมิ
+32. เขื่อนแก่งกระจาน - เพชรบุรี แก่งกระจาน
+33. เขื่อนปราณบุรี - ประจวบคีรีขันธ์ ปราณบุรี
+34. เขื่อนรัชชประภา - สุราษฎร์ธานี บ้านตาขุน
+35. เขื่อนบางลาง - ยะลา บันนังสตา
+
+Connecting to database...
+(node:35386) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Error processing reservoir: {"ลำดับที่":1,"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 1","อ่างเก็บน้ำ/เขื่อน":"เขื่อนแม่งัดสมบูรณ์ชล","ลุ่มน้ำ":"ลุ่มน้ำปิง_ลุ่มน้ำเจ้าพระยา","อำเภอ":"แม่แตง","จังหวัด":"เชียงใหม่","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":323,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":265,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: value too long for type character varying(10)
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:143:34) {
+  length: 98,
+  severity: 'ERROR',
+  code: '22001',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'varchar.c',
+  line: '637',
+  routine: 'varchar'
+}
+Error processing reservoir: {"ลำดับที่":2,"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 1","อ่างเก็บน้ำ/เขื่อน":"เขื่อนแม่กวงอุดมธารา","ลุ่มน้ำ":"ลุ่มน้ำปิง_ลุ่มน้ำเจ้าพระยา","อำเภอ":"ดอยสะเก็ด","จังหวัด":"เชียงใหม่","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":295,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":263,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"ลำดับที่":5,"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 2","อ่างเก็บน้ำ/เขื่อน":"เขื่อนกิ่วลม","ลุ่มน้ำ":"ลุ่มน้ำวัง","อำเภอ":"เมืองลำปาง","จังหวัด":"ลำปาง","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":106.22,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":106.22,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 2","อ่างเก็บน้ำ/เขื่อน":"เขื่อนกิ่วคอหมา","ลุ่มน้ำ":"ลุ่มน้ำวัง","อำเภอ":"แจ้ห่ม","จังหวัด":"ลำปาง","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":208.6,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":170,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 2","อ่างเก็บน้ำ/เขื่อน":"เขื่อนแม่มอก","ลุ่มน้ำ":"ลุ่มน้ำวัง","อำเภอ":"เถิน","จังหวัด":"ลำปาง","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":110,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":110,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"ลำดับที่":2,"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 3","อ่างเก็บน้ำ/เขื่อน":"เขื่อนสิริกิติ์","ลุ่มน้ำ":"ล่มน้ำน่าน_ลุ่มน้ำเจ้าพระยา","อำเภอ":"ท่าปลา","จังหวัด":"อุตรดิตถ์","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":10508,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":9510,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 3","อ่างเก็บน้ำ/เขื่อน":"เขื่อนแควน้อยบำรุงแดน","ลุ่มน้ำ":"ล่มน้ำน่าน_ลุ่มน้ำเจ้าพระยา","อำเภอ":"วัดโบสถ์ ","จังหวัด":"พิษณุโลก","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":1080,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":939,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"ลำดับที่":1,"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 4","อ่างเก็บน้ำ/เขื่อน":"เขื่อนภูมิพล","ลุ่มน้ำ":"ลุ่มน้ำปิง_ลุ่มน้ำเจ้าพระยา","อำเภอ":"สามเงา","จังหวัด":"ตาก","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":13462,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":13462,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"อ่างเก็บน้ำ/เขื่อน":"เขื่อนน้ำพุง","ลุ่มน้ำ":"ลุ่มน้ำโขงตะวันออกเฉียงเหนือ","อำเภอ":"ภูพาน","จังหวัด":"สกลนคร","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":200,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":165,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 5","อ่างเก็บน้ำ/เขื่อน":"เขื่อนน้ำอูน","ลุ่มน้ำ":"ลุ่มน้ำโขงตะวันออกเฉียงเหนือ","อำเภอ":"พังโคน","จังหวัด":"สกลนคร","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":780,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":520,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 5","อ่างเก็บน้ำ/เขื่อน":"เขื่อนห้วยหลวง","ลุ่มน้ำ":"ลุ่มน้ำโขงตะวันออกเฉียงเหนือ","อำเภอ":"เมืองอุดรธานี ","จังหวัด":"อุดรธานี ","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":135.57,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":135.57,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"อ่างเก็บน้ำ/เขื่อน":"เขื่อนจุฬาภรณ์","ลุ่มน้ำ":"ลุ่มน้ำชี","อำเภอ":"คอนสาร","จังหวัด":"ชัยภูมิ","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":181,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":164,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 6","อ่างเก็บน้ำ/เขื่อน":"เขื่อนลำปาว","ลุ่มน้ำ":"ลุ่มน้ำชี","อำเภอ":"เมืองกาฬสินธุ์","จังหวัด":"กาฬสินธุ์","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":2450,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":1980,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"อ่างเก็บน้ำ/เขื่อน":"เขื่อนอุบลรัตน์","ลุ่มน้ำ":"ลุ่มน้ำชี","อำเภอ":"อุบลรัตน์","จังหวัด":"ขอนแก่น","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":2431,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":2431,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"อ่างเก็บน้ำ/เขื่อน":"เขื่อนสิรินธร","ลุ่มน้ำ":"ลุ่มน้ำมูล","อำเภอ":"สิรินธร","จังหวัด":"อุบลราชธานี","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":1966,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":1966,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 8","อ่างเก็บน้ำ/เขื่อน":"เขื่อนลำนางรอง","ลุ่มน้ำ":"ลุ่มน้ำมูล","อำเภอ":"โนนดินแดง","จังหวัด":"บุรีรัมย์","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":196.67,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":121.41,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 8","อ่างเก็บน้ำ/เขื่อน":"เขื่อนลำตะคอง","ลุ่มน้ำ":"ลุ่มน้ำป่าสัก","อำเภอ":"สีคิ้ว","จังหวัด":"นครราชสีมา","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":445,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":314.49,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 8","อ่างเก็บน้ำ/เขื่อน":"เขื่อนลำพระเพลิง","ลุ่มน้ำ":"ลุ่มน้ำมูล","อำเภอ":"ปักธงชัย ","จังหวัด":"นครราชสีมา","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":242,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":155,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 8","อ่างเก็บน้ำ/เขื่อน":"เขื่อนมูลบน","ลุ่มน้ำ":"ลุ่มน้ำมูล","อำเภอ":"ครบุรี","จังหวัด":"นครราชสีมา","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":350,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":141,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 8","อ่างเก็บน้ำ/เขื่อน":"เขื่อนลำแซะ","ลุ่มน้ำ":"ลุ่มน้ำมูล","อำเภอ":"ครบุรี","จังหวัด":"นครราชสีมา","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":325,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":275,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 9","อ่างเก็บน้ำ/เขื่อน":"เขื่อนคลองสียัด","ลุ่มน้ำ":"ลุ่มน้ำบางปะกง","อำเภอ":"ท่าตะเกียบ","จังหวัด":"ฉะเชิงเทรา","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":450,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":420,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"อ่างเก็บน้ำ/เขื่อน":"เขื่อนบางพระ","ลุ่มน้ำ":"ลุ่มน้ำชายฝั่งทะเลตะวันออก","อำเภอ":"ศรีราชา","จังหวัด":"ชลบุรี","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":127,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":117,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 9","อ่างเก็บน้ำ/เขื่อน":"เขื่อนนฤบดินทรจินดา","ลุ่มน้ำ":"ลุ่มน้ำมูล","อำเภอ":"นาดี","จังหวัด":"ปราจีนบุรี","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":338,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":295,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"อ่างเก็บน้ำ/เขื่อน":"เขื่อนหนองปลาไหล","ลุ่มน้ำ":"ลุ่มน้ำชายฝั่งทะเลตะวันออก","อำเภอ":"ปลวกแดง","จังหวัด":"ระยอง","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":205.85,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":163.75,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 9","อ่างเก็บน้ำ/เขื่อน":"เขื่อนประแสร์","ลุ่มน้ำ":"ลุ่มน้ำชายฝั่งทะเลตะวันออก","อำเภอ":"วังจันทร์","จังหวัด":"ระยอง","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":322,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":295,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 9","อ่างเก็บน้ำ/เขื่อน":"เขื่อนขุนด่านปราการชล","ลุ่มน้ำ":"ลุ่มน้ำมูล","อำเภอ":"เมืองนครนายก","จังหวัด":"นครนายก","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":224.9,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":224,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 10","อ่างเก็บน้ำ/เขื่อน":"เขื่อนป่าสักชลสิทธิ์","ลุ่มน้ำ":"ลุ่มน้ำเจ้าพระยา","อำเภอ":"พัฒนานิคม","จังหวัด":"ลพบุรี","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":960,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":960,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 12","อ่างเก็บน้ำ/เขื่อน":"เขื่อนทับเสลา","ลุ่มน้ำ":"ลุ่มน้ำสะแกกรัง","อำเภอ":"ลานสัก","จังหวัด":"อุทัยธานี","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":190,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":160,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 12","อ่างเก็บน้ำ/เขื่อน":"เขื่อนกระเสียว","ลุ่มน้ำ":"ลุ่มน้ำท่าจีน","อำเภอ":"ด่านช้าง","จังหวัด":"สุพรรณบุรี","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":390,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":299,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"อ่างเก็บน้ำ/เขื่อน":"เขื่อนศรีนครินทร์","ลุ่มน้ำ":"ลุ่มน้ำแม่กลอง","อำเภอ":"ศรีสวัสดิ์","จังหวัด":"กาญจนบุรี","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":18770,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":17745,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"อ่างเก็บน้ำ/เขื่อน":"เขื่อนวชิราลงกรณ","ลุ่มน้ำ":"ลุ่มน้ำแม่กลอง","อำเภอ":"ทองผาภูมิ","จังหวัด":"กาญจนบุรี","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":11000,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":8860,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 14","อ่างเก็บน้ำ/เขื่อน":"เขื่อนแก่งกระจาน","ลุ่มน้ำ":"ลุ่มน้ำเพชรบุรี  -  ประจวบคีรีขันธ์","อำเภอ":"แก่งกระจาน","จังหวัด":"เพชรบุรี","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":900,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":710,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"สำนักงานชลประทาน":"สำนักงานชลประทานที่ 14","อ่างเก็บน้ำ/เขื่อน":"เขื่อนปราณบุรี","ลุ่มน้ำ":"ลุ่มน้ำเพชรบุรี  -  ประจวบคีรีขันธ์","อำเภอ":"ปราณบุรี","จังหวัด":"ประจวบคีรีขันธ์","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":490,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":391,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"อ่างเก็บน้ำ/เขื่อน":"เขื่อนรัชชประภา","ลุ่มน้ำ":"ลุ่มน้ำภาคใต้ฝั่งตะวันออกตอนบน","อำเภอ":"บ้านตาขุน","จังหวัด":"สุราษฎร์ธานี","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":6144,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":5638.84,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Error processing reservoir: {"อ่างเก็บน้ำ/เขื่อน":"เขื่อนบางลาง","ลุ่มน้ำ":"ลุ่มน้ำเพชรบุรี  -  ประจวบคีรีขันธ์","อำเภอ":"บันนังสตา","จังหวัด":"ยะลา","ความจุ รนก. \r\n(ล้าน ลบ.ม.)":1590,"ปริมาณน้ำ รนก. ต่ำสุด\r\n (ล้าน ลบ.ม.)":1454.36,"หมายเหตุ":"อ่างเก็บน้ำขนาดใหญ่"} error: current transaction is aborted, commands ignored until end of transaction block
+    at /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/node_modules/pg/lib/client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async importLargeReservoirs (file:///Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/import-large-reservoirs.mjs:115:31) {
+  length: 145,
+  severity: 'ERROR',
+  code: '25P02',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'postgres.c',
+  line: '1498',
+  routine: 'exec_parse_message'
+}
+Import completed. Successful: 0, Errors: 35, Skipped: 0
+Total records in reservoir_locations table: 495
+Records by data source:
+  reservoir: 492
+  excel: 3
+Database connection released.
+Database pool ended.

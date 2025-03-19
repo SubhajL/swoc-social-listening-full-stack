@@ -29,11 +29,11 @@ const __dirname = path.dirname(__filename);
 // Path to the crontab file
 const CRONTAB_FILE = path.join(__dirname, '..', '..', 'crontab');
 
-// Cron schedule for HII data sync (daily at 12:00 UTC)
-const HII_CRON_SCHEDULE = '0 12 * * *';
+// Cron schedule for HII data sync (every hour at minute 0)
+const HII_CRON_SCHEDULE = '0 * * * *';
 
-// Cron schedule for TMD data sync (daily at 12:30 UTC)
-const TMD_CRON_SCHEDULE = '30 12 * * *';
+// Cron schedule for TMD data sync (every hour at minute 30)
+const TMD_CRON_SCHEDULE = '30 * * * *';
 
 // Get the absolute path to the scripts
 const HII_SCRIPT_PATH = path.resolve(__dirname, 'insert-thaiwater-rainfall-data.mjs');
@@ -52,18 +52,26 @@ if (!fs.existsSync(LOG_DIR)) {
 const generateCrontabContent = () => {
   const nodeExecutable = process.execPath;
   
+  // Check if DATABASE_URL is defined
+  if (!process.env.DATABASE_URL) {
+    logger.warn('DATABASE_URL is not defined in environment variables. The cron jobs may fail to connect to the database.');
+  }
+  
+  // Use the correct DATABASE_URL from the .env file
+  const databaseUrl = process.env.DATABASE_URL || 'postgresql://swoc-uat-gis-ssl-user:4c0b269f763d4ce1d1d59ba0e2ef1f9c@ec2-18-143-195-184.ap-southeast-1.compute.amazonaws.com:15435/swoc-uat-gis-ssl';
+  
   return `# ThaiWater data sync cron jobs
 # Generated on ${new Date().toISOString()}
 
 # Environment variables
 PATH=${process.env.PATH}
 NODE_ENV=${process.env.NODE_ENV || 'production'}
-DATABASE_URL=${process.env.DATABASE_URL}
+DATABASE_URL=${databaseUrl}
 
-# HII data sync - Daily at 12:00 UTC
+# HII data sync - Every hour at minute 0
 ${HII_CRON_SCHEDULE} ${nodeExecutable} ${HII_SCRIPT_PATH} >> ${path.join(LOG_DIR, 'hii-sync.log')} 2>&1
 
-# TMD data sync - Daily at 12:30 UTC
+# TMD data sync - Every hour at minute 30
 ${TMD_CRON_SCHEDULE} ${nodeExecutable} ${TMD_SCRIPT_PATH} >> ${path.join(LOG_DIR, 'tmd-sync.log')} 2>&1
 `;
 };
@@ -84,9 +92,9 @@ const writeCrontabFile = (content) => {
 };
 
 // Install the crontab
-const installCrontab = () => {
+const installCrontab = async () => {
   try {
-    const { execSync } = require('child_process');
+    const { execSync } = await import('child_process');
     execSync(`crontab ${CRONTAB_FILE}`);
     logger.info('Crontab installed successfully');
     return true;
@@ -99,7 +107,7 @@ const installCrontab = () => {
 };
 
 // Main function
-const setupCron = () => {
+const setupCron = async () => {
   logger.info('Setting up ThaiWater cron jobs');
   
   // Generate crontab content
@@ -118,7 +126,7 @@ const setupCron = () => {
   
   // Attempt to install the crontab if running with --install flag
   if (process.argv.includes('--install')) {
-    if (installCrontab()) {
+    if (await installCrontab()) {
       logger.info('Cron jobs installed successfully');
     } else {
       logger.error('Failed to install cron jobs');
@@ -130,4 +138,9 @@ const setupCron = () => {
 };
 
 // Run the setup
-setupCron(); 
+setupCron().catch(error => {
+  logger.error('Error in setup', {
+    error: error instanceof Error ? error.message : String(error)
+  });
+  process.exit(1);
+}); 

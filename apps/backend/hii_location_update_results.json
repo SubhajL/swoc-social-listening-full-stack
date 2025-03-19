@@ -1,0 +1,55 @@
+{
+  "total": 6,
+  "updated": 1,
+  "skipped": 2,
+  "errors": 3,
+  "details": [
+    {
+      "id": 23,
+      "status": "error",
+      "reason": "geocoding_failed",
+      "coordinates": {
+        "latitude": "0.000000",
+        "longitude": "0.000000"
+      }
+    },
+    {
+      "id": 356,
+      "status": "skipped",
+      "reason": "no_coordinates"
+    },
+    {
+      "id": 570,
+      "status": "skipped",
+      "reason": "no_coordinates"
+    },
+    {
+      "id": 457560,
+      "status": "error",
+      "reason": "geocoding_failed",
+      "coordinates": {
+        "latitude": "0.000000",
+        "longitude": "0.000000"
+      }
+    },
+    {
+      "id": 785,
+      "status": "updated",
+      "province": "ชลบุรี",
+      "amphure": "เมืองชลบุรี",
+      "coordinates": {
+        "latitude": "12.575800",
+        "longitude": "99.961000"
+      }
+    },
+    {
+      "id": 1116457,
+      "status": "error",
+      "reason": "geocoding_failed",
+      "coordinates": {
+        "latitude": "13.185869",
+        "longitude": "100.916916"
+      }
+    }
+  ]
+}

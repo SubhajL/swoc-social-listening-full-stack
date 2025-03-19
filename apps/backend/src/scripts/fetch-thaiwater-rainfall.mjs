@@ -78,11 +78,11 @@ async function fetchRainfallData() {
           WHEN rainfall24h >= 90 THEN 'Very Heavy (>= 90mm)'
         END as rainfall_category,
         COUNT(*) as count
-      FROM thaiwater_rainfall_data
+      FROM thaiwater_rainfall_data_new
       WHERE rainfall_datetime = (
         SELECT MAX(rainfall_datetime)
-        FROM thaiwater_rainfall_data
-        WHERE tele_station_id = thaiwater_rainfall_data.tele_station_id
+        FROM thaiwater_rainfall_data_new
+        WHERE tele_station_id = thaiwater_rainfall_data_new.tele_station_id
       )
       GROUP BY rainfall_category
       ORDER BY rainfall_category

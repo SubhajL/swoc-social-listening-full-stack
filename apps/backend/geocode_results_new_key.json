@@ -1,0 +1,73 @@
+[
+  {
+    "coordinates": {
+      "latitude": 9.4668,
+      "longitude": 100.045,
+      "name": "เกาะสมุย (Koh Samui)"
+    },
+    "formatted_address": "มะเร็ต อำเภอเกาะสมุย สุราษฎร์ธานี ประเทศไทย",
+    "administrative_areas": {
+      "province": "สุราษฎร์ธานี",
+      "amphure": "อำเภอเกาะสมุย",
+      "tambon": "มะเร็ต"
+    },
+    "raw_components": [
+      {
+        "long_name": "มะเร็ต",
+        "short_name": "มะเร็ต",
+        "types": [
+          "administrative_area_level_3",
+          "political"
+        ]
+      },
+      {
+        "long_name": "อำเภอเกาะสมุย",
+        "short_name": "อำเภอเกาะสมุย",
+        "types": [
+          "administrative_area_level_2",
+          "political"
+        ]
+      },
+      {
+        "long_name": "สุราษฎร์ธานี",
+        "short_name": "จ.สุราษฎร์ธานี",
+        "types": [
+          "administrative_area_level_1",
+          "political"
+        ]
+      },
+      {
+        "long_name": "ประเทศไทย",
+        "short_name": "TH",
+        "types": [
+          "country",
+          "political"
+        ]
+      }
+    ],
+    "is_water": false,
+    "all_results": [
+      {
+        "formatted_address": "มะเร็ต อำเภอเกาะสมุย สุราษฎร์ธานี ประเทศไทย",
+        "types": [
+          "administrative_area_level_3",
+          "political"
+        ]
+      },
+      {
+        "formatted_address": "อำเภอเกาะสมุย สุราษฎร์ธานี ประเทศไทย",
+        "types": [
+          "administrative_area_level_2",
+          "political"
+        ]
+      },
+      {
+        "formatted_address": "สุราษฎร์ธานี ประเทศไทย",
+        "types": [
+          "administrative_area_level_1",
+          "political"
+        ]
+      }
+    ]
+  }
+]

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
@@ -12,7 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, InfoIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
@@ -89,7 +90,10 @@ export const WaterLevelInfo = ({
     reservoirs,
     userSelectedMonitoringStations,
     userSelectedRainStations,
-    userSelectedReservoirs
+    userSelectedReservoirs,
+    disabledMonitoringStations,
+    disabledRainStations,
+    disabledReservoirs
   } = useStationData();
   
   // Clean location strings for display
@@ -115,23 +119,136 @@ export const WaterLevelInfo = ({
   );
   
   // Determine which stations to display - prioritize Jotai data
-  const monitoringStationsToDisplay = userSelectedMonitoringStations.length > 0 
-    ? userSelectedMonitoringStations 
-    : (monitoringStations.length > 0 
-      ? monitoringStations 
-      : (monitoringData?.stations ? monitoringData.stations : []));
+  // Include both user-selected stations and system stations, including disabled system stations
+  const monitoringStationsToDisplay = () => {
+    console.log('[WaterLevelInfo] Determining monitoring stations to display');
+    
+    try {
+      // Start with user-selected stations
+      let stations = [...userSelectedMonitoringStations];
+      
+      // Add system stations, including disabled ones with source='system'
+      // We want to include ALL system stations, even disabled ones
+      const systemStations = monitoringStations.filter(station => {
+        // Include all system stations that aren't already in the user-selected list
+        const stationId = String(station.id);
+        const isAlreadyInUserSelected = stations.some(s => String(s.id) === stationId);
+        
+        // Include if not already in user-selected list
+        return !isAlreadyInUserSelected;
+      });
+      
+      stations = [...stations, ...systemStations];
+      
+      // If we still don't have any stations, use API data
+      if (stations.length === 0 && monitoringData?.stations) {
+        // Use type assertion to handle type mismatch
+        stations = monitoringData.stations as any[];
+      }
+      
+      console.log('[WaterLevelInfo] Monitoring stations to display:', {
+        userSelected: userSelectedMonitoringStations.length,
+        system: systemStations.length,
+        total: stations.length,
+        disabledCount: Object.keys(disabledMonitoringStations).length
+      });
+      
+      return stations as typeof userSelectedMonitoringStations;
+    } catch (error) {
+      console.error('[WaterLevelInfo] Error determining monitoring stations to display:', error);
+      // Return empty array as fallback
+      return [] as typeof userSelectedMonitoringStations;
+    }
+  };
   
-  const rainStationsToDisplay = userSelectedRainStations.length > 0 
-    ? userSelectedRainStations 
-    : (rainStations.length > 0 
-      ? rainStations 
-      : (rainData?.stations ? rainData.stations : []));
+  const rainStationsToDisplay = () => {
+    console.log('[WaterLevelInfo] Determining rain stations to display');
+    
+    try {
+      // Start with user-selected stations
+      let stations = [...userSelectedRainStations];
+      
+      // Add system stations, including disabled ones with source='system'
+      // We want to include ALL system stations, even disabled ones
+      const systemStations = rainStations.filter(station => {
+        // Include all system stations that aren't already in the user-selected list
+        const stationId = String(station.id);
+        const isAlreadyInUserSelected = stations.some(s => String(s.id) === stationId);
+        
+        // Include if not already in user-selected list
+        return !isAlreadyInUserSelected;
+      });
+      
+      stations = [...stations, ...systemStations];
+      
+      // If we still don't have any stations, use API data
+      if (stations.length === 0 && rainData?.stations) {
+        // Use type assertion to handle type mismatch
+        stations = rainData.stations as any[];
+      }
+      
+      console.log('[WaterLevelInfo] Rain stations to display:', {
+        userSelected: userSelectedRainStations.length,
+        system: systemStations.length,
+        total: stations.length,
+        disabledCount: Object.keys(disabledRainStations).length
+      });
+      
+      return stations as typeof userSelectedRainStations;
+    } catch (error) {
+      console.error('[WaterLevelInfo] Error determining rain stations to display:', error);
+      // Return empty array as fallback
+      return [] as typeof userSelectedRainStations;
+    }
+  };
   
-  const reservoirsToDisplay = userSelectedReservoirs.length > 0 
-    ? userSelectedReservoirs 
-    : (reservoirs.length > 0 
-      ? reservoirs 
-      : (reservoirData ? (Array.isArray(reservoirData) ? reservoirData.map(adaptReservoir) : []) : []));
+  const reservoirsToDisplay = () => {
+    console.log('[WaterLevelInfo] Determining reservoirs to display');
+    
+    try {
+      // Start with user-selected reservoirs
+      let reservoirList = [...userSelectedReservoirs];
+      
+      // Add system reservoirs, including disabled ones with source='system'
+      // We want to include ALL system reservoirs, even disabled ones
+      const systemReservoirs = reservoirs.filter(reservoir => {
+        // Include all system reservoirs that aren't already in the user-selected list
+        const reservoirId = String(reservoir.id);
+        const isAlreadyInUserSelected = reservoirList.some(r => String(r.id) === reservoirId);
+        
+        // Include if not already in user-selected list
+        return !isAlreadyInUserSelected;
+      });
+      
+      reservoirList = [...reservoirList, ...systemReservoirs];
+      
+      // If we still don't have any reservoirs, use API data
+      if (reservoirList.length === 0 && reservoirData) {
+        // Use type assertion to handle type mismatch
+        reservoirList = Array.isArray(reservoirData) 
+          ? reservoirData.map(adaptReservoir) as any[]
+          : [];
+      }
+      
+      console.log('[WaterLevelInfo] Reservoirs to display:', {
+        userSelected: userSelectedReservoirs.length,
+        system: systemReservoirs.length,
+        total: reservoirList.length,
+        disabledCount: Object.keys(disabledReservoirs).length
+      });
+      
+      return reservoirList as typeof userSelectedReservoirs;
+    } catch (error) {
+      console.error('[WaterLevelInfo] Error determining reservoirs to display:', error);
+      // Return empty array as fallback
+      return [] as typeof userSelectedReservoirs;
+    }
+  };
+  
+  // Calculate the stations to display
+  const finalMonitoringStations = monitoringStationsToDisplay();
+  const finalRainStations = rainStationsToDisplay();
+  const finalReservoirs = reservoirsToDisplay();
   
   const cardCreationCount = useRef(0);
   const complaintStore = useComplaintStore();
@@ -634,85 +751,283 @@ export const WaterLevelInfo = ({
     );
   }
 
+  // Helper function to check if a monitoring station is disabled
+  const isMonitoringStationDisabled = (station: any) => {
+    return disabledMonitoringStations[station.id] === true;
+  };
+  
+  // Helper function to check if a rain station is disabled
+  const isRainStationDisabled = (station: any) => {
+    return disabledRainStations[station.id] === true;
+  };
+  
+  // Helper function to check if a reservoir is disabled
+  const isReservoirDisabled = (reservoir: any) => {
+    return disabledReservoirs[reservoir.id] === true;
+  };
+  
+  // Helper function to check if a station is user-selected
+  const isUserSelected = (stationType: 'monitoring' | 'rain' | 'reservoir', id: number | string) => {
+    // Convert id to string for consistent comparison
+    const stationId = id.toString();
+    
+    switch (stationType) {
+      case 'monitoring':
+        return userSelectedMonitoringStations.some(station => station.id.toString() === stationId);
+      case 'rain':
+        return userSelectedRainStations.some(station => station.id.toString() === stationId);
+      case 'reservoir':
+        return userSelectedReservoirs.some(reservoir => reservoir.id.toString() === stationId);
+      default:
+        return false;
+    }
+  };
+  
+  // Helper function to get the source of a station
+  const getStationSource = (station: any): 'user' | 'system' => {
+    return (station as any).source === 'user' ? 'user' : 'system';
+  };
+  
+  // Helper function to determine if a station should be displayed
+  // We want to display all user-selected stations and all system stations (including disabled ones)
+  const shouldDisplayStation = (stationType: 'monitoring' | 'rain' | 'reservoir', station: any) => {
+    const stationId = String(station.id);
+    const isUserSelectedStation = isUserSelected(stationType, stationId);
+    const source = getStationSource(station);
+    const isDisabled = 
+      stationType === 'monitoring' ? isMonitoringStationDisabled(station) :
+      stationType === 'rain' ? isRainStationDisabled(station) :
+      isReservoirDisabled(station);
+    
+    // Log for debugging
+    console.log(`[WaterLevelInfo] Checking if station should be displayed:`, {
+      stationType,
+      stationId,
+      name: (station as any).station_name || (station as any).name || (station as any).reservoir_name,
+      isUserSelected: isUserSelectedStation,
+      source,
+      isDisabled
+    });
+    
+    // Always display all stations, regardless of their disabled state or source
+    // This ensures that disabled stations are visible in the ComplaintForm
+    return true;
+  };
+
   // Render monitoring stations
   const renderMonitoringStations = () => {
-    if (isLoading) return <Skeleton className="h-24 w-full" />;
+    console.log('[WaterLevelInfo] Rendering monitoring stations');
     
-    if (monitoringStationsToDisplay.length > 0) {
+    try {
+      // Get all monitoring stations to display, including system-generated ones
+      const allMonitoringStations = [...finalMonitoringStations];
+      
+      // Filter stations based on shouldDisplayStation
+      const stationsToDisplay = allMonitoringStations.filter(station => 
+        shouldDisplayStation('monitoring', station)
+      );
+      
+      console.log(`[WaterLevelInfo] Monitoring stations to render: ${stationsToDisplay.length}`);
+      
+      if (stationsToDisplay.length === 0) {
+        return (
+          <Alert>
+            <InfoIcon className="h-4 w-4" />
+            <AlertDescription>
+              ไม่พบข้อมูลสถานีตรวจวัด
+            </AlertDescription>
+          </Alert>
+        );
+      }
+      
       return (
         <div className="space-y-3">
-          {monitoringStationsToDisplay.map((station) => (
-            <MonitoringStationCard 
-              key={`monitoring-${station.id}-${cardCreationCount.current}`}
-              station={station as any}
-            />
-          ))}
+          {stationsToDisplay.map((station) => {
+            // Check if this station is disabled
+            const isDisabled = isMonitoringStationDisabled(station);
+            
+            // Check if this is a user-selected station
+            const isUserSelectedStation = isUserSelected('monitoring', station.id);
+            
+            // Get the source of the station
+            const source = getStationSource(station);
+            
+            // Log for debugging
+            console.log(`[WaterLevelInfo] Rendering monitoring station:`, {
+              id: station.id,
+              name: (station as any).station_name || (station as any).name,
+              isDisabled,
+              isUserSelected: isUserSelectedStation,
+              source
+            });
+            
+            return (
+              <MonitoringStationCard 
+                key={`monitoring-${station.id}-${cardCreationCount.current}`}
+                station={station} 
+                showButtons={showButtons}
+                disabled={isDisabled}
+                isUserSelected={isUserSelectedStation}
+              />
+            );
+          })}
         </div>
       );
+    } catch (error) {
+      console.error('[WaterLevelInfo] Error rendering monitoring stations:', error);
+      return (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            เกิดข้อผิดพลาดในการแสดงข้อมูลสถานีตรวจวัด
+          </AlertDescription>
+        </Alert>
+      );
     }
-    
-    return (
-      <Alert variant="default" className="bg-muted">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          No monitoring stations found for this location.
-        </AlertDescription>
-      </Alert>
-    );
   };
   
   // Render rain stations
   const renderRainStations = () => {
-    if (isLoading) return <Skeleton className="h-24 w-full" />;
+    console.log('[WaterLevelInfo] Rendering rain stations');
     
-    if (rainStationsToDisplay.length > 0) {
+    try {
+      // Get all rain stations to display, including system-generated ones
+      const allRainStations = [...finalRainStations];
+      
+      // Filter stations based on shouldDisplayStation
+      const stationsToDisplay = allRainStations.filter(station => 
+        shouldDisplayStation('rain', station)
+      );
+      
+      console.log(`[WaterLevelInfo] Rain stations to render: ${stationsToDisplay.length}`);
+      
+      if (stationsToDisplay.length === 0) {
+        return (
+          <Alert>
+            <InfoIcon className="h-4 w-4" />
+            <AlertDescription>
+              ไม่พบข้อมูลสถานีวัดน้ำฝน
+            </AlertDescription>
+          </Alert>
+        );
+      }
+      
       return (
         <div className="space-y-3">
-          {rainStationsToDisplay.map((station) => (
-            <RainStationCard 
-              key={`rain-${station.id}-${cardCreationCount.current}`}
-              station={station as any}
-            />
-          ))}
+          {stationsToDisplay.map((station) => {
+            // Check if this station is disabled
+            const isDisabled = isRainStationDisabled(station);
+            
+            // Check if this is a user-selected station
+            const isUserSelectedStation = isUserSelected('rain', station.id);
+            
+            // Get the source of the station
+            const source = getStationSource(station);
+            
+            // Log for debugging
+            console.log(`[WaterLevelInfo] Rendering rain station:`, {
+              id: station.id,
+              name: (station as any).station_name || (station as any).name,
+              isDisabled,
+              isUserSelected: isUserSelectedStation,
+              source
+            });
+            
+            return (
+              <RainStationCard 
+                key={`rain-${station.id}-${cardCreationCount.current}`}
+                station={station} 
+                showButtons={showButtons}
+                disabled={isDisabled}
+                isUserSelected={isUserSelectedStation}
+              />
+            );
+          })}
         </div>
       );
+    } catch (error) {
+      console.error('[WaterLevelInfo] Error rendering rain stations:', error);
+      return (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            เกิดข้อผิดพลาดในการแสดงข้อมูลสถานีวัดน้ำฝน
+          </AlertDescription>
+        </Alert>
+      );
     }
-    
-    return (
-      <Alert variant="default" className="bg-muted">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          No rain stations found for this location.
-        </AlertDescription>
-      </Alert>
-    );
   };
   
   // Render reservoirs
   const renderReservoirs = () => {
-    if (isLoading) return <Skeleton className="h-24 w-full" />;
+    console.log('[WaterLevelInfo] Rendering reservoirs');
     
-    if (reservoirsToDisplay.length > 0) {
+    try {
+      // Get all reservoirs to display, including system-generated ones
+      const allReservoirs = [...finalReservoirs];
+      
+      // Filter reservoirs based on shouldDisplayStation
+      const reservoirsToDisplay = allReservoirs.filter(reservoir => 
+        shouldDisplayStation('reservoir', reservoir)
+      );
+      
+      console.log(`[WaterLevelInfo] Reservoirs to render: ${reservoirsToDisplay.length}`);
+      
+      if (reservoirsToDisplay.length === 0) {
+        return (
+          <Alert>
+            <InfoIcon className="h-4 w-4" />
+            <AlertDescription>
+              ไม่พบข้อมูลเขื่อน/อ่างเก็บน้ำ
+            </AlertDescription>
+          </Alert>
+        );
+      }
+      
       return (
         <div className="space-y-3">
-          {reservoirsToDisplay.map((reservoir) => (
-            <ReservoirCard 
-              key={`reservoir-${reservoir.id}-${cardCreationCount.current}`}
-              reservoir={reservoir as any}
-            />
-          ))}
+          {reservoirsToDisplay.map((reservoir) => {
+            // Check if this reservoir is disabled
+            const isDisabled = isReservoirDisabled(reservoir);
+            
+            // Check if this is a user-selected reservoir
+            const isUserSelectedReservoir = isUserSelected('reservoir', reservoir.id);
+            
+            // Get the source of the reservoir
+            const source = getStationSource(reservoir);
+            
+            // Log for debugging
+            console.log(`[WaterLevelInfo] Rendering reservoir:`, {
+              id: reservoir.id,
+              name: (reservoir as any).reservoir_name || (reservoir as any).name,
+              isDisabled,
+              isUserSelected: isUserSelectedReservoir,
+              source
+            });
+            
+            return (
+              <ReservoirCard 
+                key={`reservoir-${reservoir.id}-${cardCreationCount.current}`}
+                reservoir={reservoir} 
+                showButtons={showButtons}
+                disabled={isDisabled}
+                isUserSelected={isUserSelectedReservoir}
+              />
+            );
+          })}
         </div>
       );
+    } catch (error) {
+      console.error('[WaterLevelInfo] Error rendering reservoirs:', error);
+      return (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            เกิดข้อผิดพลาดในการแสดงข้อมูลเขื่อน/อ่างเก็บน้ำ
+          </AlertDescription>
+        </Alert>
+      );
     }
-    
-    return (
-      <Alert variant="default" className="bg-muted">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          No reservoirs found for this location.
-        </AlertDescription>
-      </Alert>
-    );
   };
 
   return (
@@ -750,7 +1065,7 @@ export const WaterLevelInfo = ({
                 ไม่สามารถโหลดข้อมูลสถานีเฝ้าระวังได้ กรุณาลองใหม่อีกครั้ง
               </AlertDescription>
             </Alert>
-          ) : monitoringStationsToDisplay.length === 0 ? (
+          ) : finalMonitoringStations.length === 0 ? (
             <Alert>
               <InfoIcon className="h-4 w-4" />
               <AlertDescription>
@@ -759,10 +1074,13 @@ export const WaterLevelInfo = ({
             </Alert>
           ) : (
             <div className="space-y-3">
-              {monitoringStationsToDisplay.map((station) => (
+              {finalMonitoringStations.map((station) => (
                 <MonitoringStationCard 
                   key={`monitoring-${station.id}-${cardCreationCount.current}`}
-                  station={station as any}
+                  station={station} 
+                  showButtons={showButtons}
+                  disabled={isMonitoringStationDisabled(station)}
+                  isUserSelected={isUserSelected('monitoring', station.id)}
                 />
               ))}
             </div>
@@ -798,7 +1116,7 @@ export const WaterLevelInfo = ({
                 ไม่สามารถโหลดข้อมูลสถานีตรวจวัดน้ำฝนได้ กรุณาลองใหม่อีกครั้ง
               </AlertDescription>
             </Alert>
-          ) : rainStationsToDisplay.length === 0 ? (
+          ) : finalRainStations.length === 0 ? (
             <Alert>
               <InfoIcon className="h-4 w-4" />
               <AlertDescription>
@@ -807,10 +1125,13 @@ export const WaterLevelInfo = ({
             </Alert>
           ) : (
             <div className="space-y-3">
-              {rainStationsToDisplay.map((station) => (
+              {finalRainStations.map((station) => (
                 <RainStationCard 
                   key={`rain-${station.id}-${cardCreationCount.current}`}
-                  station={station as any}
+                  station={station} 
+                  showButtons={showButtons}
+                  disabled={isRainStationDisabled(station)}
+                  isUserSelected={isUserSelected('rain', station.id)}
                 />
               ))}
             </div>
@@ -846,7 +1167,7 @@ export const WaterLevelInfo = ({
                 ไม่สามารถโหลดข้อมูลเขื่อน/อ่างเก็บน้ำได้ กรุณาลองใหม่อีกครั้ง
               </AlertDescription>
             </Alert>
-          ) : reservoirsToDisplay.length === 0 ? (
+          ) : finalReservoirs.length === 0 ? (
             <Alert>
               <InfoIcon className="h-4 w-4" />
               <AlertDescription>
@@ -855,10 +1176,13 @@ export const WaterLevelInfo = ({
             </Alert>
           ) : (
             <div className="space-y-3">
-              {reservoirsToDisplay.map((reservoir) => (
+              {finalReservoirs.map((reservoir) => (
                 <ReservoirCard 
                   key={`reservoir-${reservoir.id}-${cardCreationCount.current}`}
-                  reservoir={reservoir as any}
+                  reservoir={reservoir} 
+                  showButtons={showButtons}
+                  disabled={isReservoirDisabled(reservoir)}
+                  isUserSelected={isUserSelected('reservoir', reservoir.id)}
                 />
               ))}
             </div>

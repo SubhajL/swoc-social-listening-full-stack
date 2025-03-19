@@ -1,0 +1,245 @@
+import pkg from 'pg';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+import axios from 'axios';
+
+// Load environment variables
+dotenv.config();
+
+const { Pool } = pkg;
+
+// Database pool with credentials from environment variables
+const pool = new Pool({
+  user: process.env.DB_USER || 'swoc-uat-gis-ssl-user',
+  password: process.env.DB_PASSWORD || '4c0b269f763d4ce1d1d59ba0e2ef1f9c',
+  host: process.env.DB_HOST || 'ec2-18-143-195-184.ap-southeast-1.compute.amazonaws.com',
+  port: parseInt(process.env.DB_PORT || '15435'),
+  database: process.env.DB_NAME || 'swoc-uat-gis-ssl',
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+// Google Maps API Key - Replace with your actual API key
+const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY || 'YOUR_GOOGLE_MAPS_API_KEY_HERE';
+
+// Get the directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '../../../../');
+
+/**
+ * Extracts administrative components from Google Maps API response
+ * @param {Object} result - Google Maps API result
+ * @returns {Object} Administrative components
+ */
+function extractAdminComponents(result) {
+  const adminComponents = {
+    province: null,
+    amphure: null,
+    tambon: null
+  };
+
+  if (!result || !result.address_components) {
+    return adminComponents;
+  }
+
+  // In Thailand, administrative levels are typically:
+  // - Tambon (subdistrict): administrative_area_level_3
+  // - Amphoe (district): administrative_area_level_2
+  // - Province: administrative_area_level_1
+  for (const component of result.address_components) {
+    if (component.types.includes('administrative_area_level_1')) {
+      adminComponents.province = component.long_name;
+    } else if (component.types.includes('administrative_area_level_2')) {
+      adminComponents.amphure = component.long_name;
+    } else if (component.types.includes('administrative_area_level_3')) {
+      adminComponents.tambon = component.long_name;
+    }
+  }
+
+  return adminComponents;
+}
+
+/**
+ * Gets administrative location from Google Maps API
+ * @param {number} lat - Latitude
+ * @param {number} lng - Longitude
+ * @returns {Promise<Object>} Administrative components
+ */
+async function getAdminLocation(lat, lng) {
+  if (!GOOGLE_MAPS_API_KEY) {
+    console.warn('[AdminLocationUpdate] No Google Maps API key provided. Skipping geocoding.');
+    return { province: null, amphure: null, tambon: null };
+  }
+
+  try {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}&language=th&result_type=administrative_area_level_1|administrative_area_level_2|administrative_area_level_3`;
+    
+    const response = await axios.get(url);
+    
+    if (response.data.status === 'OK' && response.data.results.length > 0) {
+      return extractAdminComponents(response.data.results[0]);
+    } else {
+      console.warn(`[AdminLocationUpdate] No results for lat=${lat}, lng=${lng}. Status: ${response.data.status}`);
+      return { province: null, amphure: null, tambon: null };
+    }
+  } catch (error) {
+    console.error(`[AdminLocationUpdate] Error getting admin location for lat=${lat}, lng=${lng}:`, error.message);
+    return { province: null, amphure: null, tambon: null };
+  }
+}
+
+/**
+ * Updates reservoir locations with administrative information from Google Maps API
+ */
+async function updateAdminLocations() {
+  console.log('[AdminLocationUpdate] Starting update of administrative locations');
+
+  if (!GOOGLE_MAPS_API_KEY) {
+    console.error('[AdminLocationUpdate] No Google Maps API key provided. Please set GOOGLE_MAPS_API_KEY environment variable.');
+    return { success: false, error: 'No API key provided' };
+  }
+
+  try {
+    const client = await pool.connect();
+    try {
+      // Get all reservoir records
+      const getResult = await client.query(`
+        SELECT reservoir_id,
+          reservoir_id,
+          reservoir_name,
+          reservoir_lat,
+          reservoir_long
+        FROM reservoir_locations 
+        WHERE reservoir_lat IS NOT NULL AND reservoir_long IS NOT NULL
+        ORDER BY reservoir_id
+      `);
+      
+      console.log(`[AdminLocationUpdate] Found ${getResult.rows.length} records with coordinates`);
+      
+      let updatedCount = 0;
+      let errorCount = 0;
+      
+      // Process records in batches to avoid rate limiting
+      const batchSize = 10;
+      const delay = 1000; // 1 second delay between batches
+      
+      for (let i = 0; i < getResult.rows.length; i += batchSize) {
+        const batch = getResult.rows.slice(i, i + batchSize);
+        console.log(`[AdminLocationUpdate] Processing batch ${Math.floor(i/batchSize) + 1} of ${Math.ceil(getResult.rows.length/batchSize)}`);
+        
+        // Process each record in the batch
+        const batchPromises = batch.map(async (record) => {
+          try {
+            const { reservoir_id, reservoir_id, reservoir_lat, reservoir_long } = record;
+            
+            // Skip if no coordinates
+            if (!reservoir_lat || !reservoir_long) {
+              console.warn(`[AdminLocationUpdate] Skipping record ${formatted_id} - No coordinates`);
+              return;
+            }
+            
+            console.log(`[AdminLocationUpdate] Getting admin location for ${formatted_id} (${reservoir_lat}, ${reservoir_long})`);
+            
+            // Get admin location from Google Maps API
+            const adminLocation = await getAdminLocation(reservoir_lat, reservoir_long);
+            
+            // Update the record
+            await client.query(`
+              UPDATE reservoir_locations 
+              SET 
+                province = $1,
+                amphure = $2,
+                tambon = $3,
+                updated_at = NOW()
+              WHERE reservoir_id = $4
+            `, [
+              adminLocation.province,
+              adminLocation.amphure,
+              adminLocation.tambon,
+              reservoir_id
+            ]);
+            
+            updatedCount++;
+            console.log(`[AdminLocationUpdate] Updated ${formatted_id}: Province=${adminLocation.province}, Amphure=${adminLocation.amphure}, Tambon=${adminLocation.tambon}`);
+          } catch (recordError) {
+            errorCount++;
+            console.error(`[AdminLocationUpdate] Error processing record:`, recordError.message);
+          }
+        });
+        
+        // Wait for all records in the batch to be processed
+        await Promise.all(batchPromises);
+        
+        // Add delay between batches to avoid rate limiting
+        if (i + batchSize < getResult.rows.length) {
+          console.log(`[AdminLocationUpdate] Waiting ${delay}ms before next batch...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
+      
+      console.log(`[AdminLocationUpdate] Update completed: ${updatedCount} records updated, ${errorCount} errors`);
+      
+      // Export updated data to JSON
+      const exportResult = await client.query(`
+        SELECT reservoir_id AS reservoir_id,
+          reservoir_name,
+          reservoir_name_,
+          reservoir_lat,
+          reservoir_long,
+          agency_id,
+          ground_level,
+          left_bank,
+          right_bank,
+          is_warning,
+          province,
+          amphure,
+          tambon,
+          created_at,
+          updated_at,
+          data_source
+        FROM reservoir_locations 
+        ORDER BY reservoir_id
+      `);
+      
+      // Save to file
+      const outputPath = path.join(rootDir, 'reservoir_locations_with_admin.json');
+      fs.writeFileSync(outputPath, JSON.stringify(exportResult.rows, null, 2));
+      
+      console.log(`[AdminLocationUpdate] Saved updated data to ${outputPath}`);
+      
+      return {
+        success: true,
+        updatedCount,
+        errorCount,
+        exportedCount: exportResult.rows.length
+      };
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    console.error('[AdminLocationUpdate] Update failed', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    throw error;
+  } finally {
+    await pool.end();
+  }
+}
+
+// Run the update
+updateAdminLocations()
+  .then((result) => {
+    console.log('[AdminLocationUpdate] Process completed successfully', result);
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error('[AdminLocationUpdate] Process failed', {
+      error: error instanceof Error ? error.message : String(error)
+    });
+    process.exit(1);
+  }); 

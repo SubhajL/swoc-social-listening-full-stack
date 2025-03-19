@@ -6,161 +6,90 @@ import type { TelemetryError } from '../services/rid-telemetry/types';
 
 const router = express.Router();
 
-// Type guard for error with response property
-function isErrorWithResponse(error: unknown): error is Error & { 
-  response?: { 
-    status: number;
-    statusText: string;
-    data: unknown;
-    headers: Record<string, string>;
-    config?: {
-      url?: string;
-      method?: string;
-      headers?: Record<string, string>;
-      data?: unknown;
-    }
-  };
-  code?: string;
-} {
-  return error instanceof Error && 
-         (('response' in error && error.response !== undefined) || 
-          ('code' in error && typeof error.code === 'string'));
-}
-
 // Validation schema for query parameters
 const TelemetryQuerySchema = z.object({
   station_id: z.string()
 });
 
 /**
- * GET /api/telemetry/test
- * Test endpoint that fetches data for a known valid station
- */
-router.get('/test', async (req, res) => {
-  try {
-    logger.info('Testing telemetry endpoint', 'TelemetryAPI', {
-      timestamp: new Date().toISOString()
-    });
-    
-    const telemetryData = await testTelemetryService();
-
-    logger.info('Test endpoint succeeded', 'TelemetryAPI', {
-      response: telemetryData,
-      timestamp: new Date().toISOString()
-    });
-
-    return res.json(telemetryData);
-  } catch (error: unknown) {
-    // Enhanced error logging with proper typing
-    interface ErrorDetails {
-      name: string;
-      message: string;
-      stack?: string;
-      status?: number;
-      details?: unknown;
-      timestamp: string;
-      response?: {
-        status?: number;
-        statusText?: string;
-        data?: unknown;
-        headers?: Record<string, string>;
-        config?: {
-          url?: string;
-          method?: string;
-          headers?: Record<string, string>;
-          data?: unknown;
-        };
-      };
-      code?: string;
-    }
-
-    const errorDetails: ErrorDetails = {
-      name: error instanceof Error ? error.name : 'Unknown',
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-      timestamp: new Date().toISOString()
-    };
-
-    // Handle TelemetryError properties
-    if (error instanceof Error && 'status' in error) {
-      const telemetryError = error as TelemetryError;
-      errorDetails.status = telemetryError.status;
-      errorDetails.details = telemetryError.details;
-    }
-
-    // Handle response properties
-    if (isErrorWithResponse(error)) {
-      errorDetails.response = {
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        data: error.response?.data,
-        headers: error.response?.headers,
-        config: {
-          url: error.response?.config?.url,
-          method: error.response?.config?.method,
-          headers: error.response?.config?.headers,
-          data: error.response?.config?.data
-        }
-      };
-      errorDetails.code = error.code;
-    }
-
-    logger.error('Test endpoint failed', 'TelemetryAPI', { 
-      error: errorDetails,
-      timestamp: new Date().toISOString()
-    });
-    
-    // Return detailed error response with all available information
-    return res.status(errorDetails.status || 500).json({
-      success: false,
-      error: errorDetails.message || 'Telemetry test failed',
-      details: {
-        ...errorDetails,
-        telemetryError: errorDetails.details,
-        response: errorDetails.response,
-        code: errorDetails.code,
-        timestamp: new Date().toISOString()
-      }
-    });
-  }
-});
-
-/**
- * GET /api/telemetry
+ * GET /api/telemetry/:station_id
  * 
  * Fetches telemetry data for a specific station
- * Query parameters:
- * - station_id: string (required)
  */
-router.get('/', async (req, res) => {
+router.get('/:station_id', async (req, res) => {
   try {
-    // Validate query parameters
-    const result = TelemetryQuerySchema.safeParse(req.query);
-    if (!result.success) {
-      logger.warn('Invalid telemetry request parameters', 'TelemetryAPI', {
-        errors: result.error.errors
-      });
+    const { station_id } = req.params;
+    
+    if (!station_id) {
       return res.status(400).json({
-        error: 'Invalid request parameters',
-        details: result.error.errors
+        success: false,
+        error: 'Missing required parameter: station_id'
       });
     }
-
-    const { station_id } = result.data;
+    
+    logger.info('Fetching telemetry data for station', 'TelemetryAPI', {
+      station_id,
+      timestamp: new Date().toISOString(),
+      client_ip: req.ip,
+      user_agent: req.get('user-agent')
+    });
     
     // Format date in Thai Buddhist calendar format (dd/MM/yyyy)
+    // Use Thai timezone (UTC+7)
     const now = new Date();
-    const time_start = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear() + 543}`;
+    // Adjust for Thai timezone (UTC+7)
+    const thaiTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+    const buddhistYear = thaiTime.getFullYear() + 543;
+    const time_start = `${thaiTime.getDate().toString().padStart(2, '0')}/${(thaiTime.getMonth() + 1).toString().padStart(2, '0')}/${buddhistYear}`;
 
-    // Get telemetry data
-    const telemetryData = await getTelemetryData({
+    logger.info('Using Thai date format for telemetry request', 'TelemetryAPI', {
+      station_id,
+      thaiDate: time_start,
+      utcTime: now.toISOString()
+    });
+
+    // Get telemetry data with timeout
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Telemetry API request timed out')), 15000);
+    });
+    
+    const dataPromise = getTelemetryData({
       stationid: station_id,
       timestart: time_start
     });
+    
+    // Race the data promise against the timeout
+    const telemetryData = await Promise.race([dataPromise, timeoutPromise]) as Awaited<typeof dataPromise>;
 
+    logger.info('Successfully fetched telemetry data', 'TelemetryAPI', {
+      station_id,
+      dataPoints: Array.isArray(telemetryData.data) ? telemetryData.data.length : 0,
+      timestamp: new Date().toISOString()
+    });
+
+    // Add cache control headers
+    res.set('Cache-Control', 'public, max-age=300'); // Cache for 5 minutes
     return res.json(telemetryData);
   } catch (error) {
-    logger.error('Failed to fetch telemetry data', 'TelemetryAPI', { error });
+    // Check if it's a timeout error
+    if (error instanceof Error && error.message === 'Telemetry API request timed out') {
+      logger.error('Telemetry API request timed out', 'TelemetryAPI', {
+        station_id: req.params.station_id,
+        timeout: '15s'
+      });
+      
+      return res.status(504).json({
+        success: false,
+        error: 'Gateway Timeout',
+        details: 'The request to the telemetry service timed out. Please try again later.'
+      });
+    }
+    
+    logger.error('Failed to fetch telemetry data', 'TelemetryAPI', { 
+      error: error instanceof Error ? error.message : String(error),
+      station_id: req.params.station_id,
+      stack: error instanceof Error ? error.stack : undefined
+    });
 
     if (error instanceof Error && 'status' in error) {
       const telemetryError = error as TelemetryError;
@@ -171,10 +100,67 @@ router.get('/', async (req, res) => {
       });
     }
 
+    // Return a more user-friendly error response
     return res.status(500).json({
       success: false,
       error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message : 'Unknown error',
+      retry_after: 60 // Suggest client retry after 60 seconds
+    });
+  }
+});
+
+/**
+ * GET /api/telemetry/test
+ * Test endpoint that fetches data for a known valid station
+ */
+router.get('/test', async (req, res) => {
+  try {
+    logger.info('Testing telemetry endpoint', 'TelemetryAPI', {
+      timestamp: new Date().toISOString(),
+      client_ip: req.ip
+    });
+    
+    // Set a timeout for the test request
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Test request timed out')), 10000);
+    });
+    
+    const dataPromise = testTelemetryService();
+    
+    // Race the data promise against the timeout
+    const telemetryData = await Promise.race([dataPromise, timeoutPromise]) as Awaited<typeof dataPromise>;
+
+    logger.info('Test endpoint succeeded', 'TelemetryAPI', {
+      response: telemetryData,
+      timestamp: new Date().toISOString()
+    });
+
+    return res.json(telemetryData);
+  } catch (error) {
+    // Check if it's a timeout error
+    if (error instanceof Error && error.message === 'Test request timed out') {
+      logger.error('Telemetry test request timed out', 'TelemetryAPI', {
+        timeout: '10s'
+      });
+      
+      return res.status(504).json({
+        success: false,
+        error: 'Gateway Timeout',
+        details: 'The test request to the telemetry service timed out. Please try again later.'
+      });
+    }
+    
+    logger.error('Test endpoint failed', 'TelemetryAPI', { 
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    
+    return res.status(500).json({
+      success: false,
+      error: 'Telemetry test failed',
+      details: error instanceof Error ? error.message : 'Unknown error',
+      retry_after: 30 // Suggest client retry after 30 seconds
     });
   }
 });
@@ -187,35 +173,55 @@ router.get('/', async (req, res) => {
 router.get('/stations', async (req, res) => {
   try {
     logger.info('Fetching telemetry stations list', 'TelemetryAPI', {
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      client_ip: req.ip
     });
     
     // Use hydro ID 7 as it's used in test scripts
     const hydroId = '7';
     
-    const stationList = await getStationList(hydroId);
+    // Set a timeout for the stations request
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Stations request timed out')), 10000);
+    });
+    
+    const dataPromise = getStationList(hydroId);
+    
+    // Race the data promise against the timeout
+    const stationList = await Promise.race([dataPromise, timeoutPromise]) as Awaited<typeof dataPromise>;
 
     logger.info('Successfully fetched station list', 'TelemetryAPI', {
       totalStations: stationList.data?.length || 0,
       timestamp: new Date().toISOString()
     });
 
+    // Add cache control headers - station list can be cached longer
+    res.set('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
     return res.json(stationList);
   } catch (error) {
-    logger.error('Failed to fetch station list', 'TelemetryAPI', { error });
-
-    if (error instanceof Error && 'status' in error) {
-      const telemetryError = error as TelemetryError;
-      return res.status(telemetryError.status || 500).json({
+    // Check if it's a timeout error
+    if (error instanceof Error && error.message === 'Stations request timed out') {
+      logger.error('Telemetry stations request timed out', 'TelemetryAPI', {
+        timeout: '10s'
+      });
+      
+      return res.status(504).json({
         success: false,
-        error: telemetryError.message,
-        details: telemetryError.details
+        error: 'Gateway Timeout',
+        details: 'The request to fetch station list timed out. Please try again later.'
       });
     }
+    
+    logger.error('Failed to fetch station list', 'TelemetryAPI', { 
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
 
     return res.status(500).json({
       success: false,
-      error: 'Internal server error'
+      error: 'Failed to fetch station list',
+      details: error instanceof Error ? error.message : 'Unknown error',
+      retry_after: 60 // Suggest client retry after 60 seconds
     });
   }
 });

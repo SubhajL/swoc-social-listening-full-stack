@@ -4,14 +4,23 @@ import { RainStationCard } from "@/components/monitoring/RainStationCard";
 import { ReservoirCard } from "@/components/monitoring/ReservoirCard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
+import { useEffect, useState, useMemo, FC } from "react";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { cn } from "@/lib/utils";
 import { MonitoringStation } from "@/types/monitoring-station";
 import { RainStation } from "@/types/rain-station";
 import { Reservoir } from "@/types/reservoir";
-import { monitoringStationsQueryAtom, rainStationsQueryAtom, reservoirsQueryAtom } from '@/atoms/stationData';
-import { useAtom } from 'jotai';
+import { useStationManagement } from "@/hooks/useStationManagement";
+import { 
+  isMonitoringStation, 
+  isRainStation, 
+  isReservoir,
+  ensureStringId
+} from '@/utils/stationTypeGuards';
+import { useLocation } from '@/hooks/useLocation';
+import React from "react";
+import { useReservoirLocations } from "@/hooks/useReservoirLocations";
+import { useReservoirData } from "@/hooks/useReservoirData";
 
 interface FetchedMonitoringStation {
   id: string;
@@ -247,11 +256,14 @@ function mapToStandardizedReservoir(reservoir: FetchedReservoir): StandardizedRe
 
 // Adapter functions to convert from standardized format to component-expected types
 function adaptToMonitoringStationProps(station: StandardizedMonitoringStation): MonitoringStation {
+  // Debug logging - commented out to reduce console noise
+  /*
   console.log('[adaptToMonitoringStationProps] Standardized station ID input:', {
     numericId: station.id,
     stringId: station.stationId,
     stationName: station.name
   });
+  */
   
   // Ensure we have a valid ID (prefer numeric ID if available)
   const id = station.id !== undefined && station.id !== null ? station.id : 
@@ -281,6 +293,8 @@ function adaptToMonitoringStationProps(station: StandardizedMonitoringStation): 
     } : undefined
   };
   
+  // Debug logging - commented out to reduce console noise
+  /*
   console.log('[adaptToMonitoringStationProps] Adapted station ID for UI:', {
     id: adapted.id,
     idType: typeof adapted.id,
@@ -289,16 +303,20 @@ function adaptToMonitoringStationProps(station: StandardizedMonitoringStation): 
     station_name: adapted.station_name,
     originalStationId: station.stationId
   });
+  */
   
   return adapted;
 }
 
 function adaptToRainStationProps(station: StandardizedRainStation): RainStation {
+  // Debug logging - commented out to reduce console noise
+  /*
   console.log('[adaptToRainStationProps] Standardized station ID input:', {
     numericId: station.id,
     stringId: station.stationId,
     stationName: station.name
   });
+  */
   
   // Ensure we have a valid ID (prefer numeric ID if available)
   const id = station.id !== undefined && station.id !== null ? station.id : 
@@ -321,6 +339,8 @@ function adaptToRainStationProps(station: StandardizedRainStation): RainStation 
     rainfall_7d: station.rainfallWeekly || 0
   };
   
+  // Debug logging - commented out to reduce console noise
+  /*
   console.log('[adaptToRainStationProps] Adapted station ID for UI:', {
     id: adapted.id,
     idType: typeof adapted.id,
@@ -329,16 +349,20 @@ function adaptToRainStationProps(station: StandardizedRainStation): RainStation 
     station_name: adapted.station_name,
     originalStationId: station.stationId
   });
+  */
   
   return adapted;
 }
 
 function adaptToReservoirProps(reservoir: StandardizedReservoir): Reservoir {
+  // Debug logging - commented out to reduce console noise
+  /*
   console.log('[adaptToReservoirProps] Standardized reservoir ID input:', {
     numericId: reservoir.id,
     stringId: reservoir.stationId,
     reservoirName: reservoir.name
   });
+  */
   
   // Ensure we have a valid ID (prefer numeric ID if available)
   const id = reservoir.id !== undefined && reservoir.id !== null ? reservoir.id : 
@@ -355,10 +379,12 @@ function adaptToReservoirProps(reservoir: StandardizedReservoir): Reservoir {
     province: '',
     normal_storage_capacity: reservoir.normalStorageCapacity || '0',
     minimum_storage_capacity: reservoir.minimumStorageCapacity || '0',
-    type: reservoir.type,
+    type: 'reservoir' as const,
     station_id: reservoir.stationId || ''
   };
   
+  // Debug logging - commented out to reduce console noise
+  /*
   console.log('[adaptToReservoirProps] Adapted reservoir ID for UI:', {
     id: adapted.id,
     idType: typeof adapted.id,
@@ -367,21 +393,22 @@ function adaptToReservoirProps(reservoir: StandardizedReservoir): Reservoir {
     reservoir_name: adapted.reservoir_name,
     originalStationId: reservoir.stationId
   });
+  */
   
   return adapted;
 }
 
-// Helper function to get appropriate station label based on type
-const getStationLabel = (type: string) => {
+// Helper function to get station type labels
+const getStationLabel = (type: 'monitoring' | 'rain' | 'reservoir') => {
   switch (type) {
-    case "monitoring":
-      return "สถานีเฝ้าระวัง";
-    case "rain":
-      return "สถานีวัดน้ำฝน";
-    case "reservoir":
-      return "เขื่อน/อ่างเก็บน้ำ";
+    case 'monitoring':
+      return 'สถานีเฝ้าระวัง';
+    case 'rain':
+      return 'สถานีวัดน้ำฝน';
+    case 'reservoir':
+      return 'เขื่อน/อ่างเก็บน้ำ';
     default:
-      return "Unknown station";
+      return 'สถานี';
   }
 };
 
@@ -402,232 +429,453 @@ interface WaterLevelInfoContentProps {
   };
 }
 
-const WaterLevelInfoContent: React.FC<WaterLevelInfoContentProps> = ({ location }) => {
-  const { amphure, province } = location || {};
+const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => {
+  // Get the current location
+  const { amphure, province } = location;
+  
+  // Fetch reservoir locations based on the current location
+  const { data: reservoirLocationsData, isLoading: isLoadingReservoirLocations, error: reservoirLocationsError } = 
+    useReservoirLocations(amphure, province);
+  
+  // Convert reservoir locations to ExtendedReservoir format for ReservoirCard
+  const reservoirStations = useMemo(() => {
+    if (!reservoirLocationsData?.locations) return [];
+    
+    console.log('[WaterLevelInfoCard] Processing reservoir locations for', { amphure, province }, 'got', reservoirLocationsData.locations.length, 'locations');
+    
+    // Log each reservoir to debug the data
+    reservoirLocationsData.locations.forEach(location => {
+      console.log(`[WaterLevelInfoCard] Reservoir location: id=${location.id}, reservoir_id=${location.reservoir_id}, name=${location.reservoir_name}, data_source=${location.data_source}`);
+    });
+    
+    return reservoirLocationsData.locations.map(location => {
+      // Create a type-safe representation of the reservoir data
+      const source = 'system' as const; // Using 'as const' to narrow the type
+      const type = 'reservoir' as const; // Using 'as const' to narrow the type
+      
+      return {
+        id: String(location.id),
+        reservoir_id: location.reservoir_id,
+        reservoir_name: location.reservoir_name,
+        name: location.reservoir_name,
+        coordinates: {
+          lat: parseFloat(location.reservoir_lat || '0'),
+          lng: parseFloat(location.reservoir_long || '0')
+        },
+        source, // Using the const type
+        type, // Using the const type
+        data_source: location.data_source || 'dam', // Default to 'dam' if data_source is not provided
+        province: location.province,
+        amphure: location.amphure
+      };
+    });
+  }, [reservoirLocationsData, amphure, province]);
+
+  // Get location data from props or from Jotai state
+  const { amphure: propAmphure, province: propProvince } = location || {};
+  
+  // Use the useLocation hook to access and manage location state
+  const locationState = useLocation();
   
   // Clean location strings for display
-  const cleanedAmphure = amphure?.replace(/อำเภอ/g, '').trim();
-  const cleanedProvince = province?.replace(/จังหวัด/g, '').trim();
+  const cleanedPropAmphure = propAmphure?.replace(/อำเภอ/g, '').trim();
+  const cleanedPropProvince = propProvince?.replace(/จังหวัด/g, '').trim();
   
-  // Format locations for display
-  const displayAmphure = amphure ? amphure : cleanedAmphure;
-  const displayProvince = province ? province : cleanedProvince;
+  // Prioritize props over Jotai state, but use Jotai state as fallback
+  const displayAmphure = propAmphure || cleanedPropAmphure || locationState.amphure;
+  const displayProvince = propProvince || cleanedPropProvince || locationState.province;
   
-  const [monitoringStations] = useAtom(monitoringStationsQueryAtom);
-  const [rainStations] = useAtom(rainStationsQueryAtom);
-  const [reservoirs] = useAtom(reservoirsQueryAtom);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Set loading to false after data is fetched
+  // Check if we have valid location data
+  const hasValidLocationData = !!displayAmphure || !!displayProvince;
+  
+  // Add a ref to track previous location values to prevent unnecessary updates
+  const prevLocationRef = React.useRef({ amphure: '', province: '' });
+  
+  // Use the useStationManagement hook to get all station data and filtering logic
+  const {
+    // Available stations (already filtered to exclude disabled ones)
+    allAvailableMonitoringStations,
+    allAvailableRainStations,
+    allAvailableReservoirs,
+    
+    // Loading states
+    isLoadingMonitoring,
+    isLoadingRain,
+    isLoadingReservoirs,
+    
+    // Error states
+    monitoringError,
+    rainError,
+    reservoirsError,
+    
+    // Station status checks
+    areAllMonitoringStationsDisabled,
+    areAllRainStationsDisabled,
+    areAllReservoirsDisabled,
+    
+    // Location update function
+    updateLocation,
+    
+    // Current location from station management
+    currentAmphure,
+    currentProvince,
+    
+    // User-selected stations
+    userSelectedMonitoring,
+    userSelectedRain,
+    userSelectedReservoirs
+  } = useStationManagement();
+  
+  // Update location data in useStationManagement when component mounts or location changes
   useEffect(() => {
-    if (monitoringStations !== undefined && rainStations !== undefined && reservoirs !== undefined) {
-      setIsLoading(false);
-    }
-  }, [monitoringStations, rainStations, reservoirs]);
-
-  // Helper function to extract stations from potentially nested data structures
-  const extractStations = (data: any): any[] => {
-    if (!data) return [];
-    
-    // If it's an array, return it
-    if (Array.isArray(data)) return data;
-    
-    // If it has a 'stations' property that's an array, return that
-    if (data.stations && Array.isArray(data.stations)) return data.stations;
-    
-    // If it has a 'data' property that's an array, return that
-    if (data.data && Array.isArray(data.data)) return data.data;
-    
-    // If it has a 'data' property with a 'stations' property that's an array, return that
-    if (data.data?.stations && Array.isArray(data.data.stations)) return data.data.stations;
-    
-    // If it has a 'reservoirs' property that's an array, return that
-    if (data.reservoirs && Array.isArray(data.reservoirs)) return data.reservoirs;
-    
-    // If it's an object with keys that might be stations, convert to array
-    if (typeof data === 'object' && data !== null) {
-      const possibleStations = Object.values(data);
-      if (possibleStations.length > 0 && possibleStations.every(item => item && typeof item === 'object')) {
-        return possibleStations;
+    if (displayAmphure || displayProvince) {
+      // Only update if location has actually changed
+      const hasLocationChanged = 
+        displayAmphure !== prevLocationRef.current.amphure || 
+        displayProvince !== prevLocationRef.current.province;
+      
+      if (hasLocationChanged) {
+        console.log('[WaterLevelInfoCard] Location changed, updating:', {
+          from: prevLocationRef.current,
+          to: { amphure: displayAmphure, province: displayProvince }
+        });
+        
+        // Update our ref with the new values
+        prevLocationRef.current = { 
+          amphure: displayAmphure || '', 
+          province: displayProvince || '' 
+        };
+        
+        // Update location and trigger data fetching
+        updateLocation(displayAmphure, displayProvince);
+        
+        // Log the current state of user-selected stations
+        console.log('[WaterLevelInfoCard] Current user-selected stations:', {
+          monitoringStations: userSelectedMonitoring.length,
+          rainStations: userSelectedRain.length,
+          reservoirs: userSelectedReservoirs.length
+        });
+      } else {
+        console.log('[WaterLevelInfoCard] Location unchanged, skipping update');
       }
     }
+  }, [displayAmphure, displayProvince, updateLocation]); // Removed userSelectedMonitoring, userSelectedRain, userSelectedReservoirs from dependencies to prevent infinite loops
+  
+  // Memoize the loading state
+  const isLoading = useMemo(() => 
+    isLoadingMonitoring || isLoadingRain || isLoadingReservoirs,
+    [isLoadingMonitoring, isLoadingRain, isLoadingReservoirs]
+  );
+  
+  // Memoize the error state
+  const hasError = useMemo(() => 
+    !!monitoringError || !!rainError || !!reservoirsError,
+    [monitoringError, rainError, reservoirsError]
+  );
+  
+  // Get the most relevant error message
+  const errorMessage = useMemo(() => {
+    if (monitoringError) return monitoringError.message;
+    if (rainError) return rainError.message;
+    if (reservoirsError) return reservoirsError.message;
+    return 'เกิดข้อผิดพลาดในการโหลดข้อมูล';
+  }, [monitoringError, rainError, reservoirsError]);
+  
+  // Memoize the adapted monitoring stations for rendering
+  const adaptedMonitoringStations = useMemo(() => {
+    // Log all available monitoring stations including user-selected ones
+    console.log('[WaterLevelInfoCard] All available monitoring stations:', {
+      systemStations: allAvailableMonitoringStations.filter(s => (s as any).source === 'system').length,
+      userSelectedStations: allAvailableMonitoringStations.filter(s => (s as any).source === 'user').length,
+      totalStations: allAvailableMonitoringStations.length,
+      stationIds: allAvailableMonitoringStations.map(s => s.id)
+    });
     
-    // Return empty array if we couldn't find stations
-    console.warn('[extractStations] Could not extract stations from data:', data);
-    return [];
-  };
-
-  // Extract stations from potentially nested data structures
-  const extractedMonitoringStations = extractStations(monitoringStations);
-  const extractedRainStations = extractStations(rainStations);
-  const extractedReservoirs = extractStations(reservoirs);
-
-  console.log('[WaterLevelInfoContent] Raw data:', {
-    monitoringStations: monitoringStations,
-    monitoringStationsType: typeof monitoringStations,
-    monitoringStationsIsArray: Array.isArray(monitoringStations),
-    monitoringStationsLength: Array.isArray(monitoringStations) ? monitoringStations.length : 'not an array',
-    extractedMonitoringStations,
-    extractedMonitoringStationsLength: extractedMonitoringStations.length,
-    rainStations: rainStations,
-    rainStationsType: typeof rainStations,
-    rainStationsIsArray: Array.isArray(rainStations),
-    rainStationsLength: Array.isArray(rainStations) ? rainStations.length : 'not an array',
-    extractedRainStations,
-    extractedRainStationsLength: extractedRainStations.length,
-    reservoirs: reservoirs,
-    reservoirsType: typeof reservoirs,
-    reservoirsIsArray: Array.isArray(reservoirs),
-    reservoirsLength: Array.isArray(reservoirs) ? reservoirs.length : 'not an array',
-    extractedReservoirs,
-    extractedReservoirsLength: extractedReservoirs.length,
-    isLoading
-  });
-
-  // Process monitoring stations with type safety
-  const standardizedMonitoringStations: StandardizedMonitoringStation[] = extractedMonitoringStations
-    .filter(station => {
-      const isValid = isFetchedMonitoringStation(station);
-      if (!isValid) {
-        console.warn('[WaterLevelInfoContent] Invalid monitoring station:', station);
-      }
-      return isValid;
-    })
-    .map(mapToStandardizedMonitoringStation);
-
-  // Process rain stations with type safety
-  const standardizedRainStations: StandardizedRainStation[] = extractedRainStations
-    .filter(station => {
-      const isValid = isFetchedRainStation(station);
-      if (!isValid) {
-        console.warn('[WaterLevelInfoContent] Invalid rain station:', station);
-      }
-      return isValid;
-    })
-    .map(mapToStandardizedRainStation);
-
-  // Process reservoirs with type safety
-  const standardizedReservoirs: StandardizedReservoir[] = extractedReservoirs
-    .filter(reservoir => {
-      const isValid = isFetchedReservoir(reservoir);
-      if (!isValid) {
-        console.warn('[WaterLevelInfoContent] Invalid reservoir:', reservoir);
-      }
-      return isValid;
-    })
-    .map(mapToStandardizedReservoir);
-
-  // Adapt to component-expected types
-  const validMonitoringStations: MonitoringStation[] = standardizedMonitoringStations.map(adaptToMonitoringStationProps);
-  const validRainStations: RainStation[] = standardizedRainStations.map(adaptToRainStationProps);
-  const validReservoirs: Reservoir[] = standardizedReservoirs.map(adaptToReservoirProps);
-
-  console.log('[WaterLevelInfoContent] Station IDs ready for UI rendering:', {
-    monitoringStations: validMonitoringStations.map(station => ({
-      id: station.id,
-      idType: typeof station.id,
-      station_id: station.station_id,
-      station_idType: typeof station.station_id,
-      station_name: station.station_name
-    })),
-    rainStations: validRainStations.map(station => ({
-      id: station.id,
-      idType: typeof station.id,
-      station_id: station.station_id,
-      station_idType: typeof station.station_id,
-      station_name: station.station_name
-    })),
-    reservoirs: validReservoirs.map(reservoir => ({
-      id: reservoir.id,
-      idType: typeof reservoir.id,
-      station_id: reservoir.station_id,
-      station_idType: typeof reservoir.station_id,
-      reservoir_name: reservoir.reservoir_name
-    }))
-  });
-
-  console.log('[WaterLevelInfoContent] Standardized data:', {
-    standardizedMonitoringStations,
-    standardizedRainStations,
-    standardizedReservoirs
-  });
-
-  console.log('[WaterLevelInfoContent] Adapted data:', {
-    validMonitoringStations,
-    validRainStations,
-    validReservoirs
-  });
-
-  if (isLoading) {
+    return allAvailableMonitoringStations.map(station => {
+      // Use type assertion to access properties that might not exist in the type definition
+      const stationAny = station as any;
+      
+      // Ensure the station has the required properties for the MonitoringStationCard
+      return {
+        id: ensureStringId(station.id),
+        station_id: stationAny.station_id || String(station.id),
+        station_name: stationAny.name || stationAny.station_name || `สถานีเฝ้าระวัง ${station.id}`,
+        name: stationAny.name || stationAny.station_name || `สถานีเฝ้าระวัง ${station.id}`,
+        status: stationAny.status || 'active',
+        telemetry_data: stationAny.telemetry_data || {
+          water_level: stationAny.water_level || 0,
+          flow_rate: stationAny.flow_rate || 0,
+          timestamp: stationAny.lastReading?.timestamp || new Date().toISOString(),
+          notation: stationAny.lastReading?.notation || ''
+        },
+        water_level: stationAny.water_level || stationAny.telemetry_data?.water_level || 0,
+        flow_rate: stationAny.flow_rate || stationAny.telemetry_data?.flow_rate || 0,
+        amphure: stationAny.amphure || displayAmphure || '',
+        province: stationAny.province || displayProvince || '',
+        coordinates: stationAny.coordinates || { lat: 0, lng: 0 }
+      };
+    });
+  }, [allAvailableMonitoringStations, displayAmphure, displayProvince]);
+  
+  // Memoize the adapted rain stations for rendering
+  const adaptedRainStations = useMemo(() => {
+    // Log all available rain stations
+    console.log('[WaterLevelInfoCard] All available rain stations:', {
+      count: allAvailableRainStations.length,
+      stationIds: allAvailableRainStations.map(s => s.id),
+      dataSources: allAvailableRainStations.map(s => (s as any).data_source)
+    });
+    
+    return allAvailableRainStations.map(station => {
+      // Use type assertion to access properties that might not exist in the type definition
+      const stationAny = station as any;
+      
+      // Ensure the station has the required properties for the RainStationCard
+      return {
+        id: ensureStringId(station.id),
+        station_id: stationAny.station_id || String(station.id),
+        station_name: stationAny.name || stationAny.station_name || `สถานีวัดน้ำฝน ${station.id}`,
+        name: stationAny.name || stationAny.station_name || `สถานีวัดน้ำฝน ${station.id}`,
+        name_th: stationAny.name_th || null,
+        status: stationAny.status || 'active',
+        telemetry_data: stationAny.telemetry_data || {
+          rainfall_24h: stationAny.rainfall24h || 0,
+          timestamp: stationAny.lastReading?.timestamp || new Date().toISOString()
+        },
+        rainfall_24h: stationAny.rainfall24h || stationAny.telemetry_data?.rainfall24h || 0,
+        amphure: stationAny.amphure || displayAmphure || '',
+        province: stationAny.province || displayProvince || '',
+        coordinates: stationAny.coordinates || { lat: 0, lng: 0 },
+        // Add new fields for TMD and HII stations
+        data_source: stationAny.data_source || '',
+        rainfall10m: stationAny.rainfall10m || null,
+        rainfall1h: stationAny.rainfall1h || null,
+        rainfall3h: stationAny.rainfall3h || null,
+        rainfall24h: stationAny.rainfall24h || null,
+        rainfall_today: stationAny.rainfall_today || null,
+        rainfall_date_calc: stationAny.rainfall_date_calc || null,
+        rainfall_datetime: stationAny.rainfall_datetime || null
+      };
+    });
+  }, [allAvailableRainStations, displayAmphure, displayProvince]);
+  
+  // Memoize the adapted reservoirs for rendering
+  const adaptedReservoirs = useMemo(() => {
+    // Log all available reservoirs
+    console.log('[WaterLevelInfoCard] All available reservoirs:', {
+      systemReservoirs: allAvailableReservoirs.filter(r => (r as any).source === 'system').length,
+      userSelectedReservoirs: allAvailableReservoirs.filter(r => (r as any).source === 'user').length,
+      totalReservoirs: allAvailableReservoirs.length,
+      reservoirIds: allAvailableReservoirs.map(r => r.id)
+    });
+    
+    return allAvailableReservoirs.map(reservoir => {
+      // Use type assertion to access properties that might not exist in the type definition
+      const reservoirAny = reservoir as any;
+      
+      // Ensure the reservoir has the required properties for the ReservoirCard
+      return {
+        id: ensureStringId(reservoir.id),
+        reservoir_id: reservoirAny.reservoir_id || String(reservoir.id),
+        reservoir_name: reservoirAny.name || reservoirAny.reservoir_name || `เขื่อน/อ่างเก็บน้ำ ${reservoir.id}`,
+        name: reservoirAny.name || reservoirAny.reservoir_name || `เขื่อน/อ่างเก็บน้ำ ${reservoir.id}`,
+        status: reservoirAny.status || 'active',
+        telemetry_data: reservoirAny.telemetry_data || {
+          storage_percent: reservoirAny.storage_percent || 0,
+          storage_volume: reservoirAny.storage_volume || 0,
+          timestamp: reservoirAny.lastReading?.timestamp || new Date().toISOString()
+        },
+        storage_percent: reservoirAny.storage_percent || reservoirAny.telemetry_data?.storage_percent || 0,
+        storage_volume: reservoirAny.storage_volume || reservoirAny.telemetry_data?.storage_volume || 0,
+        amphure: reservoirAny.amphure || displayAmphure || '',
+        province: reservoirAny.province || displayProvince || '',
+        coordinates: reservoirAny.coordinates || { lat: 0, lng: 0 }
+      };
+    });
+  }, [allAvailableReservoirs, displayAmphure, displayProvince]);
+  
+  // Check if we have any stations to display
+  const hasStations = useMemo(() => 
+    adaptedMonitoringStations.length > 0 || 
+    adaptedRainStations.length > 0 || 
+    adaptedReservoirs.length > 0,
+    [adaptedMonitoringStations.length, adaptedRainStations.length, adaptedReservoirs.length]
+  );
+  
+  // Memoize the monitoring stations section
+  const monitoringStationsSection = useMemo(() => {
+    if (adaptedMonitoringStations.length === 0) return null;
+    
     return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="ml-2">กำลังโหลดข้อมูลสถานี...</span>
+      <div>
+        <h3 className="text-base font-medium text-gray-700 mb-3">
+          {getStationLabel('monitoring')} ({adaptedMonitoringStations.length})
+        </h3>
+        <div className="space-y-8">
+          {adaptedMonitoringStations.map((station) => (
+            <MonitoringStationCard
+              key={station.id}
+              station={station}
+              showButtons={false}
+              hideUnitLabels={false}
+            />
+          ))}
+        </div>
       </div>
     );
-  }
+  }, [adaptedMonitoringStations]);
+  
+  // Memoize the rain stations section
+  const rainStationsSection = useMemo(() => {
+    if (adaptedRainStations.length === 0) return null;
+    
+    return (
+      <div>
+        <h3 className="text-base font-medium text-gray-700 mb-3">
+          {getStationLabel('rain')} ({adaptedRainStations.length})
+        </h3>
+        <div className="space-y-8">
+          {adaptedRainStations.map((station) => (
+            <RainStationCard
+              key={station.id}
+              station={station}
+              showButtons={false}
+              hideUnitLabels={true}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }, [adaptedRainStations]);
+  
+  // Render repository section with location-based data
+  const renderReservoirSection = () => {
+    if (isLoadingReservoirLocations) {
+      return (
+        <div className="flex justify-center items-center p-4">
+          <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+          <span>กำลังโหลดข้อมูลเขื่อน/อ่างเก็บน้ำ...</span>
+        </div>
+      );
+    }
 
-  // Check if we have any stations to display
-  const hasStations = validMonitoringStations.length > 0 || validRainStations.length > 0 || validReservoirs.length > 0;
+    if (reservoirLocationsError) {
+      return (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            ไม่สามารถโหลดข้อมูลเขื่อน/อ่างเก็บน้ำได้
+          </AlertDescription>
+        </Alert>
+      );
+    }
 
-  return (
-    <>
-      {!hasStations ? (
+    if (reservoirStations.length === 0) {
+      return (
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            ไม่พบข้อมูลสถานีในพื้นที่ {displayAmphure || cleanedAmphure || 'ไม่ระบุอำเภอ'} {displayProvince || cleanedProvince || 'ไม่ระบุจังหวัด'}
-            <div className="text-xs text-gray-500 mt-1">
-              กำลังค้นหา: สถานีเฝ้าระวัง {validMonitoringStations.length}, สถานีวัดน้ำฝน {validRainStations.length}, เขื่อน/อ่างเก็บน้ำ {validReservoirs.length}
-            </div>
+            ไม่พบข้อมูลเขื่อน/อ่างเก็บน้ำในพื้นที่{amphure ? ` ${amphure}` : ''}{province ? ` ${province}` : ''}
           </AlertDescription>
         </Alert>
-      ) : (
-        <>
-          {validMonitoringStations.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-base font-medium text-gray-700 mb-3">{getStationLabel('monitoring')} ({validMonitoringStations.length})</h3>
-              <div className="space-y-4">
-                {validMonitoringStations.map(station => (
-                  <MonitoringStationCard key={station.id} station={station} />
-                ))}
-              </div>
-            </div>
-          )}
-          
-          {validRainStations.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-base font-medium text-gray-700 mb-3">{getStationLabel('rain')} ({validRainStations.length})</h3>
-              <div className="space-y-4">
-                {validRainStations.map(station => (
-                  <RainStationCard key={station.id} station={station} />
-                ))}
-              </div>
-            </div>
-          )}
-          
-          {validReservoirs.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-base font-medium text-gray-700 mb-3">{getStationLabel('reservoir')} ({validReservoirs.length})</h3>
-              <div className="space-y-4">
-                {validReservoirs.map(reservoir => (
-                  <ReservoirCard key={reservoir.id} reservoir={reservoir} />
-                ))}
-              </div>
-            </div>
-          )}
-        </>
+      );
+    }
+
+    return (
+      <div className="space-y-4">
+        {reservoirStations.map((reservoir) => (
+          <ErrorBoundary key={reservoir.id} fallback={<div>Error loading reservoir data</div>}>
+            <ReservoirCard reservoir={reservoir} />
+          </ErrorBoundary>
+        ))}
+      </div>
+    );
+  };
+  
+  if (!hasValidLocationData) {
+    return (
+      <Alert className="mt-4">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          กรุณาระบุตำแหน่งที่ต้องการค้นหาข้อมูลสถานี (อำเภอหรือจังหวัด)
+        </AlertDescription>
+      </Alert>
+    );
+  }
+  
+  if (isLoading) {
+    return (
+      <div className="flex flex-col justify-center items-center py-8 space-y-4">
+        <Loader2 className="w-8 h-8 animate-spin text-[#42A5F5]" />
+        <p className="text-sm text-[#64748B]">
+          กำลังค้นหาสถานีในพื้นที่ {displayAmphure || ''} {displayProvince || ''}
+        </p>
+      </div>
+    );
+  }
+  
+  if (hasError) {
+    return (
+      <Alert variant="destructive" className="mt-4">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          เกิดข้อผิดพลาดในการโหลดข้อมูล: {errorMessage}
+          <div className="mt-2">
+            <button 
+              className="text-sm underline"
+              onClick={() => updateLocation(displayAmphure, displayProvince)}
+            >
+              ลองใหม่อีกครั้ง
+            </button>
+          </div>
+        </AlertDescription>
+      </Alert>
+    );
+  }
+  
+  return (
+    <div className="space-y-6">
+      <p className="text-sm text-[#64748B]">
+        กำลังค้นหา: สถานีเฝ้าระวัง {adaptedMonitoringStations.length}, 
+        สถานีวัดน้ำฝน {adaptedRainStations.length}, 
+        เขื่อน/อ่างเก็บน้ำ {adaptedReservoirs.length}
+      </p>
+      
+      {!hasStations && (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            ไม่พบข้อมูลสถานีในพื้นที่ {displayAmphure || 'ไม่ระบุอำเภอ'} {displayProvince || 'ไม่ระบุจังหวัด'}
+          </AlertDescription>
+        </Alert>
       )}
-    </>
+      
+      {hasStations && (
+        <div className="space-y-8">
+          {monitoringStationsSection}
+          {rainStationsSection}
+          <div className="space-y-2">
+            <h3 className="text-lg font-medium">เขื่อน/อ่างเก็บน้ำ {reservoirStations.length > 0 && `(${reservoirStations.length})`}</h3>
+            {renderReservoirSection()}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
-export const WaterLevelInfoCard: React.FC<WaterLevelInfoCardProps> = ({ 
+export const WaterLevelInfoCard: FC<WaterLevelInfoCardProps> = ({ 
   className = "",
   title = "ข้อมูลระดับน้ำ",
   location
 }) => {
-  const { amphure, province } = location || {};
+  // Use the useLocation hook to access location state
+  const locationState = useLocation();
+  
+  // Get location from props or from Jotai state
+  const { amphure: propAmphure, province: propProvince } = location || {};
+  const amphure = propAmphure || locationState.amphure;
+  const province = propProvince || locationState.province;
   
   return (
     <Card className={cn("w-full min-h-[500px]", className)}>
@@ -636,7 +884,7 @@ export const WaterLevelInfoCard: React.FC<WaterLevelInfoCardProps> = ({
         <CardDescription>
           {amphure && province 
             ? `${amphure} ${province}` 
-            : 'ไม่ระบุตำแหน่ง'}
+            : locationState.getFormattedLocation()}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -648,7 +896,10 @@ export const WaterLevelInfoCard: React.FC<WaterLevelInfoCardProps> = ({
             </AlertDescription>
           </Alert>
         }>
-          <WaterLevelInfoContent location={location || {}} />
+          <WaterLevelInfoContent location={location || {
+            amphure: locationState.amphure,
+            province: locationState.province
+          }} />
         </ErrorBoundary>
       </CardContent>
     </Card>

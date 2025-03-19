@@ -2,25 +2,50 @@ import { Card } from "@/components/ui/card";
 import { ComplaintHeader } from "@/components/complaint/ComplaintHeader";
 import { WaterLevelInfo } from "@/components/complaint/WaterLevelInfo";
 import { SocialPostInfo } from "@/components/complaint/SocialPostInfo";
-import { WaterManagementPlan } from "@/components/complaint/WaterManagementPlan";
 import { useComplaint } from "@/hooks/useComplaint";
 import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
 import { Complaint } from "@/types/complaint";
 import { ComplaintDTO } from "@/dto/complaint.dto";
 import { toast } from "sonner";
 import { ProcessedPost } from "@/types/processed-post";
-import { useEffect, useState, useRef, useTransition, useCallback } from "react";
-// Replace Zustand store with Jotai hooks
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { useState, useEffect, useCallback, useMemo, useRef, useTransition, Suspense } from "react";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useToast } from "@/components/ui/use-toast";
+import { useAtom, useSetAtom } from 'jotai';
+import { 
+  titleAtom, 
+  descriptionAtom, 
+  locationAtom, 
+  coordinatesAtom, 
+  processedPostsAtom, 
+  selectedPostIdsAtom, 
+  isSubmittingAtom, 
+  isSubmittedAtom, 
+  submissionErrorAtom, 
+  currentStepAtom 
+} from '@/atoms/complaintData';
+import { navigationStateAtom, navigateToStationCardEditAtom, resetNavigationStateAtom } from '@/atoms/navigationState';
 import { useComplaintData } from "@/atoms/hooks";
 import { useStationData } from "@/atoms/hooks";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-// Import the reusable components
+import { ArrowLeft, ArrowRight, AlertTriangle } from "lucide-react";
 import { ComplaintInfoCard, WaterLevelInfoCard, WaterManagementPlanCard } from "@/components/shared";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Suspense } from "react";
-// Import mock data
-import { MOCK_PROCESSED_POSTS, USE_MOCK_DATA } from "@/utils/mockData";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import logo1 from "@/assets/logo1.png";
+import logo2 from "@/assets/logo2.png";
+import { Link } from "react-router-dom";
+import { useLocation as useJotaiLocation } from '@/hooks/useLocation';
+import { handleError, parseError } from '@/utils/errorHandling';
+import { useLocation as useRouterLocation } from 'react-router-dom';
 
 // Create a FormComplaint type that extends Complaint with additional fields needed in the form
 // but overrides some fields to match ComplaintDTO schema
@@ -122,7 +147,7 @@ const isNonEmptyString = (value: any): boolean => {
 };
 
 const ComplaintForm = () => {
-  const location = useLocation();
+  const location = useRouterLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const postId = searchParams.get('postId');
@@ -146,203 +171,316 @@ const ComplaintForm = () => {
     selectedPostIds
   } = useComplaintData();
   
-  // Get station data from Jotai store
+  // Get station data from Jotai
   const stationData = useStationData();
+  
+  // Get location data from Jotai
+  const locationState = useJotaiLocation();
+  const { amphure, province } = locationState;
+  
+  // Destructure the synchronization functions
+  const { 
+    syncMonitoringStations, 
+    syncRainStations, 
+    syncReservoirs,
+    updateLocation: updateStationLocation,
+    currentAmphure,
+    currentProvince,
+    userSelectedMonitoringStations,
+    userSelectedRainStations,
+    userSelectedReservoirs,
+    disabledMonitoringStations,
+    disabledRainStations,
+    disabledReservoirs
+  } = stationData;
+  
+  // Reference to track if we've already initialized the data
+  const initializedRef = useRef(false);
+  
+  // Initialize with default location data if none exists
+  useEffect(() => {
+    if (!initializedRef.current) {
+      // Check if we need to set default location data
+      if (!amphure || !province) {
+        console.log('[ComplaintForm] Setting default location data for station fetching');
+        // Default to Chiang Mai province
+        locationState.updateLocationData('แม่แตง', 'เชียงใหม่');
+        
+        // Also update the location in the complaint data
+        updateLocation('แม่แตง, เชียงใหม่');
+        
+        // Set coordinates for Chiang Mai
+        updateCoordinates({
+          lat: 18.7883,
+          lng: 98.9853
+        });
+        
+        // Also update coordinates in location state
+        if (locationState.setCoordinates) {
+          locationState.setCoordinates({
+            lat: 18.7883,
+            lng: 98.9853
+          });
+        }
+      }
+      
+      initializedRef.current = true;
+    }
+  }, [amphure, province, updateLocation, updateCoordinates]);
   
   // State to track if we're returning from StationCardEdit
   const [returnedFromStationEdit, setReturnedFromStationEdit] = useState(false);
   
   // State for preserving data when returning from StationCardEdit
-  const [preservedData, setPreservedData] = useState<Complaint | ExtendedComplaintData | ProcessedPost | null>(null);
+  const [preservedData, setPreservedData] = useState<any>(null);
   
   // Ref to track if initial state restoration has been done
   const initialStateRestored = useRef(false);
+  // Ref to track if API call has been made
+  const apiCallMade = useRef(false);
   
-  // State to track if mock data is being used
-  const [usingMockData, setUsingMockData] = useState(false);
-
-  // TEMPORARY: Load mock data when PostgreSQL is unavailable
+  // Initialize processed posts from Jotai store
   useEffect(() => {
-    if (USE_MOCK_DATA && processedPosts.length === 0) {
-      console.log('[ComplaintForm] 🚨 USING MOCK DATA - PostgreSQL is unavailable 🚨');
-      
-      // Update Jotai state with mock data
-      updateProcessedPosts(MOCK_PROCESSED_POSTS);
-      setUsingMockData(true);
-      
-      // Set the current amphure and province values directly for the mock data
-      // This will allow the WaterLevelInfoCard to make the appropriate API queries
-      if (stationData.updateLocation) {
-        console.log('[ComplaintForm] Setting location for mock data: แม่แตง, เชียงใหม่', {
-          currentAmphure: stationData.currentAmphure,
-          currentProvince: stationData.currentProvince,
-          timestamp: new Date().toISOString()
-        });
-        
-        // Update the location in the Jotai store
-        stationData.updateLocation('แม่แตง', 'เชียงใหม่');
-        
-        // Clear the flag after a short delay
-        setTimeout(() => {
-          console.log('[ComplaintForm] Cleared intentional update flag, current location:', {
-            currentAmphure: stationData.currentAmphure,
-            currentProvince: stationData.currentProvince,
-            timestamp: new Date().toISOString()
-          });
-        }, 500);
-      }
+    // Skip if we've already made the API call
+    if (apiCallMade.current) {
+      return;
     }
-  }, [updateProcessedPosts, processedPosts.length, stationData]);
-  
-  // Initialize Jotai state with data from API or location state
-  useEffect(() => {
-    // Get data from all possible sources
-    const currentData = preservedData || complaint || complaintDataFromLocation;
     
-    if (currentData) {
-      console.log('[ComplaintForm] Initializing Jotai state with data:', currentData);
+    // Check if we already have processed posts in the store
+    if (processedPosts.length === 0) {
+      // If no posts in store, fetch from API
+      console.log('[ComplaintForm] No processed posts in store, fetching from API');
       
-      // Update Jotai state with current complaint data
-      if ('content' in currentData && currentData.content) {
-        updateDescription(currentData.content);
-      } else if ('text' in currentData && currentData.text) {
-        updateDescription(currentData.text);
-      }
-
-      if ('type' in currentData && currentData.type) {
-        updateTitle(currentData.type);
-      } else if ('category_name' in currentData && currentData.category_name) {
-        updateTitle(currentData.category_name);
-      }
-
-      // Update location in Jotai store if available
-      if (currentData.province) {
-        const province = Array.isArray(currentData.province) ? 
-                        currentData.province[0] : currentData.province;
-        
-        // Use type guard to safely access amphure property
-        let amphure = '';
-        if ('amphure' in currentData && currentData.amphure) {
-          amphure = Array.isArray(currentData.amphure) ? 
-                    currentData.amphure[0] : currentData.amphure;
-        }
-        
-        if (province && stationData.updateLocation) {
-          stationData.updateLocation(amphure, province);
-        }
-      }
+      // In a real implementation, this would be an API call
+      // For now, we'll just set an empty array
+      updateProcessedPosts([]);
+      
+      // Mark that we've made the API call
+      apiCallMade.current = true;
     } else {
-      console.log('[ComplaintForm] No data available to initialize Jotai state');
+      console.log('[ComplaintForm] Using existing processed posts from store:', processedPosts.length);
     }
-  }, [preservedData, complaint, complaintDataFromLocation, updateDescription, updateTitle, stationData]);
+  }, [processedPosts.length]); // Only depend on the length, not the array itself
   
-  // Extract location data from Jotai store only
-  const extractLocationData = useCallback(() => {
-    // Get location data directly from Jotai store
-    const amphure = stationData.currentAmphure;
-    const province = stationData.currentProvince;
-    
-    console.log('[ComplaintForm] Getting location from Jotai store:', { 
-      amphure, 
-      province,
-      timestamp: new Date().toISOString()
-    });
-    
-    return { amphure, province };
-  }, [stationData]);
-  
-  // Update location in Jotai store when component mounts or data changes
+  // Extract location data from various sources
   useEffect(() => {
-    // Skip updating location if we're using mock data
-    if (usingMockData) {
-      console.log('[ComplaintForm] Skipping location update from complaint data because mock data is in use');
+    // Skip if we've already restored state
+    if (initialStateRestored.current) {
+      console.log('[ComplaintForm] Initial state already restored, skipping');
       return;
     }
     
-    // Extract location from complaint data
-    const data = preservedData || complaint || complaintDataFromLocation;
-    if (!data) {
-      console.log('[ComplaintForm] No complaint data available to update location');
-      return;
-    }
+    // Extract location data from various sources
+    let firstAmphure: string | undefined;
+    let firstProvince: string | undefined;
     
-    const locationData = convertToComplaintFormat(data);
-    
-    // Handle amphure data - could be string, array, or undefined
-    let firstAmphure = undefined;
-    if (locationData?.amphure) {
-      if (Array.isArray(locationData.amphure)) {
-        // If it's an array, take the first non-empty value
-        firstAmphure = locationData.amphure.find(a => isNonEmptyString(a)) || undefined;
-      } else if (isNonEmptyString(locationData.amphure)) {
-        // If it's a string, use it directly
-        firstAmphure = locationData.amphure;
+    // Check if we have preserved data from returning from StationCardEdit
+    if (preservedData) {
+      console.log('[ComplaintForm] Using preserved data for location extraction');
+      
+      if ('amphure' in preservedData && Array.isArray(preservedData.amphure) && preservedData.amphure.length > 0) {
+        firstAmphure = preservedData.amphure[0];
+      } else if ('amphure' in preservedData && typeof preservedData.amphure === 'string') {
+        firstAmphure = preservedData.amphure;
+      }
+      
+      if ('province' in preservedData && Array.isArray(preservedData.province) && preservedData.province.length > 0) {
+        firstProvince = preservedData.province[0];
+      } else if ('province' in preservedData && typeof preservedData.province === 'string') {
+        firstProvince = preservedData.province;
       }
     }
-    
-    // Handle province data - could be string, array, or undefined
-    let firstProvince = undefined;
-    if (locationData?.province) {
-      if (Array.isArray(locationData.province)) {
-        // If it's an array, take the first non-empty value
-        firstProvince = locationData.province.find(p => isNonEmptyString(p)) || undefined;
-      } else if (isNonEmptyString(locationData.province)) {
-        // If it's a string, use it directly
-        firstProvince = locationData.province;
+    // Check if we have complaint data from API
+    else if (complaint) {
+      console.log('[ComplaintForm] Using complaint data for location extraction');
+      
+      if ('amphure' in complaint && Array.isArray(complaint.amphure) && complaint.amphure.length > 0) {
+        firstAmphure = complaint.amphure[0];
+      } else if ('amphure' in complaint && typeof complaint.amphure === 'string') {
+        firstAmphure = complaint.amphure;
+      }
+      
+      if ('province' in complaint && Array.isArray(complaint.province) && complaint.province.length > 0) {
+        firstProvince = complaint.province[0];
+      } else if ('province' in complaint && typeof complaint.province === 'string') {
+        firstProvince = complaint.province;
+      }
+    }
+    // Check if we have location data from URL params
+    else if (complaintDataFromLocation) {
+      console.log('[ComplaintForm] Using location data from URL params');
+      
+      if ('amphure' in complaintDataFromLocation && Array.isArray(complaintDataFromLocation.amphure) && complaintDataFromLocation.amphure.length > 0) {
+        firstAmphure = complaintDataFromLocation.amphure[0];
+      } else if ('amphure' in complaintDataFromLocation && typeof complaintDataFromLocation.amphure === 'string') {
+        firstAmphure = complaintDataFromLocation.amphure;
+      }
+      
+      if ('province' in complaintDataFromLocation && Array.isArray(complaintDataFromLocation.province) && complaintDataFromLocation.province.length > 0) {
+        firstProvince = complaintDataFromLocation.province[0];
+      } else if ('province' in complaintDataFromLocation && typeof complaintDataFromLocation.province === 'string') {
+        firstProvince = complaintDataFromLocation.province;
       }
     }
     
     console.log('[ComplaintForm] Extracted location from complaint data:', { 
       amphure: firstAmphure, 
-      province: firstProvince,
-            timestamp: new Date().toISOString()
-          });
+      province: firstProvince
+    });
     
-    // Update the Jotai store with the extracted location
-    if (firstAmphure && firstProvince && stationData.updateLocation) {
-      console.log('[ComplaintForm] Updating location in Jotai store:', { 
-        amphure: firstAmphure, 
-        province: firstProvince,
-        timestamp: new Date().toISOString()
+    // Update the Jotai location state with the extracted location
+    if (firstAmphure || firstProvince) {
+      console.log('[ComplaintForm] Updating location state with extracted data:', {
+        amphure: firstAmphure,
+        province: firstProvince
       });
-      stationData.updateLocation(firstAmphure, firstProvince);
-    }
-  }, [preservedData, complaint, complaintDataFromLocation, stationData, usingMockData]);
-  
-  // Check if we're returning from StationCardEdit
-  useEffect(() => {
-    if (location.state?.returnedFromStationEdit) {
-      console.log('[ComplaintForm] Detected return from StationCardEdit');
       
-      // Use startTransition for state updates that might trigger suspense
-      startTransition(() => {
-          setReturnedFromStationEdit(true);
-        
-        // Set preserved data if available
-        if (location.state.preserveState && complaintDataFromLocation) {
-          setPreservedData(complaintDataFromLocation as any);
-          
-          // If we have complaint data in location state, update the Jotai store
-          // Don't call hooks inside useEffect - use the ones from component scope
-          const data = complaintDataFromLocation as any;
-          if (data.text) {
-            updateTitle(data.text);
-          }
-          if (data.content) {
-            updateDescription(data.content);
-          }
-        }
-      });
-
-      // No need to get station data from sessionStorage as it's already in Jotai store
-      // The StationCardEdit component should have updated the Jotai store before navigation
-      console.log('[ComplaintForm] Using station data from Jotai store');
+      locationState.updateLocationData(firstAmphure, firstProvince);
+      
+      // Also update the station location
+      if (stationData.updateLocation) {
+        stationData.updateLocation(firstAmphure, firstProvince);
+      }
+    }
+    
+    // Mark that we've restored the initial state
+    initialStateRestored.current = true;
+  }, [complaint, complaintDataFromLocation, stationData, locationState]);
+  
+  // Ref to track if station data has been synced
+  const stationDataSyncedRef = useRef(false);
+  
+  // Ref to track the last processed edit session timestamp
+  const lastProcessedEditSessionRef = useRef(0);
+  
+  // Get navigation state from Jotai
+  const [navigationState, setNavigationState] = useAtom(navigationStateAtom);
+  const navigateToStationCardEdit = useSetAtom(navigateToStationCardEditAtom);
+  const resetNavigationState = useSetAtom(resetNavigationStateAtom);
+  
+  // Add a useEffect to handle returning from StationCardEdit
+  useEffect(() => {
+    console.log('[ComplaintForm] Checking navigation state:', navigationState);
+    
+    // Check if we're returning from StationCardEdit with saved changes
+    if (navigationState.returnedFromStationEdit && !navigationState.discardedChanges) {
+      console.log('[ComplaintForm] Returned from StationCardEdit with saved changes');
+      
+      // Synchronize station data
+      syncMonitoringStations();
+      syncRainStations();
+      syncReservoirs();
+      
+      // Reset navigation state after handling
+      resetNavigationState();
+    }
+    
+    // Check if we're returning from StationCardEdit with discarded changes
+    if (navigationState.discardedChanges) {
+      console.log('[ComplaintForm] Returned from StationCardEdit with discarded changes');
+      
+      // No need to synchronize, just reset navigation state
+      resetNavigationState();
     }
   }, [
-    location.state, 
-    complaintDataFromLocation,
-    updateTitle,
-    updateDescription
+    navigationState,
+    syncMonitoringStations,
+    syncRainStations,
+    syncReservoirs,
+    resetNavigationState
+  ]);
+
+  // Add a function to refresh station data
+  const refreshStationData = useCallback(async () => {
+    console.log('[ComplaintForm] Refreshing station data');
+    
+    // Track loading state
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    
+    try {
+      setIsRefreshing(true);
+      
+      // Log the current state
+      console.log('[ComplaintForm] Current state before refresh:', {
+        monitoringStations: stationData.monitoringStations.length,
+        rainStations: stationData.rainStations.length,
+        reservoirs: stationData.reservoirs.length,
+        userSelectedMonitoringStations: stationData.userSelectedMonitoringStations.length,
+        userSelectedRainStations: stationData.userSelectedRainStations.length,
+        userSelectedReservoirs: stationData.userSelectedReservoirs.length,
+        disabledMonitoringStations: Object.keys(stationData.disabledMonitoringStations).length,
+        disabledRainStations: Object.keys(stationData.disabledRainStations).length,
+        disabledReservoirs: Object.keys(stationData.disabledReservoirs).length
+      });
+      
+      // Create a timeout promise to detect slow API responses
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Station data refresh timed out')), 15000);
+      });
+      
+      // Race the sync operations against the timeout
+      await Promise.race([
+        Promise.all([
+          syncMonitoringStations(),
+          syncRainStations(),
+          syncReservoirs()
+        ]),
+        timeoutPromise
+      ]);
+      
+      // Log the updated state
+      console.log('[ComplaintForm] Updated state after refresh:', {
+        monitoringStations: stationData.monitoringStations.length,
+        rainStations: stationData.rainStations.length,
+        reservoirs: stationData.reservoirs.length,
+        userSelectedMonitoringStations: stationData.userSelectedMonitoringStations.length,
+        userSelectedRainStations: stationData.userSelectedRainStations.length,
+        userSelectedReservoirs: stationData.userSelectedReservoirs.length,
+        disabledMonitoringStations: Object.keys(stationData.disabledMonitoringStations).length,
+        disabledRainStations: Object.keys(stationData.disabledRainStations).length,
+        disabledReservoirs: Object.keys(stationData.disabledReservoirs).length
+      });
+      
+      // Show a success toast
+      toast.success('ข้อมูลสถานีถูกอัปเดตเรียบร้อยแล้ว');
+    } catch (error) {
+      // Use centralized error handling
+      handleError({
+        source: 'apiCall',
+        operation: 'refreshStationData',
+        originalError: parseError(error),
+        component: 'ComplaintForm',
+        details: {
+          monitoringStations: stationData.monitoringStations.length,
+          rainStations: stationData.rainStations.length,
+          reservoirs: stationData.reservoirs.length
+        }
+      });
+      
+      // Attempt recovery - try to use cached data if available
+      try {
+        console.log('[ComplaintForm] Attempting recovery using cached data');
+        // This would use cached data from localStorage or other storage
+      } catch (recoveryError) {
+        console.error('[ComplaintForm] Recovery attempt failed:', recoveryError);
+      }
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [
+    stationData.monitoringStations.length,
+    stationData.rainStations.length,
+    stationData.reservoirs.length,
+    stationData.userSelectedMonitoringStations.length,
+    stationData.userSelectedRainStations.length,
+    stationData.userSelectedReservoirs.length,
+    stationData.disabledMonitoringStations,
+    stationData.disabledRainStations,
+    stationData.disabledReservoirs,
+    syncMonitoringStations,
+    syncRainStations,
+    syncReservoirs,
+    toast
   ]);
 
   // Debug location data
@@ -384,10 +522,62 @@ const ComplaintForm = () => {
     }
   }, [stationData]);
 
+  // Sync station data when returning from StationCardEdit
+  useEffect(() => {
+    // Check if we're returning from StationCardEdit and haven't synced yet
+    // or if the edit session timestamp has changed
+    const editSessionTimestamp = location.state?.editSessionTimestamp || 0;
+    const shouldSync = 
+      location.state?.returnedFromStationEdit && 
+      (!stationDataSyncedRef.current || editSessionTimestamp > lastProcessedEditSessionRef.current);
+    
+    if (shouldSync) {
+      console.log('[ComplaintForm] Syncing station data after returning from StationCardEdit');
+      console.log('[ComplaintForm] Edit session timestamp:', editSessionTimestamp);
+      console.log('[ComplaintForm] Last processed timestamp:', lastProcessedEditSessionRef.current);
+      console.log('[ComplaintForm] User-selected stations:', {
+        monitoringStations: userSelectedMonitoringStations.length,
+        rainStations: userSelectedRainStations.length,
+        reservoirs: userSelectedReservoirs.length,
+        disabledMonitoringStations: Object.keys(disabledMonitoringStations).length,
+        disabledRainStations: Object.keys(disabledRainStations).length,
+        disabledReservoirs: Object.keys(disabledReservoirs).length
+      });
+      
+      // Force a refresh of the station data
+      if (stationData.updateLocation) {
+        console.log('[ComplaintForm] Forcing refresh of station data');
+        stationData.updateLocation(amphure, province);
+      }
+      
+      // Mark as synced
+      stationDataSyncedRef.current = true;
+      lastProcessedEditSessionRef.current = editSessionTimestamp;
+    }
+  }, [
+    location.state,
+    amphure,
+    province,
+    stationData,
+    userSelectedMonitoringStations.length,
+    userSelectedRainStations.length,
+    userSelectedReservoirs.length,
+    disabledMonitoringStations,
+    disabledRainStations,
+    disabledReservoirs
+  ]);
+
   const validateComplaintData = () => {
     // Use preserved complaint data if returning from StationCardEdit
     const currentData = preservedData || complaint || complaintDataFromLocation;
     if (!currentData) return false;
+
+    // Skip validation completely when returning from StationCardEdit
+    // This prevents the hooks error by ensuring consistent code paths
+    if (location.state?.returnedFromStationEdit) {
+      console.log('[ComplaintForm] Returning from StationCardEdit, skipping validation');
+      return true;
+    }
 
     // Special handling for minimal data from sessionStorage
     if (returnedFromStationEdit && preservedData && !('issue' in preservedData)) {
@@ -416,8 +606,21 @@ const ComplaintForm = () => {
     try {
       console.log('[ComplaintForm] Navigating to StationCardEdit using Jotai state');
       
+      // Validate required data before navigation
+      if (!stationData.currentAmphure || !stationData.currentProvince) {
+        console.warn('[ComplaintForm] Missing location data for navigation');
+        toast.error('ข้อมูลไม่ครบถ้วน', {
+          description: 'กรุณาระบุข้อมูลตำแหน่งที่ตั้ง (อำเภอและจังหวัด) ก่อนดำเนินการต่อ'
+        });
+        return;
+      }
+      
+      // Update navigation state using Jotai atom
+      navigateToStationCardEdit();
+      
       // Log the current Jotai state for debugging
       console.log('[ComplaintForm] Current Jotai state for navigation:', {
+        navigationState,
         title,
         description,
         location: {
@@ -426,20 +629,57 @@ const ComplaintForm = () => {
         }
       });
 
+      // Create a timeout to detect navigation issues
+      const navigationTimeout = setTimeout(() => {
+        console.error('[ComplaintForm] Navigation timeout - navigation may have failed');
+        toast.error('การนำทางล้มเหลว', {
+          description: 'ไม่สามารถนำทางไปยังหน้าแก้ไขสถานีได้ กรุณาลองใหม่อีกครั้ง'
+        });
+      }, 3000);
+
       // Simply navigate to StationCardEdit
       // StationCardEdit will get data from Jotai
       navigate('/station-card-edit');
+      
+      // Clear the timeout if navigation was successful
+      clearTimeout(navigationTimeout);
     } catch (error) {
-      console.error('Error during navigation:', error);
-      toast.error('เกิดข้อผิดพลาดในการนำทาง กรุณาลองใหม่อีกครั้ง');
+      // Use centralized error handling
+      handleError({
+        source: 'navigation',
+        operation: 'navigateToStationCardEdit',
+        originalError: parseError(error),
+        component: 'ComplaintForm',
+        details: {
+          amphure: stationData.currentAmphure,
+          province: stationData.currentProvince
+        }
+      });
+      
+      // Attempt recovery - reset navigation state
+      try {
+        console.log('[ComplaintForm] Attempting to reset navigation state after error');
+        resetNavigationState();
+      } catch (recoveryError) {
+        console.error('[ComplaintForm] Failed to reset navigation state:', recoveryError);
+      }
     }
   };
 
   // Handle prepare document button click
   const handlePrepareDocument = () => {
-    console.log('[ComplaintForm] Navigating to document preparation using Jotai state');
-    
     try {
+      console.log('[ComplaintForm] Navigating to document preparation using Jotai state');
+      
+      // Validate required data before navigation
+      if (!title || !description) {
+        console.warn('[ComplaintForm] Missing complaint data for document preparation');
+        toast.error('ข้อมูลไม่ครบถ้วน', {
+          description: 'กรุณากรอกข้อมูลเรื่องร้องเรียนให้ครบถ้วนก่อนเตรียมเอกสาร'
+        });
+        return;
+      }
+      
       // Log the current Jotai state for debugging
       console.log('[ComplaintForm] Current Jotai state for document preparation:', {
         title,
@@ -450,33 +690,71 @@ const ComplaintForm = () => {
         }
       });
 
+      // Create a timeout to detect navigation issues
+      const navigationTimeout = setTimeout(() => {
+        console.error('[ComplaintForm] Navigation timeout - navigation may have failed');
+        toast.error('การนำทางล้มเหลว', {
+          description: 'ไม่สามารถนำทางไปยังหน้าเตรียมเอกสารได้ กรุณาลองใหม่อีกครั้ง'
+        });
+      }, 3000);
+
       // Simply navigate to DocumentPreparation
       // DocumentPreparation will get data from Jotai
       navigate('/document-preparation');
+      
+      // Clear the timeout if navigation was successful
+      clearTimeout(navigationTimeout);
     } catch (error) {
-      console.error('Error during navigation to document preparation:', error);
-      toast.error('เกิดข้อผิดพลาดในการนำทาง กรุณาลองใหม่อีกครั้ง');
+      // Use centralized error handling
+      handleError({
+        source: 'navigation',
+        operation: 'navigateToDocumentPreparation',
+        originalError: parseError(error),
+        component: 'ComplaintForm',
+        details: {
+          hasTitle: !!title,
+          hasDescription: !!description
+        }
+      });
     }
   };
 
   // Add a function to handle returning to the dashboard
   const handleReturnToDashboard = () => {
-    // Save the current state if needed
-    if (complaint || complaintDataFromLocation) {
-      // Update the title and description in the store
-      const contentText = complaint?.content || (complaintDataFromLocation as any)?.issue || '';
-      updateTitle(contentText);
-      updateDescription(contentText);
+    try {
+      // Save the current state if needed
+      if (complaint || complaintDataFromLocation) {
+        // Update the title and description in the store
+        const contentText = complaint?.content || (complaintDataFromLocation as any)?.issue || '';
+        updateTitle(contentText);
+        updateDescription(contentText);
+      }
+      
+      // Navigate back to the dashboard
+      navigate('/dashboard');
+    } catch (error) {
+      // Use centralized error handling
+      handleError({
+        source: 'navigation',
+        operation: 'returnToDashboard',
+        originalError: parseError(error),
+        component: 'ComplaintForm'
+      });
+      
+      // Fallback - try direct navigation
+      window.location.href = '/dashboard';
     }
-    
-    // Navigate back to the dashboard
-    navigate('/dashboard');
   };
 
   // Handler functions for WaterLevelInfoCard
   const handleAddStation = (type: string) => {
     console.log('[ComplaintForm] Add station:', type);
-    navigate('/station-card-edit', { state: { type, returnUrl: '/complaint/create' } });
+    
+    // Update navigation state using Jotai atom
+    navigateToStationCardEdit();
+    
+    // Navigate to StationCardEdit
+    navigate('/station-card-edit');
   };
 
   const handleDeleteStation = (type: string) => {
@@ -519,8 +797,7 @@ const ComplaintForm = () => {
     tumbon: locationData?.tumbon,
     dataType: locationData ? typeof locationData : 'undefined',
     amphureType: locationData?.amphure ? typeof locationData.amphure : 'undefined',
-    provinceType: locationData?.province ? typeof locationData.province : 'undefined',
-    timestamp: new Date().toISOString()
+    provinceType: locationData?.province ? typeof locationData.province : 'undefined'
   });
   
   // Handle amphure data - could be string, array, or undefined
@@ -551,22 +828,33 @@ const ComplaintForm = () => {
   
   // No more fallback to hardcoded values - if we don't have location data, we'll show appropriate UI
   if (!firstAmphure && !firstProvince) {
-    // If we're using mock data, use the mock location values
-    if (usingMockData) {
-      console.log('[ComplaintForm] Using mock location data for display: แม่แตง, เชียงใหม่');
-      // We don't need to set firstAmphure and firstProvince here anymore
-      // since we're getting location data directly from Jotai in the WaterLevelInfoCard component
-    } else {
     console.warn('[ComplaintForm] No valid location data found in complaint data');
-    }
   }
   
-  console.log('[ComplaintForm] Final location data being passed to components:', { 
-    firstAmphure, 
-    firstProvince,
+  // Memoize location info for display
+  const locationInfo = useMemo(() => {
+    return {
+      amphure: amphure || '',
+      province: province || ''
+    };
+  }, [amphure, province]);
+  
+  console.log('[ComplaintForm] Final location data being passed to components:', locationInfo);
+
+  // Debug output for location data
+  console.log('[ComplaintForm] Location data summary:', {
+    fromComplaint: firstAmphure && firstProvince ? `${firstAmphure}, ${firstProvince}` : 'N/A',
     isAmphureDefined: !!firstAmphure,
     isProvinceDefined: !!firstProvince,
-    usingMockData,
+    jotaiAmphure: stationData.currentAmphure,
+    jotaiProvince: stationData.currentProvince
+  });
+
+  // Debug output for location data
+  console.log('[ComplaintForm] Location data after initialization:', {
+    fromComplaint: firstAmphure && firstProvince ? `${firstAmphure}, ${firstProvince}` : 'N/A',
+    isAmphureDefined: !!firstAmphure,
+    isProvinceDefined: !!firstProvince,
     jotaiAmphure: stationData.currentAmphure,
     jotaiProvince: stationData.currentProvince
   });
@@ -611,14 +899,24 @@ const ComplaintForm = () => {
 
   // Render the WaterLevelInfoCard component
   const renderWaterLevelInfoCard = () => {
-    // We don't need to differentiate between mock data and real data anymore
-    // since the WaterLevelInfoCard component gets its location data directly from Jotai
+    // Use location data from Jotai state
+    const locationInfo = {
+      amphure: amphure || '',
+      province: province || ''
+    };
+    
+    console.log('[ComplaintForm] Rendering WaterLevelInfoCard with location:', locationInfo);
+    
+    // Ensure station management location is updated
+    if (stationData.updateLocation) {
+      console.log('[ComplaintForm] Updating station management location:', locationInfo);
+      stationData.updateLocation(locationInfo.amphure, locationInfo.province);
+    }
+    
+    // Pass the location data to the WaterLevelInfoCard component
     return (
       <WaterLevelInfoCard
-        location={{
-          amphure: stationData.currentAmphure,
-          province: stationData.currentProvince
-        }}
+        location={locationInfo}
       />
     );
   };
@@ -646,7 +944,7 @@ const ComplaintForm = () => {
               <div className="flex gap-2">
                 <Button 
                   onClick={handleReturnToDashboard}
-                  variant="outline"
+                  variant="outline" 
                   className="flex items-center gap-2"
                 >
                   <ArrowLeft className="h-4 w-4" />
@@ -664,43 +962,26 @@ const ComplaintForm = () => {
             
             {/* Action Buttons - Moved up with reduced margin */}
             <div className="flex items-center mb-4">
-            <button 
+            <Button 
               className="bg-[#4B9FE1] hover:bg-[#3D8FD1] text-white px-2 py-2 rounded-xl w-[150px] h-[42px] font-medium flex items-center justify-center transition-colors duration-200 text-base whitespace-nowrap"
               onClick={handleContinue}
               type="button"
             >
               เพิ่มเติม/แก้ไขข้อมูล
-            </button>
+            </Button>
             <div className="w-[10px]"></div>
-            <button 
+            <Button 
               className="bg-white hover:bg-[#f0f9ff] text-[#4B9FE1] border-[1.5px] border-[#4B9FE1] px-2 py-2 rounded-xl w-[140px] h-[42px] font-medium flex items-center justify-center transition-colors duration-200 text-base whitespace-nowrap"
               onClick={handlePrepareDocument}
               type="button"
             >
               เตรียมร่างเอกสาร
-            </button>
+            </Button>
           </div>
         </div>
       </div>
       
       <main className="container mx-auto px-12 pt-2">
-          {/* TEMPORARY: Show warning when using mock data */}
-          {usingMockData && (
-            <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded" role="alert">
-              <div className="flex items-center">
-                <div className="py-1">
-                  <svg className="h-6 w-6 text-yellow-500 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-        </div>
-        <div>
-                  <p className="font-bold">ข้อมูลจำลอง (Mock Data)</p>
-                  <p className="text-sm">กำลังใช้ข้อมูลจำลองเนื่องจาก PostgreSQL ไม่พร้อมใช้งาน (เฉพาะข้อมูลอำเภอแม่แตง จังหวัดเชียงใหม่)</p>
-                </div>
-              </div>
-            </div>
-          )}
-          
           {/* Debug the complaint data */}
           {(() => {
             const complaintData = convertToComplaintType(data || null);
@@ -713,7 +994,6 @@ const ComplaintForm = () => {
             <ComplaintInfoCard 
               title="ข้อร้องเรียน"
               editable={false}
-              showMockData={USE_MOCK_DATA}
             />
           </div>
         

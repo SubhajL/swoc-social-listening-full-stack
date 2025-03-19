@@ -1,0 +1,152 @@
+{
+  "columns": [
+    {
+      "column_name": "tele_station_id",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "column_name": "tele_station_name",
+      "data_type": "character varying(255)",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "tele_station_name_th",
+      "data_type": "character varying(255)",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "tele_station_oldcode",
+      "data_type": "character varying(50)",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "tele_station_lat",
+      "data_type": "numeric",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "tele_station_long",
+      "data_type": "numeric",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "tele_station_type",
+      "data_type": "character varying(50)",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "agency_id",
+      "data_type": "integer",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "ground_level",
+      "data_type": "numeric",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "left_bank",
+      "data_type": "numeric",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "right_bank",
+      "data_type": "numeric",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "is_warning",
+      "data_type": "boolean",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "province",
+      "data_type": "character varying(100)",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "amphure",
+      "data_type": "character varying(100)",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "tambon",
+      "data_type": "character varying(100)",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES",
+      "column_default": "CURRENT_TIMESTAMP"
+    },
+    {
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES",
+      "column_default": "CURRENT_TIMESTAMP"
+    },
+    {
+      "column_name": "data_source",
+      "data_type": "character varying(10)",
+      "is_nullable": "YES",
+      "column_default": null
+    }
+  ],
+  "primaryKey": [],
+  "foreignKeys": [],
+  "indexes": [
+    {
+      "name": "idx_thaiwater_tele_stations_coordinates",
+      "definition": "CREATE INDEX idx_thaiwater_tele_stations_coordinates ON public.thaiwater_tele_stations USING btree (tele_station_lat, tele_station_long)"
+    },
+    {
+      "name": "idx_thaiwater_tele_stations_data_source",
+      "definition": "CREATE INDEX idx_thaiwater_tele_stations_data_source ON public.thaiwater_tele_stations USING btree (data_source)"
+    },
+    {
+      "name": "idx_thaiwater_tele_stations_location",
+      "definition": "CREATE INDEX idx_thaiwater_tele_stations_location ON public.thaiwater_tele_stations USING btree (province, amphure, tambon)"
+    },
+    {
+      "name": "thaiwater_tele_stations_pkey",
+      "definition": "CREATE UNIQUE INDEX thaiwater_tele_stations_pkey ON public.thaiwater_tele_stations USING btree (tele_station_id)"
+    }
+  ],
+  "sampleData": {
+    "tele_station_id": 1128379,
+    "tele_station_name": "หนองบัวระเหว",
+    "tele_station_name_th": "หนองบัวระเหว",
+    "tele_station_oldcode": "403011",
+    "tele_station_lat": "15.816667",
+    "tele_station_long": "101.733330",
+    "tele_station_type": null,
+    "agency_id": 13,
+    "ground_level": null,
+    "left_bank": null,
+    "right_bank": null,
+    "is_warning": null,
+    "province": "ชัยภูมิ",
+    "amphure": "หนองบัวระเหว",
+    "tambon": "ตำบลห้วยแย้",
+    "created_at": "2025-02-28T11:11:37.514Z",
+    "updated_at": "2025-03-15T15:16:05.173Z",
+    "data_source": "TMD"
+  }
+}

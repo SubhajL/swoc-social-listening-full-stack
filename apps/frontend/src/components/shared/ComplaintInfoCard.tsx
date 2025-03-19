@@ -1,28 +1,69 @@
+import React from 'react';
+import { useState, useCallback, FC } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ProcessedPost } from "@/types/processed-post";
-import { Complaint, ComplaintWithOrganization } from "@/types/complaint";
-import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Textarea } from "@/components/ui/textarea";
 import { AlertCircle, MapPin, Image as ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { useComplaintData } from "@/atoms/hooks";
-import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { MOCK_PROCESSED_POSTS, USE_MOCK_DATA } from "@/utils/mockData";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { ProcessedPost, Complaint, ComplaintWithOrganization } from '@/types/complaint';
+import { useAtomValue } from 'jotai';
+import { processedPostsAtom } from '@/atoms/complaintData';
+import { ErrorBoundary } from "@/components/error-boundary";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ComplaintInfoCardProps {
   title?: string;
   className?: string;
   editable?: boolean;
-  showMockData?: boolean;
 }
 
 // Define a union type for all possible complaint types
-type ComplaintType = ProcessedPost | Complaint | ComplaintWithOrganization | null;
+type ComplaintType = ProcessedPost | LegacyProcessedPost | Complaint | ComplaintWithOrganization | null;
 
-const isProcessedPost = (data: unknown): data is ProcessedPost => {
+// Define a type for the legacy ProcessedPost from mockData
+interface LegacyProcessedPost {
+  processed_post_id: number;
+  text: string;
+  category_name: string;
+  sub1_category_name: string;
+  profile_name: string;
+  post_date: Date | string;
+  post_url: string;
+  latitude: number;
+  longitude: number;
+  tumbon: string[];
+  amphure: string[];
+  province: string[];
+  created_at: string;
+  status?: string;
+  coordinate_source: string;
+}
+
+// Update the type guard to handle both types of ProcessedPost
+const isProcessedPost = (data: unknown): data is (ProcessedPost | LegacyProcessedPost) => {
+  if (!data || typeof data !== 'object') return false;
+  
+  // Check for new ProcessedPost type
+  if ('id' in data && 'platform' in data && 'postDate' in data) {
+    return true;
+  }
+  
+  // Check for legacy ProcessedPost type
+  if ('processed_post_id' in data || 'text' in data || 'category_name' in data || 'profile_name' in data) {
+    return true;
+  }
+  
+  return false;
+};
+
+const isLegacyProcessedPost = (data: unknown): data is LegacyProcessedPost => {
   return data !== null && typeof data === 'object' && 
     ('processed_post_id' in data || 'text' in data || 'category_name' in data || 'profile_name' in data);
 };
@@ -40,8 +81,12 @@ const isComplaintWithOrganization = (data: unknown): data is ComplaintWithOrgani
 const getIssue = (complaint: ComplaintType): string => {
   if (!complaint) return '';
   
-  if (isProcessedPost(complaint)) {
+  if (isLegacyProcessedPost(complaint)) {
     return complaint.text || '';
+  }
+  
+  if (isProcessedPost(complaint) && !isLegacyProcessedPost(complaint)) {
+    return complaint.content || '';
   }
   
   if (isComplaint(complaint) || isComplaintWithOrganization(complaint)) {
@@ -51,12 +96,14 @@ const getIssue = (complaint: ComplaintType): string => {
   return '';
 };
 
-export const ComplaintInfoCard = ({ 
-  title: propTitle = "ข้อร้องเรียน", 
+export const ComplaintInfoCard: FC<ComplaintInfoCardProps> = ({
+  title = "ข้อร้องเรียน",
   className = "",
   editable = false,
-  showMockData = USE_MOCK_DATA
-}: ComplaintInfoCardProps) => {
+}) => {
+  const [activeTab, setActiveTab] = useState<string>("overview");
+  const processedPosts = useAtomValue(processedPostsAtom) as (ProcessedPost | LegacyProcessedPost)[];
+  
   // Add state to track if mock posts section is expanded
   const [showMockPostsSection, setShowMockPostsSection] = useState(false);
   
@@ -74,7 +121,6 @@ export const ComplaintInfoCard = ({
     description,
     location,
     coordinates,
-    processedPosts,
     selectedPostIds,
     updateTitle,
     updateDescription,
@@ -85,18 +131,43 @@ export const ComplaintInfoCard = ({
   
   // Use the selected post from Jotai
   const selectedPost = selectedPostIds.length > 0 && processedPosts.length > 0
-    ? processedPosts.find(post => selectedPostIds.includes(post.processed_post_id.toString()))
+    ? processedPosts.find(post => {
+        if ('processed_post_id' in post) {
+          return selectedPostIds.includes(String(post.processed_post_id));
+        } else {
+          return selectedPostIds.includes(post.id);
+        }
+      })
     : null;
   
-  // Use Jotai data exclusively
-  const complaintData: ComplaintType = selectedPost || null;
+  // Use Jotai data exclusively - fallback to form data if no post is selected
+  const complaintData: ComplaintType = selectedPost || {
+    processed_post_id: 0,
+    text: description || 'ไม่มีข้อมูล', // Required for LegacyProcessedPost
+    category_name: 'ข้อร้องเรียนทั่วไป',
+    sub1_category_name: 'ปัญหาน้ำท่วม',
+    profile_name: 'ผู้ใช้งานทั่วไป',
+    post_date: new Date().toISOString(),
+    post_url: '#',
+    latitude: coordinates.lat || 18.7883,
+    longitude: coordinates.lng || 98.9853,
+    tumbon: [],
+    amphure: location.split(',').map(part => part.trim()).filter(Boolean),
+    province: ['เชียงใหม่'],
+    created_at: new Date().toISOString(),
+    status: 'new',
+    coordinate_source: 'manual'
+  } as LegacyProcessedPost;
   
   console.log('ComplaintInfoCard data:', { 
     selectedPost, 
     storeTitle, 
     description, 
     location, 
-    coordinates
+    coordinates,
+    selectedPostIds,
+    processedPosts: processedPosts.length,
+    complaintData
   });
 
   const handleInputChange = useCallback((field: string, value: string) => {
@@ -122,49 +193,8 @@ export const ComplaintInfoCard = ({
     return (
       <div className={`bg-white rounded-xl border border-[#E2E8F0] p-6 ${className}`}>
         <div className="flex justify-start items-center mb-4">
-          <h2 className="text-xl font-semibold text-[#17254D]">{propTitle}</h2>
+          <h2 className="text-xl font-semibold text-[#17254D]">{title}</h2>
         </div>
-        
-        {/* TEMPORARY: Show mock posts section when PostgreSQL is unavailable */}
-        {showMockData && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-yellow-800">ข้อมูลจำลอง (Mock Data)</h3>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => setShowMockPostsSection(!showMockPostsSection)}
-                className="text-yellow-700 border-yellow-300 hover:bg-yellow-100"
-              >
-                {showMockPostsSection ? "ซ่อน" : "แสดง"}
-              </Button>
-            </div>
-            
-            {showMockPostsSection && (
-              <div className="space-y-4">
-                <p className="text-sm text-yellow-700 mb-2">เลือกข้อความจากข้อมูลจำลองเพื่อใช้ในการสร้างข้อร้องเรียน:</p>
-                
-                {MOCK_PROCESSED_POSTS.map((post) => (
-                  <div 
-                    key={post.processed_post_id} 
-                    className={`border ${selectedPostIds.includes(String(post.processed_post_id)) ? 'border-blue-500 bg-blue-50' : 'border-gray-200'} rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition-colors`}
-                    onClick={() => togglePostSelection(String(post.processed_post_id))}
-                  >
-                    <div className="flex justify-between">
-                      <span className="font-medium">{post.profile_name}</span>
-                      <span className="text-xs text-gray-500">{new Date(post.post_date).toLocaleDateString('th-TH')}</span>
-                    </div>
-                    <p className="mt-2 text-sm">{post.text}</p>
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">{post.category_name}</span>
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">{post.amphure[0]}, {post.province[0]}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
         
         <div className="p-4">
           <Alert variant="destructive">
@@ -181,8 +211,12 @@ export const ComplaintInfoCard = ({
   const getCategoryDisplay = (): string => {
     if (!complaintData) return '';
     
-    if (isProcessedPost(complaintData)) {
+    if (isLegacyProcessedPost(complaintData)) {
       return complaintData.category_name || '';
+    }
+    
+    if (isProcessedPost(complaintData) && !isLegacyProcessedPost(complaintData)) {
+      return complaintData.type || '';
     }
     
     return '';
@@ -191,7 +225,7 @@ export const ComplaintInfoCard = ({
   const getSubcategoryDisplay = (): string => {
     if (!complaintData) return '';
     
-    if (isProcessedPost(complaintData)) {
+    if (isLegacyProcessedPost(complaintData)) {
       return complaintData.sub1_category_name || '';
     }
     
@@ -201,8 +235,12 @@ export const ComplaintInfoCard = ({
   const getReporter = (): string => {
     if (!complaintData) return '';
     
-    if (isProcessedPost(complaintData)) {
+    if (isLegacyProcessedPost(complaintData)) {
       return complaintData.profile_name || '';
+    }
+    
+    if (isProcessedPost(complaintData) && !isLegacyProcessedPost(complaintData)) {
+      return typeof complaintData.author === 'string' ? complaintData.author : '';
     }
     
     return '';
@@ -211,11 +249,12 @@ export const ComplaintInfoCard = ({
   const getAmphure = (): string => {
     if (!complaintData) return '';
     
-    if (isProcessedPost(complaintData)) {
+    if (isLegacyProcessedPost(complaintData)) {
       // Handle the case where amphure might be an array
       const amphureValue = complaintData.amphure;
       if (Array.isArray(amphureValue)) {
-        return amphureValue.join(', ');
+        // Return only the first element (the actual amphure name)
+        return amphureValue[0] || '';
       }
       return amphureValue || '';
     }
@@ -226,7 +265,7 @@ export const ComplaintInfoCard = ({
   const getProvince = (): string => {
     if (!complaintData) return '';
     
-    if (isProcessedPost(complaintData)) {
+    if (isLegacyProcessedPost(complaintData)) {
       // Handle the case where province might be a string or string[]
       const provinceValue = complaintData.province;
       if (Array.isArray(provinceValue)) {
@@ -235,13 +274,20 @@ export const ComplaintInfoCard = ({
       return provinceValue || '';
     }
     
+    if (isProcessedPost(complaintData) && !isLegacyProcessedPost(complaintData)) {
+      if (typeof complaintData.province === 'string') {
+        return complaintData.province;
+      }
+      return '';
+    }
+    
     return '';
   };
 
   const getLatitude = (): string => {
     if (!complaintData) return '';
     
-    if (isProcessedPost(complaintData)) {
+    if (isLegacyProcessedPost(complaintData)) {
       return complaintData.latitude?.toString() || '';
     }
     
@@ -251,7 +297,7 @@ export const ComplaintInfoCard = ({
   const getLongitude = (): string => {
     if (!complaintData) return '';
     
-    if (isProcessedPost(complaintData)) {
+    if (isLegacyProcessedPost(complaintData)) {
       return complaintData.longitude?.toString() || '';
     }
     
@@ -261,12 +307,16 @@ export const ComplaintInfoCard = ({
   const getDate = (): string => {
     if (!complaintData) return '';
     
-    if (isProcessedPost(complaintData)) {
+    if (isLegacyProcessedPost(complaintData)) {
       return complaintData.post_date instanceof Date 
         ? complaintData.post_date.toISOString().split('T')[0] 
         : typeof complaintData.post_date === 'string' 
           ? new Date(complaintData.post_date).toISOString().split('T')[0]
           : '';
+    }
+    
+    if (isProcessedPost(complaintData) && !isLegacyProcessedPost(complaintData)) {
+      return new Date(complaintData.postDate).toISOString().split('T')[0];
     }
     
     return '';
@@ -275,8 +325,12 @@ export const ComplaintInfoCard = ({
   const getLink = (): string => {
     if (!complaintData) return '';
     
-    if (isProcessedPost(complaintData)) {
+    if (isLegacyProcessedPost(complaintData)) {
       return complaintData.post_url || '';
+    }
+    
+    if (isProcessedPost(complaintData) && !isLegacyProcessedPost(complaintData)) {
+      return complaintData.link || '';
     }
     
     return '';
@@ -299,11 +353,142 @@ export const ComplaintInfoCard = ({
     );
   };
 
+  // Update the renderSocialMediaPosts function to handle both types
+  const renderSocialMediaPosts = () => {
+    if (processedPosts.length === 0) {
+      return (
+        <div className="text-center py-8 text-gray-500">
+          <p>ไม่พบข้อมูลโพสต์ที่เกี่ยวข้อง</p>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="space-y-4">
+        {processedPosts.map((post) => {
+          // Check if it's a legacy post or new post format
+          const isLegacy = 'processed_post_id' in post;
+          
+          if (isLegacy) {
+            // Handle legacy post format
+            const legacyPost = post as LegacyProcessedPost;
+            const postId = String(legacyPost.processed_post_id);
+            const postContent = legacyPost.text;
+            const postDate = legacyPost.post_date;
+            const postAuthor = legacyPost.profile_name;
+            const postType = legacyPost.category_name;
+            const postProvince = Array.isArray(legacyPost.province) 
+              ? legacyPost.province.join(', ') 
+              : legacyPost.province;
+            const postLink = legacyPost.post_url;
+            
+            return (
+              <Card key={postId} className="overflow-hidden">
+                <CardContent className="p-0">
+                  <div className="p-4">
+                    <div className="flex items-start gap-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={undefined} alt={postAuthor} />
+                        <AvatarFallback>{postAuthor.substring(0, 2)}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="font-semibold">{postAuthor}</p>
+                            <p className="text-sm text-gray-500">
+                              {postDate instanceof Date 
+                                ? postDate.toLocaleDateString('th-TH')
+                                : new Date(postDate).toLocaleDateString('th-TH')}
+                            </p>
+                          </div>
+                          <Badge variant="default">Social</Badge>
+                        </div>
+                        <p className="mt-2">{postContent}</p>
+                        {postLink && postLink.includes('image') && (
+                          <div className="mt-3 rounded-md overflow-hidden">
+                            <img src={postLink} alt="Post image" className="w-full h-auto" />
+                          </div>
+                        )}
+                        <div className="flex gap-2 mt-3">
+                          <Badge variant="outline" className="text-xs">
+                            {postType}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {postProvince}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          } else {
+            // Handle new post format
+            const newPost = post as ProcessedPost;
+            const postId = newPost.id;
+            const postContent = newPost.content;
+            const postDate = newPost.postDate;
+            const postAuthor = newPost.author;
+            const postType = newPost.type || 'Unknown';
+            const postProvince = newPost.province || 'Unknown';
+            const postLink = newPost.link;
+            const postPlatform = newPost.platform;
+            
+            return (
+              <Card key={postId} className="overflow-hidden">
+                <CardContent className="p-0">
+                  <div className="p-4">
+                    <div className="flex items-start gap-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={undefined} alt={typeof postAuthor === 'string' ? postAuthor : 'User'} />
+                        <AvatarFallback>
+                          {typeof postAuthor === 'string' ? postAuthor.substring(0, 2) : 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="font-semibold">{typeof postAuthor === 'string' ? postAuthor : 'User'}</p>
+                            <p className="text-sm text-gray-500">
+                              {new Date(postDate).toLocaleDateString('th-TH')}
+                            </p>
+                          </div>
+                          <Badge variant={postPlatform === 'facebook' ? 'default' : 'secondary'}>
+                            {postPlatform === 'facebook' ? 'Facebook' : 'Twitter'}
+                          </Badge>
+                        </div>
+                        <p className="mt-2">{postContent}</p>
+                        {postLink && postLink.includes('image') && (
+                          <div className="mt-3 rounded-md overflow-hidden">
+                            <img src={postLink} alt="Post image" className="w-full h-auto" />
+                          </div>
+                        )}
+                        <div className="flex gap-2 mt-3">
+                          <Badge variant="outline" className="text-xs">
+                            {postType}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {postProvince}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          }
+        })}
+      </div>
+    );
+  };
+
   return (
     <ErrorBoundary component="ComplaintInfoCard">
       <Card className={cn("w-full h-full", className)}>
         <CardHeader>
-          <CardTitle className="text-xl font-semibold text-[#17254D]">{propTitle}</CardTitle>
+          <CardTitle className="text-xl font-semibold text-[#17254D]">{title}</CardTitle>
           <CardDescription>
             {getAmphure() && getProvince() 
               ? `${getAmphure()} ${getProvince()}` 
@@ -312,7 +497,7 @@ export const ComplaintInfoCard = ({
         </CardHeader>
         <CardContent>
           {/* TEMPORARY: Show mock posts section when PostgreSQL is unavailable */}
-          {showMockData && (
+          {showMockPostsSection && (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-medium text-yellow-800">ข้อมูลจำลอง (Mock Data)</h3>
@@ -326,29 +511,7 @@ export const ComplaintInfoCard = ({
                 </Button>
               </div>
               
-              {showMockPostsSection && (
-                <div className="space-y-4">
-                  <p className="text-sm text-yellow-700 mb-2">เลือกข้อความจากข้อมูลจำลองเพื่อใช้ในการสร้างข้อร้องเรียน:</p>
-                  
-                  {MOCK_PROCESSED_POSTS.map((post) => (
-                    <div 
-                      key={post.processed_post_id} 
-                      className={`border ${selectedPostIds.includes(String(post.processed_post_id)) ? 'border-blue-500 bg-blue-50' : 'border-gray-200'} rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition-colors`}
-                      onClick={() => togglePostSelection(String(post.processed_post_id))}
-                    >
-                      <div className="flex justify-between">
-                        <span className="font-medium">{post.profile_name}</span>
-                        <span className="text-xs text-gray-500">{new Date(post.post_date).toLocaleDateString('th-TH')}</span>
-                      </div>
-                      <p className="mt-2 text-sm">{post.text}</p>
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">{post.category_name}</span>
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">{post.amphure[0]}, {post.province[0]}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              {renderSocialMediaPosts()}
             </div>
           )}
           

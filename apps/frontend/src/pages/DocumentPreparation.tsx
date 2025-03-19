@@ -12,7 +12,6 @@ import logo2 from "@/assets/logo2.png";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { WaterLevelInfo } from "@/components/complaint/WaterLevelInfo";
-import { WaterManagementPlan } from "@/components/complaint/WaterManagementPlan";
 import { Save, Check, Send, ChevronDown, X, Bell, Settings, Paperclip } from "lucide-react";
 // Import SVG icons
 import CalendarIcon from "@/assets/icon/Calendar.svg";
@@ -212,7 +211,7 @@ const DocumentPreparation = () => {
   
   // Validate data on component mount with improved error handling
   useEffect(() => {
-    console.log('[DocumentPreparation] Checking Jotai state:', {
+    console.log('[DocumentPreparation] Validating data from Jotai store:', {
       title: complaintData.title,
       description: complaintData.description,
       location: complaintData.location,
@@ -220,17 +219,23 @@ const DocumentPreparation = () => {
       province: stationData.currentProvince
     });
     
-    // We don't need to validate the data since we're using Jotai
-    // The data should already be available from the ComplaintForm
-    
-    // Just log a warning if location data is missing
-    if (!stationData.currentAmphure && !stationData.currentProvince) {
-      console.warn('[DocumentPreparation] No location data available in Jotai store');
+    // Check if we have the required data in Jotai
+    if (!complaintData.title && !complaintData.description) {
+      console.error('[DocumentPreparation] No complaint data available in Jotai store');
+      setLoadError('ไม่พบข้อมูลข้อร้องเรียน กรุณากลับไปยังหน้าข้อร้องเรียน');
+      toast('ข้อผิดพลาดในการโหลดข้อมูล: ไม่พบข้อมูลข้อร้องเรียนที่จำเป็นต้องใช้ กรุณากลับไปยังหน้าข้อร้องเรียนและลองใหม่อีกครั้ง');
+      return;
     }
     
-    console.log('[DocumentPreparation] Ready to display data from Jotai');
+    // Check if we have location data
+    if (!stationData.currentAmphure && !stationData.currentProvince) {
+      console.warn('[DocumentPreparation] No location data available in Jotai store');
+      // We can continue without location data, just log a warning
+    }
     
-    // Set loading to false
+    console.log('[DocumentPreparation] Complaint data loaded successfully from Jotai');
+    
+    // Set loading to false after validation
     setIsLoading(false);
   }, [complaintData, stationData]);
   

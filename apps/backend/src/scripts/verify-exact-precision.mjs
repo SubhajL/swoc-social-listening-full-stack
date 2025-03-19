@@ -1,0 +1,105 @@
+import pkg from 'pg';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
+// Setup database connection
+const { Pool } = pkg;
+const pool = new Pool({
+  user: process.env.DB_USER || 'swoc-uat-gis-ssl-user',
+  password: process.env.DB_PASSWORD || '4c0b269f763d4ce1d1d59ba0e2ef1f9c',
+  host: process.env.DB_HOST || 'ec2-18-143-195-184.ap-southeast-1.compute.amazonaws.com',
+  port: parseInt(process.env.DB_PORT || '15435'),
+  database: process.env.DB_NAME || 'swoc-uat-gis-ssl',
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+async function verifyExactPrecision() {
+  const client = await pool.connect();
+  
+  try {
+    // Query specific reservoirs to check precision
+    const query = `
+      SELECT reservoir_id, 
+        reservoir_name, 
+        reservoir_lat, 
+        reservoir_long,
+        province,
+        amphure,
+        tambon
+      FROM reservoir_locations 
+      WHERE reservoir_id IN ('rsv01', 'rsv02', 'rsv10')
+      ORDER BY formatted_id;
+    `;
+    
+    const result = await client.query(query);
+    
+    console.log('Reservoir Coordinates with Exact Precision:');
+    console.table(result.rows);
+    
+    // Show the raw values and their length
+    console.log('\nRaw Values with Length:');
+    result.rows.forEach(row => {
+      console.log(`${row.reservoir_id}: lat=${row.reservoir_lat} (length: ${row.reservoir_lat.length}), long=${row.reservoir_long} (length: ${row.reservoir_long.length})`);
+    });
+    
+    // Compare with Excel values
+    console.log('\nExpected Excel Values:');
+    console.log('rsv01: lat=18.68840521 (10 chars), lng=99.27046237 (10 chars)');
+    console.log('rsv02: lat=18.70082146 (10 chars), lng=98.94305522 (10 chars)');
+    console.log('rsv10: lat=18.37657163 (10 chars), lng=98.3533572 (9 chars)');
+    
+    // Check all reservoirs for precision
+    const allQuery = `
+      SELECT reservoir_id,
+        LENGTH(reservoir_lat) as lat_length,
+        LENGTH(reservoir_long) as long_length
+      FROM reservoir_locations
+      ORDER BY formatted_id;
+    `;
+    
+    const allResult = await client.query(allQuery);
+    
+    // Calculate statistics
+    const stats = {
+      totalCount: allResult.rows.length,
+      latLengthCounts: {},
+      longLengthCounts: {}
+    };
+    
+    allResult.rows.forEach(row => {
+      // Count lat lengths
+      if (!stats.latLengthCounts[row.lat_length]) {
+        stats.latLengthCounts[row.lat_length] = 0;
+      }
+      stats.latLengthCounts[row.lat_length]++;
+      
+      // Count long lengths
+      if (!stats.longLengthCounts[row.long_length]) {
+        stats.longLengthCounts[row.long_length] = 0;
+      }
+      stats.longLengthCounts[row.long_length]++;
+    });
+    
+    console.log('\nPrecision Statistics:');
+    console.log('Latitude length counts:', stats.latLengthCounts);
+    console.log('Longitude length counts:', stats.longLengthCounts);
+    
+  } catch (error) {
+    console.error(`Error verifying precision: ${error.message}`);
+  } finally {
+    client.release();
+  }
+}
+
+// Run the function
+verifyExactPrecision().then(() => {
+  console.log('Verification completed');
+  process.exit(0);
+}).catch(err => {
+  console.error('Error:', err);
+  process.exit(1);
+}); 

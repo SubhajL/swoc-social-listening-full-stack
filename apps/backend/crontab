@@ -1,0 +1,13 @@
+# ThaiWater data sync cron jobs
+# Generated on 2025-03-17T04:18:23.079Z
+
+# Environment variables
+PATH=/opt/homebrew/opt/openjdk@17/bin:/opt/homebrew/opt/fuseki/bin:/opt/homebrew/opt/jena/bin:/opt/homebrew/bin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/opt/homebrew/opt/openjdk@17/bin:/opt/homebrew/opt/fuseki/bin:/opt/homebrew/opt/jena/bin:/Library/Frameworks/Python.framework/Versions/3.13/bin
+NODE_ENV=production
+DATABASE_URL=postgresql://swoc-uat-gis-ssl-user:4c0b269f763d4ce1d1d59ba0e2ef1f9c@ec2-18-143-195-184.ap-southeast-1.compute.amazonaws.com:15435/swoc-uat-gis-ssl
+
+# HII data sync - Every hour at minute 0
+0 * * * * /opt/homebrew/Cellar/node/23.2.0/bin/node /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/insert-thaiwater-rainfall-data.mjs >> /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/logs/hii-sync.log 2>&1
+
+# TMD data sync - Every hour at minute 30
+30 * * * * /opt/homebrew/Cellar/node/23.2.0/bin/node /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/src/scripts/sync-tmd-data.mjs >> /Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/logs/tmd-sync.log 2>&1

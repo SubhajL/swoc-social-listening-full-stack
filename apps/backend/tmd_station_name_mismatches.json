@@ -1,0 +1,18 @@
+[
+  {
+    "id": 453636,
+    "db_name": "Khon Kaen Airport",
+    "api_name": "",
+    "oldcode": "4001001202",
+    "province": null,
+    "amphure": null
+  },
+  {
+    "id": 453684,
+    "db_name": "Khao Kho Agromet",
+    "api_name": "",
+    "oldcode": "6711001301",
+    "province": null,
+    "amphure": null
+  }
+]

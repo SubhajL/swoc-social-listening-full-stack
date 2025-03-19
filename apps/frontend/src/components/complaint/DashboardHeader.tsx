@@ -6,10 +6,10 @@ import logo2 from "@/assets/logo2.png";
 export const DashboardHeader = () => {
   return (
     <header className="bg-white shadow-sm">
-      <div className="container mx-auto px-12">
+      <div className="container mx-auto">
         <div className="flex items-center justify-between pt-3">
-          {/* Left section - Logos */}
-          <div className="flex items-center gap-4">
+          {/* Left section - Logos - aligned with the page header */}
+          <div className="flex items-center gap-4 pl-4">
             <img 
               src={logo1} 
               alt="Royal Irrigation Department Logo" 
@@ -22,8 +22,8 @@ export const DashboardHeader = () => {
             />
           </div>
 
-          {/* Right section - Icons */}
-          <div className="flex items-center gap-1 pr-0">
+          {/* Right section - Icons - aligned with the right edge of map */}
+          <div className="flex items-center gap-1 pr-4 mr-4">
             {/* Notification bell with indicator */}
             <div className="relative p-1.5 hover:bg-gray-100 rounded-lg cursor-pointer">
               <Bell className="w-6 h-6 text-[#334155]" />
@@ -43,7 +43,7 @@ export const DashboardHeader = () => {
         </div>
 
         {/* Navigation tabs - aligned with map and pushed up */}
-        <div className="px-6 -mt-6 pb-0">
+        <div className="-mt-6 pb-0">
           <div className="flex">
             {/* This space accounts for the filter panel width and gap */}
             <div className="w-[450px]"></div>

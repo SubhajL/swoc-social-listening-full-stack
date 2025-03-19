@@ -22,7 +22,7 @@ import { checkAuthState, fixAuthIssues } from '@/utils/auth-test';
 import { toast } from "sonner";
 import { SocialPostInfo } from "@/components/SocialPostInfo";
 import { WaterLevelInfo } from "@/components/WaterLevelInfo";
-import { WaterManagementPlan } from "@/components/WaterManagementPlan";
+import { WaterManagementPlanCard } from "@/components/shared/WaterManagementPlanCard";
 import { ProcessedPost, ComplaintWithOrganization } from '@/types';
 import { SuccessPopup } from '@/components/SuccessPopup';
 import { Header as ApprovalHeader } from '@/components/ApprovalStepHeader';
@@ -767,7 +767,7 @@ const ApprovalStep = () => {
       <main className="container mx-auto px-12 pt-2 pb-20">
         {/* Approval Steps Timeline */}
         <div className="mb-6">
-          <Card className="p-8 shadow-sm">
+          <Card className="p-6 shadow-sm">
             {/* Frame Header */}
             <h2 className="text-2xl font-semibold text-[#17254D] mb-6">กระบวนการเห็นชอบ</h2>
             
@@ -840,7 +840,6 @@ const ApprovalStep = () => {
                   </div>
                   
                   <ComplaintInfoCard 
-                    complaint={complaintStore.complaintData as any}
                     title="ข้อมูลข้อร้องเรียน"
                     editable={false}
                     className="h-full"
@@ -853,7 +852,7 @@ const ApprovalStep = () => {
 
         {/* ร่างเอกสารตอบ Frameset */}
         <div className="mb-6 mt-8">
-          <Card className="p-8 shadow-sm">
+          <Card className="p-6 shadow-sm">
             {/* Frame Header */}
             <h2 className="text-2xl font-semibold text-[#17254D] mb-6">ร่างเอกสารตอบ</h2>
             

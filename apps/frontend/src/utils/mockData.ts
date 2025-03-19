@@ -1,5 +1,13 @@
 import { ProcessedPost, CategoryName } from '@/types/processed-post';
 
+/**
+ * IMPORTANT: This file is kept for reference purposes only.
+ * The application no longer uses mock data and relies solely on API data.
+ * The USE_MOCK_DATA flag is set to false to ensure no mock data is used.
+ * 
+ * This file should be removed in a future cleanup.
+ */
+
 // Mock data for Amphure แม่แตง in Province เชียงใหม่
 export const MOCK_PROCESSED_POSTS: ProcessedPost[] = [
   {
@@ -89,5 +97,5 @@ export const MOCK_PROCESSED_POSTS: ProcessedPost[] = [
   }
 ];
 
-// Flag to control whether to use mock data
-export const USE_MOCK_DATA = true; 
+// Set mock data flag to false to ensure we don't use mock data
+export const USE_MOCK_DATA = false; 

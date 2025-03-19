@@ -52,7 +52,7 @@ export const ComplaintHeader = () => {
         </div>
 
         {/* Navigation tabs - aligned with map and pushed up */}
-        <div className="px-6 -mt-6 pb-0">
+        <div className="-mt-6 pb-0">
           <div className="flex">
             {/* This space accounts for the filter panel width and gap */}
             <div className="w-[450px]"></div>
