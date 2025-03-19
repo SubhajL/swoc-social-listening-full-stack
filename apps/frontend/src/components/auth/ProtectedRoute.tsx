@@ -56,6 +56,14 @@ export function ProtectedRoute({
       if (isAuthenticated) {
         authValid = await checkAuth();
         console.log('[ProtectedRoute] Token validation result:', authValid);
+        
+        // If token validation fails, clear localStorage and auth state
+        if (!authValid) {
+          console.log('[ProtectedRoute] Token validation failed, clearing auth data');
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          localStorage.removeItem('auth-storage');
+        }
       } else if (hasLocalToken) {
         // If Jotai state doesn't show authenticated but localStorage has a token,
         // try to validate and restore the session

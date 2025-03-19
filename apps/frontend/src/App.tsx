@@ -47,12 +47,57 @@ const queryClient = new QueryClient({
   },
 });
 
+// Auth redirect component
+const AuthRedirect = () => {
+  const { checkAuth } = useAuth();
+  const [isChecking, setIsChecking] = useState(true);
+  const [authState, setAuthState] = useState<boolean>(false); // Default to false instead of using isAuthenticated
+  
+  useEffect(() => {
+    const verifyAuth = async () => {
+      setIsChecking(true);
+      
+      console.log('[AuthRedirect] Verifying authentication state from scratch');
+      
+      // Always run a complete check without assuming initial auth state
+      try {
+        // Force an auth check by calling the function directly
+        const isValid = await checkAuth();
+        console.log('[AuthRedirect] Auth check result:', isValid);
+        setAuthState(isValid);
+      } catch (error) {
+        console.error('[AuthRedirect] Auth check error:', error);
+        setAuthState(false);
+      } finally {
+        setIsChecking(false);
+      }
+    };
+    
+    verifyAuth();
+  }, [checkAuth]);
+  
+  // Show loading while checking auth
+  if (isChecking) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-t-blue-500 border-b-blue-500 border-l-transparent border-r-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-gray-600">กำลังตรวจสอบสถานะการเข้าสู่ระบบ...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  // Redirect based on verified auth state
+  return <Navigate to={authState ? "/dashboard" : "/login"} replace />;
+};
+
 // Create router with data router API
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      {/* Redirect root to login */}
-      <Route path="/" element={<Login />} />
+      {/* Root will redirect based on auth state */}
+      <Route path="/" element={<AuthRedirect />} />
       
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
@@ -113,15 +158,44 @@ const router = createBrowserRouter(
 );
 
 const App = () => {
+  // Initialize the store to ensure it's hydrated from localStorage
+  const isHydrated = useHydrateStore();
+  
+  // Clear auth data on initial app load to ensure login page is shown first
+  useEffect(() => {
+    // Check if this is the initial load (we can use sessionStorage to track this)
+    const hasInitialized = sessionStorage.getItem('app_initialized');
+    
+    if (!hasInitialized) {
+      console.log('[App] First app load detected, clearing auth data to ensure login page is shown');
+      // Clear auth data
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('auth-storage');
+      
+      // Mark as initialized so we don't clear on subsequent loads during this session
+      sessionStorage.setItem('app_initialized', 'true');
+    } else {
+      console.log('[App] App already initialized in this session');
+    }
+    
+    // Now migrate any localStorage data to Jotai format after clearing
+    migrateLocalStorageToJotai();
+  }, []);
+  
+  const [apiAvailable, setApiAvailable] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
+  const { toast } = useToast();
+  const { checkAuth } = useAuth();
+
   // State to track hydration status
   const [isHydrating, setIsHydrating] = useState(true);
+  
   // State to track API status check
   const [apiStatus, setApiStatus] = useState<'checking' | 'available' | 'unavailable'>('checking');
+  
   // State to track auth initialization
   const [isAuthInitialized, setIsAuthInitialized] = useState(false);
-  const { toast } = useToast();
-  const isHydrated = useHydrateStore();
-  const { checkAuth } = useAuth();
 
   // Handle global errors
   const handleGlobalError = useCallback((error: Error, errorInfo: React.ErrorInfo) => {

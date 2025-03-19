@@ -34,7 +34,11 @@ export const authStateAtom = atomWithStorage<AuthState>('auth-storage', initialA
 
 // Create derived atoms for specific auth state properties
 export const isAuthenticatedAtom = atom(
-  (get) => get(authStateAtom).isAuthenticated
+  (get) => {
+    const authState = get(authStateAtom);
+    // Check that we have both a user and a valid token
+    return !!authState.user && !!authState.token && authState.isAuthenticated;
+  }
 );
 
 export const userAtom = atom(
@@ -136,74 +140,135 @@ export const checkAuthAtom = atom(
               timeRemaining: Math.floor((expiry - now) / 1000 / 60) + ' minutes'
             });
             
-            if (now < expiry) {
-              // Token is valid, try to restore session
-              try {
-                const userData = JSON.parse(userJson);
-                
-                // Create user object for Jotai
-                const user = {
-                  id: String(userData.id),
-                  name: userData.name || '',
-                  email: userData.email || '',
-                  rbacRole: userData.position || 1,
-                  organizationId: userData.office_id || '',
-                  organizationName: userData.office_name || ''
-                };
-                
-                // Update auth state
-                set(authStateAtom, {
-                  user,
-                  token: localStorageToken,
-                  isAuthenticated: true,
-                  isLoading: false,
-                  error: null
-                });
-                
-                console.log('✅ [Auth] Session restored from localStorage');
-                return true;
-              } catch (error) {
-                console.error('❌ [Auth] Error restoring session from localStorage:', error);
-              }
-            } else {
-              console.log('⚠️ [Auth] localStorage token expired, clearing');
+            if (now > expiry) {
+              console.log('❌ [Auth] localStorage token is expired, clearing auth state');
               localStorage.removeItem('token');
               localStorage.removeItem('user');
+              
+              // Clear Jotai auth state
+              set(authStateAtom, {
+                user: null,
+                token: null,
+                isAuthenticated: false,
+                isLoading: false,
+                error: null
+              });
+              
+              return false;
+            } else {
+              // Token is valid, restore auth state
+              const userData = JSON.parse(userJson);
+              
+              // Create user object for Jotai
+              const user = {
+                id: String(userData.id || userData.userId || ''),
+                name: userData.name || '',
+                email: userData.email || '',
+                rbacRole: userData.position || userData.rbacRole || 1,
+                organizationId: userData.office_id || userData.organizationId || '',
+                organizationName: userData.office_name || userData.organizationName || ''
+              };
+              
+              // Update Jotai auth state
+              set(authStateAtom, {
+                user,
+                token: localStorageToken,
+                isAuthenticated: true,
+                isLoading: false,
+                error: null
+              });
+              
+              console.log('✅ [Auth] Successfully restored auth state from localStorage');
+              return true;
             }
           }
         } catch (error) {
-          console.error('❌ [Auth] Error checking localStorage token:', error);
-        }
-      }
-      
-      return false;
-    }
-    
-    try {
-      // Check if token is a JWT and if it's expired
-      const tokenParts = token.split('.');
-      if (tokenParts.length === 3) {
-        const payload = JSON.parse(atob(tokenParts[1]));
-        const expiry = payload.exp * 1000; // Convert to milliseconds
-        const now = Date.now();
-        
-        console.log('🔍 [Auth] Token validation', {
-          isExpired: now > expiry,
-          expiryTime: new Date(expiry).toISOString(),
-          currentTime: new Date(now).toISOString(),
-          timeRemaining: Math.floor((expiry - now) / 1000 / 60) + ' minutes'
-        });
-        
-        if (now > expiry) {
-          console.log('⚠️ [Auth] Token expired, logging out');
-          set(logoutAtom);
+          console.error('❌ [Auth] Error validating localStorage token:', error);
+          
+          // Clear localStorage
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          localStorage.removeItem('auth-storage');
+          
+          // Clear Jotai auth state
+          set(authStateAtom, {
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            isLoading: false,
+            error: null
+          });
+          
           return false;
         }
       }
       
+      // No token in localStorage or Jotai, not authenticated
+      return false;
+    }
+    
+    // If we have a token, verify it's still valid
+    try {
+      console.log('🔍 [Auth] Validating existing token');
+      
+      // Basic JWT validation
+      const tokenParts = token.split('.');
+      if (tokenParts.length !== 3) {
+        console.log('❌ [Auth] Token is not a valid JWT format');
+        
+        // Clear auth state
+        set(authStateAtom, {
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          isLoading: false,
+          error: 'Invalid token format'
+        });
+        
+        return false;
+      }
+      
+      // Check if token is expired
+      const payload = JSON.parse(atob(tokenParts[1]));
+      const expiry = payload.exp * 1000; // Convert to milliseconds
+      const now = Date.now();
+      
+      console.log('🔍 [Auth] Token validation', {
+        isExpired: now > expiry,
+        expiryTime: new Date(expiry).toISOString(),
+        currentTime: new Date(now).toISOString(),
+        timeRemaining: Math.floor((expiry - now) / 1000 / 60) + ' minutes'
+      });
+      
+      if (now > expiry) {
+        console.log('❌ [Auth] Token is expired, clearing auth state');
+        
+        // Clear auth state
+        set(authStateAtom, {
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          isLoading: false,
+          error: 'Token expired'
+        });
+        
+        return false;
+      }
+      
+      console.log('✅ [Auth] Token is valid');
       return true;
     } catch (error) {
-      console.error('❌ [Auth] Error checking token:', error);
+      console.error('❌ [Auth] Error validating token:', error);
+      
+      // Clear auth state
+      set(authStateAtom, {
+        user: null,
+        token: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: 'Error validating token'
+      });
+      
       return false;
     }
   }
