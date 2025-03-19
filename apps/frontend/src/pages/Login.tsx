@@ -7,29 +7,84 @@ import { Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { apiClient } from '@/lib/api-client';
 import LoginSvg from '@/assets/icon/Login.svg';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuth } from '@/hooks/useAuth';
+import { checkAuthAtom, loginAtom } from '@/atoms/authState';
+import { useAtom } from 'jotai';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRestoringSession, setIsRestoringSession] = useState(false);
   const navigate = useNavigate();
-  const { login: storeLogin } = useAuthStore();
+  const { login, isAuthenticated } = useAuth();
+  const [, checkAuth] = useAtom(checkAuthAtom);
+  const [, loginWithJotai] = useAtom(loginAtom);
   const location = useLocation();
   const from = location.state?.from || '/dashboard';
+  const restoreSession = location.state?.restoreSession || false;
   
   // Add debugging log on component mount
   useEffect(() => {
     console.log('🔍 [Login] Component mounted', {
       redirectFrom: location.state?.from,
-      authStoreState: {
-        isAuthenticated: useAuthStore.getState().isAuthenticated,
-        hasToken: !!useAuthStore.getState().token,
-      },
+      restoreSession: location.state?.restoreSession,
       localStorageToken: !!localStorage.getItem('token'),
       localStorageUser: !!localStorage.getItem('user'),
     });
+    
+    // Check if we need to restore session
+    if (restoreSession) {
+      console.log('🔍 [Login] Restore session flag detected, attempting to restore session');
+      setIsRestoringSession(true);
+      
+      // Try to restore session from localStorage
+      const existingToken = localStorage.getItem('token');
+      const userJson = localStorage.getItem('user');
+      
+      if (existingToken && userJson) {
+        try {
+          const userData = JSON.parse(userJson);
+          
+          // Create user object for Jotai
+          const user = {
+            id: String(userData.id),
+            name: userData.name || '',
+            email: userData.email || '',
+            rbacRole: userData.position || 1,
+            organizationId: userData.office_id || '',
+            organizationName: userData.office_name || ''
+          };
+          
+          // Update Jotai state directly
+          loginWithJotai({ user, token: existingToken });
+          
+          console.log('✅ [Login] Session restored from localStorage, redirecting to:', from);
+          
+          // Small delay to ensure state is updated
+          setTimeout(() => {
+            navigate(from, { replace: true });
+            setIsRestoringSession(false);
+          }, 100);
+          
+          return;
+        } catch (error) {
+          console.error('❌ [Login] Error restoring session:', error);
+          setIsRestoringSession(false);
+        }
+      } else {
+        console.log('❌ [Login] Cannot restore session, missing token or user data');
+        setIsRestoringSession(false);
+      }
+    }
+    
+    // If user is already authenticated, redirect to the target page
+    if (isAuthenticated) {
+      console.log('✅ [Login] User is already authenticated, redirecting to:', from);
+      navigate(from, { replace: true });
+      return;
+    }
     
     // Check for existing token in localStorage
     const existingToken = localStorage.getItem('token');
@@ -61,7 +116,39 @@ const Login = () => {
             if (now > expiry) {
               console.warn('⚠️ [Login] Token is expired, clearing token');
               localStorage.removeItem('token');
-              useAuthStore.getState().logout();
+              localStorage.removeItem('user');
+              // Check auth will handle logout if needed
+              checkAuth();
+            } else {
+              // Token is valid, try to restore session
+              const userJson = localStorage.getItem('user');
+              if (userJson) {
+                try {
+                  const userData = JSON.parse(userJson);
+                  
+                  // Create user object for Jotai
+                  const user = {
+                    id: String(userData.id),
+                    name: userData.name || '',
+                    email: userData.email || '',
+                    rbacRole: userData.position || 1,
+                    organizationId: userData.office_id || '',
+                    organizationName: userData.office_name || ''
+                  };
+                  
+                  // Update Jotai state directly
+                  loginWithJotai({ user, token: existingToken });
+                  
+                  console.log('✅ [Login] Session restored from localStorage, redirecting to:', from);
+                  
+                  // Small delay to ensure state is updated
+                  setTimeout(() => {
+                    navigate(from, { replace: true });
+                  }, 100);
+                } catch (error) {
+                  console.error('❌ [Login] Error restoring session from localStorage:', error);
+                }
+              }
             }
           } catch (error) {
             console.error('❌ [Login] Error parsing token payload:', error);
@@ -73,7 +160,7 @@ const Login = () => {
     } else {
       console.log('🔍 [Login] No existing token found in localStorage');
     }
-  }, [location.state]);
+  }, [location.state, checkAuth, isAuthenticated, navigate, from, restoreSession, loginWithJotai]);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -121,12 +208,10 @@ const Login = () => {
       
       // Check if response has the expected structure
       if (response && response.token) {
-        // IMPORTANT: Update auth store FIRST before localStorage
-        // This ensures the auth store is the source of truth
         if (response.user) {
           // Create user object for auth store
           const user = {
-            id: response.user.id,
+            id: String(response.user.id),
             name: response.user.name,
             email: response.user.email,
             rbacRole: response.user.position || 1, // Default to role 1 if not provided
@@ -134,47 +219,31 @@ const Login = () => {
             organizationName: response.user.office_name || ''
           };
           
-          // Update auth store FIRST
-          console.log('✅ [Login] Updating auth store with user and token');
-          storeLogin(user, response.token);
+          // Update auth state using Jotai
+          console.log('✅ [Login] Updating auth state with user and token');
+          login({ user, token: response.token });
           
-          // Verify auth store was updated
-          const authState = useAuthStore.getState();
-          console.log('✅ [Login] Auth store state after update:', {
-            isAuthenticated: authState.isAuthenticated,
-            hasToken: !!authState.token,
-            tokenLength: authState.token?.length || 0,
-            user: authState.user,
-          });
+          // Check if password needs to be changed
+          if (response.user?.password_changed === false) {
+            console.log('🔍 [Login] First login detected, redirecting to password change');
+            // Redirect to password change page
+            navigate('/change-password', { state: { firstLogin: true } });
+            return;
+          }
           
-          // Then store in localStorage as backup
-          console.log('✅ [Login] Storing user in localStorage as backup');
-          localStorage.setItem('user', JSON.stringify(response.user));
+          // Redirect to dashboard or original destination
+          console.log('✅ [Login] Login successful, redirecting to:', from);
+          navigate(from);
+          toast.success('เข้าสู่ระบบสำเร็จ');
         } else {
           console.warn('⚠️ [Login] Response has token but no user data');
+          toast.error('เข้าสู่ระบบไม่สำเร็จ: ไม่พบข้อมูลผู้ใช้');
         }
-        
-        // Store token in localStorage as backup
-        console.log('✅ [Login] Storing token in localStorage as backup');
-        localStorage.setItem('token', response.token);
-        
-        // Check if password needs to be changed
-        if (response.user?.password_changed === false) {
-          console.log('🔍 [Login] First login detected, redirecting to password change');
-          // Redirect to password change page
-          navigate('/change-password', { state: { firstLogin: true } });
-          return;
-        }
-        
-        // Redirect to dashboard or original destination
-        console.log('✅ [Login] Login successful, redirecting to:', from);
-        navigate(from);
-        toast.success('เข้าสู่ระบบสำเร็จ');
       } else {
         console.error('❌ [Login] Invalid response structure:', response);
         toast.error(response?.message || 'เข้าสู่ระบบไม่สำเร็จ: ข้อมูลตอบกลับไม่ถูกต้อง');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('❌ [Login] Login error:', error);
       console.error('❌ [Login] Error details:', {
         message: error.message,
@@ -188,6 +257,18 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
+  // If we're restoring the session, show a loading indicator
+  if (isRestoringSession) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-t-blue-500 border-b-blue-500 border-l-transparent border-r-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-gray-600">กำลังเข้าสู่ระบบอัตโนมัติ...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">

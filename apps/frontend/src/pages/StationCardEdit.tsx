@@ -1,63 +1,58 @@
-import { Card } from "@/components/ui/card";
-import { useLocation, useNavigate, useBlocker } from "react-router-dom";
-import { Complaint } from "@/types/complaint";
-import { ProcessedPost } from "@/types/processed-post";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useCallback, useMemo, useRef, useState } from 'react';
+import { useAtom } from 'jotai';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useBlocker } from '@/hooks/useBlocker';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { StationCardEditInfo } from '@/components/complaint/StationCardEditInfo';
+import { useStationManagement } from '@/hooks/useStationManagement';
+import { UnsavedChangesDialog } from '@/components/complaint/UnsavedChangesDialog';
+import { ComplaintInfoCard } from '@/components/shared/ComplaintInfoCard';
+import { useComplaintData } from '@/atoms/hooks';
+import { 
+  syncErrorAtom, 
+  syncErrorMessageAtom, 
+  isRetryingAtom, 
+  retryCountAtom, 
+  maxRetryAttemptsAtom,
+  resetErrorStateAtom,
+  setErrorStateAtom,
+  incrementRetryCountAtom
+} from '@/atoms/errorHandlingUI';
+import { AlertCircle, RefreshCw, Settings, ArrowLeft, Save, X, Bell } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/components/ui/use-toast';
+import { useAuth } from "@/hooks/useAuth";
 import logo1 from "@/assets/logo1.png";
 import logo2 from "@/assets/logo2.png";
-import { Link } from "react-router-dom";
-import { UnsavedChangesDialog } from "@/components/complaint/UnsavedChangesDialog";
-import { toast } from "sonner";
-// Import Jotai hooks instead of Zustand
-import { useComplaintData, useStationData } from "@/atoms/hooks";
-import { Bell, Settings, ArrowLeft, ArrowRight, Save, AlertTriangle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-// Import reusable components
-import { ComplaintInfoCard, WaterLevelInfoCard, WaterManagementPlanCard } from "@/components/shared";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { StationCardEditInfo } from "@/components/complaint/StationCardEditInfo";
-import { useAtom } from "jotai";
+import { WaterLevelInfoCard, WaterManagementPlanCard } from "@/components/shared";
 import { currentAmphureAtom, currentProvinceAtom } from "@/atoms/stationData";
 
-// Type guards
-const isProcessedPost = (data: any): data is ProcessedPost => {
-  return data && typeof data === 'object' && 'processed_post_id' in data;
-};
+// Create memoized station type components to prevent unnecessary re-renders
+const MonitoringStationTab = () => (
+  <TabsContent value="monitoring">
+    <StationCardEditInfo stationType="monitoring" />
+  </TabsContent>
+);
 
-const isComplaint = (data: any): data is Complaint => {
-  return data && typeof data === 'object' && 'complaint_id' in data;
-};
+const RainStationTab = () => (
+  <TabsContent value="rain">
+    <StationCardEditInfo stationType="rain" />
+  </TabsContent>
+);
 
-// Helper function to extract location data from different data structures
-// This is only used for display purposes, not for updating Jotai state
-const extractLocationData = (data: any) => {
-  if (!data) return { province: [], amphure: [], tumbon: [] };
-  
-  // Handle different data structures
-  if (isComplaint(data)) {
-    // For Complaint type, extract from province field
-    return {
-      province: data.province ? [data.province] : [],
-      amphure: [],
-      tumbon: []
-    };
-  }
-  
-  // For other types that might have location arrays
-  return {
-    province: Array.isArray(data.province) ? data.province : 
-             (data.province ? [data.province] : []),
-    amphure: Array.isArray(data.amphure) ? data.amphure : 
-            (data.amphure ? [data.amphure] : []),
-    tumbon: Array.isArray(data.tumbon) ? data.tumbon : 
-           (data.tumbon ? [data.tumbon] : [])
-  };
-};
+const ReservoirTab = () => (
+  <TabsContent value="reservoir">
+    <StationCardEditInfo stationType="reservoir" />
+  </TabsContent>
+);
 
-// Header component with settings button
+// Header component with settings button and navigation
 const StationCardEditHeader = () => {
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
   
   const handleSettingsClick = () => {
     navigate('/settings');
@@ -70,375 +65,290 @@ const StationCardEditHeader = () => {
         <img src={logo2} alt="Logo 2" className="h-10" />
       </div>
       <div className="flex items-center space-x-4">
+        <div className="flex space-x-4">
+          <Link to="/system-online" className="text-gray-600 hover:text-blue-600">
+            ระบบจัดการข้อมูลสื่อสังคมออนไลน์
+          </Link>
+          <Link to="/system-complaint" className="text-blue-600 font-medium">
+            ระบบตอบประเด็นข้อร้องเรียน
+          </Link>
+          <Link to="/system-dashboard" className="text-gray-600 hover:text-blue-600">
+            ระบบแสดงผลข้อมูลและสรุปผลผู้บริหาร
+          </Link>
+        </div>
         <Button variant="ghost" size="icon" onClick={handleSettingsClick}>
           <Settings className="h-5 w-5" />
         </Button>
         <Button variant="ghost" size="icon">
           <Bell className="h-5 w-5" />
         </Button>
-        <Link to="/profile" className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-600 font-medium">
-          U
-        </Link>
+        {isAuthenticated && (
+          <Link to="/profile" className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-600 font-medium">
+            {user?.name?.charAt(0) || 'U'}
+          </Link>
+        )}
       </div>
     </div>
   );
 };
 
-// Main component
+/**
+ * StationCardEdit component for editing station data
+ * Uses the useStationEditState hook for state management
+ */
 const StationCardEdit = () => {
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
   
-  // Add state for error handling with more detailed error types
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // Use Jotai atoms for error handling UI state instead of local state
+  const [syncError] = useAtom(syncErrorAtom);
+  const [syncErrorMessage] = useAtom(syncErrorMessageAtom);
+  const [isRetrying] = useAtom(isRetryingAtom);
+  const [retryCount] = useAtom(retryCountAtom);
+  const [MAX_RETRY_ATTEMPTS] = useAtom(maxRetryAttemptsAtom);
+  const resetErrorState = useAtom(resetErrorStateAtom)[1];
+  const setErrorState = useAtom(setErrorStateAtom)[1];
+  const incrementRetryCount = useAtom(incrementRetryCountAtom)[1];
   
   // Get complaint data from Jotai store
   const complaintData = useComplaintData();
   
-  // Get station data from Jotai with the correct types
-  const stationData = useStationData();
+  // Get station management functions
+  const {
+    hasUnsavedChanges,
+    enterEditMode,
+    discardChanges,
+    saveChanges,
+    isEditMode
+  } = useStationManagement();
   
-  // Get setters for location atoms
-  const [currentAmphure, setCurrentAmphure] = useAtom(currentAmphureAtom);
-  const [currentProvince, setCurrentProvince] = useAtom(currentProvinceAtom);
-  
-  // State for tracking unsaved changes
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
+  // State for the unsaved changes dialog
+  const [showUnsavedChangesDialog, setShowUnsavedChangesDialog] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
   
-  // Initialize Jotai state on component mount
+  // Initialize edit mode when component mounts
   useEffect(() => {
-    console.log('[StationCardEdit] Initializing component with Jotai state');
-    
-    // Log the current Jotai state
-    console.log('[StationCardEdit] Current Jotai state:', {
-      title: complaintData.title,
-      description: complaintData.description,
-      location: complaintData.location,
-      amphure: stationData.currentAmphure,
-      province: stationData.currentProvince
+    console.log('[StationCardEdit] Component mounted, entering edit mode');
+    enterEditMode();
+  }, [enterEditMode]);
+  
+  // Define handleError function
+  const handleError = useCallback((error: Error) => {
+    console.error('Operation failed:', error);
+    setErrorState(error, error.message || 'An unknown error occurred');
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: error.message || 'An unknown error occurred',
     });
-    
-    // Set location data from complaintData if not already set
-    if ((!currentAmphure || !currentProvince) && complaintData.location) {
-      console.log('[StationCardEdit] Setting location data from complaintData:', complaintData.location);
-      
-      // In the ComplaintData interface, location is a string
-      // We need to extract province and amphure from this string
-      const locationString = complaintData.location;
-      
-      // Try to extract province and amphure from the location string
-      // Format could be "จังหวัดXXX อำเภอYYY" or just "จังหวัดXXX"
-      const provinceMatch = locationString.match(/จังหวัด([^\s]+)/);
-      const amphureMatch = locationString.match(/อำเภอ([^\s]+)/);
-      
-      if (provinceMatch && provinceMatch[1] && !currentProvince) {
-        const province = provinceMatch[1];
-        console.log('[StationCardEdit] Extracted province:', province);
-        setCurrentProvince(province);
-      }
-      
-      if (amphureMatch && amphureMatch[1] && !currentAmphure) {
-        const amphure = amphureMatch[1];
-        console.log('[StationCardEdit] Extracted amphure:', amphure);
-        setCurrentAmphure(amphure);
-      }
-      
-      // If we couldn't extract province or amphure, use the whole location string as province
-      if (!provinceMatch && !amphureMatch && !currentProvince) {
-        console.log('[StationCardEdit] Using full location as province:', locationString);
-        setCurrentProvince(locationString);
-      }
-    }
-    
-    // IMPORTANT: Only use data from Jotai, never update from API or location.state
-    // We're only logging the data here, not updating it
-    
-    // Initialize station data queries if needed
-    if (stationData.currentAmphure && stationData.currentProvince) {
-      console.log('[StationCardEdit] Using location data from Jotai for queries:', {
-        amphure: stationData.currentAmphure,
-        province: stationData.currentProvince
-      });
-      
-      // This will trigger the queries in the Jotai atoms
-      // The actual data fetching is handled by the atoms
-    } else {
-      console.warn('[StationCardEdit] No location data available in Jotai store');
-      setLoadError('ไม่พบข้อมูลตำแหน่งที่ตั้ง กรุณากลับไปที่หน้าแบบฟอร์มและลองอีกครั้ง');
-    }
-    
-    // Set loading to false after initialization
-    setIsLoading(false);
-  }, [complaintData, stationData, currentAmphure, currentProvince, setCurrentAmphure, setCurrentProvince]);
+  }, [toast, setErrorState]);
   
-  const isInitialMount = useRef(true);
+  // Fix the useBlocker hook usage
+  const blocker = useBlocker(({ currentLocation, nextLocation }: { 
+    currentLocation: { pathname: string }, 
+    nextLocation: { pathname: string } 
+  }) => {
+    return hasUnsavedChanges && currentLocation.pathname !== nextLocation.pathname;
+  });
   
-  // Store the complaint data when the component mounts
+  // Handle blocked navigation
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      console.log('[StationCardEdit] Component mounted with Jotai data:', {
-        title: complaintData.title,
-        description: complaintData.description,
-        location: complaintData.location,
-        amphure: stationData.currentAmphure,
-        province: stationData.currentProvince
-      });
+    if (blocker.state === 'blocked') {
+      setShowUnsavedChangesDialog(true);
+      setPendingNavigation(blocker.location?.pathname || '');
     }
-  }, [complaintData, stationData]);
+  }, [blocker]);
   
-  // Handle changes in the form
-  const handleChangesMade = useCallback(() => {
-    setHasUnsavedChanges(true);
-  }, []);
-  
-  // Save and navigate to document preparation
-  const saveAndNavigate = async () => {
+  // Handle save button click
+  const handleSave = useCallback(async () => {
     try {
-      console.log('[StationCardEdit] Saving and navigating to document preparation');
+      console.log('[StationCardEdit] Save button clicked');
       
-      // Log the current Jotai state before navigation
-      console.log('[StationCardEdit] Current Jotai state before navigation:', {
-        title: complaintData.title,
-        description: complaintData.description,
-        location: complaintData.location,
-        amphure: stationData.currentAmphure,
-        province: stationData.currentProvince,
-        monitoringStations: stationData.userSelectedMonitoringStations.length,
-        rainStations: stationData.userSelectedRainStations.length,
-        reservoirs: stationData.userSelectedReservoirs.length
-      });
+      // Save changes
+      const result = saveChanges();
       
-      // Navigate to document preparation
-      // We don't need to pass location.state as we're using Jotai for state management
-      navigate('/document-preparation');
-      
-      // Reset unsaved changes flag
-      setHasUnsavedChanges(false);
-    } catch (error) {
-      console.error('[StationCardEdit] Error saving data:', error);
-      toast({
-        title: "เกิดข้อผิดพลาด",
-        description: "ไม่สามารถบันทึกข้อมูลได้ กรุณาลองอีกครั้ง",
-        variant: "destructive"
-      });
-    }
-  };
-  
-  // Save and return to complaint form
-  const saveAndReturn = async () => {
-    try {
-      console.log('[StationCardEdit] Saving and returning to complaint form');
-      
-      // Log the current Jotai state before navigation
-      console.log('[StationCardEdit] Current Jotai state before returning:', {
-        title: complaintData.title,
-        description: complaintData.description,
-        location: complaintData.location,
-        amphure: stationData.currentAmphure,
-        province: stationData.currentProvince,
-        monitoringStations: stationData.userSelectedMonitoringStations.length,
-        rainStations: stationData.userSelectedRainStations.length,
-        reservoirs: stationData.userSelectedReservoirs.length
-      });
-      
-      // Navigate back to complaint form
-      // We don't need to pass location.state as we're using Jotai for state management
-      navigate('/complaint/create');
-      
-      // Reset unsaved changes flag
-      setHasUnsavedChanges(false);
-    } catch (error) {
-      console.error('[StationCardEdit] Error saving data:', error);
-      toast({
-        title: "เกิดข้อผิดพลาด",
-        description: "ไม่สามารถบันทึกข้อมูลได้ กรุณาลองอีกครั้ง",
-        variant: "destructive"
-      });
-    }
-  };
-  
-  // Block navigation if there are unsaved changes
-  useBlocker(
-    ({ currentLocation, nextLocation }) => {
-      if (
-        hasUnsavedChanges &&
-        currentLocation.pathname !== nextLocation.pathname
-      ) {
-        setShowUnsavedDialog(true);
-        setPendingNavigation(nextLocation.pathname);
-        return true;
+      if (result) {
+        // Navigate back to the complaint form
+        navigate('/complaint/create', { 
+          state: { 
+            returnedFromStationEdit: true,
+            editSessionTimestamp: Date.now()
+          } 
+        });
       }
-      return false;
+    } catch (error) {
+      console.error('[StationCardEdit] Error saving changes:', error);
+      
+      // Use centralized error handling
+      handleError(error instanceof Error ? error : new Error(String(error)));
     }
-  );
+  }, [saveChanges, navigate, handleError]);
   
-  // Handle confirming navigation with unsaved changes
-  const handleConfirmNavigation = () => {
-    setShowUnsavedDialog(false);
-    setHasUnsavedChanges(false);
-    
+  // Handle discard button click
+  const handleDiscard = useCallback(() => {
+    try {
+      console.log('[StationCardEdit] Discard button clicked');
+      
+      // Discard changes
+      const result = discardChanges();
+      
+      if (result) {
+        // Navigate back to the complaint form
+        navigate('/complaint/create', { 
+          state: { 
+            preserveState: true,
+            discardedChanges: true
+          } 
+        });
+      }
+    } catch (error) {
+      console.error('[StationCardEdit] Error discarding changes:', error);
+      
+      // Use centralized error handling
+      handleError(error instanceof Error ? error : new Error(String(error)));
+    }
+  }, [discardChanges, navigate, handleError]);
+  
+  // Handle continue navigation (from unsaved changes dialog)
+  const handleContinueNavigation = useCallback(() => {
     if (pendingNavigation) {
+      // Discard changes
+      discardChanges();
+      
+      // Close dialog
+      setShowUnsavedChangesDialog(false);
+      
+      // Navigate to the pending location
       navigate(pendingNavigation);
+      
+      // Reset pending navigation
       setPendingNavigation(null);
     }
-  };
+  }, [pendingNavigation, discardChanges, navigate]);
   
-  // Handle canceling navigation with unsaved changes
-  const handleCancelNavigation = () => {
-    setShowUnsavedDialog(false);
+  // Handle cancel navigation (from unsaved changes dialog)
+  const handleCancelNavigation = useCallback(() => {
+    // Close dialog
+    setShowUnsavedChangesDialog(false);
+    
+    // Reset pending navigation
     setPendingNavigation(null);
-  };
-  
-  // Handle saving changes
-  const handleSave = async () => {
-    try {
-      console.log('[StationCardEdit] Saving changes');
-      
-      // Log the current Jotai state
-      console.log('[StationCardEdit] Current Jotai state after save:', {
-        title: complaintData.title,
-        description: complaintData.description,
-        location: complaintData.location,
-        amphure: stationData.currentAmphure,
-        province: stationData.currentProvince,
-        monitoringStations: stationData.userSelectedMonitoringStations.length,
-        rainStations: stationData.userSelectedRainStations.length,
-        reservoirs: stationData.userSelectedReservoirs.length
-      });
-      
-      // Reset unsaved changes flag
-      setHasUnsavedChanges(false);
-      
-      // Show success toast
-      toast({
-        title: "บันทึกสำเร็จ",
-        description: "บันทึกข้อมูลสถานีเรียบร้อยแล้ว",
-      });
-    } catch (error) {
-      console.error('[StationCardEdit] Error saving data:', error);
-      toast({
-        title: "เกิดข้อผิดพลาด",
-        description: "ไม่สามารถบันทึกข้อมูลได้ กรุณาลองอีกครั้ง",
-        variant: "destructive"
-      });
+    
+    // Reset blocker
+    if (blocker.state === 'blocked') {
+      blocker.reset();
     }
-  };
-  
-  // Handle discarding changes
-  const handleDiscard = () => {
-    console.log('[StationCardEdit] Discarding changes');
-    setHasUnsavedChanges(false);
-  };
-  
-  // Render loading state for the gray placeholder boxes
-  const renderLoadingState = () => {
-    return (
-      <div className="space-y-6">
-        <h2 className="text-xl font-semibold mb-4 text-[#17254D]">กำลังโหลดข้อมูลสถานี...</h2>
-        <div className="bg-gray-400 h-[120px] w-full rounded-md mb-4"></div>
-        <div className="bg-gray-400 h-[120px] w-full rounded-md mb-4"></div>
-        <div className="bg-gray-400 h-[120px] w-full rounded-md"></div>
-      </div>
-    );
-  };
-  
-  // Render error state if no location data
-  if (loadError) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <StationCardEditHeader />
-        <div className="flex-1 container mx-auto py-8 px-4">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-2xl font-bold mb-6">ข้อมูลสนับสนุน</h1>
-            
-            <Alert variant="destructive" className="mb-6">
-              <AlertTriangle className="h-5 w-5 mr-2" />
-              <AlertDescription>
-                {loadError}
-              </AlertDescription>
-            </Alert>
-            
-            <div className="flex justify-center mt-8">
-              <Button 
-                onClick={() => navigate('/complaint/create')}
-                className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-12 px-8 text-base flex items-center justify-center"
-              >
-                <ArrowLeft className="h-5 w-5 mr-2" />
-                กลับไปที่หน้าแบบฟอร์ม
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  
+  }, [blocker]);
+
+  // Get location data from complaint
+  const locationData = useMemo(() => {
+    // Extract amphure and province from location string if possible
+    if (complaintData && complaintData.location) {
+      const locationParts = complaintData.location.split(',').map(part => part.trim());
+      let amphure, province;
+      
+      if (locationParts.length >= 2) {
+        // Assume format is "amphure, province"
+        amphure = locationParts[0];
+        province = locationParts[1];
+      } else if (locationParts.length === 1) {
+        // Only one part, assume it's province
+        province = locationParts[0];
+      }
+      
+      return { amphure, province };
+    }
+    
+    return { amphure: undefined, province: undefined };
+  }, [complaintData]);
+
   return (
-    <div className="flex flex-col min-h-screen bg-[#F0F8FF]">
+    <div className="flex flex-col min-h-screen bg-[#F8FAFC]">
       <StationCardEditHeader />
       
-      <div className="container mx-auto px-12 py-6 flex-1">
-        <div className="flex flex-col space-y-6">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">แก้ไขข้อมูลสถานี</h1>
-            <div className="flex space-x-2">
+      <div className="container mx-auto px-4 py-6 flex-grow">
+        <div className="flex items-center mb-6">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="mr-2"
+            onClick={() => {
+              if (hasUnsavedChanges) {
+                setShowUnsavedChangesDialog(true);
+                setPendingNavigation('/complaint/create');
+              } else {
+                navigate('/complaint/create');
+              }
+            }}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            กลับ
+          </Button>
+          <h1 className="text-2xl font-semibold text-[#17254D]">แก้ไขข้อมูลสถานี</h1>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <Card className="mb-6">
+              <CardContent className="p-6">
+                <Tabs defaultValue="monitoring" className="w-full">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="monitoring">สถานีเฝ้าระวัง</TabsTrigger>
+                    <TabsTrigger value="rain">สถานีวัดน้ำฝน</TabsTrigger>
+                    <TabsTrigger value="reservoir">เขื่อน/อ่างเก็บน้ำ</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="monitoring">
+                    <MonitoringStationTab />
+                  </TabsContent>
+                  <TabsContent value="rain">
+                    <RainStationTab />
+                  </TabsContent>
+                  <TabsContent value="reservoir">
+                    <ReservoirTab />
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+            
+            <div className="flex justify-between mb-6">
               <Button 
                 variant="outline" 
-                onClick={saveAndReturn}
-                className="flex items-center"
+                onClick={handleDiscard}
+                disabled={!hasUnsavedChanges}
               >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                ย้อนกลับ
+                <X className="h-4 w-4 mr-2" />
+                ยกเลิกการเปลี่ยนแปลง
               </Button>
               <Button 
-                onClick={saveAndNavigate}
-                className="flex items-center"
+                onClick={handleSave}
+                disabled={!hasUnsavedChanges}
               >
-                ดำเนินการต่อ
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <Save className="h-4 w-4 mr-2" />
+                บันทึกการเปลี่ยนแปลง
               </Button>
             </div>
           </div>
           
-          {/* Upper half: Only ComplaintInfoCard */}
-          <div className="mb-6">
+          <div>
             <ComplaintInfoCard 
-              title="ข้อมูลข้อร้องเรียน"
-              editable={false}
+              className="mb-6"
             />
-          </div>
-          
-          {/* Lower half: StationCardEditInfo on left, WaterManagementPlanCard on right */}
-          <div className="grid grid-cols-2 gap-6">
-            {/* Left column - StationCardEditInfo or loading state */}
-            <div>
-              {isLoading ? renderLoadingState() : (
-                <StationCardEditInfo 
-                  onChangesMade={handleChangesMade}
-                  onSave={handleSave}
-                  onDiscard={handleDiscard}
-                />
-              )}
-            </div>
-            
-            {/* Right column - Water Management Plan */}
-            <div>
-              <WaterManagementPlanCard />
-            </div>
+            <WaterLevelInfoCard 
+              title="ข้อมูลระดับน้ำ" 
+              location={locationData}
+            />
           </div>
         </div>
       </div>
       
-      <UnsavedChangesDialog
-        open={showUnsavedDialog}
-        onOpenChange={setShowUnsavedDialog}
+      {/* Unsaved changes dialog */}
+      <UnsavedChangesDialog 
+        open={showUnsavedChangesDialog} 
+        onOpenChange={setShowUnsavedChangesDialog}
         onSave={handleSave}
-        onDiscard={handleDiscard}
+        onDiscard={handleContinueNavigation}
         onCancel={handleCancelNavigation}
       />
     </div>

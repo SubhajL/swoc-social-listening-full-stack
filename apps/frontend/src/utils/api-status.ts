@@ -10,10 +10,10 @@ import { toast } from '@/components/ui/use-toast';
 // API status check configuration
 const API_STATUS_CONFIG = {
   ENDPOINTS: [
-    '/health',
-    '/status',
-    '/',
-    '/posts/unprocessed'
+    '/api',
+    '/api/',
+    '/api/health',
+    '/api/posts'
   ],
   TIMEOUT: 5000,
   MAX_RETRIES: 2,

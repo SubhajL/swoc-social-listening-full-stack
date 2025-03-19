@@ -1,0 +1,9 @@
+{
+  "totalTMDStations": "1294",
+  "totalTMDRainStations": "0",
+  "tmdRainStationsWithoutNames": "0",
+  "tmdRainStationsWithoutNamesPercentage": null,
+  "tmdStationsWithoutType": "1294",
+  "tmdStationsWithoutTypePercentage": 100,
+  "sampleStationsWithoutNames": []
+}

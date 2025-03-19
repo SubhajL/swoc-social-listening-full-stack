@@ -1,0 +1,279 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import pkg from 'pg';
+import xlsx from 'xlsx';
+import axios from 'axios';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
+// Get the directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Setup database connection
+const { Pool } = pkg;
+const pool = new Pool({
+  user: process.env.DB_USER || 'swoc-uat-gis-ssl-user',
+  password: process.env.DB_PASSWORD || '4c0b269f763d4ce1d1d59ba0e2ef1f9c',
+  host: process.env.DB_HOST || 'ec2-18-143-195-184.ap-southeast-1.compute.amazonaws.com',
+  port: parseInt(process.env.DB_PORT || '15435'),
+  database: process.env.DB_NAME || 'swoc-uat-gis-ssl',
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+// Google Maps API key
+const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+
+// Path to Excel file (relative to project root)
+const EXCEL_FILE_PATH = path.resolve(__dirname, '../../../../reservior (tumbon code).xlsx');
+
+// Function to read Excel file
+async function readExcelFile() {
+  try {
+    console.log(`[CoordinateUpdate] Reading Excel file from: ${EXCEL_FILE_PATH}`);
+    const workbook = xlsx.readFile(EXCEL_FILE_PATH);
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const data = xlsx.utils.sheet_to_json(worksheet);
+    
+    console.log(`[CoordinateUpdate] Successfully read ${data.length} records from Excel`);
+    return data;
+  } catch (error) {
+    console.error(`[CoordinateUpdate] Error reading Excel file: ${error.message}`);
+    throw error;
+  }
+}
+
+// Function to update coordinates in database with full precision
+async function updateCoordinatesInDatabase(excelData) {
+  const client = await pool.connect();
+  let updatedCount = 0;
+  let errorCount = 0;
+  
+  try {
+    await client.query('BEGIN');
+    
+    for (const row of excelData) {
+      // Based on the Excel structure: cresv = reservoir_id, cresv_lat = latitude, cresv_lng = longitude
+      const reservoirId = row.cresv;
+      const latitude = row.cresv_lat;
+      const longitude = row.cresv_lng;
+      
+      if (!reservoirId || latitude === undefined || longitude === undefined) {
+        console.warn(`[CoordinateUpdate] Missing data for row: ${JSON.stringify(row)}`);
+        continue;
+      }
+      
+      // Convert to string with full precision
+      const latString = latitude.toString();
+      const longString = longitude.toString();
+      
+      // Update the database with precise coordinates
+      const updateQuery = `
+        UPDATE reservoir_locations
+        SET 
+          reservoir_lat = $1,
+          reservoir_long = $2,
+          updated_at = NOW()
+        WHERE reservoir_id= $3
+        RETURNING *
+      `;
+      
+      try {
+        const result = await client.query(updateQuery, [latString, longString, reservoirId]);
+        
+        if (result.rowCount > 0) {
+          console.log(`[CoordinateUpdate] Updated coordinates for ${reservoirId}: (${latString}, ${longString})`);
+          updatedCount++;
+        } else {
+          console.warn(`[CoordinateUpdate] No record found for reservoir_id: ${reservoirId}`);
+          errorCount++;
+        }
+      } catch (error) {
+        console.error(`[CoordinateUpdate] Error updating coordinates for ${reservoirId}: ${error.message}`);
+        errorCount++;
+      }
+    }
+    
+    await client.query('COMMIT');
+    console.log(`[CoordinateUpdate] Coordinates update completed: ${updatedCount} records updated, ${errorCount} errors`);
+    return { updatedCount, errorCount };
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error(`[CoordinateUpdate] Transaction error: ${error.message}`);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+// Function to get administrative location from Google Maps API
+async function getAdminLocation(latitude, longitude) {
+  try {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}&language=th`;
+    const response = await axios.get(url);
+    
+    if (response.data.status !== 'OK') {
+      console.warn(`[AdminLocationUpdate] Google API error: ${response.data.status} for (${latitude}, ${longitude})`);
+      return { province: null, amphure: null, tambon: null };
+    }
+    
+    let province = null;
+    let amphure = null;
+    let tambon = null;
+    
+    // Parse address components
+    for (const result of response.data.results) {
+      for (const component of result.address_components) {
+        if (component.types.includes('administrative_area_level_1')) {
+          province = component.long_name;
+        } else if (component.types.includes('administrative_area_level_2')) {
+          amphure = component.long_name;
+        } else if (component.types.includes('administrative_area_level_3')) {
+          tambon = component.long_name;
+        }
+      }
+      
+      // If we found all three levels, break out of the loop
+      if (province && amphure && tambon) {
+        break;
+      }
+    }
+    
+    return { province, amphure, tambon };
+  } catch (error) {
+    console.error(`[AdminLocationUpdate] Error getting admin location for (${latitude}, ${longitude}): ${error.message}`);
+    return { province: null, amphure: null, tambon: null };
+  }
+}
+
+// Function to update administrative locations in database
+async function updateAdminLocations() {
+  const client = await pool.connect();
+  let updatedCount = 0;
+  let errorCount = 0;
+  let allReservoirs = [];
+  
+  try {
+    // Get all reservoirs with their updated coordinates
+    const reservoirsQuery = 'SELECT * FROM reservoir_locations ORDER BY reservoir_id';
+    const reservoirsResult = await client.query(reservoirsQuery);
+    const reservoirs = reservoirsResult.rows;
+    
+    console.log(`[AdminLocationUpdate] Found ${reservoirs.length} reservoirs to update`);
+    
+    // Process in batches to avoid overwhelming the Google Maps API
+    const batchSize = 10;
+    const totalBatches = Math.ceil(reservoirs.length / batchSize);
+    
+    await client.query('BEGIN');
+    
+    for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
+      const start = batchIndex * batchSize;
+      const end = Math.min(start + batchSize, reservoirs.length);
+      const batch = reservoirs.slice(start, end);
+      
+      console.log(`[AdminLocationUpdate] Processing batch ${batchIndex + 1} of ${totalBatches}`);
+      
+      // Process each reservoir in the batch
+      for (const reservoir of batch) {
+        console.log(`[AdminLocationUpdate] Getting admin location for ${reservoir.reservoir_id} (${reservoir.reservoir_lat}, ${reservoir.reservoir_long})`);
+        
+        const { province, amphure, tambon } = await getAdminLocation(reservoir.reservoir_lat, reservoir.reservoir_long);
+        
+        // Update the database with admin location
+        if (province || amphure || tambon) {
+          const updateQuery = `
+            UPDATE reservoir_locations
+            SET 
+              province = $1,
+              amphure = $2,
+              tambon = $3,
+              updated_at = NOW()
+            WHERE reservoir_id = $4
+            RETURNING *
+          `;
+          
+          try {
+            const result = await client.query(updateQuery, [province, amphure, tambon, reservoir.reservoir_id]);
+            
+            if (result.rowCount > 0) {
+              console.log(`[AdminLocationUpdate] Updated ${reservoir.reservoir_id}: Province=${province}, Amphure=${amphure}, Tambon=${tambon}`);
+              updatedCount++;
+              
+              // Store the updated reservoir for JSON export
+              allReservoirs.push({
+                ...reservoir,
+                province,
+                amphure,
+                tambon
+              });
+            } else {
+              console.warn(`[AdminLocationUpdate] No record found for reservoir_id: ${reservoir.reservoir_id}`);
+              errorCount++;
+            }
+          } catch (error) {
+            console.error(`[AdminLocationUpdate] Error updating admin location for ${reservoir.reservoir_id}: ${error.message}`);
+            errorCount++;
+          }
+        } else {
+          console.warn(`[AdminLocationUpdate] Could not find admin location for ${reservoir.reservoir_id}`);
+          errorCount++;
+          
+          // Still include the reservoir in the JSON export
+          allReservoirs.push(reservoir);
+        }
+      }
+      
+      // Wait a bit between batches to avoid rate limiting
+      if (batchIndex < totalBatches - 1) {
+        console.log(`[AdminLocationUpdate] Waiting 1000ms before next batch...`);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+    
+    await client.query('COMMIT');
+    
+    // Export all data to JSON file with full precision
+    const outputPath = path.resolve(__dirname, '../../../../reservoir_locations_precise_8decimals.json');
+    fs.writeFileSync(outputPath, JSON.stringify(allReservoirs, null, 2));
+    console.log(`[AdminLocationUpdate] Saved updated data to ${outputPath}`);
+    
+    console.log(`[AdminLocationUpdate] Update completed: ${updatedCount} records updated, ${errorCount} errors`);
+    return { success: true, updatedCount, errorCount, exportedCount: allReservoirs.length };
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error(`[AdminLocationUpdate] Transaction error: ${error.message}`);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+// Main function
+async function main() {
+  try {
+    // Step 1: Read Excel file with precise coordinates
+    const excelData = await readExcelFile();
+    
+    // Step 2: Update coordinates in database with full precision
+    const coordinateResult = await updateCoordinatesInDatabase(excelData);
+    
+    // Step 3: Update administrative locations using Google Maps API
+    const adminResult = await updateAdminLocations();
+    
+    console.log('[CoordinateUpdate] Process completed successfully', adminResult);
+    process.exit(0);
+  } catch (error) {
+    console.error(`[CoordinateUpdate] Error: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+// Run the main function
+main(); 

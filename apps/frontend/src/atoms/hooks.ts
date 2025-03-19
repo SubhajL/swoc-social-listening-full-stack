@@ -33,7 +33,8 @@ import {
   reservoirsErrorAtom,
   syncMonitoringStationsAtom,
   syncRainStationsAtom,
-  syncReservoirsAtom
+  syncReservoirsAtom,
+  editSessionStatusAtom
 } from './stationData';
 
 // Complaint data atoms
@@ -112,6 +113,9 @@ export function useStationData() {
   const syncRainStations = useSetAtom(syncRainStationsAtom);
   const syncReservoirs = useSetAtom(syncReservoirsAtom);
   
+  // New atom for edit session status
+  const [editSessionStatus, setEditSessionStatus] = useAtom(editSessionStatusAtom);
+  
   // Helper functions to update station data
   const updateMonitoringStations = useCallback((stations: MonitoringStation[]) => {
     setMonitoringStations(stations);
@@ -149,41 +153,113 @@ export function useStationData() {
     setUserSelectedReservoirs((prev: Reservoir[]) => prev.filter(r => r.id !== reservoirId));
   }, [setUserSelectedReservoirs]);
   
+  // Function to mark that changes were made in the edit session
+  const markEditSessionChanged = useCallback((stationType: 'monitoring' | 'rain' | 'reservoir') => {
+    setEditSessionStatus(prev => {
+      // Check if this station type is already in the array
+      const hasStationType = prev.changedStationTypes.includes(stationType);
+      
+      return {
+        hasChanges: true,
+        lastEditTimestamp: Date.now(),
+        changedStationTypes: hasStationType 
+          ? prev.changedStationTypes 
+          : [...prev.changedStationTypes, stationType]
+      };
+    });
+  }, [setEditSessionStatus]);
+  
+  // Function to reset the edit session status
+  const resetEditSessionStatus = useCallback(() => {
+    console.log('[resetEditSessionStatus] Resetting edit session status and reverting changes');
+    
+    // Get the current edit session status to know which station types were changed
+    const changedTypes = editSessionStatus.changedStationTypes;
+    
+    // Reset the edit session status first
+    setEditSessionStatus({
+      hasChanges: false,
+      lastEditTimestamp: 0,
+      changedStationTypes: []
+    });
+    
+    // Reset disabled stations maps regardless of what changed
+    setDisabledMonitoringStations({});
+    setDisabledRainStations({});
+    setDisabledReservoirs({});
+    
+    // Reset user selected stations arrays
+    setUserSelectedMonitoringStations([]);
+    setUserSelectedRainStations([]);
+    setUserSelectedReservoirs([]);
+    
+    // Force a refresh of the data by triggering the synchronization functions
+    syncMonitoringStations();
+    syncRainStations();
+    syncReservoirs();
+    
+    console.log('[resetEditSessionStatus] Edit session reset complete');
+  }, [
+    editSessionStatus, 
+    setEditSessionStatus, 
+    setDisabledMonitoringStations, 
+    setDisabledRainStations, 
+    setDisabledReservoirs,
+    syncMonitoringStations,
+    syncRainStations,
+    syncReservoirs,
+    setUserSelectedMonitoringStations,
+    setUserSelectedRainStations,
+    setUserSelectedReservoirs
+  ]);
+  
+  // Update the disableMonitoringStation function to mark edit session changed
   const disableMonitoringStation = useCallback((stationId: string) => {
     setDisabledMonitoringStations((prev: Record<string, boolean>) => ({ ...prev, [stationId]: true }));
-  }, [setDisabledMonitoringStations]);
+    markEditSessionChanged('monitoring');
+  }, [setDisabledMonitoringStations, markEditSessionChanged]);
   
+  // Update the disableRainStation function to mark edit session changed
   const disableRainStation = useCallback((stationId: string) => {
     setDisabledRainStations((prev: Record<string, boolean>) => ({ ...prev, [stationId]: true }));
-  }, [setDisabledRainStations]);
+    markEditSessionChanged('rain');
+  }, [setDisabledRainStations, markEditSessionChanged]);
   
+  // Update the disableReservoir function to mark edit session changed
   const disableReservoir = useCallback((reservoirId: string) => {
     setDisabledReservoirs((prev: Record<string, boolean>) => ({ ...prev, [reservoirId]: true }));
-  }, [setDisabledReservoirs]);
+    markEditSessionChanged('reservoir');
+  }, [setDisabledReservoirs, markEditSessionChanged]);
   
+  // Update the enableMonitoringStation function to mark edit session changed
   const enableMonitoringStation = useCallback((stationId: string) => {
     setDisabledMonitoringStations((prev: Record<string, boolean>) => {
       const newDisabled = { ...prev };
       delete newDisabled[stationId];
       return newDisabled;
     });
-  }, [setDisabledMonitoringStations]);
+    markEditSessionChanged('monitoring');
+  }, [setDisabledMonitoringStations, markEditSessionChanged]);
   
+  // Update the enableRainStation function to mark edit session changed
   const enableRainStation = useCallback((stationId: string) => {
     setDisabledRainStations((prev: Record<string, boolean>) => {
       const newDisabled = { ...prev };
       delete newDisabled[stationId];
       return newDisabled;
     });
-  }, [setDisabledRainStations]);
+    markEditSessionChanged('rain');
+  }, [setDisabledRainStations, markEditSessionChanged]);
   
+  // Update the enableReservoir function to mark edit session changed
   const enableReservoir = useCallback((reservoirId: string) => {
     setDisabledReservoirs((prev: Record<string, boolean>) => {
       const newDisabled = { ...prev };
       delete newDisabled[reservoirId];
       return newDisabled;
     });
-  }, [setDisabledReservoirs]);
+    markEditSessionChanged('reservoir');
+  }, [setDisabledReservoirs, markEditSessionChanged]);
   
   // Function to reset all station data
   const resetStationData = useCallback(() => {
@@ -340,7 +416,10 @@ export function useStationData() {
     setReservoirsError,
     syncMonitoringStations,
     syncRainStations,
-    syncReservoirs
+    syncReservoirs,
+    editSessionStatus,
+    markEditSessionChanged,
+    resetEditSessionStatus
   };
 }
 

@@ -22,7 +22,7 @@ import { checkAuthState, fixAuthIssues } from '@/utils/auth-test';
 import { toast } from "sonner";
 import { SocialPostInfo } from "@/components/SocialPostInfo";
 import { WaterLevelInfo } from "@/components/WaterLevelInfo";
-import { WaterManagementPlan } from "@/components/WaterManagementPlan";
+import { WaterManagementPlanCard } from "@/components/shared/WaterManagementPlanCard";
 import { ProcessedPost, ComplaintWithOrganization } from '@/types';
 import { SuccessPopup } from '@/components/SuccessPopup';
 import { Header as ApprovalHeader } from '@/components/ApprovalStepHeader';

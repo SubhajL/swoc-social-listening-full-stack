@@ -36,6 +36,15 @@ export async function getRainfallData(params: RainfallQueryParams, pool: Pool) {
     offset = 0
   } = params;
 
+  // Validate input parameters
+  if (!province && !amphoe) {
+    logger.warn('Missing required parameters for rainfall data', {
+      params,
+      message: 'Either province or amphoe is required'
+    });
+    throw new Error('Either province or amphoe parameter is required');
+  }
+
   try {
     let query = `
       SELECT 
@@ -49,13 +58,14 @@ export async function getRainfallData(params: RainfallQueryParams, pool: Pool) {
         r.rainfall10m,
         r.rainfall1h,
         r.rainfall3h,
+        r.rainfall_today,
         r.rainfall_datetime,
         r.data_source,
         s.province,
         s.amphure,
         s.tambon
       FROM 
-        thaiwater_rainfall_data r
+        thaiwater_rainfall_data_new r
       JOIN 
         thaiwater_tele_stations s ON r.tele_station_id = s.tele_station_id
       WHERE 
@@ -120,16 +130,37 @@ export async function getRainfallData(params: RainfallQueryParams, pool: Pool) {
         }
       });
       
+      // Return empty array if no results found
+      if (result.rows.length === 0) {
+        logger.info('No rainfall data found for the given parameters', {
+          params
+        });
+      }
+      
       return result.rows;
+    } catch (dbError) {
+      logger.error('Database error retrieving rainfall data', {
+        error: dbError instanceof Error ? dbError.message : String(dbError),
+        query,
+        params: queryParams
+      });
+      throw new Error(`Database error: ${dbError instanceof Error ? dbError.message : 'Unknown error'}`);
     } finally {
       client.release();
     }
   } catch (error) {
     logger.error('Error retrieving rainfall data', {
       error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
       params
     });
-    throw error;
+    
+    // Rethrow with more context
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      throw new Error(`Failed to retrieve rainfall data: ${String(error)}`);
+    }
   }
 }
 
@@ -145,6 +176,15 @@ export async function getStations(params: StationQueryParams, pool: Pool) {
     limit = 100,
     offset = 0
   } = params;
+
+  // Validate input parameters
+  if (!province && !amphoe && !stationId) {
+    logger.warn('Missing required parameters for stations', {
+      params,
+      message: 'At least one of province, amphoe, or stationId is required'
+    });
+    throw new Error('At least one of province, amphoe, or stationId parameter is required');
+  }
 
   try {
     let query = `
@@ -217,16 +257,37 @@ export async function getStations(params: StationQueryParams, pool: Pool) {
         }
       });
       
+      // Return empty array if no results found
+      if (result.rows.length === 0) {
+        logger.info('No stations found for the given parameters', {
+          params
+        });
+      }
+      
       return result.rows;
+    } catch (dbError) {
+      logger.error('Database error retrieving stations', {
+        error: dbError instanceof Error ? dbError.message : String(dbError),
+        query,
+        params: queryParams
+      });
+      throw new Error(`Database error: ${dbError instanceof Error ? dbError.message : 'Unknown error'}`);
     } finally {
       client.release();
     }
   } catch (error) {
     logger.error('Error retrieving stations', {
       error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
       params
     });
-    throw error;
+    
+    // Rethrow with more context
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      throw new Error(`Failed to retrieve stations: ${String(error)}`);
+    }
   }
 }
 
@@ -250,87 +311,72 @@ export async function getRainfallStatistics(pool: Pool) {
       // Get total rainfall records by data source
       const rainfallQuery = `
         SELECT data_source, COUNT(*) as count
-        FROM thaiwater_rainfall_data
+        FROM thaiwater_rainfall_data_new
         GROUP BY data_source
       `;
       
       const rainfallResult = await client.query(rainfallQuery);
       
-      // Get rainfall distribution
-      const distributionQuery = `
-        SELECT
-          CASE
-            WHEN rainfall24h >= 90 THEN 'Very Heavy (≥90mm)'
-            WHEN rainfall24h >= 35 THEN 'Heavy (35-90mm)'
-            WHEN rainfall24h >= 10 THEN 'Moderate (10-35mm)'
-            WHEN rainfall24h > 0 THEN 'Light (<10mm)'
-            ELSE 'No Rain (0mm)'
-          END as category,
-          COUNT(*) as count,
-          data_source
-        FROM thaiwater_rainfall_data
-        GROUP BY category, data_source
-        ORDER BY 
-          data_source,
-          CASE
-            WHEN category = 'Very Heavy (≥90mm)' THEN 1
-            WHEN category = 'Heavy (35-90mm)' THEN 2
-            WHEN category = 'Moderate (10-35mm)' THEN 3
-            WHEN category = 'Light (<10mm)' THEN 4
-            WHEN category = 'No Rain (0mm)' THEN 5
-          END
+      // Get latest rainfall date
+      const latestDateQuery = `
+        SELECT MAX(rainfall_datetime) as latest_date
+        FROM thaiwater_rainfall_data_new
       `;
       
-      const distributionResult = await client.query(distributionQuery);
+      const latestDateResult = await client.query(latestDateQuery);
       
-      // Get highest rainfall by data source
-      const highestQuery = `
-        WITH highest_rainfall AS (
-          SELECT
-            r.tele_station_id,
-            s.tele_station_name,
-            s.tele_station_name_th,
-            r.rainfall24h,
-            r.data_source,
-            ROW_NUMBER() OVER (PARTITION BY r.data_source ORDER BY r.rainfall24h DESC) as rn
-          FROM
-            thaiwater_rainfall_data r
-          JOIN
-            thaiwater_tele_stations s ON r.tele_station_id = s.tele_station_id
-        )
-        SELECT * FROM highest_rainfall WHERE rn <= 5
-      `;
+      // Get rainfall summary for the latest date
+      const latestDate = latestDateResult.rows[0]?.latest_date;
       
-      const highestResult = await client.query(highestQuery);
+      let rainfallSummary = [];
       
-      // Get latest data timestamp by data source
-      const latestQuery = `
-        SELECT
-          data_source,
-          MAX(rainfall_datetime) as latest_timestamp,
-          COUNT(*) as records_count
-        FROM
-          thaiwater_rainfall_data
-        GROUP BY
-          data_source
-      `;
+      if (latestDate) {
+        const summaryQuery = `
+          SELECT 
+            data_source,
+            COUNT(*) as total_records,
+            AVG(rainfall24h) as avg_rainfall,
+            MAX(rainfall24h) as max_rainfall,
+            MIN(rainfall24h) as min_rainfall
+          FROM 
+            thaiwater_rainfall_data_new
+          WHERE 
+            DATE(rainfall_datetime) = DATE($1)
+          GROUP BY 
+            data_source
+        `;
+        
+        const summaryResult = await client.query(summaryQuery, [latestDate]);
+        rainfallSummary = summaryResult.rows;
+      }
       
-      const latestResult = await client.query(latestQuery);
+      logger.info('Rainfall statistics retrieved successfully');
       
       return {
         stations: stationsResult.rows,
         rainfall: rainfallResult.rows,
-        distribution: distributionResult.rows,
-        highest: highestResult.rows,
-        latest: latestResult.rows
+        latest_date: latestDate,
+        summary: rainfallSummary
       };
+    } catch (dbError) {
+      logger.error('Database error retrieving rainfall statistics', {
+        error: dbError instanceof Error ? dbError.message : String(dbError)
+      });
+      throw new Error(`Database error: ${dbError instanceof Error ? dbError.message : 'Unknown error'}`);
     } finally {
       client.release();
     }
   } catch (error) {
     logger.error('Error retrieving rainfall statistics', {
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
     });
-    throw error;
+    
+    // Rethrow with more context
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      throw new Error(`Failed to retrieve rainfall statistics: ${String(error)}`);
+    }
   }
 } 

@@ -29,6 +29,20 @@ export class ThaiWaterController {
         offset
       } = req.query;
 
+      // Validate required parameters
+      if (!province && !amphoe) {
+        logger.warn('Missing required parameters in getRainfall', {
+          params: req.query,
+          endpoint: '/api/thaiwater/rainfall'
+        });
+        
+        return res.status(400).json({
+          success: false,
+          error: 'Missing required parameters',
+          message: 'Either province or amphoe parameter is required'
+        });
+      }
+
       const params = {
         date: date as string,
         stationId: station_id ? parseInt(station_id as string, 10) : undefined,
@@ -40,7 +54,20 @@ export class ThaiWaterController {
         offset: offset ? parseInt(offset as string, 10) : undefined
       };
 
+      // Log the request parameters for debugging
+      logger.info('Fetching rainfall data with params', {
+        params,
+        endpoint: '/api/thaiwater/rainfall'
+      });
+
       const data = await getRainfallData(params, this.pool);
+
+      // Log successful response
+      logger.info('Successfully retrieved rainfall data', {
+        count: data.length,
+        params,
+        endpoint: '/api/thaiwater/rainfall'
+      });
 
       return res.status(200).json({
         success: true,
@@ -53,7 +80,9 @@ export class ThaiWaterController {
     } catch (error) {
       logger.error('Error in getRainfall controller', {
         error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined
+        stack: error instanceof Error ? error.stack : undefined,
+        query: req.query,
+        endpoint: '/api/thaiwater/rainfall'
       });
 
       return res.status(500).json({
@@ -78,6 +107,20 @@ export class ThaiWaterController {
         offset
       } = req.query;
 
+      // Validate required parameters
+      if (!province && !amphoe) {
+        logger.warn('Missing required parameters in getStations', {
+          params: req.query,
+          endpoint: '/api/thaiwater/stations'
+        });
+        
+        return res.status(400).json({
+          success: false,
+          error: 'Missing required parameters',
+          message: 'Either province or amphoe parameter is required'
+        });
+      }
+
       const params = {
         stationId: station_id ? parseInt(station_id as string, 10) : undefined,
         province: province as string,
@@ -87,7 +130,20 @@ export class ThaiWaterController {
         offset: offset ? parseInt(offset as string, 10) : undefined
       };
 
+      // Log the request parameters for debugging
+      logger.info('Fetching stations with params', {
+        params,
+        endpoint: '/api/thaiwater/stations'
+      });
+
       const data = await getStations(params, this.pool);
+
+      // Log successful response
+      logger.info('Successfully retrieved stations data', {
+        count: data.length,
+        params,
+        endpoint: '/api/thaiwater/stations'
+      });
 
       return res.status(200).json({
         success: true,
@@ -100,7 +156,9 @@ export class ThaiWaterController {
     } catch (error) {
       logger.error('Error in getStations controller', {
         error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined
+        stack: error instanceof Error ? error.stack : undefined,
+        query: req.query,
+        endpoint: '/api/thaiwater/stations'
       });
 
       return res.status(500).json({

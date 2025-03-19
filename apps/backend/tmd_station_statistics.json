@@ -1,0 +1,10 @@
+{
+  "totalTMDStations": "1294",
+  "tmdStationsWithoutNames": "0",
+  "tmdStationsWithoutNamesPercentage": 0,
+  "tmdStationsWithAmphure": "1271",
+  "tmdStationsWithAmphurePercentage": 98.22,
+  "tmdStationsWithoutAmphure": "23",
+  "tmdStationsWithoutAmphurePercentage": 1.78,
+  "sampleStationsWithoutNames": []
+}

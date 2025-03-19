@@ -2,12 +2,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ProcessedPost } from "@/types/processed-post";
 import { Complaint } from "@/types/complaint";
-import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 
+// Extended interface to include additional properties used in this component
+interface ExtendedComplaint extends Complaint {
+  location?: string;
+  amphure?: string | string[];
+  tumbon?: string | string[];
+}
+
 interface LocationInfoProps {
-  complaint: ProcessedPost | Complaint | null;
+  complaint: ProcessedPost | ExtendedComplaint | null;
 }
 
 const isProcessedPost = (data: any): data is ProcessedPost => {
@@ -19,15 +26,15 @@ const getArrayValue = (arr: string[] | undefined | null): string => {
   return String(arr[0]).trim();
 };
 
-const getLocation = (complaint: ProcessedPost | Complaint | null): string => {
+const getLocation = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isProcessedPost(complaint)) {
     return complaint.text || '';
   }
-  return complaint.location || '';
+  return complaint.location || complaint.content || '';
 };
 
-const getProvince = (complaint: ProcessedPost | Complaint | null): string => {
+const getProvince = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isProcessedPost(complaint)) {
     return getArrayValue(complaint.province as string[]);
@@ -36,7 +43,7 @@ const getProvince = (complaint: ProcessedPost | Complaint | null): string => {
   return Array.isArray(provinceValue) ? getArrayValue(provinceValue) : (provinceValue || '');
 };
 
-const getDistrict = (complaint: ProcessedPost | Complaint | null): string => {
+const getDistrict = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isProcessedPost(complaint)) {
     return getArrayValue(complaint.amphure as string[]);
@@ -45,7 +52,7 @@ const getDistrict = (complaint: ProcessedPost | Complaint | null): string => {
   return Array.isArray(amphureValue) ? getArrayValue(amphureValue) : (amphureValue || '');
 };
 
-const getSubDistrict = (complaint: ProcessedPost | Complaint | null): string => {
+const getSubDistrict = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isProcessedPost(complaint)) {
     return getArrayValue(complaint.tumbon as string[]);

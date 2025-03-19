@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState, useCallback, FC } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertCircle, MapPin, Image as ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { useComplaintData } from "@/atoms/hooks";
-import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { ProcessedPost, Complaint, ComplaintWithOrganization } from '@/types/complaint';
 import { useAtomValue } from 'jotai';
 import { processedPostsAtom } from '@/atoms/complaintData';
-import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ComplaintInfoCardProps {
@@ -96,7 +96,7 @@ const getIssue = (complaint: ComplaintType): string => {
   return '';
 };
 
-export const ComplaintInfoCard: React.FC<ComplaintInfoCardProps> = ({
+export const ComplaintInfoCard: FC<ComplaintInfoCardProps> = ({
   title = "ข้อร้องเรียน",
   className = "",
   editable = false,
@@ -140,15 +140,34 @@ export const ComplaintInfoCard: React.FC<ComplaintInfoCardProps> = ({
       })
     : null;
   
-  // Use Jotai data exclusively
-  const complaintData: ComplaintType = selectedPost || null;
+  // Use Jotai data exclusively - fallback to form data if no post is selected
+  const complaintData: ComplaintType = selectedPost || {
+    processed_post_id: 0,
+    text: description || 'ไม่มีข้อมูล', // Required for LegacyProcessedPost
+    category_name: 'ข้อร้องเรียนทั่วไป',
+    sub1_category_name: 'ปัญหาน้ำท่วม',
+    profile_name: 'ผู้ใช้งานทั่วไป',
+    post_date: new Date().toISOString(),
+    post_url: '#',
+    latitude: coordinates.lat || 18.7883,
+    longitude: coordinates.lng || 98.9853,
+    tumbon: [],
+    amphure: location.split(',').map(part => part.trim()).filter(Boolean),
+    province: ['เชียงใหม่'],
+    created_at: new Date().toISOString(),
+    status: 'new',
+    coordinate_source: 'manual'
+  } as LegacyProcessedPost;
   
   console.log('ComplaintInfoCard data:', { 
     selectedPost, 
     storeTitle, 
     description, 
     location, 
-    coordinates
+    coordinates,
+    selectedPostIds,
+    processedPosts: processedPosts.length,
+    complaintData
   });
 
   const handleInputChange = useCallback((field: string, value: string) => {
@@ -234,7 +253,8 @@ export const ComplaintInfoCard: React.FC<ComplaintInfoCardProps> = ({
       // Handle the case where amphure might be an array
       const amphureValue = complaintData.amphure;
       if (Array.isArray(amphureValue)) {
-        return amphureValue.join(', ');
+        // Return only the first element (the actual amphure name)
+        return amphureValue[0] || '';
       }
       return amphureValue || '';
     }

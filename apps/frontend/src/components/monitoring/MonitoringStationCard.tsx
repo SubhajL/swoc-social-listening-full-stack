@@ -7,36 +7,73 @@ import { Info, AlertCircle, Plus, Trash2, UserCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import React, { useMemo } from "react";
+
+// Extended MonitoringStation interface with additional properties
+interface ExtendedMonitoringStation {
+  id: string;
+  station_id?: string;
+  station_name?: string;
+  name?: string;
+  water_level?: number;
+  flow_rate?: number;
+  telemetry_data?: {
+    water_level: number;
+    flow_rate: number;
+    timestamp: string;
+    notation?: string;
+  };
+  source?: 'system' | 'user';
+  status?: string;
+  location?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+}
 
 interface MonitoringStationCardProps {
-  station: MonitoringStation;
+  station: ExtendedMonitoringStation;
   isLoading?: boolean;
   error?: Error | null;
   showButtons?: boolean;
   disabled?: boolean;
   isUserSelected?: boolean;
+  useCompactLayout?: boolean;
+  hideUnitLabels?: boolean;
   onAddData?: () => void;
   onDeleteData?: () => void;
   onToggleDisabled?: () => void;
 }
 
-export const MonitoringStationCard = ({ 
+const MonitoringStationCardComponent = ({ 
   station, 
   isLoading = false,
   error = null,
   showButtons = false,
   disabled = false,
   isUserSelected = false,
+  useCompactLayout = false,
+  hideUnitLabels = false,
   onAddData,
   onDeleteData,
   onToggleDisabled
 }: MonitoringStationCardProps) => {
-  // Use fallback values if telemetry_data is missing
-  const waterLevel = station.telemetry_data?.water_level ?? station.water_level ?? 0;
-  const flowRate = station.telemetry_data?.flow_rate ?? station.flow_rate ?? 0;
-  const hasRealTimeData = !!station.telemetry_data;
+  // Common content box styles
+  const contentBoxStyle = useMemo(() => `w-full border border-[#E2E8F0] rounded-xl p-2 bg-white text-[#17254D] text-sm font-normal ${disabled ? 'opacity-60' : ''}`, [disabled]);
+  const contentTextStyle = "px-1.5"; // Reduced horizontal padding for more space
+  const labelStyle = useMemo(() => `text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10 ${disabled ? 'opacity-60' : ''}`, [disabled]);
 
-  // Debug logging
+  // Use fallback values if telemetry_data is missing
+  const { waterLevel, flowRate, hasRealTimeData } = useMemo(() => {
+    const waterLevel = station.telemetry_data?.water_level ?? station.water_level ?? 0;
+    const flowRate = station.telemetry_data?.flow_rate ?? station.flow_rate ?? 0;
+    const hasRealTimeData = !!station.telemetry_data;
+    return { waterLevel, flowRate, hasRealTimeData };
+  }, [station.telemetry_data, station.water_level, station.flow_rate]);
+
+  // Debug logging - commented out to reduce console noise
+  /* 
   console.log('MonitoringStationCard Debug:', {
     id: station.id,
     idType: typeof station.id,
@@ -49,13 +86,11 @@ export const MonitoringStationCard = ({
     waterLevel,
     flowRate,
     disabled,
-    isUserSelected
+    isUserSelected,
+    useCompactLayout,
+    hideUnitLabels
   });
-
-  // Common content box styles (matching WaterLevelInfo)
-  const contentBoxStyle = `w-full border border-[#E2E8F0] rounded-xl p-3 bg-white text-[#17254D] text-sm font-normal ${disabled ? 'opacity-60' : ''}`;
-  const contentTextStyle = "px-3"; // Consistent horizontal padding for balanced layout
-  const labelStyle = `text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10 ${disabled ? 'opacity-60' : ''}`;
+  */
 
   const renderTelemetryInfo = (type: 'water_level' | 'flow_rate') => {
     if (!station.telemetry_data) return null;
@@ -154,12 +189,12 @@ export const MonitoringStationCard = ({
   }
 
   return (
-    <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-3">
+    <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-1.5">
       <Label className={labelStyle}>
-        {isUserSelected && (
+        {(isUserSelected || station.source === 'user') && (
           <UserCircle className="inline-block h-5 w-5 mr-1 text-blue-500" />
         )}
-        {station.station_name}
+        {station.station_name || station.name || "สถานีตรวจวัด"}
         {station.station_id && (
           <span className="text-sm text-gray-500 ml-2">
             (ID: {station.station_id})
@@ -174,7 +209,10 @@ export const MonitoringStationCard = ({
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <div className="text-[#17254D] text-sm font-normal mb-2">ระดับน้ำ</div>
+                    <div className="text-[#17254D] text-sm font-normal mb-1">ระดับน้ำ</div>
+                    {!useCompactLayout && (
+                      <div className="text-[#64748B] text-xs font-normal mb-2">หน่วย: ม.รทก.</div>
+                    )}
                     <div className="flex items-center whitespace-nowrap overflow-hidden">
                       <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">ปัจจุบัน</span>
                       <div className="flex items-center flex-shrink-0">
@@ -184,13 +222,18 @@ export const MonitoringStationCard = ({
                           disabled={disabled}
                           className="w-[70px] h-8 text-right"
                         />
-                        <span className="text-sm whitespace-nowrap ml-1">ม.รทก.</span>
+                        {!hideUnitLabels && (
+                          <span className="text-sm whitespace-nowrap ml-1">ม.รทก.</span>
+                        )}
                       </div>
                     </div>
                   </div>
                   
                   <div>
-                    <div className="text-[#17254D] text-sm font-normal mb-2">อัตราการไหล</div>
+                    <div className="text-[#17254D] text-sm font-normal mb-1">อัตราการไหล</div>
+                    {!useCompactLayout && (
+                      <div className="text-[#64748B] text-xs font-normal mb-2">หน่วย: ลบ.ม./วินาที</div>
+                    )}
                     <div className="flex items-center whitespace-nowrap overflow-hidden">
                       <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">ปัจจุบัน</span>
                       <div className="flex items-center flex-shrink-0">
@@ -200,7 +243,9 @@ export const MonitoringStationCard = ({
                           disabled={disabled}
                           className="w-[70px] h-8 text-right"
                         />
-                        <span className="text-sm whitespace-nowrap ml-1">ลบ.ม./วินาที</span>
+                        {!hideUnitLabels && (
+                          <span className="text-sm whitespace-nowrap ml-1">ลบ.ม./วินาที</span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -213,18 +258,67 @@ export const MonitoringStationCard = ({
             <div className="flex-shrink-0 flex space-x-2 ml-4">
               {disabled ? (
                 <Button
-                  className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-10 px-4 text-base flex items-center justify-center rounded-xl whitespace-nowrap"
-                  onClick={onToggleDisabled}
+                  className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-8 px-3 text-sm flex items-center justify-center rounded-xl whitespace-nowrap"
+                  onClick={() => {
+                    console.log('[MonitoringStationCard] Enable button clicked for station:', station.id);
+                    console.log('[MonitoringStationCard] Station source:', station.source);
+                    console.log('[MonitoringStationCard] Is disabled (from props):', disabled);
+                    console.log('[MonitoringStationCard] Is user selected (from props):', isUserSelected);
+                    
+                    if (onToggleDisabled) {
+                      console.log('[MonitoringStationCard] Calling onToggleDisabled');
+                      onToggleDisabled();
+                    } else {
+                      console.warn('[MonitoringStationCard] onToggleDisabled is not defined');
+                    }
+                  }}
                 >
-                  <Plus className="h-5 w-5 mr-2" />
+                  <Plus className="h-4 w-4 mr-1" />
                   เพิ่มข้อมูล
                 </Button>
               ) : (
                 <Button
-                  className="bg-[#EF5350] text-white hover:bg-[#E53935] h-10 px-4 text-base flex items-center justify-center rounded-xl whitespace-nowrap"
-                  onClick={isUserSelected ? onDeleteData : onToggleDisabled}
+                  className="bg-[#EF5350] text-white hover:bg-[#E53935] h-8 px-3 text-sm flex items-center justify-center rounded-xl whitespace-nowrap"
+                  onClick={() => {
+                    console.log('[MonitoringStationCard] Delete button clicked for station:', station.id);
+                    console.log('[MonitoringStationCard] Station source:', station.source);
+                    console.log('[MonitoringStationCard] Is disabled (from props):', disabled);
+                    console.log('[MonitoringStationCard] Is user selected (from props):', isUserSelected);
+                    
+                    // First check if this is explicitly marked as user-selected via props
+                    // This is the most reliable indicator
+                    if (isUserSelected) {
+                      console.log('[MonitoringStationCard] This is a user-selected station (from props), calling onDeleteData');
+                      if (onDeleteData) {
+                        console.log('[MonitoringStationCard] Calling onDeleteData');
+                        onDeleteData();
+                      } else {
+                        console.warn('[MonitoringStationCard] onDeleteData is not defined');
+                      }
+                    } 
+                    // Only fall back to source check if isUserSelected is false
+                    else if (station.source === 'user') {
+                      console.log('[MonitoringStationCard] This is a user-selected station (from source), calling onDeleteData');
+                      if (onDeleteData) {
+                        console.log('[MonitoringStationCard] Calling onDeleteData');
+                        onDeleteData();
+                      } else {
+                        console.warn('[MonitoringStationCard] onDeleteData is not defined');
+                      }
+                    }
+                    // If neither isUserSelected nor source indicates this is a user-selected station
+                    else {
+                      console.log('[MonitoringStationCard] This is a system station, calling onToggleDisabled');
+                      if (onToggleDisabled) {
+                        console.log('[MonitoringStationCard] Calling onToggleDisabled');
+                        onToggleDisabled();
+                      } else {
+                        console.warn('[MonitoringStationCard] onToggleDisabled is not defined');
+                      }
+                    }
+                  }}
                 >
-                  <Trash2 className="h-5 w-5 mr-2" />
+                  <Trash2 className="h-4 w-4 mr-1" />
                   ลบข้อมูล
                 </Button>
               )}
@@ -234,4 +328,7 @@ export const MonitoringStationCard = ({
       </div>
     </div>
   );
-}; 
+};
+
+// Properly define the memoized component with explicit type
+export const MonitoringStationCard: React.FC<MonitoringStationCardProps> = React.memo(MonitoringStationCardComponent); 

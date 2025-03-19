@@ -1,26 +1,35 @@
+import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ProcessedPost } from "@/types/processed-post";
 import { Complaint } from "@/types/complaint";
-import { ErrorBoundary } from "@/components/error-boundary/ErrorBoundary";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { logger } from "@/lib/logger";
 
+// Extended interface to include additional properties used in this component
+interface ExtendedComplaint extends Complaint {
+  issue?: string;
+  category?: string;
+  reporter?: string;
+  date?: string;
+}
+
 interface ComplaintInfoProps {
-  complaint: ProcessedPost | Complaint | null;
+  complaint: ProcessedPost | ExtendedComplaint | null;
 }
 
 const isProcessedPost = (data: any): data is ProcessedPost => {
   return data !== null && typeof data === 'object' && 'processed_post_id' in data;
 };
 
-const getIssue = (complaint: ProcessedPost | Complaint | null): string => {
+const getIssue = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
   if (!complaint) return '';
   if (isProcessedPost(complaint)) {
     return complaint.text || '';
   }
-  return complaint.issue || '';
+  return complaint.issue || complaint.content || '';
 };
 
 export const ComplaintInfo = ({ complaint }: ComplaintInfoProps) => {

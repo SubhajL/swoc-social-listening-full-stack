@@ -1,0 +1,73 @@
+[
+  {
+    "coordinates": {
+      "latitude": 6.1867,
+      "longitude": 101.738,
+      "name": "นราธิวาส (Narathiwat)"
+    },
+    "formatted_address": "บองอ อำเภอ ระแงะ นราธิวาส ประเทศไทย",
+    "administrative_areas": {
+      "province": "นราธิวาส",
+      "amphure": "อำเภอ ระแงะ",
+      "tambon": "บองอ"
+    },
+    "raw_components": [
+      {
+        "long_name": "บองอ",
+        "short_name": "บองอ",
+        "types": [
+          "administrative_area_level_3",
+          "political"
+        ]
+      },
+      {
+        "long_name": "อำเภอ ระแงะ",
+        "short_name": "อำเภอ ระแงะ",
+        "types": [
+          "administrative_area_level_2",
+          "political"
+        ]
+      },
+      {
+        "long_name": "นราธิวาส",
+        "short_name": "จ.นราธิวาส",
+        "types": [
+          "administrative_area_level_1",
+          "political"
+        ]
+      },
+      {
+        "long_name": "ประเทศไทย",
+        "short_name": "TH",
+        "types": [
+          "country",
+          "political"
+        ]
+      }
+    ],
+    "is_water": false,
+    "all_results": [
+      {
+        "formatted_address": "บองอ อำเภอ ระแงะ นราธิวาส ประเทศไทย",
+        "types": [
+          "administrative_area_level_3",
+          "political"
+        ]
+      },
+      {
+        "formatted_address": "อำเภอ ระแงะ นราธิวาส ประเทศไทย",
+        "types": [
+          "administrative_area_level_2",
+          "political"
+        ]
+      },
+      {
+        "formatted_address": "นราธิวาส ประเทศไทย",
+        "types": [
+          "administrative_area_level_1",
+          "political"
+        ]
+      }
+    ]
+  }
+]

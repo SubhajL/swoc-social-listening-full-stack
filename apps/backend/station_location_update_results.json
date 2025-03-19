@@ -1,0 +1,2188 @@
+{
+  "total": 47,
+  "processed": 45,
+  "updated": 17,
+  "skipped": 30,
+  "errors": 0,
+  "stations": [
+    {
+      "id": 785,
+      "name": "",
+      "latitude": 12.5758,
+      "longitude": 99.961,
+      "province": "ชลบุรี",
+      "amphure": "เมืองชลบุรี",
+      "tambon": null,
+      "data_source": "HII",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 12.5758,
+          "longitude": 99.961,
+          "name": ""
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 2183,
+      "name": "เกาะสีชัง",
+      "latitude": 13.136,
+      "longitude": 100.85,
+      "province": "จังหวัดชลบุรี",
+      "amphure": null,
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 13.136,
+          "longitude": 100.85,
+          "name": "เกาะสีชัง"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 2185,
+      "name": "ชุมพร",
+      "latitude": 10.4675,
+      "longitude": 99.2403,
+      "province": "สุราษฎร์ธานี",
+      "amphure": "เมืองสุราษฎร์ธานี",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 10.4675,
+          "longitude": 99.2403,
+          "name": "ชุมพร"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 2187,
+      "name": "คลองใหญ่",
+      "latitude": 11.9686,
+      "longitude": 102.821,
+      "province": "ประจวบคีรีขันธ์",
+      "amphure": "เมืองประจวบคีรีขันธ์",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 11.9686,
+          "longitude": 102.821,
+          "name": "คลองใหญ่"
+        },
+        "formatted_address": "Pak Khlang, Khum Pak Khlang, กัมพูชา",
+        "administrative_areas": {
+          "province": "Koh Kong Province",
+          "amphure": "Mondol Seima",
+          "tambon": "Pak Khlang"
+        },
+        "raw_components": [
+          {
+            "long_name": "Pak Khlang",
+            "short_name": "Pak Khlang",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Khum Pak Khlang",
+            "short_name": "Khum Pak Khlang",
+            "types": [
+              "locality",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Mondol Seima",
+            "short_name": "Mondol Seima",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Koh Kong Province",
+            "short_name": "Koh Kong Province",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "กัมพูชา",
+            "short_name": "KH",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "Pak Khlang, Khum Pak Khlang, กัมพูชา",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "Mondol Seima, กัมพูชา",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "จังหวัด เกาะกง กัมพูชา",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 2189,
+      "name": "หัวหิน",
+      "latitude": 12.5245,
+      "longitude": 99.7677,
+      "province": "ชลบุรี",
+      "amphure": "เมืองชลบุรี",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 12.5245,
+          "longitude": 99.7677,
+          "name": "หัวหิน"
+        },
+        "formatted_address": "หนองพลับ อำเภอหัวหิน ประจวบคีรีขันธ์ ประเทศไทย",
+        "administrative_areas": {
+          "province": "ประจวบคีรีขันธ์",
+          "amphure": "อำเภอหัวหิน",
+          "tambon": "หนองพลับ"
+        },
+        "raw_components": [
+          {
+            "long_name": "หนองพลับ",
+            "short_name": "หนองพลับ",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "long_name": "อำเภอหัวหิน",
+            "short_name": "อำเภอหัวหิน",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ประจวบคีรีขันธ์",
+            "short_name": "จ.ประจวบคีรีขันธ์",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ประเทศไทย",
+            "short_name": "TH",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "หนองพลับ อำเภอหัวหิน ประจวบคีรีขันธ์ ประเทศไทย",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "อำเภอหัวหิน ประจวบคีรีขันธ์ ประเทศไทย",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "ประจวบคีรีขันธ์ ประเทศไทย",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 2192,
+      "name": "ท่าวังผา",
+      "latitude": 19.1402,
+      "longitude": 100.738998,
+      "province": "น่าน",
+      "amphure": "ท่าวังผา",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 19.1402,
+          "longitude": 100.738998,
+          "name": "ท่าวังผา"
+        },
+        "formatted_address": "แสนทอง อำเภอ ท่าวังผา น่าน 55140 ประเทศไทย",
+        "administrative_areas": {
+          "province": "น่าน",
+          "amphure": "อำเภอ ท่าวังผา",
+          "tambon": "แสนทอง"
+        },
+        "raw_components": [
+          {
+            "long_name": "แสนทอง",
+            "short_name": "แสนทอง",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "long_name": "อำเภอ ท่าวังผา",
+            "short_name": "อ. ท่าวังผา",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "น่าน",
+            "short_name": "จ. น่าน",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ประเทศไทย",
+            "short_name": "TH",
+            "types": [
+              "country",
+              "political"
+            ]
+          },
+          {
+            "long_name": "55140",
+            "short_name": "55140",
+            "types": [
+              "postal_code"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "แสนทอง อำเภอ ท่าวังผา น่าน 55140 ประเทศไทย",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "อำเภอ ท่าวังผา น่าน ประเทศไทย",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "น่าน ประเทศไทย",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 2203,
+      "name": "สนามบินภูเก็ต",
+      "latitude": 8.0214,
+      "longitude": 98.4077,
+      "province": "ภูเก็ต",
+      "amphure": "ถลาง",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 8.0214,
+          "longitude": 98.4077,
+          "name": "สนามบินภูเก็ต"
+        },
+        "formatted_address": "ป่าคลอก อำเภอถลาง ภูเก็ต ประเทศไทย",
+        "administrative_areas": {
+          "province": "ภูเก็ต",
+          "amphure": "อำเภอถลาง",
+          "tambon": "ป่าคลอก"
+        },
+        "raw_components": [
+          {
+            "long_name": "ป่าคลอก",
+            "short_name": "ป่าคลอก",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "long_name": "อำเภอถลาง",
+            "short_name": "อ.ถลาง",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ภูเก็ต",
+            "short_name": "จ.ภูเก็ต",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ประเทศไทย",
+            "short_name": "TH",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "ป่าคลอก อำเภอถลาง ภูเก็ต ประเทศไทย",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "อำเภอถลาง ภูเก็ต 83110 ประเทศไทย",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "ภูเก็ต ประเทศไทย",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 2205,
+      "name": "สุรินทร์",
+      "latitude": 14.9707,
+      "longitude": 103.57,
+      "province": "สุรินทร์",
+      "amphure": "เขวาสินรินทร์",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 14.9707,
+          "longitude": 103.57,
+          "name": "สุรินทร์"
+        },
+        "formatted_address": "บ้านแร่ อำเภอ เขวาสินรินทร์ สุรินทร์ 32000 ประเทศไทย",
+        "administrative_areas": {
+          "province": "สุรินทร์",
+          "amphure": "อำเภอ เขวาสินรินทร์",
+          "tambon": "บ้านแร่"
+        },
+        "raw_components": [
+          {
+            "long_name": "บ้านแร่",
+            "short_name": "บ้านแร่",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "long_name": "อำเภอ เขวาสินรินทร์",
+            "short_name": "อ.เขวาสินรินทร์",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "สุรินทร์",
+            "short_name": "จ.สุรินทร์",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ประเทศไทย",
+            "short_name": "TH",
+            "types": [
+              "country",
+              "political"
+            ]
+          },
+          {
+            "long_name": "32000",
+            "short_name": "32000",
+            "types": [
+              "postal_code"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "บ้านแร่ อำเภอ เขวาสินรินทร์ สุรินทร์ 32000 ประเทศไทย",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "อำเภอ เขวาสินรินทร์ สุรินทร์ 32000 ประเทศไทย",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "สุรินทร์ ประเทศไทย",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 2212,
+      "name": "เกาะลันตา",
+      "latitude": 7.6322,
+      "longitude": 99.1293,
+      "province": "สงขลา",
+      "amphure": "เมืองสงขลา",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 7.6322,
+          "longitude": 99.1293,
+          "name": "เกาะลันตา"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 3658,
+      "name": "นครพนม สกษ.",
+      "latitude": 17.443056,
+      "longitude": 104.773611,
+      "province": "คำม่วน",
+      "amphure": "Thakhek",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 17.443056,
+          "longitude": 104.773611,
+          "name": "นครพนม สกษ."
+        },
+        "formatted_address": "Thakhek, ลาว",
+        "administrative_areas": {
+          "province": "Khammouane Province",
+          "amphure": "Thakhek",
+          "tambon": null
+        },
+        "raw_components": [
+          {
+            "long_name": "Thakhek",
+            "short_name": "Thakhek",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Khammouane Province",
+            "short_name": "Khammouane Province",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ลาว",
+            "short_name": "LA",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "Thakhek, ลาว",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "คำม่วน ลาว",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 3713,
+      "name": "นำร่อง",
+      "latitude": 13.393889,
+      "longitude": 100.599444,
+      "province": "จังหวัดสมุทรปราการ",
+      "amphure": null,
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 13.393889,
+          "longitude": 100.599444,
+          "name": "นำร่อง"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 3718,
+      "name": "อรัญประเทศ",
+      "latitude": 13.7,
+      "longitude": 102.583333,
+      "province": "บันเตียเมียนเจย",
+      "amphure": "Paoy Paet",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 13.7,
+          "longitude": 102.583333,
+          "name": "อรัญประเทศ"
+        },
+        "formatted_address": "ปอยเปต กัมพูชา",
+        "administrative_areas": {
+          "province": "จังหวัด บันเตียเมียนเจย",
+          "amphure": "Paoy Paet",
+          "tambon": "ปอยเปต"
+        },
+        "raw_components": [
+          {
+            "long_name": "ปอยเปต",
+            "short_name": "ปอยเปต",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ปอยเปต",
+            "short_name": "ปอยเปต",
+            "types": [
+              "locality",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Paoy Paet",
+            "short_name": "Paoy Paet",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "จังหวัด บันเตียเมียนเจย",
+            "short_name": "จังหวัด บันเตียเมียนเจย",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "กัมพูชา",
+            "short_name": "KH",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "ปอยเปต กัมพูชา",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "Paoy Paet, Krong Poi Pet, กัมพูชา",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "จังหวัด บันเตียเมียนเจย กัมพูชา",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 3719,
+      "name": "แหลมฉบัง",
+      "latitude": 13.076944,
+      "longitude": 100.875833,
+      "province": "จังหวัดชลบุรี",
+      "amphure": null,
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 13.076944,
+          "longitude": 100.875833,
+          "name": "แหลมฉบัง"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 3730,
+      "name": "ตราด",
+      "latitude": 11.766667,
+      "longitude": 102.883333,
+      "province": "ประจวบคีรีขันธ์",
+      "amphure": "เมืองประจวบคีรีขันธ์",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 11.766667,
+          "longitude": 102.883333,
+          "name": "ตราด"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 3734,
+      "name": "เกาะสมุย",
+      "latitude": 9.466667,
+      "longitude": 100.05,
+      "province": "นครศรีธรรมราช",
+      "amphure": "เมืองนครศรีธรรมราช",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 9.466667,
+          "longitude": 100.05,
+          "name": "เกาะสมุย"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 3746,
+      "name": "เกาะลันตา",
+      "latitude": 7.533333,
+      "longitude": 99.05,
+      "province": "สงขลา",
+      "amphure": "เมืองสงขลา",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 7.533333,
+          "longitude": 99.05,
+          "name": "เกาะลันตา"
+        },
+        "formatted_address": "เกาะลันตาใหญ่ อำเภอเกาะลันตา กระบี่ ประเทศไทย",
+        "administrative_areas": {
+          "province": "กระบี่",
+          "amphure": "อำเภอเกาะลันตา",
+          "tambon": "เกาะลันตาใหญ่"
+        },
+        "raw_components": [
+          {
+            "long_name": "เกาะลันตาใหญ่",
+            "short_name": "เกาะลันตาใหญ่",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "long_name": "อำเภอเกาะลันตา",
+            "short_name": "อำเภอเกาะลันตา",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "กระบี่",
+            "short_name": "จ.กระบี่",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ประเทศไทย",
+            "short_name": "TH",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "เกาะลันตาใหญ่ อำเภอเกาะลันตา กระบี่ ประเทศไทย",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 453636,
+      "name": "Khon Kaen Airport",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null,
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "missing_coordinates"
+    },
+    {
+      "id": 453684,
+      "name": "Khao Kho Agromet",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null,
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "missing_coordinates"
+    },
+    {
+      "id": 1116457,
+      "name": "Si Racha Fisheries Research Station",
+      "latitude": 13.185869,
+      "longitude": 100.916916,
+      "province": "จังหวัดชลบุรี",
+      "amphure": null,
+      "tambon": null,
+      "data_source": "HII",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 13.185869,
+          "longitude": 100.916916,
+          "name": "Si Racha Fisheries Research Station"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128054,
+      "name": "สำนักงานเกษตรจังหวัดระยอง",
+      "latitude": 12.633333,
+      "longitude": 101.283333,
+      "province": "ชลบุรี",
+      "amphure": "เมืองชลบุรี",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 12.633333,
+          "longitude": 101.283333,
+          "name": "สำนักงานเกษตรจังหวัดระยอง"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128064,
+      "name": "แหลมสิงห์",
+      "latitude": 12.433333,
+      "longitude": 102.066666,
+      "province": "ประจวบคีรีขันธ์",
+      "amphure": "เมืองประจวบคีรีขันธ์",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 12.433333,
+          "longitude": 102.066666,
+          "name": "แหลมสิงห์"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128068,
+      "name": "เกาะพงัน",
+      "latitude": 9.816667,
+      "longitude": 100,
+      "province": "สุราษฎร์ธานี",
+      "amphure": "เมืองสุราษฎร์ธานี",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 9.816667,
+          "longitude": 100,
+          "name": "เกาะพงัน"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128074,
+      "name": "สิชล",
+      "latitude": 8.983334,
+      "longitude": 99.916664,
+      "province": "นครศรีธรรมราช",
+      "amphure": "เมืองนครศรีธรรมราช",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 8.983334,
+          "longitude": 99.916664,
+          "name": "สิชล"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128155,
+      "name": "บ่อเกลือ",
+      "latitude": 19.833334,
+      "longitude": 101.159447,
+      "province": "ไซยะบูลี",
+      "amphure": "Ngeun",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 19.833334,
+          "longitude": 101.159447,
+          "name": "บ่อเกลือ"
+        },
+        "formatted_address": "Ngeun, ลาว",
+        "administrative_areas": {
+          "province": "Sainyabuli Province",
+          "amphure": "Ngeun",
+          "tambon": null
+        },
+        "raw_components": [
+          {
+            "long_name": "Ngeun",
+            "short_name": "Ngeun",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Sainyabuli Province",
+            "short_name": "Sainyabuli Province",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ลาว",
+            "short_name": "LA",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "Ngeun, ลาว",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "ไซยะบูลี ลาว",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 1128319,
+      "name": "ธาตุพนม",
+      "latitude": 16.966667,
+      "longitude": 104.75,
+      "province": "คำม่วน",
+      "amphure": "Nongbok",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 16.966667,
+          "longitude": 104.75,
+          "name": "ธาตุพนม"
+        },
+        "formatted_address": "Nongbok, ลาว",
+        "administrative_areas": {
+          "province": "Khammouane Province",
+          "amphure": "Nongbok",
+          "tambon": null
+        },
+        "raw_components": [
+          {
+            "long_name": "Nongbok",
+            "short_name": "Nongbok",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Khammouane Province",
+            "short_name": "Khammouane Province",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ลาว",
+            "short_name": "LA",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "Nongbok, ลาว",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "คำม่วน ลาว",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 1128411,
+      "name": "ตระการพืชผล",
+      "latitude": 15.05,
+      "longitude": 105.616669,
+      "province": "จังหวัดChampasak Province",
+      "amphure": "อำเภอPhonthong District",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 15.05,
+          "longitude": 105.616669,
+          "name": "ตระการพืชผล"
+        },
+        "formatted_address": "Phonthong, ลาว",
+        "administrative_areas": {
+          "province": "Champasak Province",
+          "amphure": "Phonthong",
+          "tambon": null
+        },
+        "raw_components": [
+          {
+            "long_name": "Phonthong",
+            "short_name": "Phonthong",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Champasak Province",
+            "short_name": "Champasak Province",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ลาว",
+            "short_name": "LA",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "Phonthong, ลาว",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "จำปาสัก ลาว",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 1128649,
+      "name": "บางปูใหม่ อ.เมือง",
+      "latitude": 13.5,
+      "longitude": 100.716667,
+      "province": "จังหวัดสมุทรปราการ",
+      "amphure": null,
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 13.5,
+          "longitude": 100.716667,
+          "name": "บางปูใหม่ อ.เมือง"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128683,
+      "name": "ดอนตูม",
+      "latitude": 3.933333,
+      "longitude": 100.083336,
+      "province": null,
+      "amphure": null,
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 3.933333,
+          "longitude": 100.083336,
+          "name": "ดอนตูม"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128728,
+      "name": "เขตลาดกระบัง",
+      "latitude": 13.7225,
+      "longitude": 10.707778,
+      "province": "จังหวัดZinder Region",
+      "amphure": "อำเภอGouré",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 13.7225,
+          "longitude": 10.707778,
+          "name": "เขตลาดกระบัง"
+        },
+        "formatted_address": "Goure, ไนเจอร์",
+        "administrative_areas": {
+          "province": "Zinder Region",
+          "amphure": "Goure",
+          "tambon": null
+        },
+        "raw_components": [
+          {
+            "long_name": "Goure",
+            "short_name": "Goure",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Zinder Region",
+            "short_name": "Zinder Region",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ไนเจอร์",
+            "short_name": "NE",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "Goure, ไนเจอร์",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "ซินเดอร์ ไนเจอร์",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 1128781,
+      "name": "ตาพระยา",
+      "latitude": 13.966666,
+      "longitude": 102.833336,
+      "province": "บันเตียเมียนเจย",
+      "amphure": "Thma Puok",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 13.966666,
+          "longitude": 102.833336,
+          "name": "ตาพระยา"
+        },
+        "formatted_address": "Kouk Romiet, กัมพูชา",
+        "administrative_areas": {
+          "province": "Banteay Meanchey Province",
+          "amphure": "Thma Puok",
+          "tambon": "Kouk Romiet"
+        },
+        "raw_components": [
+          {
+            "long_name": "Kouk Romiet",
+            "short_name": "Kouk Romiet",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Thma Puok",
+            "short_name": "Thma Puok",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Banteay Meanchey Province",
+            "short_name": "Banteay Meanchey Province",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "กัมพูชา",
+            "short_name": "KH",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "Kouk Romiet, กัมพูชา",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "Thma Puok, กัมพูชา",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "จังหวัด บันเตียเมียนเจย กัมพูชา",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 1128796,
+      "name": "แหลมงอบ",
+      "latitude": 12.166667,
+      "longitude": 102.400002,
+      "province": "ประจวบคีรีขันธ์",
+      "amphure": "เมืองประจวบคีรีขันธ์",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 12.166667,
+          "longitude": 102.400002,
+          "name": "แหลมงอบ"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128798,
+      "name": "สนง.เกษตร อ.ชะอำ",
+      "latitude": 12.75,
+      "longitude": 99.98333,
+      "province": "ชลบุรี",
+      "amphure": "เมืองชลบุรี",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 12.75,
+          "longitude": 99.98333,
+          "name": "สนง.เกษตร อ.ชะอำ"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128810,
+      "name": "บางสะพาน",
+      "latitude": 11.183333,
+      "longitude": 99.550003,
+      "province": "ชุมพร",
+      "amphure": "เมืองชุมพร",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 11.183333,
+          "longitude": 99.550003,
+          "name": "บางสะพาน"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128811,
+      "name": "กุยบุรี",
+      "latitude": 12.016666,
+      "longitude": 99.900002,
+      "province": "ประจวบคีรีขันธ์",
+      "amphure": "เมืองประจวบคีรีขันธ์",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 12.016666,
+          "longitude": 99.900002,
+          "name": "กุยบุรี"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128812,
+      "name": "ทับสะแก",
+      "latitude": 11.466666,
+      "longitude": 99.650002,
+      "province": "ชุมพร",
+      "amphure": "เมืองชุมพร",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 11.466666,
+          "longitude": 99.650002,
+          "name": "ทับสะแก"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128813,
+      "name": "อุทยานแห่งชาติหาดวนกร อ.ทับสะแก",
+      "latitude": 11.6,
+      "longitude": 99.683334,
+      "province": "ประจวบคีรีขันธ์",
+      "amphure": "เมืองประจวบคีรีขันธ์",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 11.6,
+          "longitude": 99.683334,
+          "name": "อุทยานแห่งชาติหาดวนกร อ.ทับสะแก"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128835,
+      "name": "เกาะสมุย",
+      "latitude": 9.533334,
+      "longitude": 99.849998,
+      "province": "สุราษฎร์ธานี",
+      "amphure": "เมืองสุราษฎร์ธานี",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 9.533334,
+          "longitude": 99.849998,
+          "name": "เกาะสมุย"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128845,
+      "name": "ขนอม",
+      "latitude": 9.183333,
+      "longitude": 99.883331,
+      "province": "นครศรีธรรมราช",
+      "amphure": "เมืองนครศรีธรรมราช",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 9.183333,
+          "longitude": 99.883331,
+          "name": "ขนอม"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128880,
+      "name": "เกาะยาว",
+      "latitude": 8.1,
+      "longitude": 98.599998,
+      "province": "จังหวัดพังงา",
+      "amphure": null,
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 8.1,
+          "longitude": 98.599998,
+          "name": "เกาะยาว"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128882,
+      "name": "สถานีทดลองยางวังทัง อ.ท้ายเหมือง",
+      "latitude": 8.2,
+      "longitude": 98.300003,
+      "province": "จังหวัดภูเก็ต",
+      "amphure": "อำเภอเมืองภูเก็ต",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 8.2,
+          "longitude": 98.300003,
+          "name": "สถานีทดลองยางวังทัง อ.ท้ายเหมือง"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128887,
+      "name": "เกาะลันตา",
+      "latitude": 7.5,
+      "longitude": 99.116669,
+      "province": "สงขลา",
+      "amphure": "เมืองสงขลา",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 7.5,
+          "longitude": 99.116669,
+          "name": "เกาะลันตา"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128918,
+      "name": "อ.บางกล่ำ",
+      "latitude": 7.086111,
+      "longitude": 101.42028,
+      "province": "สงขลา",
+      "amphure": "เมืองสงขลา",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 7.086111,
+          "longitude": 101.42028,
+          "name": "อ.บางกล่ำ"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128940,
+      "name": "รามัน",
+      "latitude": 6.466667,
+      "longitude": 101.833336,
+      "province": "สงขลา",
+      "amphure": "เมืองสงขลา",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "skipped",
+      "reason": "geocoding_failed",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 6.466667,
+          "longitude": 101.833336,
+          "name": "รามัน"
+        },
+        "formatted_address": null,
+        "administrative_areas": {
+          "province": null,
+          "amphure": null,
+          "tambon": null
+        },
+        "raw_components": [],
+        "error": "ZERO_RESULTS",
+        "error_message": "No results found"
+      }
+    },
+    {
+      "id": 1128951,
+      "name": "สุไหงโก-ลก",
+      "latitude": 6.016667,
+      "longitude": 101.98333,
+      "province": "สงขลา",
+      "amphure": "เมืองสงขลา",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 6.016667,
+          "longitude": 101.98333,
+          "name": "สุไหงโก-ลก"
+        },
+        "formatted_address": "Pasir Mas, Kelantan, มาเลเซีย",
+        "administrative_areas": {
+          "province": "Kelantan",
+          "amphure": null,
+          "tambon": "Pasir Mas"
+        },
+        "raw_components": [
+          {
+            "long_name": "Pasir Mas",
+            "short_name": "Pasir Mas",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Kelantan",
+            "short_name": "Kelantan",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "มาเลเซีย",
+            "short_name": "MY",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "Pasir Mas, Kelantan, มาเลเซีย",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "กลันตัน มาเลเซีย",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 1128954,
+      "name": "แว้ง",
+      "latitude": 5.916667,
+      "longitude": 101.949997,
+      "province": "กลันตัน",
+      "amphure": "",
+      "tambon": null,
+      "data_source": "TMD",
+      "update_reason": "missing_location",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 5.916667,
+          "longitude": 101.949997,
+          "name": "แว้ง"
+        },
+        "formatted_address": "Pasir Mas, Kelantan, มาเลเซีย",
+        "administrative_areas": {
+          "province": "Kelantan",
+          "amphure": null,
+          "tambon": "Pasir Mas"
+        },
+        "raw_components": [
+          {
+            "long_name": "Pasir Mas",
+            "short_name": "Pasir Mas",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Kelantan",
+            "short_name": "Kelantan",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "มาเลเซีย",
+            "short_name": "MY",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "Pasir Mas, Kelantan, มาเลเซีย",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "กลันตัน มาเลเซีย",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 2233,
+      "name": "นราธิวาส",
+      "latitude": 6.1867,
+      "longitude": 101.738,
+      "province": "สงขลา",
+      "amphure": "เมืองสงขลา",
+      "tambon": "ตำบลบองอ",
+      "data_source": "TMD",
+      "update_reason": "incorrect_location",
+      "expected_province": "นราธิวาส",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 6.1867,
+          "longitude": 101.738,
+          "name": "นราธิวาส"
+        },
+        "formatted_address": "บองอ อำเภอ ระแงะ นราธิวาส ประเทศไทย",
+        "administrative_areas": {
+          "province": "นราธิวาส",
+          "amphure": "อำเภอ ระแงะ",
+          "tambon": "บองอ"
+        },
+        "raw_components": [
+          {
+            "long_name": "บองอ",
+            "short_name": "บองอ",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "long_name": "อำเภอ ระแงะ",
+            "short_name": "อำเภอ ระแงะ",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "นราธิวาส",
+            "short_name": "จ.นราธิวาส",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ประเทศไทย",
+            "short_name": "TH",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "บองอ อำเภอ ระแงะ นราธิวาส ประเทศไทย",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "อำเภอ ระแงะ นราธิวาส ประเทศไทย",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "นราธิวาส ประเทศไทย",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 2236,
+      "name": "เกาะสมุย",
+      "latitude": 9.4668,
+      "longitude": 100.045,
+      "province": "นครศรีธรรมราช",
+      "amphure": "เมืองนครศรีธรรมราช",
+      "tambon": "ตำบลมะเร็ต",
+      "data_source": "TMD",
+      "update_reason": "incorrect_location",
+      "expected_province": "สุราษฎร์ธานี",
+      "status": "updated",
+      "reason": "success",
+      "geocode_result": {
+        "coordinates": {
+          "latitude": 9.4668,
+          "longitude": 100.045,
+          "name": "เกาะสมุย"
+        },
+        "formatted_address": "มะเร็ต อำเภอเกาะสมุย สุราษฎร์ธานี ประเทศไทย",
+        "administrative_areas": {
+          "province": "สุราษฎร์ธานี",
+          "amphure": "อำเภอเกาะสมุย",
+          "tambon": "มะเร็ต"
+        },
+        "raw_components": [
+          {
+            "long_name": "มะเร็ต",
+            "short_name": "มะเร็ต",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "long_name": "อำเภอเกาะสมุย",
+            "short_name": "อำเภอเกาะสมุย",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "สุราษฎร์ธานี",
+            "short_name": "จ.สุราษฎร์ธานี",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "ประเทศไทย",
+            "short_name": "TH",
+            "types": [
+              "country",
+              "political"
+            ]
+          }
+        ],
+        "is_water": false,
+        "all_results": [
+          {
+            "formatted_address": "มะเร็ต อำเภอเกาะสมุย สุราษฎร์ธานี ประเทศไทย",
+            "types": [
+              "administrative_area_level_3",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "อำเภอเกาะสมุย สุราษฎร์ธานี ประเทศไทย",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "formatted_address": "สุราษฎร์ธานี ประเทศไทย",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

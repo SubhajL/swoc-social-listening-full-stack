@@ -1,0 +1,18 @@
+[
+  {
+    "coordinates": {
+      "latitude": 9.4668,
+      "longitude": 100.045,
+      "name": "เกาะสมุย (Koh Samui)"
+    },
+    "formatted_address": null,
+    "administrative_areas": {
+      "province": null,
+      "amphure": null,
+      "tambon": null
+    },
+    "raw_components": [],
+    "error": "REQUEST_DENIED",
+    "error_message": "The provided API key is invalid. "
+  }
+]
