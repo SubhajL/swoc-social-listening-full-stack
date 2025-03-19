@@ -29,7 +29,38 @@
   - Rainfall data display
   - Station ID and code display in grey text
 
-### 2. Telemetry Station
+### 2. Reservoir Station
+- Components:
+  - ReservoirCard
+  - WaterLevelInfoCard (reservoir section)
+  Path: apps/frontend/src/components/monitoring/ReservoirCard.tsx
+  Path: apps/frontend/src/components/shared/WaterLevelInfoCard.tsx
+
+- API Endpoints:
+  - /api/reservoirs/data
+  - /api/reservoir-locations
+  - GET with amphure/province params
+  Path: apps/backend/src/api/reservoirs.ts
+  Path: apps/backend/src/api/reservoir-locations.ts
+
+- Database:
+  - Table: reservoir_data
+  - Table: reservoir_locations
+  - Queries: SELECT with location filters
+  Path: apps/backend/src/api/reservoirs.ts
+
+- Dependencies:
+  - Jotai for state management
+  - PostgreSQL for data
+  - Type-safe data handling
+
+- Critical Flows:
+  - Reservoir listing by location
+  - Water level and storage data display
+  - Proper handling of numeric values and unit display
+  - Error states with fallback UI
+
+### 3. Telemetry Station
 - Components:
   - MonitoringStationList
   - MonitoringStationCard (with working station ID display)
@@ -41,7 +72,7 @@
   - Water level and flow rate data
   - Consistent styling with rain station cards
 
-### 3. Authentication System
+### 4. Authentication System
 - Components:
   - Login.tsx (login page with email/password form)
   - ChangePassword.tsx (password change functionality)
@@ -68,6 +99,13 @@
   - Protected routes with authentication check
   - Loading state during authentication check
   - Automatic redirection to login for unauthenticated users
+
+## Latest Updates (2024-03-19)
+- Fixed Rain Station Cards and Reservoir Cards data display
+- Resolved issue with data_source column in reservoir queries
+- Implemented proper error handling for missing PostgreSQL data
+- Enhanced type safety for numeric values in Reservoir Cards
+- Fixed scheduler for data synchronization (rainfall and reservoir data)
 
 ## Latest Updates (2024-02-15)
 - Migrating from Zustand to Jotai for state management

@@ -11,6 +11,18 @@
     "data_source": "HII"
   },
   {
+    "station_id": 418,
+    "amphure": "แม่แตง",
+    "province": "เชียงใหม่",
+    "station_name": "Chiang Mai 5",
+    "name_th": "แม่แตง",
+    "lat": 19.122065,
+    "long": 98.944490,
+    "station_type": "A",
+    "agency_id": 9,
+    "data_source": "HII"
+  },
+  {
     "station_id": 356,
     "amphure": "",
     "province": "",

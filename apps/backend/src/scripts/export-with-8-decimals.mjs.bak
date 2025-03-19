@@ -1,0 +1,89 @@
+import pkg from 'pg';
+import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Load environment variables
+dotenv.config();
+
+// Get the directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Setup database connection
+const { Pool } = pkg;
+const pool = new Pool({
+  user: process.env.DB_USER || 'swoc-uat-gis-ssl-user',
+  password: process.env.DB_PASSWORD || '4c0b269f763d4ce1d1d59ba0e2ef1f9c',
+  host: process.env.DB_HOST || 'ec2-18-143-195-184.ap-southeast-1.compute.amazonaws.com',
+  port: parseInt(process.env.DB_PORT || '15435'),
+  database: process.env.DB_NAME || 'swoc-uat-gis-ssl',
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+async function exportWithPrecision() {
+  const client = await pool.connect();
+  
+  try {
+    // Get all reservoir data
+    const query = `
+      SELECT * FROM reservoir_locations ORDER BY reservoir_id;
+    `;
+    
+    const result = await client.query(query);
+    const reservoirs = result.rows;
+    
+    console.log(`Retrieved ${reservoirs.length} reservoir records from database`);
+    
+    // Export to JSON file with full precision
+    const outputPath = path.resolve(__dirname, '../../../../reservoir_locations_8decimals_final.json');
+    
+    // Ensure the coordinates are preserved as strings to maintain precision
+    const jsonData = JSON.stringify(reservoirs, (key, value) => {
+      // Make sure reservoir_lat and reservoir_long are treated as strings
+      if (key === 'reservoir_lat' || key === 'reservoir_long') {
+        return value.toString();
+      }
+      return value;
+    }, 2);
+    
+    fs.writeFileSync(outputPath, jsonData);
+    
+    console.log(`Exported data with full precision to: ${outputPath}`);
+    
+    // Show a sample of the data
+    console.log('\nSample of data (first 3 records):');
+    console.table(reservoirs.slice(0, 3).map(r => ({
+      formatted_id: r.formatted_id,
+      reservoir_name: r.reservoir_name,
+      reservoir_lat: r.reservoir_lat,
+      reservoir_long: r.reservoir_long,
+      province: r.province,
+      amphure: r.amphure,
+      tambon: r.tambon
+    })));
+    
+    // Verify precision of sample records
+    console.log('\nVerifying precision of sample records:');
+    reservoirs.slice(0, 3).forEach(r => {
+      console.log(`${r.formatted_id}: lat=${r.reservoir_lat} (length: ${r.reservoir_lat.length}), long=${r.reservoir_long} (length: ${r.reservoir_long.length})`);
+    });
+    
+  } catch (error) {
+    console.error(`Error exporting data: ${error.message}`);
+  } finally {
+    client.release();
+  }
+}
+
+// Run the function
+exportWithPrecision().then(() => {
+  console.log('Export completed successfully');
+  process.exit(0);
+}).catch(err => {
+  console.error('Error:', err);
+  process.exit(1);
+}); 

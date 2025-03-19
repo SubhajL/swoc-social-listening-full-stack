@@ -352,7 +352,7 @@ export async function getRainfallDataByLocation(
         s.province,
         s.amphure,
         s.tambon
-      FROM thaiwater_rainfall_data r
+      FROM thaiwater_rainfall_data_new r
       JOIN thaiwater_tele_stations s ON r.tele_station_id = s.tele_station_id
       WHERE 1=1
     `;
@@ -373,7 +373,7 @@ export async function getRainfallDataByLocation(
     query += `
       AND r.rainfall_datetime = (
         SELECT MAX(rainfall_datetime)
-        FROM thaiwater_rainfall_data
+        FROM thaiwater_rainfall_data_new
         WHERE tele_station_id = r.tele_station_id
       )
     `;

@@ -58,13 +58,14 @@ export async function getRainfallData(params: RainfallQueryParams, pool: Pool) {
         r.rainfall10m,
         r.rainfall1h,
         r.rainfall3h,
+        r.rainfall_today,
         r.rainfall_datetime,
         r.data_source,
         s.province,
         s.amphure,
         s.tambon
       FROM 
-        thaiwater_rainfall_data r
+        thaiwater_rainfall_data_new r
       JOIN 
         thaiwater_tele_stations s ON r.tele_station_id = s.tele_station_id
       WHERE 
@@ -310,7 +311,7 @@ export async function getRainfallStatistics(pool: Pool) {
       // Get total rainfall records by data source
       const rainfallQuery = `
         SELECT data_source, COUNT(*) as count
-        FROM thaiwater_rainfall_data
+        FROM thaiwater_rainfall_data_new
         GROUP BY data_source
       `;
       
@@ -319,7 +320,7 @@ export async function getRainfallStatistics(pool: Pool) {
       // Get latest rainfall date
       const latestDateQuery = `
         SELECT MAX(rainfall_datetime) as latest_date
-        FROM thaiwater_rainfall_data
+        FROM thaiwater_rainfall_data_new
       `;
       
       const latestDateResult = await client.query(latestDateQuery);
@@ -338,7 +339,7 @@ export async function getRainfallStatistics(pool: Pool) {
             MAX(rainfall24h) as max_rainfall,
             MIN(rainfall24h) as min_rainfall
           FROM 
-            thaiwater_rainfall_data
+            thaiwater_rainfall_data_new
           WHERE 
             DATE(rainfall_datetime) = DATE($1)
           GROUP BY 

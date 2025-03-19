@@ -19,6 +19,7 @@
     "@types/testing-library__jest-dom": "^5.14.9",
     "concurrently": "^8.2.2",
     "node-fetch": "^2.7.0",
+    "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "vitest": "^1.6.0"
   },
@@ -28,7 +29,7 @@
     "@types/pino": "^7.0.4",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
-    "axios": "^1.7.9",
+    "axios": "^1.8.3",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
@@ -39,6 +40,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sonner": "^1.5.0",
+    "xlsx": "^0.18.5",
     "zustand": "^5.0.3"
   }
 }

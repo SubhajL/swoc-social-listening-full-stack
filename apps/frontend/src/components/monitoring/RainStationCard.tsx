@@ -1,18 +1,22 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { RainStation } from "@/types/rain-station";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useThaiWaterData } from "@/hooks/useThaiWaterData";
 import { useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, UserCircle } from "lucide-react";
+import { Plus, Trash2, UserCircle, ClockIcon, RefreshCw } from "lucide-react";
 import { ThaiWaterRainfallData } from "@/types/api";
 import React from "react";
+import { cn } from "@/lib/utils";
+import { CardDescription } from "@/components/ui/card";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Add the rainfall property to the RainStation interface
 interface ExtendedRainStation {
   id: string;
   name?: string;
+  name_th?: string | null;
   location?: string;
   coordinates?: {
     lat: number;
@@ -44,6 +48,9 @@ interface ExtendedRainStation {
   rainfall_today?: number | null;
   rainfall_date_calc?: string | null;
   rainfall_datetime?: string | null;
+  // Add location properties
+  province?: string;
+  amphure?: string;
 }
 
 interface RainStationCardProps {
@@ -56,22 +63,10 @@ interface RainStationCardProps {
   onAddData?: () => void;
   onDeleteData?: () => void;
   onToggleDisabled?: () => void;
+  className?: string;
 }
 
-// Station ID mapping (our station_id -> ThaiWater tele_station_id)
-const STATION_ID_MAP: Record<string, number> = {
-  '7391': 1109570,  // สชป.1
-  '7013': 494,      // อุตุสนามบิน
-  '20': 1109570,    // Adding mapping for station 20
-  '22': 494,        // Adding mapping for station 22
-  // Add mappings for the missing station IDs
-  '7062': 1109570,  // Using a default mapping for now
-  '71560': 494,     // Using a default mapping for now
-  '7670': 1109570,  // Using a default mapping for now
-  '7520': 494       // Using a default mapping for now
-};
-
-const RainStationCardComponent = ({ 
+const RainStationCardComponent = ({
   station,
   showButtons = false,
   disabled = false,
@@ -80,9 +75,31 @@ const RainStationCardComponent = ({
   hideUnitLabels = false,
   onAddData,
   onDeleteData,
-  onToggleDisabled
+  onToggleDisabled,
+  className
 }: RainStationCardProps) => {
-  const { data: thaiWaterApiData, isLoading, error } = useThaiWaterData();
+  // Add queryClient to invalidate cache
+  const queryClient = useQueryClient();
+  
+  // Use the station's province and amphoe for the API query if available
+  const params = useMemo(() => {
+    return {
+      province: station.province,
+      amphoe: station.amphure || station.location,
+      data_source: 'ALL' as 'ALL' // Always use ALL to get all records for the station
+    };
+  }, [station.province, station.amphure, station.location]);
+
+  const { data: thaiWaterApiData, isLoading, error, refetch } = useThaiWaterData(params);
+
+  // Function to force refresh the data
+  const handleRefresh = () => {
+    console.log(`[RainStationCard] Forcing refresh for station ${station.station_id}`);
+    // Invalidate the cache for this specific query
+    queryClient.invalidateQueries({ queryKey: ["thaiwater", "rainfall", params] });
+    // Trigger a refetch
+    refetch();
+  };
 
   // Common content box styles
   const contentBoxStyle = useMemo(() => `w-full border border-[#E2E8F0] rounded-xl p-2 bg-white text-[#17254D] text-sm font-normal ${disabled ? 'opacity-60' : ''}`, [disabled]);
@@ -95,59 +112,103 @@ const RainStationCardComponent = ({
       id: station.id,
       stationId: station.station_id,
       stationName: station.station_name,
+      dataSource: station.data_source,
+      province: station.province,
+      amphure: station.amphure,
+      location: station.location,
       rainfall3d: station.rainfall_3d,
       rainfall7d: station.rainfall_7d,
-      isUserSelected,
-      hideUnitLabels
+      isUserSelected: isUserSelected,
+      hideUnitLabels: hideUnitLabels
     });
   }, [station, isUserSelected, hideUnitLabels]);
 
-  // Find ThaiWater station ID from mapping
-  const thaiWaterStationId = useMemo(() => {
-    if (!station.station_id) {
-      console.log('[RainStationCard] No station_id provided for station:', station.id);
-      return null;
-    }
-    
-    // Use the station ID map
-    const mappedId = STATION_ID_MAP[station.station_id];
-    
-    if (mappedId) {
-      return mappedId;
-    }
-    
-    console.log(`[RainStationCard] No ThaiWater mapping found for station ID: ${station.station_id}`);
-    // Return a default mapping instead of null to allow the card to render
-    return 1109570; // Default to a known station ID
-  }, [station.station_id, station.id]);
-
-  // Get ThaiWater data for this station
+  // Get ThaiWater data for this station directly using station_id
   const thaiWaterData = useMemo(() => {
-    if (!thaiWaterStationId) {
-      console.log('[RainStationCard] No ThaiWater station ID available');
+    if (!thaiWaterApiData?.data || !station.station_id) {
+      console.log(`[RainStationCard] No ThaiWater data available for station ${station.station_id}`);
       return null;
     }
     
-    if (!thaiWaterApiData || !thaiWaterApiData.success) {
-      console.log('[RainStationCard] ThaiWater API data not available');
-      return null;
-    }
+    // Log the full API response for debugging
+    console.log(`[RainStationCard] Full API response for station ${station.station_id}:`, thaiWaterApiData);
+    console.log(`[RainStationCard] Full API response data for station ${station.station_id}:`, JSON.stringify(thaiWaterApiData.data));
     
-    const data = thaiWaterApiData.data?.find((item: ThaiWaterRainfallData) => 
-      item.tele_station_id === thaiWaterStationId
+    // Convert station_id to number for comparison with API data
+    const stationId = Number(station.station_id);
+    console.log(`[RainStationCard] Looking for station ID ${stationId} (type: ${typeof stationId})`);
+    
+    // Log each record's tele_station_id for debugging
+    thaiWaterApiData.data.forEach((record: ThaiWaterRainfallData, index: number) => {
+      console.log(`[RainStationCard] Record ${index}: tele_station_id=${record.tele_station_id} (type: ${typeof record.tele_station_id}), rainfall_datetime=${record.rainfall_datetime}`);
+    });
+    
+    // Find all matching records for this station
+    const matchingRecords = thaiWaterApiData.data.filter(
+      (s: ThaiWaterRainfallData) => {
+        // Convert both to numbers to ensure consistent comparison
+        const recordStationId = typeof s.tele_station_id === 'string' ? Number(s.tele_station_id) : s.tele_station_id;
+        const matches = recordStationId === stationId;
+        console.log(`[RainStationCard] Comparing ${s.tele_station_id} (${typeof s.tele_station_id}) === ${stationId} (${typeof stationId}): ${matches}`);
+        return matches;
+      }
     );
     
-    if (!data) {
-      console.log(`[RainStationCard] No ThaiWater data found for station ID: ${thaiWaterStationId}`);
-    } else {
-      console.log('[RainStationCard] ThaiWater Data found:', {
-        thaiWaterStationId,
-        data
-      });
+    console.log(`[RainStationCard] Found ${matchingRecords.length} matching records for station ${station.station_id}:`, matchingRecords);
+    console.log(`[RainStationCard] Matching records for station ${station.station_id}:`, JSON.stringify(matchingRecords));
+    
+    if (matchingRecords.length === 0) {
+      console.log(`[RainStationCard] No data found in API response for station ${station.station_id}`);
+      console.log(`[RainStationCard] Available station IDs in response:`, 
+        thaiWaterApiData.data.map((s: ThaiWaterRainfallData) => s.tele_station_id));
+      return null;
     }
     
-    return data;
-  }, [thaiWaterStationId, thaiWaterApiData]);
+    // Sort by rainfall_datetime in descending order (latest first)
+    const sortedRecords = [...matchingRecords].sort((a, b) => {
+      const dateA = new Date(a.rainfall_datetime);
+      const dateB = new Date(b.rainfall_datetime);
+      return dateB.getTime() - dateA.getTime();
+    });
+    
+    console.log(`[RainStationCard] Sorted records for station ${station.station_id}:`, sortedRecords);
+    
+    // Use the latest record
+    const stationData = sortedRecords[0];
+    
+    console.log(`[RainStationCard] Using latest data for station ${station.station_id}:`, stationData);
+    console.log(`[RainStationCard] Timestamp for station ${station.station_id}:`, stationData.rainfall_datetime);
+    
+    return stationData;
+  }, [thaiWaterApiData, station.station_id]);
+
+  // Determine the data source for display
+  const displayDataSource = useMemo(() => {
+    // If data_source is explicitly set on the station, use it
+    if (station.data_source) {
+      return station.data_source;
+    }
+    
+    // If we have ThaiWater data with a data_source, use it
+    if (thaiWaterData?.data_source) {
+      return thaiWaterData.data_source;
+    }
+    
+    // Otherwise, try to infer from station_id
+    if (station.station_id) {
+      // HII stations typically have IDs in the range 400-499
+      if (/^4\d{2}$/.test(station.station_id)) {
+        return 'HII';
+      }
+      
+      // TMD stations typically have IDs starting with 11
+      if (/^11\d+$/.test(station.station_id)) {
+        return 'TMD';
+      }
+    }
+    
+    return 'Unknown';
+  }, [station.data_source, station.station_id, thaiWaterData?.data_source]);
 
   // Helper function to parse numeric values safely
   const parseNumericValue = (value: any): number => {
@@ -162,67 +223,124 @@ const RainStationCardComponent = ({
 
   // Get rainfall data from station or fallback to defaults
   const rainfallData = useMemo(() => {
-    // First try to use ThaiWater data if available
-    if (thaiWaterData) {
-      return {
-        rainfall24h: parseNumericValue(thaiWaterData.rainfall24h),
-        rainfallToday: parseNumericValue(thaiWaterData.rainfall_today),
-        rainfallTimestamp: thaiWaterData.rainfall_datetime || new Date().toISOString()
-      };
-    }
-    
-    // Check if this is a TMD station
-    if (station.data_source === 'TMD') {
-      return {
-        rainfall24h: parseNumericValue(station.rainfall24h),
-        rainfallToday: null, // No rainfall_today data for TMD stations
-        rainfallTimestamp: station.rainfall_datetime || new Date().toISOString()
-      };
-    }
-    
-    // Check if this is an HII station
-    if (station.data_source === 'HII') {
-      return {
-        rainfall24h: parseNumericValue(station.rainfall24h),
-        rainfallToday: parseNumericValue(station.rainfall_today),
-        rainfallTimestamp: station.rainfall_datetime || new Date().toISOString()
-      };
-    }
-    
-    // Then try to use station's own rainfall data if available
-    if (station.rainfall) {
-      return {
-        rainfall24h: parseNumericValue(station.rainfall.daily),
-        rainfallToday: parseNumericValue(station.rainfall.daily), // Use daily as fallback for today
-        rainfallTimestamp: station.rainfall.timestamp ?? new Date().toISOString()
-      };
-    }
-    
-    // Finally, use station's rainfall_3d and rainfall_7d as fallbacks
-    return {
-      rainfall24h: parseNumericValue(station.rainfall_3d),
-      rainfallToday: parseNumericValue(station.rainfall_3d), // Use 3d as fallback for today
-      rainfallTimestamp: new Date().toISOString()
+    let data = {
+      rainfall24h: null as number | null,
+      rainfallToday: null as number | null,
+      lastUpdated: null as string | null,
+      dataAvailable: false
     };
-  }, [thaiWaterData, station]);
+
+    console.log(`[RainStationCard] Calculating rainfall data for station ${station.station_id}`);
+    console.log(`[RainStationCard] Station object:`, station);
+    console.log(`[RainStationCard] ThaiWater data:`, thaiWaterData);
+
+    // Check if we have ThaiWater data for this station
+    if (thaiWaterData) {
+      data = {
+        rainfall24h: parseFloat(thaiWaterData.rainfall24h?.toString() || '0'),
+        rainfallToday: parseFloat(thaiWaterData.rainfall_today?.toString() || '0'),
+        lastUpdated: thaiWaterData.rainfall_datetime || null,
+        dataAvailable: true
+      };
+      
+      console.log(`[RainStationCard] Parsed rainfall data for station ${station.station_id}:`, data);
+      console.log(`[RainStationCard] Using timestamp from ThaiWater data:`, thaiWaterData.rainfall_datetime);
+    } else {
+      // If we have direct rainfall data on the station object, use that
+      if (station.rainfall24h !== undefined || station.rainfall_today !== undefined) {
+        data = {
+          rainfall24h: station.rainfall24h !== undefined ? parseNumericValue(station.rainfall24h) : null,
+          rainfallToday: station.rainfall_today !== undefined ? parseNumericValue(station.rainfall_today) : null,
+          lastUpdated: station.rainfall_datetime || null,
+          dataAvailable: true
+        };
+        
+        console.log(`[RainStationCard] Using direct rainfall data for station ${station.station_id}:`, data);
+        console.log(`[RainStationCard] Using timestamp from station object:`, station.rainfall_datetime);
+      } else {
+        console.log(`[RainStationCard] No rainfall data available for station ${station.station_id}`);
+      }
+    }
+
+    return data;
+  }, [station, thaiWaterData]);
 
   // Format timestamp for display
   const formattedTimestamp = useMemo(() => {
     try {
-      if (!rainfallData.rainfallTimestamp) return '';
-      const date = new Date(rainfallData.rainfallTimestamp);
-      return date.toLocaleString('th-TH', {
+      console.log(`[RainStationCard] Formatting timestamp for station ${station.station_id}:`, rainfallData.lastUpdated);
+      
+      if (!rainfallData.lastUpdated) {
+        console.log(`[RainStationCard] No timestamp available for station ${station.station_id}`);
+        return '';
+      }
+      
+      const date = new Date(rainfallData.lastUpdated);
+      console.log(`[RainStationCard] Parsed date for station ${station.station_id}:`, date);
+      
+      const formatted = date.toLocaleString('th-TH', {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
       });
+      
+      console.log(`[RainStationCard] Formatted timestamp for station ${station.station_id}:`, formatted);
+      return formatted;
     } catch (e) {
       console.error('Error formatting timestamp:', e);
       return '';
     }
-  }, [rainfallData.rainfallTimestamp]);
+  }, [rainfallData.lastUpdated]);
+
+  // Determine the display values for rainfall data
+  const displayValues = useMemo(() => {
+    // For TMD stations, always show '-' for rainfall_today
+    const isTMD = displayDataSource === 'TMD';
+    
+    // Check if we have actual data from the API
+    const hasApiData = !!thaiWaterData;
+    
+    // For rainfall24h:
+    // - If data is from API and value is 0, show "0.00"
+    // - If data is from API and value is not 0, show the value
+    // - If no data is from API, show "-"
+    const rainfall24hValue = hasApiData 
+      ? (rainfallData.rainfall24h === 0 ? "0.00" : (rainfallData.rainfall24h || 0).toFixed(2))
+      : "-";
+    
+    // For rainfallToday:
+    // - If it's a TMD station, always show "-"
+    // - If data is from API and value is 0, show "0.00"
+    // - If data is from API and value is not 0, show the value
+    // - If no data is from API, show "-"
+    const rainfallTodayValue = isTMD
+      ? "-"
+      : (hasApiData 
+          ? (rainfallData.rainfallToday === 0 ? "0.00" : (rainfallData.rainfallToday || 0).toFixed(2))
+          : "-");
+    
+    return {
+      rainfall24h: rainfall24hValue,
+      rainfallToday: rainfallTodayValue
+    };
+  }, [rainfallData, displayDataSource, thaiWaterData]);
+
+  // Determine if the station has data available from the API
+  const hasData = useMemo(() => {
+    return !!thaiWaterData;
+  }, [thaiWaterData]);
+
+  // Determine if we're still loading data
+  const isLoadingData = useMemo(() => {
+    return isLoading && !error;
+  }, [isLoading, error]);
+
+  // Determine if there was an error loading data
+  const hasError = useMemo(() => {
+    return !!error;
+  }, [error]);
 
   return (
     <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-1.5">
@@ -230,15 +348,34 @@ const RainStationCardComponent = ({
         {(isUserSelected || station.source === 'user') && (
           <UserCircle className="inline-block h-5 w-5 mr-1 text-blue-500" />
         )}
-        {station.station_name || "สถานีวัดน้ำฝน"}
+        {station.name_th || station.station_name || station.name || "สถานีวัดน้ำฝน"}
         {station.station_id && (
           <span className="text-sm text-gray-500 ml-2">
             (ID: {station.station_id})
           </span>
         )}
-        {station.data_source && (
-          <span className="text-xs text-gray-500 ml-2">
-            ({station.data_source})
+        <span className={`text-xs rounded-full px-2 py-0.5 ml-2 ${
+          displayDataSource === 'HII' 
+            ? 'bg-green-100 text-green-800' 
+            : displayDataSource === 'TMD' 
+              ? 'bg-blue-100 text-blue-800' 
+              : 'bg-gray-100 text-gray-800'
+        }`}>
+          {displayDataSource}
+        </span>
+        {!hasData && !isLoadingData && (
+          <span className="text-xs bg-yellow-100 text-yellow-800 rounded-full px-2 py-0.5 ml-2">
+            ไม่พบข้อมูล
+          </span>
+        )}
+        {isLoadingData && (
+          <span className="text-xs bg-blue-50 text-blue-600 rounded-full px-2 py-0.5 ml-2">
+            กำลังโหลด...
+          </span>
+        )}
+        {hasError && (
+          <span className="text-xs bg-red-100 text-red-800 rounded-full px-2 py-0.5 ml-2">
+            เกิดข้อผิดพลาด
           </span>
         )}
       </Label>
@@ -248,134 +385,117 @@ const RainStationCardComponent = ({
           <div className="flex-grow">
             <div className={contentTextStyle}>
               <div className="space-y-3">
-                <div className="flex items-center mb-2">
-                  <div className="text-[#17254D] text-sm font-normal">ปริมาณน้ำฝน</div>
-                  {!useCompactLayout && !hideUnitLabels && (
-                    <div className="text-[#64748B] text-xs font-normal ml-2">(หน่วย: มม.)</div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-[#17254D] text-sm font-normal mb-1">ปริมาณน้ำฝนวันนี้</div>
+                    {!useCompactLayout && !hideUnitLabels && (
+                      <div className="text-[#64748B] text-xs font-normal mb-2">หน่วย: มม.</div>
+                    )}
+                    <div className="flex items-center whitespace-nowrap overflow-hidden">
+                      <div className="flex items-center flex-shrink-0">
+                        <Input 
+                          className="w-[70px] h-8 text-right"
+                          value={isLoadingData ? "..." : displayValues.rainfallToday}
+                          readOnly
+                          disabled={disabled || isLoadingData}
+                        />
+                        <span className="text-sm whitespace-nowrap ml-1">มม.</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-[#17254D] text-sm font-normal mb-1">ปริมาณน้ำฝน 24 ชม.</div>
+                    {!useCompactLayout && !hideUnitLabels && (
+                      <div className="text-[#64748B] text-xs font-normal mb-2">หน่วย: มม.</div>
+                    )}
+                    <div className="flex items-center whitespace-nowrap overflow-hidden">
+                      <div className="flex items-center flex-shrink-0">
+                        <Input 
+                          className="w-[70px] h-8 text-right"
+                          value={isLoadingData ? "..." : displayValues.rainfall24h}
+                          readOnly
+                          disabled={disabled || isLoadingData}
+                        />
+                        <span className="text-sm whitespace-nowrap ml-1">มม.</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs text-[#64748B] mt-2">
+                  <div className="flex items-center gap-1">
+                    <ClockIcon className="h-3 w-3" />
+                    <span>
+                      {isLoadingData 
+                        ? "กำลังโหลดข้อมูล..." 
+                        : (rainfallData.dataAvailable && rainfallData.lastUpdated
+                            ? `อัพเดทล่าสุด: ${formattedTimestamp}`
+                            : "ไม่พบข้อมูลเวลา")}
+                    </span>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-5 w-5 ml-1 p-0" 
+                      onClick={handleRefresh}
+                      disabled={isLoading}
+                      title="รีเฟรชข้อมูล"
+                    >
+                      <RefreshCw className={`h-3 w-3 ${isLoading ? 'animate-spin' : ''}`} />
+                    </Button>
+                  </div>
+                  
+                  {showButtons && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => {
+                        console.log('[RainStationCard] Delete button clicked for station:', station.id);
+                        console.log('[RainStationCard] Station source:', station.source);
+                        console.log('[RainStationCard] Is disabled (from props):', disabled);
+                        console.log('[RainStationCard] Is user selected (from props):', isUserSelected);
+                        
+                        // First check if this is explicitly marked as user-selected via props
+                        // This is the most reliable indicator
+                        if (isUserSelected) {
+                          console.log('[RainStationCard] This is a user-selected station (from props), calling onDeleteData');
+                          if (onDeleteData) {
+                            console.log('[RainStationCard] Calling onDeleteData');
+                            onDeleteData();
+                          } else {
+                            console.warn('[RainStationCard] onDeleteData is not defined');
+                          }
+                        } 
+                        // Only fall back to source check if isUserSelected is false
+                        else if (station.source === 'user') {
+                          console.log('[RainStationCard] This is a user-selected station (from source), calling onDeleteData');
+                          if (onDeleteData) {
+                            console.log('[RainStationCard] Calling onDeleteData');
+                            onDeleteData();
+                          } else {
+                            console.warn('[RainStationCard] onDeleteData is not defined');
+                          }
+                        }
+                        // If neither isUserSelected nor source indicates this is a user-selected station
+                        else {
+                          console.log('[RainStationCard] This is a system station, calling onToggleDisabled');
+                          if (onToggleDisabled) {
+                            console.log('[RainStationCard] Calling onToggleDisabled');
+                            onToggleDisabled();
+                          } else {
+                            console.warn('[RainStationCard] onToggleDisabled is not defined');
+                          }
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   )}
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center whitespace-nowrap overflow-hidden">
-                    <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">24 ชั่วโมง</span>
-                    <div className="flex items-center flex-shrink-0">
-                      <Input 
-                        value={rainfallData.rainfall24h !== null ? rainfallData.rainfall24h.toFixed(2) : "0.00"} 
-                        readOnly 
-                        disabled={disabled}
-                        className="w-[70px] h-8 text-right"
-                      />
-                      <span className="text-sm whitespace-nowrap ml-1">มม.</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center whitespace-nowrap overflow-hidden">
-                    <span className="text-[#17254D] text-sm font-normal mr-2 flex-shrink-0">
-                      วันนี้
-                    </span>
-                    <div className="flex items-center flex-shrink-0">
-                      {station.data_source === 'TMD' ? (
-                        <div className="text-sm text-gray-500">ไม่มีข้อมูล</div>
-                      ) : (
-                        <>
-                          <Input 
-                            value={rainfallData.rainfallToday !== null ? rainfallData.rainfallToday.toFixed(2) : "0.00"} 
-                            readOnly 
-                            disabled={disabled}
-                            className="w-[70px] h-8 text-right"
-                          />
-                          <span className="text-sm whitespace-nowrap ml-1">มม.</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Add timestamp display */}
-                {formattedTimestamp && (
-                  <div className="text-xs text-gray-500 mt-2">
-                    อัพเดทล่าสุด: {formattedTimestamp}
-                  </div>
-                )}
-                
-                {/* Add note for TMD stations */}
-                {station.data_source === 'TMD' && (
-                  <div className="text-xs text-gray-500 mt-1">
-                    สถานี TMD ไม่มีข้อมูลปริมาณน้ำฝนวันนี้
-                  </div>
-                )}
               </div>
             </div>
           </div>
-          
-          {showButtons && (
-            <div className="flex-shrink-0 flex space-x-2 ml-4">
-              {disabled ? (
-                <Button
-                  className="bg-[#42A5F5] text-white hover:bg-[#1E88E5] h-8 px-3 text-sm flex items-center justify-center rounded-xl whitespace-nowrap"
-                  onClick={() => {
-                    console.log('[RainStationCard] Enable button clicked for station:', station.id);
-                    console.log('[RainStationCard] Station source:', station.source);
-                    console.log('[RainStationCard] Is disabled (from props):', disabled);
-                    console.log('[RainStationCard] Is user selected (from props):', isUserSelected);
-                    
-                    if (onToggleDisabled) {
-                      console.log('[RainStationCard] Calling onToggleDisabled');
-                      onToggleDisabled();
-                    } else {
-                      console.warn('[RainStationCard] onToggleDisabled is not defined');
-                    }
-                  }}
-                >
-                  <Plus className="h-4 w-4 mr-1" />
-                  เพิ่มข้อมูล
-                </Button>
-              ) : (
-                <Button
-                  className="bg-[#EF5350] text-white hover:bg-[#E53935] h-8 px-3 text-sm flex items-center justify-center rounded-xl whitespace-nowrap"
-                  onClick={() => {
-                    console.log('[RainStationCard] Delete button clicked for station:', station.id);
-                    console.log('[RainStationCard] Station source:', station.source);
-                    console.log('[RainStationCard] Is disabled (from props):', disabled);
-                    console.log('[RainStationCard] Is user selected (from props):', isUserSelected);
-                    
-                    // First check if this is explicitly marked as user-selected via props
-                    // This is the most reliable indicator
-                    if (isUserSelected) {
-                      console.log('[RainStationCard] This is a user-selected station (from props), calling onDeleteData');
-                      if (onDeleteData) {
-                        console.log('[RainStationCard] Calling onDeleteData');
-                        onDeleteData();
-                      } else {
-                        console.warn('[RainStationCard] onDeleteData is not defined');
-                      }
-                    } 
-                    // Only fall back to source check if isUserSelected is false
-                    else if (station.source === 'user') {
-                      console.log('[RainStationCard] This is a user-selected station (from source), calling onDeleteData');
-                      if (onDeleteData) {
-                        console.log('[RainStationCard] Calling onDeleteData');
-                        onDeleteData();
-                      } else {
-                        console.warn('[RainStationCard] onDeleteData is not defined');
-                      }
-                    }
-                    // If neither isUserSelected nor source indicates this is a user-selected station
-                    else {
-                      console.log('[RainStationCard] This is a system station, calling onToggleDisabled');
-                      if (onToggleDisabled) {
-                        console.log('[RainStationCard] Calling onToggleDisabled');
-                        onToggleDisabled();
-                      } else {
-                        console.warn('[RainStationCard] onToggleDisabled is not defined');
-                      }
-                    }
-                  }}
-                >
-                  <Trash2 className="h-4 w-4 mr-1" />
-                  ลบข้อมูล
-                </Button>
-              )}
-            </div>
-          )}
         </div>
       </div>
     </div>

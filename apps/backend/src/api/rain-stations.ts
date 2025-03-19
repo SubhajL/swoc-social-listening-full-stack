@@ -252,10 +252,11 @@ router.get('/', async (req, res) => {
                 SELECT 
                   rainfall3h,
                   rainfall24h,
+                  rainfall_today,
                   rainfall_datetime,
                   DATE_TRUNC('day', rainfall_datetime) as rainfall_date_calc
                 FROM 
-                  thaiwater_rainfall_data
+                  thaiwater_rainfall_data_new
                 WHERE 
                   tele_station_id = $1
                 ORDER BY 
@@ -269,17 +270,11 @@ router.get('/', async (req, res) => {
                   rainfall10m,
                   rainfall1h,
                   rainfall24h,
+                  rainfall_today,
                   rainfall_datetime,
-                  DATE_TRUNC('day', rainfall_datetime) as rainfall_date_calc,
-                  COALESCE(
-                    (SELECT SUM(rainfall1h)
-                     FROM thaiwater_rainfall_data
-                     WHERE tele_station_id = $1
-                     AND DATE_TRUNC('day', rainfall_datetime) = DATE_TRUNC('day', NOW())
-                    ), 0
-                  ) as rainfall_today
+                  DATE_TRUNC('day', rainfall_datetime) as rainfall_date_calc
                 FROM 
-                  thaiwater_rainfall_data
+                  thaiwater_rainfall_data_new
                 WHERE 
                   tele_station_id = $1
                 ORDER BY 
@@ -626,7 +621,7 @@ router.get('/:stationId/history', async (req, res) => {
           rainfall_datetime,
           DATE_TRUNC('day', rainfall_datetime) as rainfall_date_calc
         FROM 
-          thaiwater_rainfall_data
+          thaiwater_rainfall_data_new
         WHERE 
           tele_station_id = $1
           AND rainfall_datetime >= $2
@@ -645,12 +640,12 @@ router.get('/:stationId/history', async (req, res) => {
           DATE_TRUNC('day', rainfall_datetime) as rainfall_date_calc,
           (
             SELECT SUM(rainfall1h)
-            FROM thaiwater_rainfall_data
+            FROM thaiwater_rainfall_data_new
             WHERE tele_station_id = $1
             AND DATE_TRUNC('day', rainfall_datetime) = DATE_TRUNC('day', r.rainfall_datetime)
           ) as rainfall_today
         FROM 
-          thaiwater_rainfall_data r
+          thaiwater_rainfall_data_new r
         WHERE 
           tele_station_id = $1
           AND rainfall_datetime >= $2

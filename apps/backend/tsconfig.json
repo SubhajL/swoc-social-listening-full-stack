@@ -12,7 +12,8 @@
     "rootDir": "./src",
     "allowJs": true,
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "types": ["node", "express", "morgan"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

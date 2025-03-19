@@ -316,58 +316,53 @@ async function syncTMDData(pool) {
             continue;
           }
           
-          // Check if a record already exists for this station and datetime
-          const checkQuery = `
-            SELECT id FROM thaiwater_rainfall_data 
-            WHERE tele_station_id = $1 AND rainfall_datetime = $2
-          `;
+          // Check if data for this timestamp already exists
+          const existingData = await client.query(
+            'SELECT id FROM thaiwater_rainfall_data_new WHERE tele_station_id = $1 AND rainfall_datetime = $2',
+            [rainfall.tele_station_id, rainfall.rainfall_datetime]
+          );
           
-          const checkResult = await client.query(checkQuery, [
-            rainfall.tele_station_id,
-            rainfall.rainfall_datetime
-          ]);
-          
-          if (checkResult.rows.length > 0) {
-            // Update existing record
-            const updateQuery = `
-              UPDATE thaiwater_rainfall_data SET
-                rainfall24h = $1,
-                rainfall3h = $2,
-                data_source = $3,
-                updated_at = NOW()
-              WHERE tele_station_id = $4 AND rainfall_datetime = $5
-            `;
-            
-            await client.query(updateQuery, [
-              rainfall.rainfall24h,
-              rainfall.rainfall3h,
-              'TMD',
+          if (existingData.rows.length === 0) {
+            // Insert new data
+            await client.query(`
+              INSERT INTO thaiwater_rainfall_data_new (
+                tele_station_id,
+                rainfall3h,
+                rainfall24h,
+                rainfall_today,
+                rainfall_datetime,
+                data_source,
+                created_at,
+                updated_at
+              ) VALUES ($1, $2, $3, $4, $5, 'TMD', NOW(), NOW())
+            `, [
               rainfall.tele_station_id,
+              rainfall.rainfall3h,
+              rainfall.rainfall24h,
+              0, // Set rainfall_today to 0 for TMD stations
+              rainfall.rainfall_datetime
+            ]);
+            
+            rainfallInserted++;
+          } else {
+            // Update existing data
+            await client.query(`
+              UPDATE thaiwater_rainfall_data_new SET
+                rainfall3h = $2,
+                rainfall24h = $3,
+                rainfall_today = $4,
+                data_source = 'TMD',
+                updated_at = NOW()
+              WHERE tele_station_id = $1 AND rainfall_datetime = $5
+            `, [
+              rainfall.tele_station_id,
+              rainfall.rainfall3h,
+              rainfall.rainfall24h,
+              0, // Set rainfall_today to 0 for TMD stations
               rainfall.rainfall_datetime
             ]);
             
             rainfallUpdated++;
-          } else {
-            // Insert new record
-            const insertQuery = `
-              INSERT INTO thaiwater_rainfall_data (
-                tele_station_id,
-                rainfall24h,
-                rainfall3h,
-                rainfall_datetime,
-                data_source
-              ) VALUES ($1, $2, $3, $4, $5)
-            `;
-            
-            await client.query(insertQuery, [
-              rainfall.tele_station_id,
-              rainfall.rainfall24h,
-              rainfall.rainfall3h,
-              rainfall.rainfall_datetime,
-              'TMD'
-            ]);
-            
-            rainfallInserted++;
           }
           
           rainfallProcessed++;
