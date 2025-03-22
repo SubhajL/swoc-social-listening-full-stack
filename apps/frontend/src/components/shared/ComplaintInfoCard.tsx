@@ -337,9 +337,9 @@ export const ComplaintInfoCard: FC<ComplaintInfoCardProps> = ({
   };
 
   // Common content box styles
-  const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-xl p-3 bg-white text-[#17254D] text-sm font-normal";
+  const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-xl p-3 bg-white text-[#17254D] text-sm font-normal relative";
   const contentTextStyle = "pl-4"; // Reduced left padding to move content to the left
-  const labelStyle = "text-[#64748B] font-medium text-base absolute -top-4 left-2 bg-white px-2 z-10"; // Moved left
+  const labelStyle = "text-[#64748B] font-medium text-base absolute -top-3.5 left-2 bg-card px-3 py-0.5 z-10"; // Moved higher and expanded padding
 
   const nextImage = () => {
     setCurrentImageIndex((prevIndex) => 
@@ -486,8 +486,8 @@ export const ComplaintInfoCard: FC<ComplaintInfoCardProps> = ({
 
   return (
     <ErrorBoundary component="ComplaintInfoCard">
-      <Card className={cn("w-full h-full", className)}>
-        <CardHeader>
+      <Card className={cn("w-full bg-white", className)}>
+        <CardHeader className="bg-transparent border-b border-gray-100">
           <CardTitle className="text-xl font-semibold text-[#17254D]">{title}</CardTitle>
           <CardDescription>
             {getAmphure() && getProvince() 
@@ -722,8 +722,8 @@ export const ComplaintInfoCard: FC<ComplaintInfoCardProps> = ({
             {/* Right column - Map and Images */}
             <div className="space-y-6 mt-6">
               {/* Images Card - Now with carousel */}
-              <Card className="border border-[#E2E8F0] overflow-hidden h-[250px]">
-                <CardHeader className="p-4">
+              <Card className="border border-[#E2E8F0] overflow-hidden h-[250px] bg-white">
+                <CardHeader className="p-4 bg-transparent">
                   <CardTitle className="text-base font-medium flex items-center">
                     <ImageIcon className="h-4 w-4 mr-2" />
                     รูปภาพประกอบ
@@ -769,8 +769,8 @@ export const ComplaintInfoCard: FC<ComplaintInfoCardProps> = ({
               </Card>
               
               {/* Map Card - Moved down */}
-              <Card className="border border-[#E2E8F0] overflow-hidden h-[250px]">
-                <CardHeader className="p-4">
+              <Card className="border border-[#E2E8F0] overflow-hidden h-[250px] bg-white">
+                <CardHeader className="p-4 bg-transparent">
                   <CardTitle className="text-base font-medium flex items-center">
                     <MapPin className="h-4 w-4 mr-2" />
                     ตำแหน่งที่ตั้ง

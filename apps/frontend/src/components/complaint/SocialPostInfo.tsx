@@ -45,7 +45,7 @@ const getIssue = (complaint: ProcessedPost | ExtendedComplaint | null): string =
   if (isProcessedPost(complaint)) {
     return complaint.text || '';
   }
-  return complaint.content || '';
+  return '';
 };
 
 const getCategory = (complaint: ProcessedPost | ExtendedComplaint | null): string => {
@@ -205,7 +205,7 @@ export const SocialPostInfo = ({
 
   const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-xl p-3 bg-white text-[#17254D] text-sm font-normal";
   const contentTextStyle = "pl-8";
-  const labelStyle = "text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10";
+  const labelStyle = "text-[#64748B] font-medium text-base absolute -top-3.5 left-3 bg-card px-3 py-0.5 z-10";
 
   return (
     <ErrorBoundary component="SocialPostInfo">

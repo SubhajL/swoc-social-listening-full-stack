@@ -699,8 +699,8 @@ export const WaterLevelInfo = ({
   // Common content box styles
   const contentBoxStyle = "w-full border border-[#E2E8F0] rounded-xl p-4 bg-white text-[#17254D] text-sm font-normal";
   const contentTextStyle = "px-4"; // Reduced horizontal padding for more compact layout
-  const labelStyle = "text-[#64748B] font-medium text-base bg-white px-2 z-10";
-  const labelContainerStyle = "flex justify-between items-center absolute -top-4 left-3 z-10";
+  const labelStyle = "text-[#64748B] font-medium text-base bg-card px-3 py-0.5 z-10";
+  const labelContainerStyle = "flex justify-between items-center absolute -top-3.5 left-3 z-10";
 
   // Handle adding data
   const handleAddData = (type: string) => {

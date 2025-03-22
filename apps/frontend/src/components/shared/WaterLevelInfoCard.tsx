@@ -878,8 +878,8 @@ export const WaterLevelInfoCard: FC<WaterLevelInfoCardProps> = ({
   const province = propProvince || locationState.province;
   
   return (
-    <Card className={cn("w-full min-h-[500px]", className)}>
-      <CardHeader>
+    <Card className={cn("w-full h-full bg-white", className)}>
+      <CardHeader className="bg-transparent border-b border-gray-100">
         <CardTitle className="text-xl font-semibold text-[#17254D]">{title}</CardTitle>
         <CardDescription>
           {amphure && province 

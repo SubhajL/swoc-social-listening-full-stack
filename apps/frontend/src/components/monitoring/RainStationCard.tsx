@@ -104,7 +104,7 @@ const RainStationCardComponent = ({
   // Common content box styles
   const contentBoxStyle = useMemo(() => `w-full border border-[#E2E8F0] rounded-xl p-2 bg-white text-[#17254D] text-sm font-normal ${disabled ? 'opacity-60' : ''}`, [disabled]);
   const contentTextStyle = "px-1.5"; // Reduced horizontal padding for more space
-  const labelStyle = useMemo(() => `text-[#64748B] font-medium text-base absolute -top-4 left-3 bg-white px-2 z-10 ${disabled ? 'opacity-60' : ''}`, [disabled]);
+  const labelStyle = useMemo(() => `text-[#64748B] font-medium text-base absolute -top-3.5 left-3 bg-card px-3 py-0.5 z-10 ${disabled ? 'opacity-60' : ''}`, [disabled]);
   
   // Log station details for debugging
   useEffect(() => {

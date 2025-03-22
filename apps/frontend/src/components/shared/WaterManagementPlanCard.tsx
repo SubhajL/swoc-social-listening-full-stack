@@ -57,7 +57,7 @@ export const WaterManagementPlanCard = memo(({
   }, []);
 
   return (
-    <Card className={cn("w-full h-full min-h-[500px]", className)}>
+    <Card className={cn("w-full h-full min-h-[500px] bg-white", className)}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl font-semibold text-[#17254D]">{title}</CardTitle>
