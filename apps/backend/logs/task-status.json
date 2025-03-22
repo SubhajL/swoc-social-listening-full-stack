@@ -1,25 +1,25 @@
 {
-  "timestamp": "2025-03-19T15:00:01.124Z",
+  "timestamp": "2025-03-21T23:15:56.881Z",
   "tasks": [
     {
       "task_name": "reservoir_sync",
-      "last_run": "2025-03-19T15:00:00.884Z",
+      "last_run": "2025-03-21T23:15:56.687Z",
       "status": "SUCCESS",
-      "records_processed": 474,
+      "records_processed": 3665,
       "error_message": null
     },
     {
       "task_name": "thaiwater_sync",
-      "last_run": "2025-03-19T15:00:01.030Z",
+      "last_run": "2025-03-21T23:15:56.817Z",
       "status": "SUCCESS",
-      "records_processed": 1728,
+      "records_processed": 1781,
       "error_message": null
     },
     {
       "task_name": "tmd_sync",
-      "last_run": "2025-03-19T15:00:01.103Z",
+      "last_run": "2025-03-21T23:15:56.882Z",
       "status": "SUCCESS",
-      "records_processed": 1728,
+      "records_processed": 1781,
       "error_message": null
     }
   ]

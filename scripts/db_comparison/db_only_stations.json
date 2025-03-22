@@ -1,0 +1,2324 @@
+[
+  {
+    "station_id": "040361 (C.13)",
+    "station_name": "เขื่อนเจ้าพระยา",
+    "sequence_number": "351",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "แม่น้ำเจ้าพระยา",
+    "province": "ชัยนาท"
+  },
+  {
+    "station_id": "040361 (C.30)",
+    "station_name": "เขื่อนเจ้าพระยา",
+    "sequence_number": "357",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "แม่น้ำเจ้าพระยา",
+    "province": "ชัยนาท"
+  },
+  {
+    "station_id": "060191 (kgt.29)",
+    "station_name": "บ้านปะตง",
+    "sequence_number": "422",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "ชายฝั่งทะเลตะวันออก",
+    "river_name": "อบต.ปะตง",
+    "province": "จันทบุรี"
+  },
+  {
+    "station_id": "090160 (สชป.9)",
+    "station_name": "ต้าบลบางพระ",
+    "sequence_number": "414",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "อ่างเก็บน้ำบางพระ",
+    "province": "ชลบุรี"
+  },
+  {
+    "station_id": "090171 (Kgt.19) ",
+    "station_name": "บ้านเขานางนม",
+    "sequence_number": "415",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "คลองหลวง",
+    "province": "ชลบุรี"
+  },
+  {
+    "station_id": "090381 เขาเขียว",
+    "station_name": "บ้านเขาไม้แดง",
+    "sequence_number": "416",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "น้ำตกชันตาเถร",
+    "province": "ชลบุรี"
+  },
+  {
+    "station_id": "190620 (S.28)",
+    "station_name": "เขื่อนป่าสักชลสิทธิ์",
+    "sequence_number": "358",
+    "irrigation_office": "สำนักงานชลประทานที่ 10",
+    "river_basin": "ป่าสัก",
+    "river_name": "แม่น้ำป่าสัก",
+    "province": "ลพบุรี"
+  },
+  {
+    "station_id": "260311 (N.67)",
+    "station_name": "บ้านเกยไชยเหนือ",
+    "sequence_number": "350",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "น้ำน่าน",
+    "river_name": "แม่น้ำน่าน",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "260451",
+    "station_name": "บ้านเกาะใหญ่",
+    "sequence_number": "353",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "สะแกกรัง",
+    "river_name": "บ้านเกาะใหญ่",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "260461",
+    "station_name": "บ้านธารมะยม",
+    "sequence_number": "354",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "สะแกกรัง",
+    "river_name": "บ้านธารมะยม",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "440191 (Kgt.15A)",
+    "station_name": "บ้านแก่งดินสอ",
+    "sequence_number": "417",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "ห้วยโสมง",
+    "province": "ปราจีนบุรี"
+  },
+  {
+    "station_id": "440401",
+    "station_name": "บ้านแก่งดินสอ",
+    "sequence_number": "418",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "อ่างฯนฤบดินทรจินดาฝั่งซ้าย",
+    "province": "ปราจีนบุรี"
+  },
+  {
+    "station_id": "440411",
+    "station_name": "บ้านแก่งดินสอ",
+    "sequence_number": "419",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "อ่างฯนฤบดินทรจินดาฝั่งขวา",
+    "province": "ปราจีนบุรี"
+  },
+  {
+    "station_id": "660131",
+    "station_name": "บ้านหมื่นด่าน",
+    "sequence_number": "423",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "ชายฝั่งทะเลตะวันออก",
+    "river_name": "กองร้อยทหารพราน",
+    "province": "ตราด"
+  },
+  {
+    "station_id": "690151 (C.30)",
+    "station_name": "บ้านสมอทอง",
+    "sequence_number": "356",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "ท่าจีน",
+    "river_name": "ห้วยขุนแก้ว",
+    "province": "อุทัยธานี"
+  },
+  {
+    "station_id": "690251",
+    "station_name": "",
+    "sequence_number": "352",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "สะแกกรัง",
+    "river_name": "โครงการส่งน้ำฯทับเสลา",
+    "province": "อุทัยธานี"
+  },
+  {
+    "station_id": "690371",
+    "station_name": "ระบำ",
+    "sequence_number": "355",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "สะแกกรัง",
+    "river_name": "ห้วยขาแข้ง",
+    "province": "อุทัยธานี"
+  },
+  {
+    "station_id": "740081 (Kgt.12)",
+    "station_name": "บ้านแก้ง",
+    "sequence_number": "420",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "คลองพระปรง",
+    "province": "สระแก้ว"
+  },
+  {
+    "station_id": "740331",
+    "station_name": "อบต.วังสมบูรณ์",
+    "sequence_number": "421",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "-",
+    "province": "สระแก้ว"
+  },
+  {
+    "station_id": "B.17",
+    "station_name": "สะพานถนนเพชรเกษม",
+    "sequence_number": "477",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "แม่น้ำเพชรบุรี",
+    "province": "เพชรบุรี"
+  },
+  {
+    "station_id": "C.12",
+    "station_name": "กรมชลประทานสามเสน",
+    "sequence_number": "299",
+    "irrigation_office": "",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "แม่น้ำเจ้าพระยา",
+    "province": "กรุงเทพมหานคร"
+  },
+  {
+    "station_id": "C.22A",
+    "station_name": "กรมชลประทานปากเกร็ด",
+    "sequence_number": "301",
+    "irrigation_office": "สำนักงานชลประทานที่ 11",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "แม่น้ำเจ้าพระยา",
+    "province": "นนทบุรี"
+  },
+  {
+    "station_id": "C.28A",
+    "station_name": "บ้านอิฐ",
+    "sequence_number": "302",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "คลองบางแก้ว",
+    "province": "อ่างทอง"
+  },
+  {
+    "station_id": "C.38",
+    "station_name": "โรงเรียนคณะราษฎร์บำรุง",
+    "sequence_number": "307",
+    "irrigation_office": "สำนักงานชลประทานที่ 11",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "แม่น้ำเจ้าพระยา",
+    "province": "ปทุมธานี"
+  },
+  {
+    "station_id": "C.44",
+    "station_name": "บ้านอินทร์บุรี",
+    "sequence_number": "308",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "แม่น้ำเจ้าพระยา",
+    "province": "สิงห์บุรี"
+  },
+  {
+    "station_id": "C.45",
+    "station_name": "บ้านบางน้ำเชี่ยว",
+    "sequence_number": "309",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "แม่น้ำเจ้าพระยา",
+    "province": "สิงห์บุรี"
+  },
+  {
+    "station_id": "C.46",
+    "station_name": "บ้านไชโย",
+    "sequence_number": "310",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "แม่น้ำเจ้าพระยา",
+    "province": "อ่างทอง"
+  },
+  {
+    "station_id": "C.47",
+    "station_name": "บ้านป่าโมก",
+    "sequence_number": "311",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "แม่น้ำเจ้าพระยา",
+    "province": "อ่างทอง"
+  },
+  {
+    "station_id": "C.51",
+    "station_name": "บ้านกุดจอก",
+    "sequence_number": "349",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "ท่าจีน",
+    "river_name": "ห้วยขุนแก้ว",
+    "province": "ชัยนาท"
+  },
+  {
+    "station_id": "C.56",
+    "station_name": "บ้านท่าน้ำอ้อย",
+    "sequence_number": "312",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "แม่น้ำเจ้าพระยา",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "C.58",
+    "station_name": "บ้านหนองบัว",
+    "sequence_number": "313",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "คลองกระทง",
+    "province": "ชัยนาท"
+  },
+  {
+    "station_id": "C.60",
+    "station_name": "บ้านท่าตะโก",
+    "sequence_number": "314",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "คลองท่าตะโก",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "C.64",
+    "station_name": "ท่าข้ากำนันทรง",
+    "sequence_number": "315",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "บึงบอระเพ็ด",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "C.65",
+    "station_name": "สะพานบางประมุง",
+    "sequence_number": "316",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "คลองบางประมุง",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "C.66",
+    "station_name": "สะพานโคกจันทร์",
+    "sequence_number": "317",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "เจ้าพระยา",
+    "river_name": "แม่น้ำเจ้าพระยา",
+    "province": "ชัยนาท"
+  },
+  {
+    "station_id": "Ct.20",
+    "station_name": "บ้านสะพานเหล็ก",
+    "sequence_number": "327",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "สะแกกรัง",
+    "river_name": "ห้วยทับเสลา",
+    "province": "อุทัยธานี"
+  },
+  {
+    "station_id": "Ct.21",
+    "station_name": "บ้านบึงโคกช้าง",
+    "sequence_number": "328",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "สะแกกรัง",
+    "river_name": "ห้วยก้านยาว",
+    "province": "อุทัยธานี"
+  },
+  {
+    "station_id": "Ct.22",
+    "station_name": "บ้านหมกแถว",
+    "sequence_number": "329",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "สะแกกรัง",
+    "river_name": "ห้วยขวี",
+    "province": "อุทัยธานี"
+  },
+  {
+    "station_id": "Ct.23",
+    "station_name": "บ้านห้วยรัง",
+    "sequence_number": "330",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "สะแกกรัง",
+    "river_name": "ห้วยรัง",
+    "province": "อุทัยธานี"
+  },
+  {
+    "station_id": "Ct.24",
+    "station_name": "บ้านจักษา",
+    "sequence_number": "331",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "สะแกกรัง",
+    "river_name": "คลองระแวง",
+    "province": "อุทัยธานี"
+  },
+  {
+    "station_id": "E.29A",
+    "station_name": "บ้านผานกเค้า",
+    "sequence_number": "165",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "น้ำชี",
+    "river_name": "ลำน้ำพอง",
+    "province": "เลย"
+  },
+  {
+    "station_id": "E.32A",
+    "station_name": "บ้านหนองอ้อ",
+    "sequence_number": "166",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "แม่น้ำชี",
+    "province": "ชัยภูมิ"
+  },
+  {
+    "station_id": "E.5",
+    "station_name": "บ้านโนนเปลือย",
+    "sequence_number": "158",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "แม่น้ำชี",
+    "province": "ชัยภูมิ"
+  },
+  {
+    "station_id": "E.54",
+    "station_name": "บ้านกุดฉิมคุ้มใหญ่",
+    "sequence_number": "167",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "ลำน้ำยัง",
+    "province": "กาฬสินธุ์"
+  },
+  {
+    "station_id": "E.57A",
+    "station_name": "บ้านสมสนุก",
+    "sequence_number": "168",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "น้ำยัง",
+    "province": "กาฬสินธุ์"
+  },
+  {
+    "station_id": "E.64A",
+    "station_name": "บ้านนาแก",
+    "sequence_number": "169",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "น้ำชี",
+    "river_name": "ลำพะเนียง",
+    "province": "หนองบัวลำภู"
+  },
+  {
+    "station_id": "E.65",
+    "station_name": "บ้านท่าไฮ",
+    "sequence_number": "170",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "น้ำชี",
+    "river_name": "ลำปาว",
+    "province": "อุดรธานี"
+  },
+  {
+    "station_id": "E.67",
+    "station_name": "บ้านท่างาม",
+    "sequence_number": "172",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "ลำพันชาด",
+    "province": "กาฬสินธุ์"
+  },
+  {
+    "station_id": "E.68A",
+    "station_name": "บ้านข้องโป้",
+    "sequence_number": "173",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "น้ำชี",
+    "river_name": "ลำพะเนียง",
+    "province": "หนองบัวลำภู"
+  },
+  {
+    "station_id": "E.6C",
+    "station_name": "บ้านตาดโตน",
+    "sequence_number": "159",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "ลำปะทาว",
+    "province": "ชัยภูมิ"
+  },
+  {
+    "station_id": "E.70",
+    "station_name": "บ้านกุดก่วง",
+    "sequence_number": "174",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "ลำน้ำยัง",
+    "province": "ร้อยเอ็ด"
+  },
+  {
+    "station_id": "E.72",
+    "station_name": "บ้านเจียง",
+    "sequence_number": "175",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "ลำเจียง",
+    "province": "ชัยภูมิ"
+  },
+  {
+    "station_id": "E.73A",
+    "station_name": "บ้านวังตะกู",
+    "sequence_number": "176",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "ลำเจา",
+    "province": "ชัยภูมิ"
+  },
+  {
+    "station_id": "E.76A",
+    "station_name": "บ้านโพน",
+    "sequence_number": "178",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "ห้วยสังกะ",
+    "province": "กาฬสินธุ์"
+  },
+  {
+    "station_id": "E.79A",
+    "station_name": "บ้านอีเลิศ",
+    "sequence_number": "180",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "น้ำชี",
+    "river_name": "ลำพองโก",
+    "province": "เลย"
+  },
+  {
+    "station_id": "E.83",
+    "station_name": "บ้านนาเจริญ",
+    "sequence_number": "179",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "ลำสะพุง",
+    "province": "ชัยภูมิ"
+  },
+  {
+    "station_id": "E.84",
+    "station_name": "บ้านนางแดดโคก",
+    "sequence_number": "181",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "แม่น้ำชี",
+    "province": "ชัยภูมิ"
+  },
+  {
+    "station_id": "E.85",
+    "station_name": "บ้านโนนหัน",
+    "sequence_number": "182",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "น้ำเชิญ",
+    "province": "ขอนแก่น"
+  },
+  {
+    "station_id": "E.88",
+    "station_name": "บ้านดงสวรรค์",
+    "sequence_number": "184",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "ห้วยมูล",
+    "province": "กาฬสินธุ์"
+  },
+  {
+    "station_id": "E.89",
+    "station_name": "บ้านหนองริวหนัง",
+    "sequence_number": "185",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "ห้วยลำหนองแสง",
+    "province": "กาฬสินธุ์"
+  },
+  {
+    "station_id": "E.90",
+    "station_name": "บ้านเนินยางใต้",
+    "sequence_number": "186",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "ห้วยสังเคียบ",
+    "province": "กาฬสินธุ์"
+  },
+  {
+    "station_id": "E.93",
+    "station_name": "บ้านยาง",
+    "sequence_number": "189",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำชี",
+    "river_name": "น้ำพรม",
+    "province": "ชัยภูมิ"
+  },
+  {
+    "station_id": "G.12",
+    "station_name": "บ้านใหม่ริมฝาง",
+    "sequence_number": "3",
+    "irrigation_office": "สำนักงานชลประทานที่ 1",
+    "river_basin": "ลุ่มน้ำกก",
+    "river_name": "น้ำฝาง",
+    "province": "เชียงใหม่"
+  },
+  {
+    "station_id": "G.14",
+    "station_name": "สะพานบ้านคาย",
+    "sequence_number": "5",
+    "irrigation_office": "สำนักงานชลประทานที่ 1",
+    "river_basin": "ลุ่มน้ำกก",
+    "river_name": "น้ำฝาง",
+    "province": "เชียงใหม่"
+  },
+  {
+    "station_id": "G.2A",
+    "station_name": "บ้านกกโถ้ง",
+    "sequence_number": "6",
+    "irrigation_office": "สำนักงานชลประทานที่ 2",
+    "river_basin": "ลุ่มน้ำกก",
+    "river_name": "น้ำแม่กก",
+    "province": "เชียงราย"
+  },
+  {
+    "station_id": "G.4",
+    "station_name": "บ้านปางริมกรณ์",
+    "sequence_number": "7",
+    "irrigation_office": "สำนักงานชลประทานที่ 2",
+    "river_basin": "ลุ่มน้ำกก",
+    "river_name": "น้ำแม่กรณ์",
+    "province": "เชียงราย"
+  },
+  {
+    "station_id": "G.8A",
+    "station_name": "บ้านร่องขุ่น",
+    "sequence_number": "9",
+    "irrigation_office": "สำนักงานชลประทานที่ 2",
+    "river_basin": "ลุ่มน้ำกก",
+    "river_name": "น้ำแม่ลาว",
+    "province": "เชียงราย"
+  },
+  {
+    "station_id": "Gt.1 ",
+    "station_name": "บ้านเขาแดง",
+    "sequence_number": "479",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "คลองเขาแดง",
+    "province": "ประจวบคีรีขันธ์"
+  },
+  {
+    "station_id": "Gt.12A",
+    "station_name": "บ้านห้วยสัก",
+    "sequence_number": "480",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "คลองลำชู",
+    "province": "ประจวบคีรีขันธ์"
+  },
+  {
+    "station_id": "Gt.15",
+    "station_name": "บ้านสวนสนห้วยทราย",
+    "sequence_number": "456",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "ห้วยทราย",
+    "province": "ประจวบคีรีขันธ์"
+  },
+  {
+    "station_id": "Gt.16",
+    "station_name": "บ้านหินจวง",
+    "sequence_number": "457",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "คลองหินจวง",
+    "province": "ประจวบคีรีขันธ์"
+  },
+  {
+    "station_id": "Gt.17",
+    "station_name": "บ้านห้วยยาง",
+    "sequence_number": "458",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "ห้วยยาง",
+    "province": "ประจวบคีรีขันธ์"
+  },
+  {
+    "station_id": "Gt.18",
+    "station_name": "บ้านจะกะบน",
+    "sequence_number": "459",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "คลองจะกะ",
+    "province": "ประจวบคีรีขันธ์"
+  },
+  {
+    "station_id": "Gt.19",
+    "station_name": "บ้านอ่างทอง",
+    "sequence_number": "460",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "คลองอ่างทอง",
+    "province": "ประจวบคีรีขันธ์"
+  },
+  {
+    "station_id": "Gt.20A",
+    "station_name": "บ้านห้วยทรายขาว",
+    "sequence_number": "481",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "คลองบางสะพาน",
+    "province": "ประจวบคีรีขันธ์"
+  },
+  {
+    "station_id": "Gt.22",
+    "station_name": "รร.อนุบาลบางสะพาน",
+    "sequence_number": "483",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "คลองบางสะพาน",
+    "province": "ประจวบคีรีขันธ์"
+  },
+  {
+    "station_id": "Gt.8",
+    "station_name": "บ้านไร่คลอง",
+    "sequence_number": "452",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "คลองว้าโทน",
+    "province": "ประจวบคีรีขันธ์"
+  },
+  {
+    "station_id": "I.14",
+    "station_name": "บ้านน้ำอิง",
+    "sequence_number": "11",
+    "irrigation_office": "สำนักงานชลประทานที่ 2",
+    "river_basin": "ลุ่มน้ำอิง",
+    "river_name": "น้ำอิง",
+    "province": "เชียงราย"
+  },
+  {
+    "station_id": "I.1A",
+    "station_name": "บ้านวัดศรีจอมเรือง",
+    "sequence_number": "13",
+    "irrigation_office": "สำนักงานชลประทานที่ 2",
+    "river_basin": "ลุ่มน้ำอิง",
+    "river_name": "อิง",
+    "province": "พะเยา"
+  },
+  {
+    "station_id": "I.6",
+    "station_name": "บ้านน้ำแวน",
+    "sequence_number": "14",
+    "irrigation_office": "สำนักงานชลประทานที่ 2",
+    "river_basin": "ลุ่มน้ำอิง",
+    "river_name": "น้ำแวน",
+    "province": "พะเยา"
+  },
+  {
+    "station_id": "K.17",
+    "station_name": "บ้านบ่อ",
+    "sequence_number": "427",
+    "irrigation_office": "สำนักงานชลประทานที่ 13",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "ลำภาชี",
+    "province": "ราชบุรี"
+  },
+  {
+    "station_id": "K.22A",
+    "station_name": "บ้านแม่น้ำน้อย",
+    "sequence_number": "470",
+    "irrigation_office": "สำนักงานชลประทานที่ 13",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "ห้วยแม่น้ำน้อย",
+    "province": "กาญจนบุรี"
+  },
+  {
+    "station_id": "K.22C",
+    "station_name": "บ้านแม่น้ำน้อย",
+    "sequence_number": "428",
+    "irrigation_office": "สำนักงานชลประทานที่ 13",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "ห้วยแม่น้ำน้อย",
+    "province": "กาญจนบุรี"
+  },
+  {
+    "station_id": "K.25A",
+    "station_name": "บ้านคา",
+    "sequence_number": "429",
+    "irrigation_office": "สำนักงานชลประทานที่ 13",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "ห้วยท่าเคย",
+    "province": "ราชบุรี"
+  },
+  {
+    "station_id": "K.30",
+    "station_name": "บ้านแม่น้ำน้อย",
+    "sequence_number": "430",
+    "irrigation_office": "สำนักงานชลประทานที่ 13",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "ห้วยแม่น้ำเลาะ",
+    "province": "กาญจนบุรี"
+  },
+  {
+    "station_id": "K.36",
+    "station_name": "บ้านท่ามะนาว",
+    "sequence_number": "471",
+    "irrigation_office": "สำนักงานชลประทานที่ 13",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "แม่น้ำแควใหญ่",
+    "province": "กาญจนบุรี"
+  },
+  {
+    "station_id": "K.38A",
+    "station_name": "บ้านหนองบาง",
+    "sequence_number": "435",
+    "irrigation_office": "สำนักงานชลประทานที่ 13",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "ห้วยลิ่นถิ่น",
+    "province": "กาญจนบุรี"
+  },
+  {
+    "station_id": "K.39",
+    "station_name": "บ้านองธิ",
+    "sequence_number": "436",
+    "irrigation_office": "สำนักงานชลประทานที่ 13",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "ห้วยองธิ",
+    "province": "กาญจนบุรี"
+  },
+  {
+    "station_id": "K.50A",
+    "station_name": "บ้านสหกรณ์นิคม",
+    "sequence_number": "437",
+    "irrigation_office": "สำนักงานชลประทานที่ 13",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "ห้วยดินโส",
+    "province": "กาญจนบุรี"
+  },
+  {
+    "station_id": "K.53",
+    "station_name": "บ้านศรีมงคล",
+    "sequence_number": "473",
+    "irrigation_office": "สำนักงานชลประทานที่ 13",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "ห้วยแม่กระบาล",
+    "province": "กาญจนบุรี"
+  },
+  {
+    "station_id": "K.56",
+    "station_name": "บ้านหม้อ",
+    "sequence_number": "440",
+    "irrigation_office": "สำนักงานชลประทานที่ 13",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "แม่น้ำแม่กลองแม่กลอง",
+    "province": "ราชบุรี"
+  },
+  {
+    "station_id": "K.60",
+    "station_name": "บ้านกุยมั่ง",
+    "sequence_number": "442",
+    "irrigation_office": "สำนักงานชลประทานที่ 13",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "ห้วยกุยมั่ง",
+    "province": "กาญจนบุรี"
+  },
+  {
+    "station_id": "Kgt.18",
+    "station_name": "บ้านท่ากลอย",
+    "sequence_number": "359",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "คลองสียัด",
+    "province": "ฉะเชิงเทรา"
+  },
+  {
+    "station_id": "Kgt.33",
+    "station_name": "บ้านหนองแหน",
+    "sequence_number": "384",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "แควน้ำใส",
+    "province": "ปราจีนบุรี"
+  },
+  {
+    "station_id": "Kgt.34 ",
+    "station_name": "บ้านชะอม",
+    "sequence_number": "385",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "แควหนุมาน",
+    "province": "ปราจีนบุรี"
+  },
+  {
+    "station_id": "Kgt.38",
+    "station_name": "บ้านภูเงิน",
+    "sequence_number": "386",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "คลองพระเพลิงใหญ่",
+    "province": "สระแก้ว"
+  },
+  {
+    "station_id": "Kgt.40",
+    "station_name": "บ้านวังเจริญ",
+    "sequence_number": "387",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "คลองพระสทึงตอนบน",
+    "province": "สระแก้ว"
+  },
+  {
+    "station_id": "Kgt.42",
+    "station_name": "บ้านท่าระพา",
+    "sequence_number": "388",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "คลองพระสทึง",
+    "province": "สระแก้ว"
+  },
+  {
+    "station_id": "Kgt.44",
+    "station_name": "บ้านแก่งไทร",
+    "sequence_number": "360",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "คลองพระปรง",
+    "province": "สระแก้ว"
+  },
+  {
+    "station_id": "Kgt.45",
+    "station_name": "บ้านตาเรืองล่าง",
+    "sequence_number": "361",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "คลองพระสทึง",
+    "province": "จันทบุรี"
+  },
+  {
+    "station_id": "Kgt.47",
+    "station_name": "บ้านด่านชัยพัฒนา",
+    "sequence_number": "390",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "คลองพระสทึง",
+    "province": "สระแก้ว"
+  },
+  {
+    "station_id": "Kgt.51",
+    "station_name": "บ้านประจันตคาม",
+    "sequence_number": "391",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "คลองประจันตคาม",
+    "province": "ปราจีนบุรี"
+  },
+  {
+    "station_id": "Kgt.65",
+    "station_name": "บ้านท่าพระจันทร",
+    "sequence_number": "362",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "คลองพระปรง",
+    "province": "สระแก้ว"
+  },
+  {
+    "station_id": "Kgt.66 ",
+    "station_name": "บ้านแก่งดินสอ",
+    "sequence_number": "363",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "บางปะกง",
+    "river_name": "คลองห้วยโสมง",
+    "province": "ปราจีนบุรี"
+  },
+  {
+    "station_id": "KH.101",
+    "station_name": "บ้านแก่นเต่า",
+    "sequence_number": "208",
+    "irrigation_office": "สำนักงานชลประทานที่ 7",
+    "river_basin": "โขง",
+    "river_name": "ห้วยมุก",
+    "province": "มุกดาหาร"
+  },
+  {
+    "station_id": "KH.103",
+    "station_name": "บ้านโนนตูม",
+    "sequence_number": "209",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "ห้วยหลวง",
+    "province": "อุดรธานี"
+  },
+  {
+    "station_id": "KH.105",
+    "station_name": "บ้านผาน้อย",
+    "sequence_number": "210",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "น้ำป่วน",
+    "province": "เลย"
+  },
+  {
+    "station_id": "KH.108",
+    "station_name": "บ้านพอกใหญ่",
+    "sequence_number": "211",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "น้ำอูน",
+    "province": "สกลนคร"
+  },
+  {
+    "station_id": "KH.115",
+    "station_name": "บ้านเหล่าสมบรูณ์",
+    "sequence_number": "212",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "น้ำสงคราม",
+    "province": "สกลนคร"
+  },
+  {
+    "station_id": "KH.18",
+    "station_name": "บ้านนาอ่าง",
+    "sequence_number": "192",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "ห้วยโมง",
+    "province": "อุดรธานี"
+  },
+  {
+    "station_id": "KH.28A",
+    "station_name": "สะพานบ้านนาหลัก",
+    "sequence_number": "193",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "แม่น้ำเลย",
+    "province": "เลย"
+  },
+  {
+    "station_id": "KH.53",
+    "station_name": "บ้านหนองวัวซอ",
+    "sequence_number": "194",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "ห้วยหลวง",
+    "province": "อุดรธานี"
+  },
+  {
+    "station_id": "KH.54",
+    "station_name": "บ้านนาหว้า",
+    "sequence_number": "195",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "น้ำอูน",
+    "province": "นครพนม"
+  },
+  {
+    "station_id": "KH.58A",
+    "station_name": "บ้านฟากเลย",
+    "sequence_number": "196",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "แม่น้ำเลย",
+    "province": "เลย"
+  },
+  {
+    "station_id": "KH.61",
+    "station_name": "บ้านแก่งบง",
+    "sequence_number": "197",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "แม่น้ำเลย",
+    "province": "เลย"
+  },
+  {
+    "station_id": "KH.74",
+    "station_name": "บ้านท่าห้วยหลัว",
+    "sequence_number": "198",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "น้ำสงคราม",
+    "province": "สกลนคร"
+  },
+  {
+    "station_id": "KH.77A",
+    "station_name": "บ้านกกซ้อ",
+    "sequence_number": "199",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "น้ำทบ",
+    "province": "เลย"
+  },
+  {
+    "station_id": "KH.78",
+    "station_name": "บ้านน้ำฮวย",
+    "sequence_number": "200",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "ห้วยน้ำฮวย",
+    "province": "เลย"
+  },
+  {
+    "station_id": "KH.90",
+    "station_name": "บ้านตองโขบ",
+    "sequence_number": "201",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "แม่น้ำพุง",
+    "province": "สกลนคร"
+  },
+  {
+    "station_id": "KH.91",
+    "station_name": "บ้านดอนสวรรค์",
+    "sequence_number": "202",
+    "irrigation_office": "สำนักงานชลประทานที่ 7",
+    "river_basin": "โขง",
+    "river_name": "ห้วยชะโนด",
+    "province": "นครพนม"
+  },
+  {
+    "station_id": "KH.92",
+    "station_name": "บ้านก้านเหลืองดง",
+    "sequence_number": "203",
+    "irrigation_office": "สำนักงานชลประทานที่ 7",
+    "river_basin": "โขง",
+    "river_name": "ห้วยบางทราย",
+    "province": "มุกดาหาร"
+  },
+  {
+    "station_id": "KH.93",
+    "station_name": "บ้านโคกคำไหล",
+    "sequence_number": "204",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "น้ำสงคราม",
+    "province": "อุดรธานี"
+  },
+  {
+    "station_id": "KH.95",
+    "station_name": "บ้านแก่งไฮ",
+    "sequence_number": "205",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "น้ำสาน",
+    "province": "เลย"
+  },
+  {
+    "station_id": "KH.98",
+    "station_name": "บ้านท่ากกแดง",
+    "sequence_number": "206",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "น้ำสงคราม",
+    "province": "บึงกาฬ"
+  },
+  {
+    "station_id": "KH.99A",
+    "station_name": "บ้านแก่งนาง",
+    "sequence_number": "207",
+    "irrigation_office": "สำนักงานชลประทานที่ 7",
+    "river_basin": "โขง",
+    "river_name": "ห้วยบางทราย",
+    "province": "มุกดาหาร"
+  },
+  {
+    "station_id": "KH.9A",
+    "station_name": "บ้านหนองศาลา",
+    "sequence_number": "191",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "โขง",
+    "river_name": "น้ำก่ำ",
+    "province": "สกลนคร"
+  },
+  {
+    "station_id": "M.108",
+    "station_name": "สระขุด",
+    "sequence_number": "235",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "ลำพังชู",
+    "province": "สุรินทร์"
+  },
+  {
+    "station_id": "M.110",
+    "station_name": "ดอนใหญ่ใต้",
+    "sequence_number": "236",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยตุงลุง",
+    "province": "บุรีรัมย์"
+  },
+  {
+    "station_id": "M.112",
+    "station_name": "โคกใหญ่",
+    "sequence_number": "237",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยตะโคง",
+    "province": "อุบลราชธานี"
+  },
+  {
+    "station_id": "M.119",
+    "station_name": "โคกสะแกราช",
+    "sequence_number": "238",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "ลำเชียงสา",
+    "province": "นครราชสีมา"
+  },
+  {
+    "station_id": "M.124",
+    "station_name": "โนน",
+    "sequence_number": "239",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยตะกั่ว",
+    "province": "บุรีรัมย์"
+  },
+  {
+    "station_id": "M.125",
+    "station_name": "ห้วยไฮ",
+    "sequence_number": "240",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยแอก",
+    "province": "บุรีรัมย์"
+  },
+  {
+    "station_id": "M.127",
+    "station_name": "นาไฮ",
+    "sequence_number": "241",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยตาเทียว",
+    "province": "อุบลราชธานี"
+  },
+  {
+    "station_id": "M.132",
+    "station_name": "โหมน",
+    "sequence_number": "242",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยสะพือ",
+    "province": "อุบลราชธานี"
+  },
+  {
+    "station_id": "M.137",
+    "station_name": "ระกา",
+    "sequence_number": "243",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยเหนือ",
+    "province": "ศรีสะเกษ"
+  },
+  {
+    "station_id": "M.142",
+    "station_name": "โดนอาวร์",
+    "sequence_number": "244",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยขยุง",
+    "province": "ศรีสะเกษ"
+  },
+  {
+    "station_id": "M.143",
+    "station_name": "หนองใหญ่",
+    "sequence_number": "245",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยสังกด",
+    "province": "ศรีสะเกษ"
+  },
+  {
+    "station_id": "M.152",
+    "station_name": "โพนทองน้อย",
+    "sequence_number": "247",
+    "irrigation_office": "สำนักงานชลประทานที่ 7",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยบอน",
+    "province": "อุบลราชธานี"
+  },
+  {
+    "station_id": "M.153",
+    "station_name": "กุดเชียงหมุน",
+    "sequence_number": "248",
+    "irrigation_office": "สำนักงานชลประทานที่ 7",
+    "river_basin": "น้ำมูล",
+    "river_name": "ลำโดมใหญ่",
+    "province": "อุบลราชธานี"
+  },
+  {
+    "station_id": "M.154",
+    "station_name": "นาจะหลวย",
+    "sequence_number": "249",
+    "irrigation_office": "สำนักงานชลประทานที่ 7",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยหลวง",
+    "province": "อุบลราชธานี"
+  },
+  {
+    "station_id": "M.155",
+    "station_name": "นาผือ",
+    "sequence_number": "250",
+    "irrigation_office": "สำนักงานชลประทานที่ 7",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยละโอง",
+    "province": "อำนาจเจริญ"
+  },
+  {
+    "station_id": "M.156",
+    "station_name": "นาผือ",
+    "sequence_number": "251",
+    "irrigation_office": "สำนักงานชลประทานที่ 7",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยบ้าน",
+    "province": "อำนาจเจริญ"
+  },
+  {
+    "station_id": "M.160",
+    "station_name": "โพนงาม",
+    "sequence_number": "254",
+    "irrigation_office": "สำนักงานชลประทานที่ 7",
+    "river_basin": "น้ำมูล",
+    "river_name": "ลำโดมน้อย",
+    "province": "อุบลราชธานี"
+  },
+  {
+    "station_id": "M.172",
+    "station_name": "โนนสาวเอ้",
+    "sequence_number": "258",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "คลองไผ่",
+    "province": "นครราชสีมา"
+  },
+  {
+    "station_id": "M.175",
+    "station_name": "หนองสาหร่าย",
+    "sequence_number": "261",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำมูล",
+    "river_name": "ลำพลับพลา",
+    "province": "ร้อยเอ็ด"
+  },
+  {
+    "station_id": "M.178",
+    "station_name": "หนองเต่า",
+    "sequence_number": "264",
+    "irrigation_office": "สำนักงานชลประทานที่ 7",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยขุหลุ",
+    "province": "อุบลราชธานี"
+  },
+  {
+    "station_id": "M.181",
+    "station_name": "ท่าวังยาง",
+    "sequence_number": "267",
+    "irrigation_office": "สำนักงานชลประทานที่ 7",
+    "river_basin": "น้ำมูล",
+    "river_name": "แม่น้ำมูล",
+    "province": "อุบลราชธานี"
+  },
+  {
+    "station_id": "M.193",
+    "station_name": "บ้านกอก",
+    "sequence_number": "278",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "แม่น้ำมูล",
+    "province": "จ.ศรีสะเกษ"
+  },
+  {
+    "station_id": "M.194",
+    "station_name": "บ้านเมืองที",
+    "sequence_number": "279",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "แม่น้ำมูล",
+    "province": "นครราชสีมา"
+  },
+  {
+    "station_id": "M.196",
+    "station_name": "บ้านอังกัญโพธิ์",
+    "sequence_number": "281",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยเสนง",
+    "province": "สุรินทร์"
+  },
+  {
+    "station_id": "M.197",
+    "station_name": "บ้านสี่เหลี่ยม",
+    "sequence_number": "282",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยโตง",
+    "province": "สุรินทร์"
+  },
+  {
+    "station_id": "M.198",
+    "station_name": "บ้านสุขสำราญ",
+    "sequence_number": "283",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "ลำปลายมาศ",
+    "province": "บุรีรัมย์"
+  },
+  {
+    "station_id": "M.38C",
+    "station_name": "คลองไผ่",
+    "sequence_number": "222",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำมูล",
+    "river_name": "ลำตะคอง",
+    "province": "นครราชสีมา"
+  },
+  {
+    "station_id": "M.49",
+    "station_name": "หนองโสน",
+    "sequence_number": "225",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำมูล",
+    "river_name": "แม่น้ำมูล",
+    "province": "นครราชสีมา"
+  },
+  {
+    "station_id": "M.50",
+    "station_name": "ครบุรี",
+    "sequence_number": "226",
+    "irrigation_office": "สำนักงานชลประทานที่ 6",
+    "river_basin": "น้ำมูล",
+    "river_name": "ลำแซะ",
+    "province": "นครราชสีมา"
+  },
+  {
+    "station_id": "M.75",
+    "station_name": "โนนยาง",
+    "sequence_number": "229",
+    "irrigation_office": "สำนักงานชลประทานที่ 5",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยกว้าง",
+    "province": "อุบลราชธานี"
+  },
+  {
+    "station_id": "M.91",
+    "station_name": "โคกแดง",
+    "sequence_number": "231",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยสำราญ",
+    "province": "ศรีสะเกษ"
+  },
+  {
+    "station_id": "M.98",
+    "station_name": "พยุห์",
+    "sequence_number": "233",
+    "irrigation_office": "สำนักงานชลประทานที่ 8",
+    "river_basin": "น้ำมูล",
+    "river_name": "ห้วยทา",
+    "province": "ศรีสะเกษ"
+  },
+  {
+    "station_id": "N.14A",
+    "station_name": "วัดหลวงพ่อแก้ว",
+    "sequence_number": "287",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "น้ำน่าน",
+    "river_name": "แม่น้ำน่าน",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "N.28A",
+    "station_name": "บ้านนากล่ำ",
+    "sequence_number": "102",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "คลองตรอน",
+    "province": "อุตรดิตถ์"
+  },
+  {
+    "station_id": "N.37",
+    "station_name": "บ้านทับกฤช",
+    "sequence_number": "288",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "น้ำน่าน",
+    "river_name": "แม่น้ำน่าน",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "N.40",
+    "station_name": "บ้านหนองบอน",
+    "sequence_number": "104",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "แม่น้ำแควน้อย",
+    "province": "พิษณุโลก"
+  },
+  {
+    "station_id": "N.58",
+    "station_name": "บ้านกกม่วง",
+    "sequence_number": "108",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "น้ำเฟื้อ",
+    "province": "พิษณุโลก"
+  },
+  {
+    "station_id": "N.59",
+    "station_name": "บ้านนาโพธิ์นาจาน",
+    "sequence_number": "109",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "น้ำคาน",
+    "province": "พิษณุโลก"
+  },
+  {
+    "station_id": "N.62",
+    "station_name": "บ้านห้วยท่าเนื้อ",
+    "sequence_number": "111",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "น้ำคลึง",
+    "province": "พิษณุโลก"
+  },
+  {
+    "station_id": "N.63",
+    "station_name": "บ้านหัวเมือง",
+    "sequence_number": "20",
+    "irrigation_office": "สำนักงานชลประทานที่ 2",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "น้ำแหง",
+    "province": "น่าน"
+  },
+  {
+    "station_id": "N.66",
+    "station_name": "บ้านเนินเพิ่ม",
+    "sequence_number": "112",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "ห้วยออมสิงห์",
+    "province": "พิษณุโลก"
+  },
+  {
+    "station_id": "N.68",
+    "station_name": "ท่าตะเคียน",
+    "sequence_number": "113",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "แม่น้ำน่าน",
+    "province": "พิษณุโลก"
+  },
+  {
+    "station_id": "N.69",
+    "station_name": "บ้านนาทุ่งใหญ่",
+    "sequence_number": "114",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "แม่น้ำแควน้อย",
+    "province": "พิษณุโลก"
+  },
+  {
+    "station_id": "N.70",
+    "station_name": "บ้านโคกผักหวาน",
+    "sequence_number": "115",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "ห้วยน้ำคับ",
+    "province": "พิษณุโลก"
+  },
+  {
+    "station_id": "N.72",
+    "station_name": "บ้านวังปรากฏ",
+    "sequence_number": "116",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "คลองตรอน",
+    "province": "อุตรดิตถ์"
+  },
+  {
+    "station_id": "N.74",
+    "station_name": "บ้านบางกระทุ่ม",
+    "sequence_number": "118",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "แม่น้ำน่าน",
+    "province": "พิษณุโลก"
+  },
+  {
+    "station_id": "N.76",
+    "station_name": "บ้านหนองขอน",
+    "sequence_number": "290",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "น้ำน่าน",
+    "river_name": "คลองห้วยชัน",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "N.77",
+    "station_name": "บ้านคลองคล้า",
+    "sequence_number": "291",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "น้ำน่าน",
+    "river_name": "คลองท่ามะนาว",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "N.78",
+    "station_name": "บ้านหนองเต่าใต้",
+    "sequence_number": "292",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "น้ำน่าน",
+    "river_name": "คลองบ้านบึง",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "N.79",
+    "station_name": "บ้านยางใหญ่",
+    "sequence_number": "293",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "น้ำน่าน",
+    "river_name": "คลองห้วยรั้ว",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "N.8",
+    "station_name": "บ้านบางมูลนาก",
+    "sequence_number": "97",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "แม่น้ำน่าน",
+    "province": "พิจิตร"
+  },
+  {
+    "station_id": "N.80",
+    "station_name": "บ้านบางพระหลวง",
+    "sequence_number": "294",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "น้ำน่าน",
+    "river_name": "คลองเกรียงไกร",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "N.82",
+    "station_name": "บ้านแก่งทรายงาม",
+    "sequence_number": "120",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "ห้วยน้ำรี",
+    "province": "อุตรดิตถ์"
+  },
+  {
+    "station_id": "N.83",
+    "station_name": "บ้านกิ๋วเคียน",
+    "sequence_number": "121",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "ห้วยน้ำรี",
+    "province": "อุตรดิตถ์"
+  },
+  {
+    "station_id": "N.85",
+    "station_name": "สะพานแควใหญ่พัฒนา",
+    "sequence_number": "295",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "น้ำน่าน",
+    "river_name": "แม่น้ำน่าน",
+    "province": "นครสวรรค์"
+  },
+  {
+    "station_id": "N.86",
+    "station_name": "บ้านหนองแดง",
+    "sequence_number": "24",
+    "irrigation_office": "สำนักงานชลประทานที่ 2",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "น้ำน่าน",
+    "province": "น่าน"
+  },
+  {
+    "station_id": "N.87",
+    "station_name": "บ้านภูแยง",
+    "sequence_number": "25",
+    "irrigation_office": "สำนักงานชลประทานที่ 2",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "น้ำมวบ",
+    "province": "น่าน"
+  },
+  {
+    "station_id": "N.88",
+    "station_name": "บ้านกลาง",
+    "sequence_number": "26",
+    "irrigation_office": "สำนักงานชลประทานที่ 2",
+    "river_basin": "ลุ่มน้ำน่าน",
+    "river_name": "น้ำสา",
+    "province": "น่าน"
+  },
+  {
+    "station_id": "Ny.6",
+    "station_name": "บ้านชะอม",
+    "sequence_number": "395",
+    "irrigation_office": "สำนักงานชลประทานที่ 10",
+    "river_basin": "บางปะกง",
+    "river_name": "คลองบ้านนา",
+    "province": "สระบุรี"
+  },
+  {
+    "station_id": "P.104",
+    "station_name": "บ้านเกาะกลาง",
+    "sequence_number": "29",
+    "irrigation_office": "สำนักงานชลประทานที่ 1",
+    "river_basin": "ลุ่มน้ำปิง",
+    "river_name": "แม่น้ำปิง",
+    "province": "เชียงใหม่"
+  },
+  {
+    "station_id": "P.105",
+    "station_name": "บ้านสวนหลวง",
+    "sequence_number": "30",
+    "irrigation_office": "สำนักงานชลประทานที่ 1",
+    "river_basin": "ลุ่มน้ำปิง",
+    "river_name": "น้ำแม่ขนาด",
+    "province": "ลำพูน"
+  },
+  {
+    "station_id": "P.14",
+    "station_name": "แก่งออบหลวง",
+    "sequence_number": "31",
+    "irrigation_office": "สำนักงานชลประทานที่ 1",
+    "river_basin": "ลุ่มน้ำปิง",
+    "river_name": "น้ำแม่แจ่ม",
+    "province": "เชียงใหม่"
+  },
+  {
+    "station_id": "P.24D",
+    "station_name": "บ้านหลวงใต้",
+    "sequence_number": "36",
+    "irrigation_office": "สำนักงานชลประทานที่ 1",
+    "river_basin": "ลุ่มน้ำปิง",
+    "river_name": "น้ำแม่กลาง",
+    "province": "เชียงใหม่"
+  },
+  {
+    "station_id": "P.85A",
+    "station_name": "บ้านหล่ายแก้ว",
+    "sequence_number": "55",
+    "irrigation_office": "สำนักงานชลประทานที่ 1",
+    "river_basin": "ลุ่มน้ำปิง",
+    "river_name": "น้ำแม่ลี้",
+    "province": "ลำพูน"
+  },
+  {
+    "station_id": "P.90",
+    "station_name": "บ้านทับเดื่อ",
+    "sequence_number": "58",
+    "irrigation_office": "สำนักงานชลประทานที่ 1",
+    "river_basin": "ลุ่มน้ำปิง",
+    "river_name": "แม่น้ำปิง",
+    "province": "เชียงใหม่"
+  },
+  {
+    "station_id": "P.92A",
+    "station_name": "บ้านห้วยป่าซาง",
+    "sequence_number": "61",
+    "irrigation_office": "สำนักงานชลประทานที่ 1",
+    "river_basin": "ลุ่มน้ำปิง",
+    "river_name": "น้ำแม่แตง",
+    "province": "เชียงใหม่"
+  },
+  {
+    "station_id": "P.94",
+    "station_name": "บ้านเจียง",
+    "sequence_number": "63",
+    "irrigation_office": "สำนักงานชลประทานที่ 1",
+    "river_basin": "ลุ่มน้ำปิง",
+    "river_name": "น้ำแม่แจ่ม",
+    "province": "เชียงใหม่"
+  },
+  {
+    "station_id": "S.10",
+    "station_name": "บ้านหินฮาว",
+    "sequence_number": "150",
+    "irrigation_office": "สำนักงานชลประทานที่ 10",
+    "river_basin": " ลุ่มน้ำป่าสัก",
+    "river_name": "ห้วยน้ำพุง",
+    "province": "เพชรบูรณ์"
+  },
+  {
+    "station_id": "S.17",
+    "station_name": "บ้านฝายวังบน",
+    "sequence_number": "151",
+    "irrigation_office": "สำนักงานชลประทานที่ 10",
+    "river_basin": " ลุ่มน้ำป่าสัก",
+    "river_name": "ห้วยน้ำชุน",
+    "province": "เพชรบูรณ์"
+  },
+  {
+    "station_id": "S.36",
+    "station_name": "บ้านโนนทอง",
+    "sequence_number": "153",
+    "irrigation_office": "สำนักงานชลประทานที่ 10",
+    "river_basin": " ลุ่มน้ำป่าสัก",
+    "river_name": "แม่น้ำป่าสัก",
+    "province": "เพชรบูรณ์"
+  },
+  {
+    "station_id": "S.39",
+    "station_name": "บ้านบัวชุม",
+    "sequence_number": "340",
+    "irrigation_office": "สำนักงานชลประทานที่ 10",
+    "river_basin": "ป่าสัก",
+    "river_name": "แม่น้ำป่าสัก",
+    "province": "ลพบุรี"
+  },
+  {
+    "station_id": "S.40",
+    "station_name": "บ้านจงโก",
+    "sequence_number": "341",
+    "irrigation_office": "สำนักงานชลประทานที่ 10",
+    "river_basin": "ป่าสัก",
+    "river_name": "ลำสนธิ",
+    "province": "ลพบุรี"
+  },
+  {
+    "station_id": "S.44",
+    "station_name": "บ้านเสาไห้",
+    "sequence_number": "343",
+    "irrigation_office": "สำนักงานชลประทานที่ 10",
+    "river_basin": "ป่าสัก",
+    "river_name": "แม่น้ำป่าสัก",
+    "province": "สระบุรี"
+  },
+  {
+    "station_id": "S.47",
+    "station_name": "บ้านครัว",
+    "sequence_number": "344",
+    "irrigation_office": "สำนักงานชลประทานที่ 10",
+    "river_basin": "ป่าสัก",
+    "river_name": "คลองชัยนาท - ป่าสัก",
+    "province": "สระบุรี"
+  },
+  {
+    "station_id": "S.48",
+    "station_name": "วัดท่าช้างใต้",
+    "sequence_number": "345",
+    "irrigation_office": "สำนักงานชลประทานที่ 10",
+    "river_basin": "ป่าสัก",
+    "river_name": "แม่น้ำป่าสัก",
+    "province": "สระบุรี"
+  },
+  {
+    "station_id": "S.49",
+    "station_name": "วัดหัวหิน",
+    "sequence_number": "346",
+    "irrigation_office": "สำนักงานชลประทานที่ 10",
+    "river_basin": "ป่าสัก",
+    "river_name": "แม่น้ำป่าสัก",
+    "province": "พระนครศรีอยุธยา"
+  },
+  {
+    "station_id": "S.50",
+    "station_name": "สะพานพรหมรังส",
+    "sequence_number": "347",
+    "irrigation_office": "สำนักงานชลประทานที่ 10",
+    "river_basin": "ป่าสัก",
+    "river_name": "แม่น้ำป่าสัก",
+    "province": "พระนครศรีอยุธยา"
+  },
+  {
+    "station_id": "S.7A",
+    "station_name": "วัดท่าระหัด",
+    "sequence_number": "334",
+    "irrigation_office": "สำนักงานชลประทานที่ 10",
+    "river_basin": "ป่าสัก",
+    "river_name": "ลำมวกเหล็ก",
+    "province": "สระบุรี"
+  },
+  {
+    "station_id": "T.10 ",
+    "station_name": "บ้ำนวัดพระรูป",
+    "sequence_number": "464",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "ลุ่มน้ำหลัก",
+    "river_name": "แม่น้ำท่าจีน",
+    "province": "สุพรรณบุรี"
+  },
+  {
+    "station_id": "T.11",
+    "station_name": "บ้านผาทั่ง",
+    "sequence_number": "285",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "ท่าจีน",
+    "river_name": "ห้วยกระเสียว",
+    "province": "อุทัยธานี"
+  },
+  {
+    "station_id": "T.12A",
+    "station_name": "บ้านทับหมัน",
+    "sequence_number": "348",
+    "irrigation_office": "สำนักงานชลประทานที่ 12",
+    "river_basin": "ท่าจีน",
+    "river_name": "ห้วยกระเสียว",
+    "province": "สุพรรณบุรี"
+  },
+  {
+    "station_id": "Tl.3",
+    "station_name": "บ้านพังงอน",
+    "sequence_number": "397",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "โตนเลสาป",
+    "river_name": "คลองพระพุทธ",
+    "province": "จันทบุรี"
+  },
+  {
+    "station_id": "Tl.4",
+    "station_name": "บ้านคลองตาคง",
+    "sequence_number": "365",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "โตนเลสาป",
+    "river_name": "คลองตาคง",
+    "province": "จันทบุรี"
+  },
+  {
+    "station_id": "Tl.6",
+    "station_name": "บ้านทุ่งกร่าง",
+    "sequence_number": "366",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "โตนเลสาป",
+    "river_name": "คลองทุ่งกร่าง",
+    "province": "จันทบุรี"
+  },
+  {
+    "station_id": "X.109",
+    "station_name": "บ้านควนอินนอโม",
+    "sequence_number": "491",
+    "irrigation_office": "สำนักงานชลประทานที่ 16",
+    "river_basin": "ทะเลสาบสงขลา",
+    "river_name": "คลองบางแก้ว",
+    "province": "พัทลุง"
+  },
+  {
+    "station_id": "X.110",
+    "station_name": "บ้านลำภูรา",
+    "sequence_number": "492",
+    "irrigation_office": "สำนักงานชลประทานที่ 16",
+    "river_basin": "ภาคใต้ฝั่งตะวันตก",
+    "river_name": "คลองลำภูรา",
+    "province": "ตรัง"
+  },
+  {
+    "station_id": "X.113",
+    "station_name": "บ้านทุ่งปราบ",
+    "sequence_number": "528",
+    "irrigation_office": "สำนักงานชลประทานที่ 16",
+    "river_basin": "ทะเลสาบสงขลา",
+    "river_name": "คลองหล้าปัง",
+    "province": "สงขลา"
+  },
+  {
+    "station_id": "X.119 ",
+    "station_name": "บ้านมูโน๊ะ",
+    "sequence_number": "546",
+    "irrigation_office": "สำนักงานชลประทานที่ 17",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนล่าง",
+    "river_name": "แม่น้ำโก-ลก",
+    "province": "นราธิวาส"
+  },
+  {
+    "station_id": "X.129",
+    "station_name": "บ้านคลองอีโต",
+    "sequence_number": "529",
+    "irrigation_office": "สำนักงานชลประทานที่ 16",
+    "river_basin": "ทะเลสาบสงขลา",
+    "river_name": "คลองอีโต",
+    "province": "พัทลุง"
+  },
+  {
+    "station_id": "X.148",
+    "station_name": "บ้านอุไดใต้",
+    "sequence_number": "493",
+    "irrigation_office": "สำนักงานชลประทานที่ 15",
+    "river_basin": "ภาคใต้ฝั่งตะวันตก",
+    "river_name": "คลองลำโลน",
+    "province": "สตูล"
+  },
+  {
+    "station_id": "X.195",
+    "station_name": "บ้านต้นโพธิ์",
+    "sequence_number": "507",
+    "irrigation_office": "สำนักงานชลประทานที่ 15",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนบน",
+    "river_name": "แม่น้ำตาปี",
+    "province": "นครศรีธรรมราช"
+  },
+  {
+    "station_id": "X.205",
+    "station_name": "บ้านละอุ่นใต้",
+    "sequence_number": "494",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ภาคใต้ฝั่งตะวันตก",
+    "river_name": "คลองละอุ่น",
+    "province": "ระนอง"
+  },
+  {
+    "station_id": "X.208A",
+    "station_name": "บ้านทุ่งใหญ่",
+    "sequence_number": "566",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ภาคใต้ฝั่งตะวันตก",
+    "river_name": "คลองกะเปอร์",
+    "province": "ระนอง"
+  },
+  {
+    "station_id": "X.214",
+    "station_name": "บ้านเขาหลวง",
+    "sequence_number": "484",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนบน",
+    "river_name": "คลองละแม (ล่าง)",
+    "province": "ชุมพร"
+  },
+  {
+    "station_id": "X.228",
+    "station_name": "บ้านกลาง",
+    "sequence_number": "568",
+    "irrigation_office": "สำนักงานชลประทานที่ 16",
+    "river_basin": "ภาคใต้ฝั่งตะวันตก",
+    "river_name": "แม่น้ำตรัง",
+    "province": "ตรัง"
+  },
+  {
+    "station_id": "X.272",
+    "station_name": "บ้านลาคอ",
+    "sequence_number": "550",
+    "irrigation_office": "สำนักงานชลประทานที่ 17",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนล่าง",
+    "river_name": "แม่น้ำสายบุรี",
+    "province": "ปัตตานี"
+  },
+  {
+    "station_id": "X.276",
+    "station_name": "บ้านเขาปู่",
+    "sequence_number": "537",
+    "irrigation_office": "สำนักงานชลประทานที่ 16",
+    "river_basin": "ทะเลสาบสงขลา",
+    "river_name": "คลองท่าแนะ (บน)",
+    "province": "พัทลุง"
+  },
+  {
+    "station_id": "X.277",
+    "station_name": "บ้านพิกุลทอง",
+    "sequence_number": "538",
+    "irrigation_office": "สำนักงานชลประทานที่ 16",
+    "river_basin": "ทะเลสาบสงขลา",
+    "river_name": "คลองท่าแนะ (ล่าง)",
+    "province": "พัทลุง"
+  },
+  {
+    "station_id": "X.283",
+    "station_name": "บ้านปรีกี",
+    "sequence_number": "554",
+    "irrigation_office": "สำนักงานชลประทานที่ 17",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนล่าง",
+    "river_name": "แม่น้ำปัตตานี",
+    "province": "ปัตตานี"
+  },
+  {
+    "station_id": "X.284",
+    "station_name": "สะพานราเมศวร์",
+    "sequence_number": "485",
+    "irrigation_office": "สำนักงานชลประทานที่ 15",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนบน",
+    "river_name": "คลองท่าวัง (ท่าซัก)",
+    "province": "นครศรีธรรมราช"
+  },
+  {
+    "station_id": "X.285",
+    "station_name": "สนามหน้าเมือง",
+    "sequence_number": "520",
+    "irrigation_office": "สำนักงานชลประทานที่ 15",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนบน",
+    "river_name": "คลองนครน้อย",
+    "province": "นครศรีธรรมราช"
+  },
+  {
+    "station_id": "X.286",
+    "station_name": "ชุมชนหอไตร",
+    "sequence_number": "486",
+    "irrigation_office": "สำนักงานชลประทานที่ 15",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนบน",
+    "river_name": "คลองป่าเหล้า",
+    "province": "นครศรีธรรมราช"
+  },
+  {
+    "station_id": "X.287",
+    "station_name": "ชุมชนเพชรจริก",
+    "sequence_number": "487",
+    "irrigation_office": "สำนักงานชลประทานที่ 15",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนบน",
+    "river_name": "คลองสวนหลวง",
+    "province": "นครศรีธรรมราช"
+  },
+  {
+    "station_id": "X.288",
+    "station_name": "ชุมชนเพชรจริก",
+    "sequence_number": "488",
+    "irrigation_office": "สำนักงานชลประทานที่ 15",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนบน",
+    "river_name": "คลองคูพาย",
+    "province": "นครศรีธรรมราช"
+  },
+  {
+    "station_id": "X.289",
+    "station_name": "วัดถลุงทอง",
+    "sequence_number": "521",
+    "irrigation_office": "สำนักงานชลประทานที่ 15",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนบน",
+    "river_name": "คลองเสาธง",
+    "province": "นครศรีธรรมราช"
+  },
+  {
+    "station_id": "X.290A",
+    "station_name": "บ้านเจ็ดท่อ",
+    "sequence_number": "579",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ภาคใต้ฝั่งตะวันตก",
+    "river_name": "คลองโรงหัด",
+    "province": "ระนอง"
+  },
+  {
+    "station_id": "X.291",
+    "station_name": "บ้านช้างเชื่อ",
+    "sequence_number": "496",
+    "irrigation_office": "สำนักงานชลประทานที่ 15",
+    "river_basin": "ภาคใต้ฝั่งตะวันตก",
+    "river_name": "คลองเหล",
+    "province": "พังงา"
+  },
+  {
+    "station_id": "X.36",
+    "station_name": "บ้านท่าขนอน",
+    "sequence_number": "498",
+    "irrigation_office": "สำนักงานชลประทานที่ 15",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนบน",
+    "river_name": "คลองพุมดวง",
+    "province": "สุราษฎร์ธานี"
+  },
+  {
+    "station_id": "X.40A",
+    "station_name": "บ้านท่าสาป",
+    "sequence_number": "541",
+    "irrigation_office": "สำนักงานชลประทานที่ 17",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนล่าง",
+    "river_name": "แม่น้ำปัตตานี",
+    "province": "ยะลา"
+  },
+  {
+    "station_id": "X.40B",
+    "station_name": "ท้ายเขื่อนปัตตานี",
+    "sequence_number": "542",
+    "irrigation_office": "สำนักงานชลประทานที่ 17",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนล่าง",
+    "river_name": "แม่น้ำปัตตานี",
+    "province": "ยะลา"
+  },
+  {
+    "station_id": "X.44  ",
+    "station_name": "บ้านหาดใหญ่ใน",
+    "sequence_number": "522",
+    "irrigation_office": "สำนักงานชลประทานที่ 16",
+    "river_basin": "ทะเลสาบสงขลา",
+    "river_name": "คลองอู่ตะเภา",
+    "province": "สงขลา"
+  },
+  {
+    "station_id": "X.46",
+    "station_name": "บ้านท่าข้าม",
+    "sequence_number": "500",
+    "irrigation_office": "สำนักงานชลประทานที่ 14",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนบน",
+    "river_name": "คลองรับร่อ",
+    "province": "ชุมพร"
+  },
+  {
+    "station_id": "X.77",
+    "station_name": "บ้านหัวสะพาน",
+    "sequence_number": "545",
+    "irrigation_office": "สำนักงานชลประทานที่ 17",
+    "river_basin": "ภาคใต้ฝั่งตะวันออกตอนล่าง",
+    "river_name": "แม่น้ำปัตตานี",
+    "province": "ยะลา"
+  },
+  {
+    "station_id": "Y.29",
+    "station_name": "บ้านแม่ฮู้",
+    "sequence_number": "133",
+    "irrigation_office": "สำนักงานชลประทานที่ 4",
+    "river_basin": "ลุ่มน้ำยม",
+    "river_name": "ห้วยแม่ฮู้",
+    "province": "สุโขทัย"
+  },
+  {
+    "station_id": "Y.36",
+    "station_name": "บ้านป่าคา",
+    "sequence_number": "87",
+    "irrigation_office": "สำนักงานชลประทานที่ 2",
+    "river_basin": "ลุ่มน้ำยม",
+    "river_name": "น้ำควร",
+    "province": "พะเยา"
+  },
+  {
+    "station_id": "Y.37A",
+    "station_name": "บ้านวังชิ้น",
+    "sequence_number": "89",
+    "irrigation_office": "สำนักงานชลประทานที่ 4",
+    "river_basin": "ลุ่มน้ำยม",
+    "river_name": "แม่น้ำยม",
+    "province": "แพร่"
+  },
+  {
+    "station_id": "Y.40",
+    "station_name": "หน้าวัดคงคาราม",
+    "sequence_number": "135",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำยม",
+    "river_name": "แม่น้ำยม",
+    "province": "พิจิตร"
+  },
+  {
+    "station_id": "Y.42",
+    "station_name": "ท่าตะคล้อ",
+    "sequence_number": "136",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำยม",
+    "river_name": "แม่น้ำยม",
+    "province": "พิจิตร"
+  },
+  {
+    "station_id": "Y.5",
+    "station_name": "หน้าอำเภอโพทะเล",
+    "sequence_number": "125",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำยม",
+    "river_name": "แม่น้ำยม",
+    "province": "พิจิตร"
+  },
+  {
+    "station_id": "Y.6",
+    "station_name": "บ้านแก่งหลวง",
+    "sequence_number": "126",
+    "irrigation_office": "สำนักงานชลประทานที่ 3",
+    "river_basin": "ลุ่มน้ำยม",
+    "river_name": "แม่น้ำยม",
+    "province": "สุโขทัย"
+  },
+  {
+    "station_id": "Y.66",
+    "station_name": "บ้านวังดิน",
+    "sequence_number": "92",
+    "irrigation_office": "สำนักงานชลประทานที่ 4",
+    "river_basin": "ลุ่มน้ำยม",
+    "river_name": "แม่น้ำยม",
+    "province": "แพร่"
+  },
+  {
+    "station_id": "Y.67",
+    "station_name": "บ้านหนุนใต้",
+    "sequence_number": "93",
+    "irrigation_office": "สำนักงานชลประทานที่ 4",
+    "river_basin": "ลุ่มน้ำยม",
+    "river_name": "แม่น้ำยม",
+    "province": "แพร่"
+  },
+  {
+    "station_id": "Z.30",
+    "station_name": "บ้านหนองบัว",
+    "sequence_number": "404",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "ฝั่งทะเลตะวันออก",
+    "river_name": "คลองสะตอ",
+    "province": "ตราด"
+  },
+  {
+    "station_id": "Z.45",
+    "station_name": "บ้านหนองบอน",
+    "sequence_number": "406",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "ฝั่งทะเลตะวันออก",
+    "river_name": "คลองคอแล",
+    "province": "ตราด"
+  },
+  {
+    "station_id": "Z.46",
+    "station_name": "บ้านนนทรีย์",
+    "sequence_number": "368",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "ชายฝั่งทะเลตะวันออก",
+    "river_name": "คลองโสน",
+    "province": "ตราด"
+  },
+  {
+    "station_id": "Z.47A",
+    "station_name": "บ้านคลองขวาง",
+    "sequence_number": "407",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "ฝั่งทะเลตะวันออก",
+    "river_name": "คลองจันทิ",
+    "province": "ตราด"
+  },
+  {
+    "station_id": "Z.52",
+    "station_name": "บ้านคลองยายไท",
+    "sequence_number": "369",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "ชายฝั่งทะเลตะวันออก",
+    "river_name": "คลองพรานบุญ",
+    "province": "จันทบุรี"
+  },
+  {
+    "station_id": "Z.53",
+    "station_name": "บ้านทุ่งตาอิน",
+    "sequence_number": "370",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "ชายฝั่งทะเลตะวันออก",
+    "river_name": "แม่น้ำจันทบุรี",
+    "province": "จันทบุรี"
+  },
+  {
+    "station_id": "Z.55",
+    "station_name": "บ้านวังจะอ้าย",
+    "sequence_number": "371",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "ชายฝั่งทะเลตะวันออก",
+    "river_name": "แม่น้ำจันทบุรี",
+    "province": "จันทบุรี"
+  },
+  {
+    "station_id": "Z.56",
+    "station_name": "บ้านตะบกเตี้ย",
+    "sequence_number": "372",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "ชายฝั่งทะเลตะวันออก",
+    "river_name": "คลองทุ่งเพล",
+    "province": "จันทบุรี"
+  },
+  {
+    "station_id": "Z.59",
+    "station_name": "บ้านบ่อไร่",
+    "sequence_number": "410",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "ฝั่งทะเลตะวันออก",
+    "river_name": "คลองบ่อไร่",
+    "province": "ตราด"
+  },
+  {
+    "station_id": "Z.65",
+    "station_name": "บ้านวังอีแอ่น",
+    "sequence_number": "413",
+    "irrigation_office": "สำนักงานชลประทานที่ 9",
+    "river_basin": "ฝั่งทะเลตะวันออก",
+    "river_name": "คลองประแกต",
+    "province": "จันทบุรี"
+  }
+]

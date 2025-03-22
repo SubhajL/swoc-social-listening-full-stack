@@ -1,0 +1,346 @@
+[
+  {
+    "id": 332,
+    "station_code": "01",
+    "station_name": "Station 01",
+    "station_id": "609",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 333,
+    "station_code": "02",
+    "station_name": "Station 02",
+    "station_id": "610",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 334,
+    "station_code": "03",
+    "station_name": "Station 03",
+    "station_id": "611",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 335,
+    "station_code": "04",
+    "station_name": "Station 04",
+    "station_id": "607",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 336,
+    "station_code": "05",
+    "station_name": "Station 05",
+    "station_id": "608",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 337,
+    "station_code": "C.30",
+    "station_name": "Station C.30",
+    "station_id": "324",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 338,
+    "station_code": "E.2A",
+    "station_name": "Station E.2A",
+    "station_id": "190",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 339,
+    "station_code": "E.95A",
+    "station_name": "Station E.95A",
+    "station_id": "213",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 340,
+    "station_code": "K.56A",
+    "station_name": "Station K.56A",
+    "station_id": "651",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 341,
+    "station_code": "Kgt.34",
+    "station_name": "Station Kgt.34",
+    "station_id": "366",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 342,
+    "station_code": "Kh.1",
+    "station_name": "Station Kh.1",
+    "station_id": "215",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 343,
+    "station_code": "Kh.100",
+    "station_name": "Station Kh.100",
+    "station_id": "230",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 344,
+    "station_code": "Kh.103",
+    "station_name": "Station Kh.103",
+    "station_id": "232",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 345,
+    "station_code": "Kh.104",
+    "station_name": "Station Kh.104",
+    "station_id": "233",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 346,
+    "station_code": "Kh.16B",
+    "station_name": "Station Kh.16B",
+    "station_id": "216",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 347,
+    "station_code": "Kh.28A",
+    "station_name": "Station Kh.28A",
+    "station_id": "218",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 348,
+    "station_code": "Kh.58A",
+    "station_name": "Station Kh.58A",
+    "station_id": "220",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 349,
+    "station_code": "Kh.61",
+    "station_name": "Station Kh.61",
+    "station_id": "221",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 350,
+    "station_code": "Kh.74",
+    "station_name": "Station Kh.74",
+    "station_id": "222",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 351,
+    "station_code": "Kh.97",
+    "station_name": "Station Kh.97",
+    "station_id": "228",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 352,
+    "station_code": "M.199",
+    "station_name": "Station M.199",
+    "station_id": "637",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 353,
+    "station_code": "M.210",
+    "station_name": "Station M.210",
+    "station_id": "649",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 354,
+    "station_code": "N.39",
+    "station_name": "Station N.39",
+    "station_id": "106",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 355,
+    "station_code": "N.89",
+    "station_name": "Station N.89",
+    "station_id": "643",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 356,
+    "station_code": "N.8B",
+    "station_name": "Station N.8B",
+    "station_id": "654",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 357,
+    "station_code": "P.47A",
+    "station_name": "Station P.47A",
+    "station_id": "81",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 358,
+    "station_code": "Pr.1",
+    "station_name": "Station Pr.1",
+    "station_id": "467",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 359,
+    "station_code": "S.51",
+    "station_name": "Station S.51",
+    "station_id": "660",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 360,
+    "station_code": "S.52",
+    "station_name": "Station S.52",
+    "station_id": "661",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 361,
+    "station_code": "T.10",
+    "station_name": "Station T.10",
+    "station_id": "455",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 362,
+    "station_code": "TS.2",
+    "station_name": "Station TS.2",
+    "station_id": "605",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 363,
+    "station_code": "X.119",
+    "station_name": "Station X.119",
+    "station_id": "513",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 364,
+    "station_code": "X.176",
+    "station_name": "Station X.176",
+    "station_id": "656",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 365,
+    "station_code": "X.292",
+    "station_name": "Station X.292",
+    "station_id": "669",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 366,
+    "station_code": "X.293",
+    "station_name": "Station X.293",
+    "station_id": "670",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 367,
+    "station_code": "X.294",
+    "station_name": "Station X.294",
+    "station_id": "672",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 368,
+    "station_code": "X.295",
+    "station_name": "Station X.295",
+    "station_id": "657",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 369,
+    "station_code": "X.296",
+    "station_name": "Station X.296",
+    "station_id": "658",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 370,
+    "station_code": "X.44",
+    "station_name": "Station X.44",
+    "station_id": "469",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 371,
+    "station_code": "Y.50",
+    "station_name": "Station Y.50",
+    "station_id": "639",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 372,
+    "station_code": "Y.51",
+    "station_name": "Station Y.51",
+    "station_id": "640",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 373,
+    "station_code": "Y.52",
+    "station_name": "Station Y.52",
+    "station_id": "641",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "id": 374,
+    "station_code": "Y.6A",
+    "station_name": "Station Y.6A",
+    "station_id": "642",
+    "latitude": null,
+    "longitude": null
+  }
+]

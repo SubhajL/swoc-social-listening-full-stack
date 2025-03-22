@@ -1,0 +1,2592 @@
+[
+  {
+    "stationcode": "01",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "02",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "03",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "04",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "05",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "B.10",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "B.11",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "B.15",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "B.16",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "B.18",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "B.3A",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "B.6A",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "B.8A",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "B.9",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "C.12",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.13",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.2",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.22A",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.29A",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.3",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.30",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.35",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.36",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.37",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.38",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.67",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.68",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.7A",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "Ct.19",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "Ct.25",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "Ct.2A",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "Ct.4",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "Ct.5A",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "Ct.7",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "Ct.8",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "Ct.9",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "E.18",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.20A",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.22B",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.23",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.2A",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.66A",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.75",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.87",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.9",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.91",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.92",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.95A",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.97",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.98",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "G.10",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "G.11",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "G.13",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "G.8",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "G.9",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Gt.10",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "Gt.11",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "Gt.20",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "Gt.21",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "Gt.7",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "Gt.9",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "I.17",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "K.10",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.11A",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.12",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.25A",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.2B",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.31",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.32A",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.35A",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.37",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.3A",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.49",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.54",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.55A",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.56A",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.57",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.58",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.61",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "K.62",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "Kgt.1",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kgt.10",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kgt.12A",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kgt.13A",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kgt.14A",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kgt.15B",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kgt.19A",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kgt.3",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kgt.30",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kgt.34",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kgt.43A",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kgt.6",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kgt.9",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kh.1",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.100",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.103",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.104",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.16B",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.28A",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.58A",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.61",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.72",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Kh.74",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.89",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Kh.97",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Ky.3",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "M.104",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.11B",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.157",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.159",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.164",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.170",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.171",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.173",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.176",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.177",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.179A",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.180",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.182",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.183B",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.184",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.185A",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.186",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.187",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.188A",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.190",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.191",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.192",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.195",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.199",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.26A",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.2A",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.32",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.4",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.42",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.43A",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.5",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.66",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.69",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.6A",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.7",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.89",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.9",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "M.95A",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "N.1",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "N.12A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.13A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "N.22A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.24A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.27A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.2B",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.36",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.39",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.43A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.49",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "N.54",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.55",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.5A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.60",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.64",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "N.65",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "N.67",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "N.73",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.75",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "N.7A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.80",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "N.81",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.84",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.89",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.8B",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Ny.1B",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Ny.3",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Ny.7",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "P.1",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.103",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.12C",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "P.14A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.15",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "P.16",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "P.17",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "P.20",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.21",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.24A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.26A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "P.2A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "P.47A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "P.4A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.5",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.50A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "P.56A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.64",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.65",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.67",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.71A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.73",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.73A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.75",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.76",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.77",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.78",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "P.79",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.7A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "P.80",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.81",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.82",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.84",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.85",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.86",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.87",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.91",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.92",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "P.93",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Pr.1",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "S.14",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "S.26",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "S.28",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "S.3",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "S.32",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "S.33",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "S.42",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "S.43",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "S.4B",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "S.5",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "S.51",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "S.52",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "S.9",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "Sw.5A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "T.1",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "T.10",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "T.13",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "T.14",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "T.15",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "TS.2",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "W.10A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.10B",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.16A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.17",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.17A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.18A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.1C",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.20",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.21",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.22",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.23",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "W.24",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "W.25",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.26",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.3A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.4A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "W.5A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "W.6A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "X.10A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.113",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.119",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.119A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.139A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.149",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.150",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.158",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.167",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.170",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.173A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.174",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.175",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.176",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.180",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.181",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.184",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.186",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.187",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.188A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.190A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.191",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.195",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.196",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.198",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.199",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.200",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.201A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.203",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.207",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.207A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.209",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.212",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.213",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.217",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.228",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.231A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.233",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.234",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.236",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.239",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.240",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.243",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.245",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.248",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.258",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.265",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.269",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.272A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.273",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.274",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.275",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.276",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.277",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.279",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.280",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.281",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.282",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.283",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.285",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.289",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.292",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.293",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.294",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.295",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.296",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.36",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.37A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.40A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.44",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.47",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.53A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.55",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.56",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.5C",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.64",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.67A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.68",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.70",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.71B",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.73",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.73A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.77",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.90",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "Y.13A",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Y.14A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.15",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.16",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.17",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.1C",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Y.20",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Y.21",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.24",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Y.26",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.30",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Y.31",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Y.33",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.34",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Y.37",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Y.38",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Y.3A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.4",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.50",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.51",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.52",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.64",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.65",
+    "count": 1,
+    "hydroids": [
+      1
+    ]
+  },
+  {
+    "stationcode": "Y.6A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Z.10",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Z.11",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Z.13",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Z.14",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Z.21",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Z.28",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Z.38",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Z.57",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Z.58",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Z.62",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Z.64",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  }
+]

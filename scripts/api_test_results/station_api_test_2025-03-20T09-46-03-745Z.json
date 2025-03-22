@@ -1,0 +1,1059 @@
+{
+  "apiStations": [
+    {
+      "stationId": "01",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "02",
+      "status": "success",
+      "hasData": true,
+      "dataCount": 1,
+      "data": [
+        {
+          "hourlytime": "/Date(1742425200000+0700)/",
+          "hourlytimeUTC": "2025-03-20T06:00:00.0000000Z",
+          "indexhourlywaterlevel": 0,
+          "notationString": null,
+          "notationid": 0,
+          "qavrvalues": null,
+          "qvalues": 1.399999976158142,
+          "stationcode": null,
+          "stationid": 2,
+          "wlvalues": 0.5299999713897705,
+          "wlvaluesabove": null
+        }
+      ]
+    },
+    {
+      "stationId": "03",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "04",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "05",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "C.30",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "E.2A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "E.95A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "K.56A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kgt.34",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kh.1",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kh.100",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kh.103",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kh.104",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kh.16B",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kh.28A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kh.58A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kh.61",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kh.74",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kh.97",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.199",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.210",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.5A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "N.39",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "N.89",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "N.8B",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "P.47A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Pr.1",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "S.46",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "S.51",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "S.52",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "T.10",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "T.5",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "TS.2",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.119",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.176",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.292",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.293",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.294",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.295",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.296",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.44",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Y.49",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Y.50",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Y.51",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Y.52",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Y.6A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    }
+  ],
+  "nonApiStations": [
+    {
+      "stationId": "690371",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "P.92",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Z.47A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "KH.28A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kgt.9",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.184",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.32",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.66",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "T.12A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "K.56",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "690151 (C.30)",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.272",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "C.65",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.180",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Y.1C",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.200",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "N.43A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "P.85",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "090171 (Kgt.19) ",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "E.29A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.2A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "E.18",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kgt.12A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.240",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.282",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Z.14",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "N.72",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "KH.93",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Y.6",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Y.31",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.214",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.273",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Gt.20",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Y.15",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "K.58",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.190A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "E.22B",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.231A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.50",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "P.7A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "P.56A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.176",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kgt.38",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "N.66",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "P.73A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.150",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "P.81",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "T.11",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "K.10",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.43A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.248",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "P.75",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.71B",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "G.2A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Z.21",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "S.40",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Y.67",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "N.68",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.5",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "W.17",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.185A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "P.105",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.160",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "260451",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "N.36",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "P.2A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Z.10",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "C.37",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Y.30",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Z.55",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "C.22A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "440401",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.53A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Gt.12A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "E.90",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "S.10",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "KH.115",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "E.54",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "N.54",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Tl.4",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "S.39",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.112",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.155",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "W.1C",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Z.28",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "E.92",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kgt.40",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "P.21",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "K.25A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kgt.44",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "N.7A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.286",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "N.60",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "K.57",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "E.64A",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Kh.72",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "Y.40",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "M.104",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "X.203",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    },
+    {
+      "stationId": "B.10",
+      "status": "success",
+      "hasData": false,
+      "dataCount": 0,
+      "data": []
+    }
+  ],
+  "summary": {
+    "totalTested": 147,
+    "successCount": 147,
+    "errorCount": 0,
+    "withDataCount": 1,
+    "apiStationsWithData": 1,
+    "nonApiStationsWithData": 0,
+    "startTime": "2025-03-20T09:43:03.625Z",
+    "endTime": "2025-03-20T09:46:03.744Z"
+  }
+}

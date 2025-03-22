@@ -1,0 +1,101 @@
+{
+  "telemetry_data_stations": [
+    {
+      "id": 332,
+      "station_id": "01",
+      "station_name": "Station 01",
+      "category": "API-only",
+      "numeric_station_id": "609",
+      "latitude": null,
+      "longitude": null,
+      "province_name": null,
+      "amphure_name": null,
+      "has_data": true
+    },
+    {
+      "id": 333,
+      "station_id": "02",
+      "station_name": "Station 02",
+      "category": "API-only",
+      "numeric_station_id": "610",
+      "latitude": null,
+      "longitude": null,
+      "province_name": null,
+      "amphure_name": null,
+      "has_data": true
+    },
+    {
+      "id": 334,
+      "station_id": "03",
+      "station_name": "Station 03",
+      "category": "API-only",
+      "numeric_station_id": "611",
+      "latitude": null,
+      "longitude": null,
+      "province_name": null,
+      "amphure_name": null,
+      "has_data": true
+    },
+    {
+      "id": 335,
+      "station_id": "04",
+      "station_name": "Station 04",
+      "category": "API-only",
+      "numeric_station_id": "607",
+      "latitude": null,
+      "longitude": null,
+      "province_name": null,
+      "amphure_name": null,
+      "has_data": true
+    },
+    {
+      "id": 336,
+      "station_id": "05",
+      "station_name": "Station 05",
+      "category": "API-only",
+      "numeric_station_id": "608",
+      "latitude": null,
+      "longitude": null,
+      "province_name": null,
+      "amphure_name": null,
+      "has_data": true
+    },
+    {
+      "id": 353,
+      "station_id": "M.210",
+      "station_name": "Station M.210",
+      "category": "API-only",
+      "numeric_station_id": "649",
+      "latitude": null,
+      "longitude": null,
+      "province_name": null,
+      "amphure_name": null,
+      "has_data": true
+    },
+    {
+      "id": 368,
+      "station_id": "X.295",
+      "station_name": "Station X.295",
+      "category": "API-only",
+      "numeric_station_id": "657",
+      "latitude": null,
+      "longitude": null,
+      "province_name": null,
+      "amphure_name": null,
+      "has_data": true
+    },
+    {
+      "id": 369,
+      "station_id": "X.296",
+      "station_name": "Station X.296",
+      "category": "API-only",
+      "numeric_station_id": "658",
+      "latitude": null,
+      "longitude": null,
+      "province_name": null,
+      "amphure_name": null,
+      "has_data": true
+    }
+  ],
+  "telemetry_station": []
+}

@@ -1,0 +1,303 @@
+[
+  {
+    "stationcode": "01",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "02",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "03",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "04",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "05",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "C.30",
+    "count": 1,
+    "hydroids": [
+      5
+    ]
+  },
+  {
+    "stationcode": "E.2A",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "E.95A",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "K.56A",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "Kgt.34",
+    "count": 1,
+    "hydroids": [
+      6
+    ]
+  },
+  {
+    "stationcode": "Kh.1",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.100",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.103",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.104",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.16B",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.28A",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.58A",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.61",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.74",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "Kh.97",
+    "count": 1,
+    "hydroids": [
+      3
+    ]
+  },
+  {
+    "stationcode": "M.199",
+    "count": 1,
+    "hydroids": [
+      4
+    ]
+  },
+  {
+    "stationcode": "N.39",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.89",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "N.8B",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "P.47A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Pr.1",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "S.51",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "S.52",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "T.10",
+    "count": 1,
+    "hydroids": [
+      7
+    ]
+  },
+  {
+    "stationcode": "TS.2",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "X.119",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.176",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.272A",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.292",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.293",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.294",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.295",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.296",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "X.44",
+    "count": 1,
+    "hydroids": [
+      8
+    ]
+  },
+  {
+    "stationcode": "Y.50",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.51",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.52",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  },
+  {
+    "stationcode": "Y.6A",
+    "count": 1,
+    "hydroids": [
+      2
+    ]
+  }
+]

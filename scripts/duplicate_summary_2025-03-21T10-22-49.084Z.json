@@ -1,0 +1,31 @@
+{
+  "total_records": 359,
+  "duplicate_station_id": {
+    "count": 0,
+    "affected_records": 0
+  },
+  "duplicate_station_code": {
+    "count": 0,
+    "affected_records": 0
+  },
+  "duplicate_numeric_station_id": {
+    "count": 2,
+    "affected_records": "022"
+  },
+  "duplicate_id_code_combo": {
+    "count": 0,
+    "affected_records": 0
+  },
+  "duplicate_id_numeric_combo": {
+    "count": 0,
+    "affected_records": 0
+  },
+  "duplicate_code_numeric_combo": {
+    "count": 0,
+    "affected_records": 0
+  },
+  "complete_duplicates": {
+    "count": 0,
+    "affected_records": 0
+  }
+}

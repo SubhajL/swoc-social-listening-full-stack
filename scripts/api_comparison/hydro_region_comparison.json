@@ -1,0 +1,82 @@
+[
+  {
+    "hydro_id": 1,
+    "hourly_stations_count": 69,
+    "daily_stations_count": 68,
+    "common_stations_count": 68,
+    "only_in_hourly_count": 1,
+    "only_in_daily_count": 0,
+    "all_stations": 69,
+    "hydro_name": "Hydro Region 1"
+  },
+  {
+    "hydro_id": 2,
+    "hourly_stations_count": 51,
+    "daily_stations_count": 52,
+    "common_stations_count": 51,
+    "only_in_hourly_count": 0,
+    "only_in_daily_count": 1,
+    "all_stations": 52,
+    "hydro_name": "Hydro Region 2"
+  },
+  {
+    "hydro_id": 3,
+    "hourly_stations_count": 23,
+    "daily_stations_count": 22,
+    "common_stations_count": 22,
+    "only_in_hourly_count": 1,
+    "only_in_daily_count": 0,
+    "all_stations": 23,
+    "hydro_name": "Hydro Region 3"
+  },
+  {
+    "hydro_id": 4,
+    "hourly_stations_count": 39,
+    "daily_stations_count": 42,
+    "common_stations_count": 39,
+    "only_in_hourly_count": 0,
+    "only_in_daily_count": 3,
+    "all_stations": 42,
+    "hydro_name": "Hydro Region 4"
+  },
+  {
+    "hydro_id": 5,
+    "hourly_stations_count": 37,
+    "daily_stations_count": 28,
+    "common_stations_count": 28,
+    "only_in_hourly_count": 9,
+    "only_in_daily_count": 0,
+    "all_stations": 37,
+    "hydro_name": "Hydro Region 5"
+  },
+  {
+    "hydro_id": 6,
+    "hourly_stations_count": 27,
+    "daily_stations_count": 29,
+    "common_stations_count": 27,
+    "only_in_hourly_count": 0,
+    "only_in_daily_count": 2,
+    "all_stations": 29,
+    "hydro_name": "Hydro Region 6"
+  },
+  {
+    "hydro_id": 7,
+    "hourly_stations_count": 40,
+    "daily_stations_count": 39,
+    "common_stations_count": 39,
+    "only_in_hourly_count": 1,
+    "only_in_daily_count": 0,
+    "all_stations": 40,
+    "hydro_name": "Hydro Region 7"
+  },
+  {
+    "hydro_id": 8,
+    "hourly_stations_count": 83,
+    "daily_stations_count": 75,
+    "common_stations_count": 71,
+    "only_in_hourly_count": 12,
+    "only_in_daily_count": 4,
+    "all_stations": 87,
+    "hydro_name": "Hydro Region 8"
+  }
+]

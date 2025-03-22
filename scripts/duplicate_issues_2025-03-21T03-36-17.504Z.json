@@ -1,0 +1,72 @@
+[
+  {
+    "numeric_station_id": "459",
+    "data_source": "RID",
+    "duplicate_count": "2",
+    "id": 6,
+    "station_id": "B.3A",
+    "station_code": "B.3A",
+    "station_name": "บ้านสองพี่น้อง",
+    "category": "Common"
+  },
+  {
+    "numeric_station_id": "459",
+    "data_source": "RID",
+    "duplicate_count": "2",
+    "id": 320,
+    "station_id": "T.10 ",
+    "station_code": "T.10 ",
+    "station_name": "บ้ำนวัดพระรูป",
+    "category": "DB-only"
+  },
+  {
+    "numeric_station_id": "483",
+    "data_source": "RID",
+    "duplicate_count": "3",
+    "id": 220,
+    "station_id": "X.158",
+    "station_code": "X.158",
+    "station_name": "บ้านวังครก",
+    "category": "Common"
+  },
+  {
+    "numeric_station_id": "483",
+    "data_source": "RID",
+    "duplicate_count": "3",
+    "id": 318,
+    "station_id": "Kgt.34 ",
+    "station_code": "Kgt.34 ",
+    "station_name": "บ้านชะอม",
+    "category": "DB-only"
+  },
+  {
+    "numeric_station_id": "483",
+    "data_source": "RID",
+    "duplicate_count": "3",
+    "id": 321,
+    "station_id": "Gt.1 ",
+    "station_code": "Gt.1 ",
+    "station_name": "บ้านเขาแดง",
+    "category": "DB-only"
+  },
+  {
+    "numeric_station_id": "592",
+    "data_source": "RID",
+    "duplicate_count": "2",
+    "id": 257,
+    "station_id": "X.269",
+    "station_code": "X.269",
+    "station_name": "บ้านห้วยใหญ่",
+    "category": "Common"
+  },
+  {
+    "numeric_station_id": "592",
+    "data_source": "RID",
+    "duplicate_count": "2",
+    "id": 325,
+    "station_id": "X.44  ",
+    "station_code": "X.44  ",
+    "station_name": "บ้านหาดใหญ่ใน",
+    "category": "DB-only"
+  }
+]

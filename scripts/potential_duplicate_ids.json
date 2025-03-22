@@ -1,0 +1,37 @@
+[
+  {
+    "new_station_id": "483",
+    "data_source": "RID",
+    "count": "3"
+  },
+  {
+    "new_station_id": "324",
+    "data_source": "RID",
+    "count": "3"
+  },
+  {
+    "new_station_id": "354",
+    "data_source": "RID",
+    "count": "2"
+  },
+  {
+    "new_station_id": "345",
+    "data_source": "RID",
+    "count": "2"
+  },
+  {
+    "new_station_id": "592",
+    "data_source": "RID",
+    "count": "2"
+  },
+  {
+    "new_station_id": "459",
+    "data_source": "RID",
+    "count": "2"
+  },
+  {
+    "new_station_id": "319",
+    "data_source": "RID",
+    "count": "2"
+  }
+]

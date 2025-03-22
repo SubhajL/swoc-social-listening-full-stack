@@ -1,0 +1,1797 @@
+[
+  {
+    "id": 6,
+    "original_station_id": "B.3A",
+    "station_id": "459"
+  },
+  {
+    "id": 318,
+    "original_station_id": "Kgt.34",
+    "station_id": "366"
+  },
+  {
+    "id": 7,
+    "original_station_id": "B.6A",
+    "station_id": "460"
+  },
+  {
+    "id": 9,
+    "original_station_id": "B.9",
+    "station_id": "462"
+  },
+  {
+    "id": 375,
+    "original_station_id": "Ny.4",
+    "station_id": "411"
+  },
+  {
+    "id": 10,
+    "original_station_id": "C.13",
+    "station_id": "319"
+  },
+  {
+    "id": 377,
+    "original_station_id": "N.80",
+    "station_id": "374"
+  },
+  {
+    "id": 376,
+    "original_station_id": "W.17A",
+    "station_id": "11"
+  },
+  {
+    "id": 12,
+    "original_station_id": "C.29A",
+    "station_id": "323"
+  },
+  {
+    "id": 13,
+    "original_station_id": "C.3",
+    "station_id": "316"
+  },
+  {
+    "id": 15,
+    "original_station_id": "C.36",
+    "station_id": "326"
+  },
+  {
+    "id": 16,
+    "original_station_id": "C.37",
+    "station_id": "327"
+  },
+  {
+    "id": 18,
+    "original_station_id": "C.68",
+    "station_id": "625"
+  },
+  {
+    "id": 20,
+    "original_station_id": "Ct.19",
+    "station_id": "343"
+  },
+  {
+    "id": 1,
+    "original_station_id": "B.10",
+    "station_id": "463"
+  },
+  {
+    "id": 2,
+    "original_station_id": "B.11",
+    "station_id": "464"
+  },
+  {
+    "id": 5,
+    "original_station_id": "B.18",
+    "station_id": "635"
+  },
+  {
+    "id": 368,
+    "original_station_id": "X.295",
+    "station_id": "657"
+  },
+  {
+    "id": 369,
+    "original_station_id": "X.296",
+    "station_id": "658"
+  },
+  {
+    "id": 337,
+    "original_station_id": "C.30",
+    "station_id": "324"
+  },
+  {
+    "id": 338,
+    "original_station_id": "E.2A",
+    "station_id": "190"
+  },
+  {
+    "id": 339,
+    "original_station_id": "E.95A",
+    "station_id": "213"
+  },
+  {
+    "id": 340,
+    "original_station_id": "K.56A",
+    "station_id": "651"
+  },
+  {
+    "id": 342,
+    "original_station_id": "Kh.1",
+    "station_id": "215"
+  },
+  {
+    "id": 343,
+    "original_station_id": "Kh.100",
+    "station_id": "230"
+  },
+  {
+    "id": 344,
+    "original_station_id": "Kh.103",
+    "station_id": "232"
+  },
+  {
+    "id": 345,
+    "original_station_id": "Kh.104",
+    "station_id": "233"
+  },
+  {
+    "id": 346,
+    "original_station_id": "Kh.16B",
+    "station_id": "216"
+  },
+  {
+    "id": 347,
+    "original_station_id": "Kh.28A",
+    "station_id": "218"
+  },
+  {
+    "id": 349,
+    "original_station_id": "Kh.61",
+    "station_id": "221"
+  },
+  {
+    "id": 350,
+    "original_station_id": "Kh.74",
+    "station_id": "222"
+  },
+  {
+    "id": 351,
+    "original_station_id": "Kh.97",
+    "station_id": "228"
+  },
+  {
+    "id": 352,
+    "original_station_id": "M.199",
+    "station_id": "637"
+  },
+  {
+    "id": 354,
+    "original_station_id": "N.39",
+    "station_id": "106"
+  },
+  {
+    "id": 356,
+    "original_station_id": "N.8B",
+    "station_id": "654"
+  },
+  {
+    "id": 357,
+    "original_station_id": "P.47A",
+    "station_id": "81"
+  },
+  {
+    "id": 358,
+    "original_station_id": "Pr.1",
+    "station_id": "467"
+  },
+  {
+    "id": 359,
+    "original_station_id": "S.51",
+    "station_id": "660"
+  },
+  {
+    "id": 362,
+    "original_station_id": "TS.2",
+    "station_id": "605"
+  },
+  {
+    "id": 363,
+    "original_station_id": "X.119",
+    "station_id": "513"
+  },
+  {
+    "id": 364,
+    "original_station_id": "X.176",
+    "station_id": "656"
+  },
+  {
+    "id": 366,
+    "original_station_id": "X.293",
+    "station_id": "670"
+  },
+  {
+    "id": 367,
+    "original_station_id": "X.294",
+    "station_id": "672"
+  },
+  {
+    "id": 371,
+    "original_station_id": "Y.50",
+    "station_id": "639"
+  },
+  {
+    "id": 372,
+    "original_station_id": "Y.51",
+    "station_id": "640"
+  },
+  {
+    "id": 374,
+    "original_station_id": "Y.6A",
+    "station_id": "642"
+  },
+  {
+    "id": 353,
+    "original_station_id": "M.210",
+    "station_id": "649"
+  },
+  {
+    "id": 21,
+    "original_station_id": "Ct.25",
+    "station_id": "633"
+  },
+  {
+    "id": 23,
+    "original_station_id": "Ct.4",
+    "station_id": "338"
+  },
+  {
+    "id": 24,
+    "original_station_id": "Ct.5A",
+    "station_id": "339"
+  },
+  {
+    "id": 26,
+    "original_station_id": "Ct.8",
+    "station_id": "341"
+  },
+  {
+    "id": 348,
+    "original_station_id": "Kh.58A",
+    "station_id": "220"
+  },
+  {
+    "id": 355,
+    "original_station_id": "N.89",
+    "station_id": "643"
+  },
+  {
+    "id": 360,
+    "original_station_id": "S.52",
+    "station_id": "661"
+  },
+  {
+    "id": 365,
+    "original_station_id": "X.292",
+    "station_id": "669"
+  },
+  {
+    "id": 373,
+    "original_station_id": "Y.52",
+    "station_id": "641"
+  },
+  {
+    "id": 27,
+    "original_station_id": "Ct.9",
+    "station_id": "342"
+  },
+  {
+    "id": 29,
+    "original_station_id": "E.20A",
+    "station_id": "197"
+  },
+  {
+    "id": 30,
+    "original_station_id": "E.22B",
+    "station_id": "199"
+  },
+  {
+    "id": 31,
+    "original_station_id": "E.23",
+    "station_id": "200"
+  },
+  {
+    "id": 33,
+    "original_station_id": "E.75",
+    "station_id": "208"
+  },
+  {
+    "id": 34,
+    "original_station_id": "E.87",
+    "station_id": "210"
+  },
+  {
+    "id": 35,
+    "original_station_id": "E.9",
+    "station_id": "194"
+  },
+  {
+    "id": 37,
+    "original_station_id": "E.92",
+    "station_id": "212"
+  },
+  {
+    "id": 39,
+    "original_station_id": "E.98",
+    "station_id": "566"
+  },
+  {
+    "id": 40,
+    "original_station_id": "G.10",
+    "station_id": "76"
+  },
+  {
+    "id": 41,
+    "original_station_id": "G.11",
+    "station_id": "26"
+  },
+  {
+    "id": 43,
+    "original_station_id": "G.8",
+    "station_id": "74"
+  },
+  {
+    "id": 48,
+    "original_station_id": "Gt.21",
+    "station_id": "648"
+  },
+  {
+    "id": 49,
+    "original_station_id": "Gt.7",
+    "station_id": "449"
+  },
+  {
+    "id": 51,
+    "original_station_id": "I.17",
+    "station_id": "31"
+  },
+  {
+    "id": 52,
+    "original_station_id": "K.10",
+    "station_id": "433"
+  },
+  {
+    "id": 54,
+    "original_station_id": "K.12",
+    "station_id": "435"
+  },
+  {
+    "id": 55,
+    "original_station_id": "K.2B",
+    "station_id": "413"
+  },
+  {
+    "id": 57,
+    "original_station_id": "K.32A",
+    "station_id": "417"
+  },
+  {
+    "id": 58,
+    "original_station_id": "K.35A",
+    "station_id": "439"
+  },
+  {
+    "id": 60,
+    "original_station_id": "K.3A",
+    "station_id": "432"
+  },
+  {
+    "id": 62,
+    "original_station_id": "K.54",
+    "station_id": "444"
+  },
+  {
+    "id": 63,
+    "original_station_id": "K.55A",
+    "station_id": "421"
+  },
+  {
+    "id": 65,
+    "original_station_id": "K.58",
+    "station_id": "445"
+  },
+  {
+    "id": 3,
+    "original_station_id": "B.15",
+    "station_id": "465"
+  },
+  {
+    "id": 4,
+    "original_station_id": "B.16",
+    "station_id": "549"
+  },
+  {
+    "id": 70,
+    "original_station_id": "Kgt.12A",
+    "station_id": "386"
+  },
+  {
+    "id": 72,
+    "original_station_id": "Kgt.14A",
+    "station_id": "387"
+  },
+  {
+    "id": 73,
+    "original_station_id": "Kgt.15B",
+    "station_id": "388"
+  },
+  {
+    "id": 74,
+    "original_station_id": "Kgt.19A",
+    "station_id": "365"
+  },
+  {
+    "id": 77,
+    "original_station_id": "Kgt.43A",
+    "station_id": "392"
+  },
+  {
+    "id": 79,
+    "original_station_id": "Kgt.9",
+    "station_id": "384"
+  },
+  {
+    "id": 81,
+    "original_station_id": "Kh.89",
+    "station_id": "78"
+  },
+  {
+    "id": 82,
+    "original_station_id": "Ky.3",
+    "station_id": "466"
+  },
+  {
+    "id": 83,
+    "original_station_id": "M.104",
+    "station_id": "244"
+  },
+  {
+    "id": 85,
+    "original_station_id": "M.145",
+    "station_id": "274"
+  },
+  {
+    "id": 86,
+    "original_station_id": "M.157",
+    "station_id": "614"
+  },
+  {
+    "id": 87,
+    "original_station_id": "M.159",
+    "station_id": "261"
+  },
+  {
+    "id": 89,
+    "original_station_id": "M.170",
+    "station_id": "263"
+  },
+  {
+    "id": 91,
+    "original_station_id": "M.173",
+    "station_id": "290"
+  },
+  {
+    "id": 92,
+    "original_station_id": "M.174",
+    "station_id": "588"
+  },
+  {
+    "id": 94,
+    "original_station_id": "M.177",
+    "station_id": "291"
+  },
+  {
+    "id": 95,
+    "original_station_id": "M.179A",
+    "station_id": "268"
+  },
+  {
+    "id": 97,
+    "original_station_id": "M.182",
+    "station_id": "292"
+  },
+  {
+    "id": 98,
+    "original_station_id": "M.183B",
+    "station_id": "271"
+  },
+  {
+    "id": 99,
+    "original_station_id": "M.184",
+    "station_id": "293"
+  },
+  {
+    "id": 101,
+    "original_station_id": "M.186",
+    "station_id": "294"
+  },
+  {
+    "id": 103,
+    "original_station_id": "M.188A",
+    "station_id": "295"
+  },
+  {
+    "id": 104,
+    "original_station_id": "M.190",
+    "station_id": "296"
+  },
+  {
+    "id": 105,
+    "original_station_id": "M.191",
+    "station_id": "297"
+  },
+  {
+    "id": 107,
+    "original_station_id": "M.195",
+    "station_id": "626"
+  },
+  {
+    "id": 109,
+    "original_station_id": "M.32",
+    "station_id": "237"
+  },
+  {
+    "id": 110,
+    "original_station_id": "M.4",
+    "station_id": "277"
+  },
+  {
+    "id": 111,
+    "original_station_id": "M.42",
+    "station_id": "282"
+  },
+  {
+    "id": 113,
+    "original_station_id": "M.5",
+    "station_id": "235"
+  },
+  {
+    "id": 114,
+    "original_station_id": "M.66",
+    "station_id": "239"
+  },
+  {
+    "id": 116,
+    "original_station_id": "M.6A",
+    "station_id": "278"
+  },
+  {
+    "id": 118,
+    "original_station_id": "M.89",
+    "station_id": "286"
+  },
+  {
+    "id": 119,
+    "original_station_id": "M.9",
+    "station_id": "280"
+  },
+  {
+    "id": 120,
+    "original_station_id": "M.95A",
+    "station_id": "242"
+  },
+  {
+    "id": 122,
+    "original_station_id": "N.12A",
+    "station_id": "147"
+  },
+  {
+    "id": 123,
+    "original_station_id": "N.13A",
+    "station_id": "22"
+  },
+  {
+    "id": 124,
+    "original_station_id": "N.22A",
+    "station_id": "101"
+  },
+  {
+    "id": 126,
+    "original_station_id": "N.27A",
+    "station_id": "104"
+  },
+  {
+    "id": 127,
+    "original_station_id": "N.2B",
+    "station_id": "145"
+  },
+  {
+    "id": 129,
+    "original_station_id": "N.43A",
+    "station_id": "151"
+  },
+  {
+    "id": 130,
+    "original_station_id": "N.49",
+    "station_id": "71"
+  },
+  {
+    "id": 131,
+    "original_station_id": "N.54",
+    "station_id": "109"
+  },
+  {
+    "id": 67,
+    "original_station_id": "K.62",
+    "station_id": "447"
+  },
+  {
+    "id": 69,
+    "original_station_id": "Kgt.10",
+    "station_id": "385"
+  },
+  {
+    "id": 136,
+    "original_station_id": "N.65",
+    "station_id": "73"
+  },
+  {
+    "id": 137,
+    "original_station_id": "N.67",
+    "station_id": "345"
+  },
+  {
+    "id": 139,
+    "original_station_id": "N.75",
+    "station_id": "24"
+  },
+  {
+    "id": 140,
+    "original_station_id": "N.7A",
+    "station_id": "98"
+  },
+  {
+    "id": 142,
+    "original_station_id": "N.84",
+    "station_id": "123"
+  },
+  {
+    "id": 143,
+    "original_station_id": "Ny.1B",
+    "station_id": "380"
+  },
+  {
+    "id": 144,
+    "original_station_id": "Ny.3",
+    "station_id": "410"
+  },
+  {
+    "id": 148,
+    "original_station_id": "P.1",
+    "station_id": "33"
+  },
+  {
+    "id": 149,
+    "original_station_id": "P.103",
+    "station_id": "6"
+  },
+  {
+    "id": 150,
+    "original_station_id": "P.12C",
+    "station_id": "136"
+  },
+  {
+    "id": 152,
+    "original_station_id": "P.15",
+    "station_id": "79"
+  },
+  {
+    "id": 288,
+    "original_station_id": "Y.30",
+    "station_id": "19"
+  },
+  {
+    "id": 153,
+    "original_station_id": "P.16",
+    "station_id": "137"
+  },
+  {
+    "id": 155,
+    "original_station_id": "P.20",
+    "station_id": "37"
+  },
+  {
+    "id": 156,
+    "original_station_id": "P.21",
+    "station_id": "38"
+  },
+  {
+    "id": 158,
+    "original_station_id": "P.2A",
+    "station_id": "134"
+  },
+  {
+    "id": 159,
+    "original_station_id": "P.4A",
+    "station_id": "34"
+  },
+  {
+    "id": 160,
+    "original_station_id": "P.5",
+    "station_id": "35"
+  },
+  {
+    "id": 162,
+    "original_station_id": "P.56A",
+    "station_id": "39"
+  },
+  {
+    "id": 163,
+    "original_station_id": "P.64",
+    "station_id": "2"
+  },
+  {
+    "id": 165,
+    "original_station_id": "P.73",
+    "station_id": "42"
+  },
+  {
+    "id": 166,
+    "original_station_id": "P.73A",
+    "station_id": "43"
+  },
+  {
+    "id": 168,
+    "original_station_id": "P.76",
+    "station_id": "45"
+  },
+  {
+    "id": 169,
+    "original_station_id": "P.77",
+    "station_id": "46"
+  },
+  {
+    "id": 170,
+    "original_station_id": "P.78",
+    "station_id": "84"
+  },
+  {
+    "id": 172,
+    "original_station_id": "P.7A",
+    "station_id": "135"
+  },
+  {
+    "id": 173,
+    "original_station_id": "P.80",
+    "station_id": "48"
+  },
+  {
+    "id": 175,
+    "original_station_id": "P.82",
+    "station_id": "50"
+  },
+  {
+    "id": 176,
+    "original_station_id": "P.84",
+    "station_id": "51"
+  },
+  {
+    "id": 178,
+    "original_station_id": "P.86",
+    "station_id": "53"
+  },
+  {
+    "id": 179,
+    "original_station_id": "P.87",
+    "station_id": "54"
+  },
+  {
+    "id": 180,
+    "original_station_id": "P.92",
+    "station_id": "56"
+  },
+  {
+    "id": 182,
+    "original_station_id": "S.14",
+    "station_id": "352"
+  },
+  {
+    "id": 184,
+    "original_station_id": "S.28",
+    "station_id": "354"
+  },
+  {
+    "id": 185,
+    "original_station_id": "S.3",
+    "station_id": "556"
+  },
+  {
+    "id": 186,
+    "original_station_id": "S.32",
+    "station_id": "313"
+  },
+  {
+    "id": 188,
+    "original_station_id": "S.42",
+    "station_id": "130"
+  },
+  {
+    "id": 189,
+    "original_station_id": "S.43",
+    "station_id": "357"
+  },
+  {
+    "id": 190,
+    "original_station_id": "S.4B",
+    "station_id": "156"
+  },
+  {
+    "id": 192,
+    "original_station_id": "S.9",
+    "station_id": "351"
+  },
+  {
+    "id": 193,
+    "original_station_id": "SW.6",
+    "station_id": "157"
+  },
+  {
+    "id": 195,
+    "original_station_id": "T.1",
+    "station_id": "454"
+  },
+  {
+    "id": 196,
+    "original_station_id": "T.13",
+    "station_id": "456"
+  },
+  {
+    "id": 197,
+    "original_station_id": "T.14",
+    "station_id": "457"
+  },
+  {
+    "id": 134,
+    "original_station_id": "N.60",
+    "station_id": "112"
+  },
+  {
+    "id": 135,
+    "original_station_id": "N.64",
+    "station_id": "72"
+  },
+  {
+    "id": 205,
+    "original_station_id": "W.21",
+    "station_id": "14"
+  },
+  {
+    "id": 206,
+    "original_station_id": "W.22",
+    "station_id": "62"
+  },
+  {
+    "id": 207,
+    "original_station_id": "W.23",
+    "station_id": "86"
+  },
+  {
+    "id": 209,
+    "original_station_id": "W.25",
+    "station_id": "16"
+  },
+  {
+    "id": 210,
+    "original_station_id": "W.26",
+    "station_id": "17"
+  },
+  {
+    "id": 211,
+    "original_station_id": "W.3A",
+    "station_id": "7"
+  },
+  {
+    "id": 213,
+    "original_station_id": "W.5A",
+    "station_id": "8"
+  },
+  {
+    "id": 214,
+    "original_station_id": "X.10A",
+    "station_id": "638"
+  },
+  {
+    "id": 216,
+    "original_station_id": "X.119A",
+    "station_id": "514"
+  },
+  {
+    "id": 217,
+    "original_station_id": "X.139A",
+    "station_id": "515"
+  },
+  {
+    "id": 219,
+    "original_station_id": "X.150",
+    "station_id": "516"
+  },
+  {
+    "id": 220,
+    "original_station_id": "X.158",
+    "station_id": "483"
+  },
+  {
+    "id": 221,
+    "original_station_id": "X.167",
+    "station_id": "484"
+  },
+  {
+    "id": 223,
+    "original_station_id": "X.173A",
+    "station_id": "486"
+  },
+  {
+    "id": 224,
+    "original_station_id": "X.174",
+    "station_id": "517"
+  },
+  {
+    "id": 225,
+    "original_station_id": "X.180",
+    "station_id": "518"
+  },
+  {
+    "id": 227,
+    "original_station_id": "X.184",
+    "station_id": "519"
+  },
+  {
+    "id": 228,
+    "original_station_id": "X.186",
+    "station_id": "520"
+  },
+  {
+    "id": 230,
+    "original_station_id": "X.190A",
+    "station_id": "522"
+  },
+  {
+    "id": 231,
+    "original_station_id": "X.196",
+    "station_id": "489"
+  },
+  {
+    "id": 233,
+    "original_station_id": "X.199",
+    "station_id": "597"
+  },
+  {
+    "id": 234,
+    "original_station_id": "X.200",
+    "station_id": "491"
+  },
+  {
+    "id": 235,
+    "original_station_id": "X.201A",
+    "station_id": "492"
+  },
+  {
+    "id": 237,
+    "original_station_id": "X.207",
+    "station_id": "650"
+  },
+  {
+    "id": 238,
+    "original_station_id": "X.207A",
+    "station_id": "653"
+  },
+  {
+    "id": 240,
+    "original_station_id": "X.212",
+    "station_id": "524"
+  },
+  {
+    "id": 241,
+    "original_station_id": "X.213",
+    "station_id": "525"
+  },
+  {
+    "id": 242,
+    "original_station_id": "X.217",
+    "station_id": "526"
+  },
+  {
+    "id": 244,
+    "original_station_id": "X.233",
+    "station_id": "585"
+  },
+  {
+    "id": 245,
+    "original_station_id": "X.234",
+    "station_id": "497"
+  },
+  {
+    "id": 246,
+    "original_station_id": "X.236",
+    "station_id": "527"
+  },
+  {
+    "id": 248,
+    "original_station_id": "X.240",
+    "station_id": "594"
+  },
+  {
+    "id": 249,
+    "original_station_id": "X.243",
+    "station_id": "498"
+  },
+  {
+    "id": 250,
+    "original_station_id": "X.245",
+    "station_id": "499"
+  },
+  {
+    "id": 252,
+    "original_station_id": "X.258",
+    "station_id": "595"
+  },
+  {
+    "id": 253,
+    "original_station_id": "X.260",
+    "station_id": "501"
+  },
+  {
+    "id": 255,
+    "original_station_id": "X.265",
+    "station_id": "503"
+  },
+  {
+    "id": 256,
+    "original_station_id": "X.267",
+    "station_id": "505"
+  },
+  {
+    "id": 258,
+    "original_station_id": "X.273",
+    "station_id": "620"
+  },
+  {
+    "id": 259,
+    "original_station_id": "X.274",
+    "station_id": "529"
+  },
+  {
+    "id": 260,
+    "original_station_id": "X.275",
+    "station_id": "599"
+  },
+  {
+    "id": 262,
+    "original_station_id": "X.280",
+    "station_id": "601"
+  },
+  {
+    "id": 263,
+    "original_station_id": "X.281",
+    "station_id": "544"
+  },
+  {
+    "id": 264,
+    "original_station_id": "X.282",
+    "station_id": "596"
+  },
+  {
+    "id": 200,
+    "original_station_id": "W.16A",
+    "station_id": "60"
+  },
+  {
+    "id": 203,
+    "original_station_id": "W.1C",
+    "station_id": "59"
+  },
+  {
+    "id": 269,
+    "original_station_id": "X.56",
+    "station_id": "472"
+  },
+  {
+    "id": 270,
+    "original_station_id": "X.5C",
+    "station_id": "507"
+  },
+  {
+    "id": 271,
+    "original_station_id": "X.64",
+    "station_id": "473"
+  },
+  {
+    "id": 273,
+    "original_station_id": "X.68",
+    "station_id": "475"
+  },
+  {
+    "id": 274,
+    "original_station_id": "X.71B",
+    "station_id": "477"
+  },
+  {
+    "id": 276,
+    "original_station_id": "X.73A",
+    "station_id": "646"
+  },
+  {
+    "id": 277,
+    "original_station_id": "X.90",
+    "station_id": "478"
+  },
+  {
+    "id": 278,
+    "original_station_id": "Y.13A",
+    "station_id": "64"
+  },
+  {
+    "id": 280,
+    "original_station_id": "Y.15",
+    "station_id": "89"
+  },
+  {
+    "id": 281,
+    "original_station_id": "Y.16",
+    "station_id": "90"
+  },
+  {
+    "id": 282,
+    "original_station_id": "Y.17",
+    "station_id": "91"
+  },
+  {
+    "id": 284,
+    "original_station_id": "Y.20",
+    "station_id": "65"
+  },
+  {
+    "id": 285,
+    "original_station_id": "Y.21",
+    "station_id": "92"
+  },
+  {
+    "id": 287,
+    "original_station_id": "Y.26",
+    "station_id": "143"
+  },
+  {
+    "id": 289,
+    "original_station_id": "Y.31",
+    "station_id": "66"
+  },
+  {
+    "id": 291,
+    "original_station_id": "Y.34",
+    "station_id": "67"
+  },
+  {
+    "id": 292,
+    "original_station_id": "Y.37",
+    "station_id": "68"
+  },
+  {
+    "id": 294,
+    "original_station_id": "Y.3A",
+    "station_id": "139"
+  },
+  {
+    "id": 295,
+    "original_station_id": "Y.4",
+    "station_id": "140"
+  },
+  {
+    "id": 296,
+    "original_station_id": "Y.64",
+    "station_id": "96"
+  },
+  {
+    "id": 297,
+    "original_station_id": "Y.65",
+    "station_id": "561"
+  },
+  {
+    "id": 299,
+    "original_station_id": "Z.11",
+    "station_id": "397"
+  },
+  {
+    "id": 300,
+    "original_station_id": "Z.13",
+    "station_id": "398"
+  },
+  {
+    "id": 301,
+    "original_station_id": "Z.14",
+    "station_id": "399"
+  },
+  {
+    "id": 303,
+    "original_station_id": "Z.21",
+    "station_id": "400"
+  },
+  {
+    "id": 304,
+    "original_station_id": "Z.28",
+    "station_id": "618"
+  },
+  {
+    "id": 306,
+    "original_station_id": "Z.57",
+    "station_id": "406"
+  },
+  {
+    "id": 307,
+    "original_station_id": "Z.58",
+    "station_id": "407"
+  },
+  {
+    "id": 308,
+    "original_station_id": "Z.62",
+    "station_id": "409"
+  },
+  {
+    "id": 310,
+    "original_station_id": "C.12",
+    "station_id": "299"
+  },
+  {
+    "id": 312,
+    "original_station_id": "C.38",
+    "station_id": "659"
+  },
+  {
+    "id": 319,
+    "original_station_id": "K.25A",
+    "station_id": "437"
+  },
+  {
+    "id": 323,
+    "original_station_id": "X.285",
+    "station_id": "589"
+  },
+  {
+    "id": 324,
+    "original_station_id": "X.289",
+    "station_id": "615"
+  },
+  {
+    "id": 326,
+    "original_station_id": "X.113",
+    "station_id": "481"
+  },
+  {
+    "id": 327,
+    "original_station_id": "X.276",
+    "station_id": "506"
+  },
+  {
+    "id": 328,
+    "original_station_id": "X.40A",
+    "station_id": "510"
+  },
+  {
+    "id": 267,
+    "original_station_id": "X.53A",
+    "station_id": "512"
+  },
+  {
+    "id": 8,
+    "original_station_id": "B.8A",
+    "station_id": "461"
+  },
+  {
+    "id": 11,
+    "original_station_id": "C.2",
+    "station_id": "315"
+  },
+  {
+    "id": 14,
+    "original_station_id": "C.35",
+    "station_id": "325"
+  },
+  {
+    "id": 17,
+    "original_station_id": "C.67",
+    "station_id": "624"
+  },
+  {
+    "id": 19,
+    "original_station_id": "C.7A",
+    "station_id": "318"
+  },
+  {
+    "id": 22,
+    "original_station_id": "Ct.2A",
+    "station_id": "337"
+  },
+  {
+    "id": 25,
+    "original_station_id": "Ct.7",
+    "station_id": "340"
+  },
+  {
+    "id": 32,
+    "original_station_id": "E.66A",
+    "station_id": "205"
+  },
+  {
+    "id": 36,
+    "original_station_id": "E.91",
+    "station_id": "211"
+  },
+  {
+    "id": 38,
+    "original_station_id": "E.97",
+    "station_id": "214"
+  },
+  {
+    "id": 42,
+    "original_station_id": "G.13",
+    "station_id": "560"
+  },
+  {
+    "id": 44,
+    "original_station_id": "G.9",
+    "station_id": "75"
+  },
+  {
+    "id": 47,
+    "original_station_id": "Gt.20",
+    "station_id": "453"
+  },
+  {
+    "id": 330,
+    "original_station_id": "X.283",
+    "station_id": "587"
+  },
+  {
+    "id": 56,
+    "original_station_id": "K.31",
+    "station_id": "438"
+  },
+  {
+    "id": 61,
+    "original_station_id": "K.49",
+    "station_id": "442"
+  },
+  {
+    "id": 64,
+    "original_station_id": "K.57",
+    "station_id": "423"
+  },
+  {
+    "id": 66,
+    "original_station_id": "K.61",
+    "station_id": "446"
+  },
+  {
+    "id": 218,
+    "original_station_id": "X.149",
+    "station_id": "482"
+  },
+  {
+    "id": 68,
+    "original_station_id": "Kgt.1",
+    "station_id": "612"
+  },
+  {
+    "id": 71,
+    "original_station_id": "Kgt.13A",
+    "station_id": "363"
+  },
+  {
+    "id": 75,
+    "original_station_id": "Kgt.3",
+    "station_id": "362"
+  },
+  {
+    "id": 78,
+    "original_station_id": "Kgt.6",
+    "station_id": "383"
+  },
+  {
+    "id": 80,
+    "original_station_id": "Kh.72",
+    "station_id": "77"
+  },
+  {
+    "id": 84,
+    "original_station_id": "M.11B",
+    "station_id": "281"
+  },
+  {
+    "id": 88,
+    "original_station_id": "M.164",
+    "station_id": "288"
+  },
+  {
+    "id": 90,
+    "original_station_id": "M.171",
+    "station_id": "289"
+  },
+  {
+    "id": 93,
+    "original_station_id": "M.176",
+    "station_id": "266"
+  },
+  {
+    "id": 96,
+    "original_station_id": "M.180",
+    "station_id": "269"
+  },
+  {
+    "id": 100,
+    "original_station_id": "M.185A",
+    "station_id": "272"
+  },
+  {
+    "id": 102,
+    "original_station_id": "M.187",
+    "station_id": "273"
+  },
+  {
+    "id": 106,
+    "original_station_id": "M.192",
+    "station_id": "298"
+  },
+  {
+    "id": 108,
+    "original_station_id": "M.2A",
+    "station_id": "276"
+  },
+  {
+    "id": 112,
+    "original_station_id": "M.43A",
+    "station_id": "283"
+  },
+  {
+    "id": 115,
+    "original_station_id": "M.69",
+    "station_id": "240"
+  },
+  {
+    "id": 117,
+    "original_station_id": "M.7",
+    "station_id": "279"
+  },
+  {
+    "id": 121,
+    "original_station_id": "N.1",
+    "station_id": "70"
+  },
+  {
+    "id": 125,
+    "original_station_id": "N.24A",
+    "station_id": "102"
+  },
+  {
+    "id": 128,
+    "original_station_id": "N.36",
+    "station_id": "150"
+  },
+  {
+    "id": 132,
+    "original_station_id": "N.55",
+    "station_id": "152"
+  },
+  {
+    "id": 133,
+    "original_station_id": "N.5A",
+    "station_id": "97"
+  },
+  {
+    "id": 138,
+    "original_station_id": "N.73",
+    "station_id": "154"
+  },
+  {
+    "id": 141,
+    "original_station_id": "N.81",
+    "station_id": "155"
+  },
+  {
+    "id": 147,
+    "original_station_id": "Ny.7",
+    "station_id": "412"
+  },
+  {
+    "id": 151,
+    "original_station_id": "P.14A",
+    "station_id": "36"
+  },
+  {
+    "id": 154,
+    "original_station_id": "P.17",
+    "station_id": "347"
+  },
+  {
+    "id": 157,
+    "original_station_id": "P.26A",
+    "station_id": "80"
+  },
+  {
+    "id": 161,
+    "original_station_id": "P.50A",
+    "station_id": "138"
+  },
+  {
+    "id": 164,
+    "original_station_id": "P.67",
+    "station_id": "40"
+  },
+  {
+    "id": 167,
+    "original_station_id": "P.75",
+    "station_id": "44"
+  },
+  {
+    "id": 171,
+    "original_station_id": "P.79",
+    "station_id": "47"
+  },
+  {
+    "id": 174,
+    "original_station_id": "P.81",
+    "station_id": "49"
+  },
+  {
+    "id": 177,
+    "original_station_id": "P.85",
+    "station_id": "52"
+  },
+  {
+    "id": 181,
+    "original_station_id": "P.93",
+    "station_id": "58"
+  },
+  {
+    "id": 183,
+    "original_station_id": "S.26",
+    "station_id": "353"
+  },
+  {
+    "id": 187,
+    "original_station_id": "S.33",
+    "station_id": "127"
+  },
+  {
+    "id": 53,
+    "original_station_id": "K.11A",
+    "station_id": "434"
+  },
+  {
+    "id": 199,
+    "original_station_id": "W.10B",
+    "station_id": "634"
+  },
+  {
+    "id": 201,
+    "original_station_id": "W.17",
+    "station_id": "61"
+  },
+  {
+    "id": 204,
+    "original_station_id": "W.20",
+    "station_id": "13"
+  },
+  {
+    "id": 208,
+    "original_station_id": "W.24",
+    "station_id": "87"
+  },
+  {
+    "id": 212,
+    "original_station_id": "W.4A",
+    "station_id": "85"
+  },
+  {
+    "id": 215,
+    "original_station_id": "X.112",
+    "station_id": "480"
+  },
+  {
+    "id": 222,
+    "original_station_id": "X.170",
+    "station_id": "485"
+  },
+  {
+    "id": 226,
+    "original_station_id": "X.181",
+    "station_id": "593"
+  },
+  {
+    "id": 229,
+    "original_station_id": "X.188A",
+    "station_id": "521"
+  },
+  {
+    "id": 232,
+    "original_station_id": "X.198",
+    "station_id": "490"
+  },
+  {
+    "id": 236,
+    "original_station_id": "X.203",
+    "station_id": "493"
+  },
+  {
+    "id": 239,
+    "original_station_id": "X.209",
+    "station_id": "600"
+  },
+  {
+    "id": 243,
+    "original_station_id": "X.231A",
+    "station_id": "496"
+  },
+  {
+    "id": 247,
+    "original_station_id": "X.239",
+    "station_id": "528"
+  },
+  {
+    "id": 251,
+    "original_station_id": "X.248",
+    "station_id": "577"
+  },
+  {
+    "id": 254,
+    "original_station_id": "X.261",
+    "station_id": "602"
+  },
+  {
+    "id": 257,
+    "original_station_id": "X.269",
+    "station_id": "592"
+  },
+  {
+    "id": 261,
+    "original_station_id": "X.279",
+    "station_id": "530"
+  },
+  {
+    "id": 268,
+    "original_station_id": "X.55",
+    "station_id": "471"
+  },
+  {
+    "id": 272,
+    "original_station_id": "X.67A",
+    "station_id": "474"
+  },
+  {
+    "id": 275,
+    "original_station_id": "X.73",
+    "station_id": "555"
+  },
+  {
+    "id": 279,
+    "original_station_id": "Y.14A",
+    "station_id": "142"
+  },
+  {
+    "id": 283,
+    "original_station_id": "Y.1C",
+    "station_id": "63"
+  },
+  {
+    "id": 286,
+    "original_station_id": "Y.24",
+    "station_id": "18"
+  },
+  {
+    "id": 290,
+    "original_station_id": "Y.33",
+    "station_id": "94"
+  },
+  {
+    "id": 293,
+    "original_station_id": "Y.38",
+    "station_id": "69"
+  },
+  {
+    "id": 298,
+    "original_station_id": "Z.10",
+    "station_id": "396"
+  },
+  {
+    "id": 302,
+    "original_station_id": "Z.18",
+    "station_id": "370"
+  },
+  {
+    "id": 305,
+    "original_station_id": "Z.38",
+    "station_id": "403"
+  },
+  {
+    "id": 309,
+    "original_station_id": "Z.64",
+    "station_id": "622"
+  },
+  {
+    "id": 311,
+    "original_station_id": "C.22A",
+    "station_id": "320"
+  },
+  {
+    "id": 322,
+    "original_station_id": "X.36",
+    "station_id": "468"
+  },
+  {
+    "id": 329,
+    "original_station_id": "X.77",
+    "station_id": "548"
+  },
+  {
+    "id": 331,
+    "original_station_id": "X.228",
+    "station_id": "495"
+  },
+  {
+    "id": 76,
+    "original_station_id": "Kgt.30",
+    "station_id": "389"
+  },
+  {
+    "id": 202,
+    "original_station_id": "W.18A",
+    "station_id": "558"
+  },
+  {
+    "id": 266,
+    "original_station_id": "X.47",
+    "station_id": "470"
+  },
+  {
+    "id": 28,
+    "original_station_id": "E.18",
+    "station_id": "196"
+  },
+  {
+    "id": 50,
+    "original_station_id": "Gt.9",
+    "station_id": "450"
+  },
+  {
+    "id": 59,
+    "original_station_id": "K.37",
+    "station_id": "441"
+  },
+  {
+    "id": 198,
+    "original_station_id": "T.15",
+    "station_id": "458"
+  },
+  {
+    "id": 191,
+    "original_station_id": "S.5",
+    "station_id": "349"
+  },
+  {
+    "id": 194,
+    "original_station_id": "Sw.5A",
+    "station_id": "32"
+  },
+  {
+    "id": 265,
+    "original_station_id": "X.37A",
+    "station_id": "509"
+  },
+  {
+    "id": 325,
+    "original_station_id": "X.44",
+    "station_id": "469"
+  },
+  {
+    "id": 320,
+    "original_station_id": "T.10",
+    "station_id": "455"
+  }
+]

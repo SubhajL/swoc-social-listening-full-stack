@@ -1,0 +1,23 @@
+Station codes for hydro ID 3:
+E.18
+E.20A
+E.22B
+E.23
+E.2A
+E.66A
+E.87
+E.9
+E.91
+E.92
+E.95A
+E.97
+Kh.1
+Kh.100
+Kh.103
+Kh.104
+Kh.16B
+Kh.28A
+Kh.58A
+Kh.61
+Kh.74
+Kh.97

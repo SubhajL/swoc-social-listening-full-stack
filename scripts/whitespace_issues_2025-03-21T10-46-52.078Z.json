@@ -1,0 +1,26 @@
+[
+  {
+    "id": 318,
+    "station_id": "Kgt.34 ",
+    "length": 7,
+    "trimmed_length": 6,
+    "station_code": "Kgt.34 ",
+    "numeric_station_id": "366"
+  },
+  {
+    "id": 320,
+    "station_id": "T.10 ",
+    "length": 5,
+    "trimmed_length": 4,
+    "station_code": "T.10 ",
+    "numeric_station_id": "455"
+  },
+  {
+    "id": 325,
+    "station_id": "X.44  ",
+    "length": 6,
+    "trimmed_length": 4,
+    "station_code": "X.44  ",
+    "numeric_station_id": "469"
+  }
+]

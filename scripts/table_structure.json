@@ -1,0 +1,317 @@
+{
+  "columns": [
+    {
+      "column_name": "id",
+      "data_type": "integer",
+      "character_maximum_length": null,
+      "column_default": "nextval('telemetry_data_stations_id_seq'::regclass)",
+      "is_nullable": "NO"
+    },
+    {
+      "column_name": "station_id",
+      "data_type": "character varying",
+      "character_maximum_length": 50,
+      "column_default": null,
+      "is_nullable": "NO"
+    },
+    {
+      "column_name": "station_code",
+      "data_type": "character varying",
+      "character_maximum_length": 50,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "station_name",
+      "data_type": "character varying",
+      "character_maximum_length": 255,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "station_detail",
+      "data_type": "character varying",
+      "character_maximum_length": 500,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "hydro_id",
+      "data_type": "integer",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "hydro_name",
+      "data_type": "character varying",
+      "character_maximum_length": 255,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "basin_id",
+      "data_type": "integer",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "basin_name",
+      "data_type": "character varying",
+      "character_maximum_length": 255,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "province_code",
+      "data_type": "bigint",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "province_name",
+      "data_type": "character varying",
+      "character_maximum_length": 255,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "amphure_code",
+      "data_type": "bigint",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "amphure_name",
+      "data_type": "character varying",
+      "character_maximum_length": 255,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "latitude",
+      "data_type": "numeric",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "longitude",
+      "data_type": "numeric",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "ground_level",
+      "data_type": "numeric",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "q_max",
+      "data_type": "numeric",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "zg",
+      "data_type": "numeric",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "brae_level",
+      "data_type": "numeric",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "use_msl",
+      "data_type": "boolean",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "use_q_auto",
+      "data_type": "boolean",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "telemetry_id",
+      "data_type": "integer",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "telemetry_source",
+      "data_type": "character varying",
+      "character_maximum_length": 100,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "show_hourly_report",
+      "data_type": "boolean",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "show_daily_report",
+      "data_type": "boolean",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "is_warning",
+      "data_type": "boolean",
+      "character_maximum_length": null,
+      "column_default": "false",
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "status",
+      "data_type": "character varying",
+      "character_maximum_length": 50,
+      "column_default": "'active'::character varying",
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "notes",
+      "data_type": "text",
+      "character_maximum_length": null,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "data_source",
+      "data_type": "character varying",
+      "character_maximum_length": 20,
+      "column_default": "'RID'::character varying",
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "category",
+      "data_type": "character varying",
+      "character_maximum_length": 20,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "has_data",
+      "data_type": "boolean",
+      "character_maximum_length": null,
+      "column_default": "true",
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "numeric_station_id",
+      "data_type": "character varying",
+      "character_maximum_length": 20,
+      "column_default": null,
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "character_maximum_length": null,
+      "column_default": "CURRENT_TIMESTAMP",
+      "is_nullable": "YES"
+    },
+    {
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "character_maximum_length": null,
+      "column_default": "CURRENT_TIMESTAMP",
+      "is_nullable": "YES"
+    }
+  ],
+  "constraints": [
+    {
+      "constraint_name": "telemetry_data_stations_pkey",
+      "constraint_type": "PRIMARY KEY",
+      "column_name": "id",
+      "foreign_table_name": "telemetry_data_stations",
+      "foreign_column_name": "id"
+    },
+    {
+      "constraint_name": "uq_telemetry_data_stations_station_id_source",
+      "constraint_type": "UNIQUE",
+      "column_name": "data_source",
+      "foreign_table_name": "telemetry_data_stations",
+      "foreign_column_name": "data_source"
+    },
+    {
+      "constraint_name": "uq_telemetry_data_stations_station_id_source",
+      "constraint_type": "UNIQUE",
+      "column_name": "data_source",
+      "foreign_table_name": "telemetry_data_stations",
+      "foreign_column_name": "station_id"
+    },
+    {
+      "constraint_name": "uq_telemetry_data_stations_station_id_source",
+      "constraint_type": "UNIQUE",
+      "column_name": "station_id",
+      "foreign_table_name": "telemetry_data_stations",
+      "foreign_column_name": "data_source"
+    },
+    {
+      "constraint_name": "uq_telemetry_data_stations_station_id_source",
+      "constraint_type": "UNIQUE",
+      "column_name": "station_id",
+      "foreign_table_name": "telemetry_data_stations",
+      "foreign_column_name": "station_id"
+    }
+  ],
+  "indexes": [
+    {
+      "indexname": "idx_telemetry_data_stations_basin_id",
+      "indexdef": "CREATE INDEX idx_telemetry_data_stations_basin_id ON public.telemetry_data_stations USING btree (basin_id)"
+    },
+    {
+      "indexname": "idx_telemetry_data_stations_category",
+      "indexdef": "CREATE INDEX idx_telemetry_data_stations_category ON public.telemetry_data_stations USING btree (category)"
+    },
+    {
+      "indexname": "idx_telemetry_data_stations_data_source",
+      "indexdef": "CREATE INDEX idx_telemetry_data_stations_data_source ON public.telemetry_data_stations USING btree (data_source)"
+    },
+    {
+      "indexname": "idx_telemetry_data_stations_has_data",
+      "indexdef": "CREATE INDEX idx_telemetry_data_stations_has_data ON public.telemetry_data_stations USING btree (has_data)"
+    },
+    {
+      "indexname": "idx_telemetry_data_stations_hydro_id",
+      "indexdef": "CREATE INDEX idx_telemetry_data_stations_hydro_id ON public.telemetry_data_stations USING btree (hydro_id)"
+    },
+    {
+      "indexname": "idx_telemetry_data_stations_province_code",
+      "indexdef": "CREATE INDEX idx_telemetry_data_stations_province_code ON public.telemetry_data_stations USING btree (province_code)"
+    },
+    {
+      "indexname": "idx_telemetry_data_stations_status",
+      "indexdef": "CREATE INDEX idx_telemetry_data_stations_status ON public.telemetry_data_stations USING btree (status)"
+    },
+    {
+      "indexname": "telemetry_data_stations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX telemetry_data_stations_pkey ON public.telemetry_data_stations USING btree (id)"
+    },
+    {
+      "indexname": "uq_telemetry_data_stations_station_id_source",
+      "indexdef": "CREATE UNIQUE INDEX uq_telemetry_data_stations_station_id_source ON public.telemetry_data_stations USING btree (station_id, data_source)"
+    }
+  ]
+}

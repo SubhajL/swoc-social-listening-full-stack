@@ -1,0 +1,29 @@
+{
+  "timestamp": "2025-03-20T12:38:56.315Z",
+  "totalCount": 372,
+  "categories": [
+    {
+      "category": "Common",
+      "count": "307"
+    },
+    {
+      "category": "DB-only",
+      "count": "22"
+    },
+    {
+      "category": "API-only",
+      "count": "43"
+    }
+  ],
+  "dataSources": [
+    {
+      "data_source": "RID",
+      "count": "372"
+    }
+  ],
+  "coordinatesCoverage": {
+    "total": "372",
+    "with_coords": "0",
+    "without_coords": "372"
+  }
+}

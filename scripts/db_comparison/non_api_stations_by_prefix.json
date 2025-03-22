@@ -1,0 +1,335 @@
+[
+  {
+    "prefix": "040361",
+    "count": 2,
+    "examples": [
+      "040361 (C.13)",
+      "040361 (C.30)"
+    ]
+  },
+  {
+    "prefix": "060191",
+    "count": 1,
+    "examples": [
+      "060191 (kgt.29)"
+    ]
+  },
+  {
+    "prefix": "090160",
+    "count": 1,
+    "examples": [
+      "090160 (สชป.9)"
+    ]
+  },
+  {
+    "prefix": "090171",
+    "count": 1,
+    "examples": [
+      "090171 (Kgt.19) "
+    ]
+  },
+  {
+    "prefix": "090381",
+    "count": 1,
+    "examples": [
+      "090381 เขาเขียว"
+    ]
+  },
+  {
+    "prefix": "190620",
+    "count": 1,
+    "examples": [
+      "190620 (S.28)"
+    ]
+  },
+  {
+    "prefix": "260311",
+    "count": 1,
+    "examples": [
+      "260311 (N.67)"
+    ]
+  },
+  {
+    "prefix": "260451",
+    "count": 1,
+    "examples": [
+      "260451"
+    ]
+  },
+  {
+    "prefix": "260461",
+    "count": 1,
+    "examples": [
+      "260461"
+    ]
+  },
+  {
+    "prefix": "440191",
+    "count": 1,
+    "examples": [
+      "440191 (Kgt.15A)"
+    ]
+  },
+  {
+    "prefix": "440401",
+    "count": 1,
+    "examples": [
+      "440401"
+    ]
+  },
+  {
+    "prefix": "440411",
+    "count": 1,
+    "examples": [
+      "440411"
+    ]
+  },
+  {
+    "prefix": "660131",
+    "count": 1,
+    "examples": [
+      "660131"
+    ]
+  },
+  {
+    "prefix": "690151",
+    "count": 1,
+    "examples": [
+      "690151 (C.30)"
+    ]
+  },
+  {
+    "prefix": "690251",
+    "count": 1,
+    "examples": [
+      "690251"
+    ]
+  },
+  {
+    "prefix": "690371",
+    "count": 1,
+    "examples": [
+      "690371"
+    ]
+  },
+  {
+    "prefix": "740081",
+    "count": 1,
+    "examples": [
+      "740081 (Kgt.12)"
+    ]
+  },
+  {
+    "prefix": "740331",
+    "count": 1,
+    "examples": [
+      "740331"
+    ]
+  },
+  {
+    "prefix": "B.",
+    "count": 1,
+    "examples": [
+      "B.17"
+    ]
+  },
+  {
+    "prefix": "C.",
+    "count": 15,
+    "examples": [
+      "C.12",
+      "C.22A",
+      "C.28A",
+      "C.38",
+      "C.44"
+    ]
+  },
+  {
+    "prefix": "Ct.",
+    "count": 5,
+    "examples": [
+      "Ct.20",
+      "Ct.21",
+      "Ct.22",
+      "Ct.23",
+      "Ct.24"
+    ]
+  },
+  {
+    "prefix": "E.",
+    "count": 22,
+    "examples": [
+      "E.5",
+      "E.6C",
+      "E.29A",
+      "E.32A",
+      "E.54"
+    ]
+  },
+  {
+    "prefix": "G.",
+    "count": 5,
+    "examples": [
+      "G.12",
+      "G.14",
+      "G.2A",
+      "G.4",
+      "G.8A"
+    ]
+  },
+  {
+    "prefix": "Gt.",
+    "count": 10,
+    "examples": [
+      "Gt.8",
+      "Gt.15",
+      "Gt.16",
+      "Gt.17",
+      "Gt.18"
+    ]
+  },
+  {
+    "prefix": "I.",
+    "count": 3,
+    "examples": [
+      "I.14",
+      "I.1A",
+      "I.6"
+    ]
+  },
+  {
+    "prefix": "K.",
+    "count": 12,
+    "examples": [
+      "K.17",
+      "K.22C",
+      "K.25A",
+      "K.30",
+      "K.38A"
+    ]
+  },
+  {
+    "prefix": "KH.",
+    "count": 22,
+    "examples": [
+      "KH.9A",
+      "KH.18",
+      "KH.28A",
+      "KH.53",
+      "KH.54"
+    ]
+  },
+  {
+    "prefix": "Kgt.",
+    "count": 12,
+    "examples": [
+      "Kgt.18",
+      "Kgt.44",
+      "Kgt.45",
+      "Kgt.65",
+      "Kgt.66 "
+    ]
+  },
+  {
+    "prefix": "M.",
+    "count": 32,
+    "examples": [
+      "M.38C",
+      "M.49",
+      "M.50",
+      "M.75",
+      "M.91"
+    ]
+  },
+  {
+    "prefix": "N.",
+    "count": 26,
+    "examples": [
+      "N.63",
+      "N.86",
+      "N.87",
+      "N.88",
+      "N.8"
+    ]
+  },
+  {
+    "prefix": "Ny.",
+    "count": 1,
+    "examples": [
+      "Ny.6"
+    ]
+  },
+  {
+    "prefix": "P.",
+    "count": 8,
+    "examples": [
+      "P.104",
+      "P.105",
+      "P.14",
+      "P.24D",
+      "P.85A"
+    ]
+  },
+  {
+    "prefix": "S.",
+    "count": 11,
+    "examples": [
+      "S.10",
+      "S.17",
+      "S.36",
+      "S.7A",
+      "S.39"
+    ]
+  },
+  {
+    "prefix": "T.",
+    "count": 3,
+    "examples": [
+      "T.11",
+      "T.12A",
+      "T.10 "
+    ]
+  },
+  {
+    "prefix": "Tl.",
+    "count": 3,
+    "examples": [
+      "Tl.4",
+      "Tl.6",
+      "Tl.3"
+    ]
+  },
+  {
+    "prefix": "X.",
+    "count": 29,
+    "examples": [
+      "X.214",
+      "X.284",
+      "X.286",
+      "X.287",
+      "X.288"
+    ]
+  },
+  {
+    "prefix": "Y.",
+    "count": 9,
+    "examples": [
+      "Y.36",
+      "Y.37A",
+      "Y.66",
+      "Y.67",
+      "Y.5"
+    ]
+  },
+  {
+    "prefix": "Z.",
+    "count": 10,
+    "examples": [
+      "Z.46",
+      "Z.52",
+      "Z.53",
+      "Z.55",
+      "Z.56"
+    ]
+  }
+]

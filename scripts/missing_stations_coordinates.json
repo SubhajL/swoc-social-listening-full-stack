@@ -1,0 +1,59 @@
+{
+  "found": [
+    {
+      "station_code": "M.210",
+      "station_id": 649,
+      "name": "M.210",
+      "stationdetail": "ห้วยบอน สถานีสูบน้ำ หน่วยบริการน้ำยืน",
+      "latitude": 14.478839874267578,
+      "longitude": 104.99288177490234,
+      "provincecode": 34000000,
+      "amphurcode": 0,
+      "source": "found_by_id"
+    },
+    {
+      "station_code": "X.295",
+      "station_id": 657,
+      "name": "X.295",
+      "stationdetail": "เทศบาลเทพกระษัตรี",
+      "latitude": null,
+      "longitude": null,
+      "provincecode": 83000000,
+      "amphurcode": 0,
+      "source": "found_by_id"
+    },
+    {
+      "station_code": "X.296",
+      "station_id": 658,
+      "name": "X.296",
+      "stationdetail": "วัดท่าเรือ",
+      "latitude": null,
+      "longitude": null,
+      "provincecode": 83000000,
+      "amphurcode": 0,
+      "source": "found_by_id"
+    }
+  ],
+  "not_found": [
+    {
+      "station_code": "01",
+      "station_id": 609
+    },
+    {
+      "station_code": "02",
+      "station_id": 610
+    },
+    {
+      "station_code": "03",
+      "station_id": 611
+    },
+    {
+      "station_code": "04",
+      "station_id": 607
+    },
+    {
+      "station_code": "05",
+      "station_id": 608
+    }
+  ]
+}

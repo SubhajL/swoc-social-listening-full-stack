@@ -1,0 +1,49 @@
+{
+  "generated_at": "2025-03-20T13:48:36.411Z",
+  "admin_coverage": [
+    {
+      "category": "Common",
+      "total": 307,
+      "with_admin": 307,
+      "without_admin": 0,
+      "coverage_percentage": "100%"
+    },
+    {
+      "category": "DB-only",
+      "total": 22,
+      "with_admin": 22,
+      "without_admin": 0,
+      "coverage_percentage": "100%"
+    },
+    {
+      "category": "API-only",
+      "total": 43,
+      "with_admin": 0,
+      "without_admin": 43,
+      "coverage_percentage": "0%"
+    }
+  ],
+  "coordinates_coverage": [
+    {
+      "category": "Common",
+      "total": 307,
+      "with_coords": 0,
+      "without_coords": 307,
+      "coverage_percentage": "0%"
+    },
+    {
+      "category": "DB-only",
+      "total": 22,
+      "with_coords": 0,
+      "without_coords": 22,
+      "coverage_percentage": "0%"
+    },
+    {
+      "category": "API-only",
+      "total": 43,
+      "with_coords": 35,
+      "without_coords": 8,
+      "coverage_percentage": "81%"
+    }
+  ]
+}

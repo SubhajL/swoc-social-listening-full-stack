@@ -1,0 +1,13 @@
+Daily Stations Summary
+======================
+
+Hydro ID 1: 68 stations
+Hydro ID 2: 52 stations
+Hydro ID 3: 22 stations
+Hydro ID 4: 42 stations
+Hydro ID 5: 28 stations
+Hydro ID 6: 29 stations
+Hydro ID 7: 39 stations
+Hydro ID 8: 76 stations
+
+Total unique stations:      356

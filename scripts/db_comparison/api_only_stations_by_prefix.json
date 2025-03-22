@@ -1,0 +1,155 @@
+[
+  {
+    "prefix": "01",
+    "count": 1,
+    "examples": [
+      "01"
+    ]
+  },
+  {
+    "prefix": "02",
+    "count": 1,
+    "examples": [
+      "02"
+    ]
+  },
+  {
+    "prefix": "03",
+    "count": 1,
+    "examples": [
+      "03"
+    ]
+  },
+  {
+    "prefix": "04",
+    "count": 1,
+    "examples": [
+      "04"
+    ]
+  },
+  {
+    "prefix": "05",
+    "count": 1,
+    "examples": [
+      "05"
+    ]
+  },
+  {
+    "prefix": "C.",
+    "count": 1,
+    "examples": [
+      "C.30"
+    ]
+  },
+  {
+    "prefix": "E.",
+    "count": 2,
+    "examples": [
+      "E.2A",
+      "E.95A"
+    ]
+  },
+  {
+    "prefix": "K.",
+    "count": 1,
+    "examples": [
+      "K.56A"
+    ]
+  },
+  {
+    "prefix": "Kgt.",
+    "count": 1,
+    "examples": [
+      "Kgt.34"
+    ]
+  },
+  {
+    "prefix": "Kh.",
+    "count": 10,
+    "examples": [
+      "Kh.1",
+      "Kh.100",
+      "Kh.103",
+      "Kh.104",
+      "Kh.16B"
+    ]
+  },
+  {
+    "prefix": "M.",
+    "count": 3,
+    "examples": [
+      "M.199",
+      "M.210",
+      "M.5A"
+    ]
+  },
+  {
+    "prefix": "N.",
+    "count": 3,
+    "examples": [
+      "N.39",
+      "N.89",
+      "N.8B"
+    ]
+  },
+  {
+    "prefix": "P.",
+    "count": 1,
+    "examples": [
+      "P.47A"
+    ]
+  },
+  {
+    "prefix": "Pr.",
+    "count": 1,
+    "examples": [
+      "Pr.1"
+    ]
+  },
+  {
+    "prefix": "S.",
+    "count": 3,
+    "examples": [
+      "S.46",
+      "S.51",
+      "S.52"
+    ]
+  },
+  {
+    "prefix": "T.",
+    "count": 2,
+    "examples": [
+      "T.10",
+      "T.5"
+    ]
+  },
+  {
+    "prefix": "TS.",
+    "count": 1,
+    "examples": [
+      "TS.2"
+    ]
+  },
+  {
+    "prefix": "X.",
+    "count": 8,
+    "examples": [
+      "X.119",
+      "X.176",
+      "X.292",
+      "X.293",
+      "X.294"
+    ]
+  },
+  {
+    "prefix": "Y.",
+    "count": 5,
+    "examples": [
+      "Y.49",
+      "Y.50",
+      "Y.51",
+      "Y.52",
+      "Y.6A"
+    ]
+  }
+]

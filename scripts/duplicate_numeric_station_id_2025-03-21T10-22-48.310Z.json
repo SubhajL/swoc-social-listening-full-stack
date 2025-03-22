@@ -1,0 +1,34 @@
+[
+  {
+    "numeric_station_id": "421",
+    "count": "2",
+    "record_ids": [
+      63,
+      375
+    ],
+    "station_ids": [
+      "K.55A",
+      "Ny.4"
+    ],
+    "station_codes": [
+      "K.55A",
+      "Ny.4"
+    ]
+  },
+  {
+    "numeric_station_id": "45",
+    "count": "2",
+    "record_ids": [
+      168,
+      376
+    ],
+    "station_ids": [
+      "P.76",
+      "W.17A"
+    ],
+    "station_codes": [
+      "P.76",
+      "W.17A"
+    ]
+  }
+]

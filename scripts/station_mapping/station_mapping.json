@@ -1,0 +1,4933 @@
+{
+  "stations": {
+    "P.67": {
+      "stationId": "40",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.009849548339844,
+      "longitude": 98.9597396850586,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.1": {
+      "stationId": "33",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.78696060180664,
+      "longitude": 99.00508880615234,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.103": {
+      "stationId": "6",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.86651039123535,
+      "longitude": 98.97818756103516,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.82": {
+      "stationId": "50",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.65423011779785,
+      "longitude": 98.68566131591797,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.84": {
+      "stationId": "51",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.59132957458496,
+      "longitude": 98.79662322998047,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.81": {
+      "stationId": "49",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.695209503173828,
+      "longitude": 99.07875061035156,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.5": {
+      "stationId": "35",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.580280303955078,
+      "longitude": 99.01014709472656,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.76": {
+      "stationId": "45",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.141389846801758,
+      "longitude": 98.8966064453125,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.85": {
+      "stationId": "52",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.36642074584961,
+      "longitude": 98.77210235595703,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.77": {
+      "stationId": "46",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.433269500732422,
+      "longitude": 99.08512878417969,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.87": {
+      "stationId": "54",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.519119262695312,
+      "longitude": 98.94229125976562,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.10B": {
+      "stationId": "634",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.51881980895996,
+      "longitude": 99.62999725341797,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.10A": {
+      "stationId": "10",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.518529891967773,
+      "longitude": 99.63279724121094,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.1C": {
+      "stationId": "59",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.29973030090332,
+      "longitude": 99.51123046875,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "Y.20": {
+      "stationId": "65",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.586130142211914,
+      "longitude": 100.15133666992188,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "Y.1C": {
+      "stationId": "63",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.133909225463867,
+      "longitude": 100.12464141845703,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "N.64": {
+      "stationId": "72",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.015169143676758,
+      "longitude": 100.78021240234375,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "N.1": {
+      "stationId": "70",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.774879455566406,
+      "longitude": 100.77969360351562,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "G.10": {
+      "stationId": "76",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.652570724487305,
+      "longitude": 99.53801727294922,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "G.8": {
+      "stationId": "74",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.793710708618164,
+      "longitude": 99.74967956542969,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "Y.37": {
+      "stationId": "68",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.901180267333984,
+      "longitude": 99.60565185546875,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "I.17": {
+      "stationId": "31",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.16588020324707,
+      "longitude": 99.93434143066406,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "Sw.5A": {
+      "stationId": "32",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.27033042907715,
+      "longitude": 97.9452133178711,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.4A": {
+      "stationId": "34",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.122180938720703,
+      "longitude": 98.94441223144531,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.14A": {
+      "stationId": "36",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.202280044555664,
+      "longitude": 98.61444091796875,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.20": {
+      "stationId": "37",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.369550704956055,
+      "longitude": 98.96910095214844,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.21": {
+      "stationId": "38",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.927459716796875,
+      "longitude": 98.93977355957031,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.24A": {
+      "stationId": "1",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.415660858154297,
+      "longitude": 98.66985321044922,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.56A": {
+      "stationId": "39",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.284189224243164,
+      "longitude": 99.18694305419922,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.64": {
+      "stationId": "2",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.785459518432617,
+      "longitude": 98.37239074707031,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.65": {
+      "stationId": "3",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.638410568237305,
+      "longitude": 98.63526153564453,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.71A": {
+      "stationId": "41",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.54734992980957,
+      "longitude": 98.8622817993164,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.73": {
+      "stationId": "42",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.291259765625,
+      "longitude": 98.6475601196289,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.73A": {
+      "stationId": "43",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.25341033935547,
+      "longitude": 98.64141082763672,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.75": {
+      "stationId": "44",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.1459903717041,
+      "longitude": 99.00733184814453,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.79": {
+      "stationId": "47",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.96430015563965,
+      "longitude": 99.23751831054688,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.80": {
+      "stationId": "48",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.916400909423828,
+      "longitude": 99.2358169555664,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.86": {
+      "stationId": "53",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.73961067199707,
+      "longitude": 99.2186508178711,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.91": {
+      "stationId": "55",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.133590698242188,
+      "longitude": 99.16632843017578,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.92": {
+      "stationId": "56",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.220449447631836,
+      "longitude": 98.84721374511719,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "P.93": {
+      "stationId": "58",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.015090942382812,
+      "longitude": 98.8808364868164,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.3A": {
+      "stationId": "7",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.641490936279297,
+      "longitude": 99.23200988769531,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.5A": {
+      "stationId": "8",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.191539764404297,
+      "longitude": 99.3968734741211,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.6A": {
+      "stationId": "9",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.88050079345703,
+      "longitude": 99.32816314697266,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.16A": {
+      "stationId": "60",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.785219192504883,
+      "longitude": 99.63040924072266,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.17": {
+      "stationId": "61",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.72226905822754,
+      "longitude": 99.56726837158203,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.17A": {
+      "stationId": "11",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.744699478149414,
+      "longitude": 99.5689468383789,
+      "sourceApis": [
+        "hourly_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:43.323Z"
+    },
+    "W.18A": {
+      "stationId": "558",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.20": {
+      "stationId": "13",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.310880661010742,
+      "longitude": 99.45783996582031,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.21": {
+      "stationId": "14",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.34300994873047,
+      "longitude": 99.53717803955078,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.22": {
+      "stationId": "62",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.144439697265625,
+      "longitude": 99.40846252441406,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.25": {
+      "stationId": "16",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.990930557250977,
+      "longitude": 99.62110900878906,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "W.26": {
+      "stationId": "17",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.596040725708008,
+      "longitude": 99.62206268310547,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "Y.13A": {
+      "stationId": "64",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.76082992553711,
+      "longitude": 99.9725570678711,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "Y.24": {
+      "stationId": "18",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.882099151611328,
+      "longitude": 100.2913818359375,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "Y.30": {
+      "stationId": "19",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.709379196166992,
+      "longitude": 99.95762634277344,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "Y.31": {
+      "stationId": "66",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.946279525756836,
+      "longitude": 100.25894927978516,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "Y.34": {
+      "stationId": "67",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.220029830932617,
+      "longitude": 100.20635986328125,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "Y.38": {
+      "stationId": "69",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.266429901123047,
+      "longitude": 100.23763275146484,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "Y.65": {
+      "stationId": "561",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "N.13A": {
+      "stationId": "22",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.54998016357422,
+      "longitude": 100.76103210449219,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "N.49": {
+      "stationId": "71",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.99374008178711,
+      "longitude": 100.94010162353516,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "N.65": {
+      "stationId": "73",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.230409622192383,
+      "longitude": 100.75408935546875,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "N.75": {
+      "stationId": "24",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.548229217529297,
+      "longitude": 100.8086166381836,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "G.9": {
+      "stationId": "75",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.745990753173828,
+      "longitude": 99.50076293945312,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "G.11": {
+      "stationId": "26",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 19.622379302978516,
+      "longitude": 99.47693634033203,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "G.13": {
+      "stationId": "560",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "Kh.72": {
+      "stationId": "77",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 20.218360900878906,
+      "longitude": 99.85698699951172,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "Kh.89": {
+      "stationId": "78",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 20.157529830932617,
+      "longitude": 99.8595962524414,
+      "sourceApis": [
+        "hourly_hydro_1",
+        "daily_hydro_1"
+      ],
+      "lastUpdated": "2025-03-20T09:52:45.464Z"
+    },
+    "N.12A": {
+      "stationId": "147",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.73686981201172,
+      "longitude": 100.5315933227539,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.2B": {
+      "stationId": "145",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.608640670776367,
+      "longitude": 100.0992431640625,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.60": {
+      "stationId": "112",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.4183292388916,
+      "longitude": 100.13091278076172,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.27A": {
+      "stationId": "104",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.030780792236328,
+      "longitude": 100.1800537109375,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.5A": {
+      "stationId": "97",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.815139770507812,
+      "longitude": 100.26069641113281,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.7A": {
+      "stationId": "98",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.469499588012695,
+      "longitude": 100.33087158203125,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.8B": {
+      "stationId": "654",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.009309768676758,
+      "longitude": 100.3692626953125,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.55": {
+      "stationId": "152",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.253170013427734,
+      "longitude": 100.62824249267578,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.36": {
+      "stationId": "150",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.085100173950195,
+      "longitude": 100.82466888427734,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.81": {
+      "stationId": "155",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.128549575805664,
+      "longitude": 100.58804321289062,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.22A": {
+      "stationId": "101",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.998870849609375,
+      "longitude": 100.32662963867188,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.73": {
+      "stationId": "154",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.569120407104492,
+      "longitude": 100.89177703857422,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.24A": {
+      "stationId": "102",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.847009658813477,
+      "longitude": 100.51210021972656,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.43A": {
+      "stationId": "151",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.69632911682129,
+      "longitude": 100.65685272216797,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.54": {
+      "stationId": "109",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.327470779418945,
+      "longitude": 100.80172729492188,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.39": {
+      "stationId": "106",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.997020721435547,
+      "longitude": 100.87908935546875,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.84": {
+      "stationId": "123",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.74481964111328,
+      "longitude": 100.70648193359375,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "N.89": {
+      "stationId": "643",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.699077606201172,
+      "longitude": 100.31554412841797,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.14A": {
+      "stationId": "142",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.59552001953125,
+      "longitude": 99.71630096435547,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.6A": {
+      "stationId": "642",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.431137084960938,
+      "longitude": 99.80126190185547,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.3A": {
+      "stationId": "139",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.30743980407715,
+      "longitude": 99.8283462524414,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.33": {
+      "stationId": "94",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.168880462646484,
+      "longitude": 99.86097717285156,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.4": {
+      "stationId": "140",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.006359100341797,
+      "longitude": 99.82211303710938,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.15": {
+      "stationId": "89",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.92742919921875,
+      "longitude": 99.95942687988281,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.50": {
+      "stationId": "639",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.785480499267578,
+      "longitude": 100.0885009765625,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.16": {
+      "stationId": "90",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.762039184570312,
+      "longitude": 100.12101745605469,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.64": {
+      "stationId": "96",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.708110809326172,
+      "longitude": 100.17183685302734,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.51": {
+      "stationId": "640",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.655729293823242,
+      "longitude": 100.19111633300781,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.17": {
+      "stationId": "91",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.5074405670166,
+      "longitude": 100.20408630371094,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.52": {
+      "stationId": "641",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.357419967651367,
+      "longitude": 100.26378631591797,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.26": {
+      "stationId": "143",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.331890106201172,
+      "longitude": 99.46180725097656,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "Y.21": {
+      "stationId": "92",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.792339324951172,
+      "longitude": 99.78703308105469,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "P.12C": {
+      "stationId": "136",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.23880958557129,
+      "longitude": 99.0241470336914,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "P.2A": {
+      "stationId": "134",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.85456085205078,
+      "longitude": 99.12300872802734,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "P.7A": {
+      "stationId": "135",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.479270935058594,
+      "longitude": 99.5184097290039,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "P.15": {
+      "stationId": "79",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.2139892578125,
+      "longitude": 99.72106170654297,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "P.16": {
+      "stationId": "137",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.06467056274414,
+      "longitude": 99.86019134521484,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "P.50A": {
+      "stationId": "138",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.533550262451172,
+      "longitude": 99.22884368896484,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "P.47A": {
+      "stationId": "81",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.32840919494629,
+      "longitude": 99.2980728149414,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "P.26A": {
+      "stationId": "80",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.45741081237793,
+      "longitude": 99.45606231689453,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "P.78": {
+      "stationId": "84",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.18206024169922,
+      "longitude": 99.59725952148438,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "W.23": {
+      "stationId": "86",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.366609573364258,
+      "longitude": 99.11300659179688,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "W.24": {
+      "stationId": "87",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.3216495513916,
+      "longitude": 99.07721710205078,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "W.4A": {
+      "stationId": "85",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.20499038696289,
+      "longitude": 99.0981216430664,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "S.33": {
+      "stationId": "127",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.004060745239258,
+      "longitude": 101.35289001464844,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "TS.2": {
+      "stationId": "605",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.83061981201172,
+      "longitude": 1041.3079833984375,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "S.3": {
+      "stationId": "556",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.781530380249023,
+      "longitude": 101.24667358398438,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "S.4B": {
+      "stationId": "156",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.423219680786133,
+      "longitude": 101.16207885742188,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "S.51": {
+      "stationId": "660",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.114959716796875,
+      "longitude": 101.0970230102539,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "S.42": {
+      "stationId": "130",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.578300476074219,
+      "longitude": 101.088623046875,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "S.52": {
+      "stationId": "661",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.436759948730469,
+      "longitude": 101.10108947753906,
+      "sourceApis": [
+        "hourly_hydro_2",
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "SW.6": {
+      "stationId": "157",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.764020919799805,
+      "longitude": 98.75154113769531,
+      "sourceApis": [
+        "daily_hydro_2"
+      ],
+      "lastUpdated": "2025-03-20T09:52:49.640Z"
+    },
+    "E.23": {
+      "stationId": "200",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.68175983428955,
+      "longitude": 102.00955200195312,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "E.9": {
+      "stationId": "194",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.096939086914062,
+      "longitude": 102.57002258300781,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "E.22B": {
+      "stationId": "199",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.65447998046875,
+      "longitude": 102.823486328125,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "E.91": {
+      "stationId": "211",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.366069793701172,
+      "longitude": 102.94975280761719,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "E.66A": {
+      "stationId": "205",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.208250045776367,
+      "longitude": 103.52764129638672,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "E.75": {
+      "stationId": "208",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.581209182739258,
+      "longitude": 103.4371109008789,
+      "sourceApis": [
+        "hourly_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:51.833Z"
+    },
+    "E.87": {
+      "stationId": "210",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.34078025817871,
+      "longitude": 103.57701110839844,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "E.95A": {
+      "stationId": "213",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.115800857543945,
+      "longitude": 103.84660339355469,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "E.18": {
+      "stationId": "196",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.034149169921875,
+      "longitude": 103.90693664550781,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "E.92": {
+      "stationId": "212",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.109439849853516,
+      "longitude": 15.856849670410156,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "E.2A": {
+      "stationId": "190",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.799619674682617,
+      "longitude": 104.13485717773438,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "E.97": {
+      "stationId": "214",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.731109619140625,
+      "longitude": 104.1309814453125,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "E.20A": {
+      "stationId": "197",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.524809837341309,
+      "longitude": 104.2496566772461,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "Kh.61": {
+      "stationId": "221",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.131139755249023,
+      "longitude": 101.67948913574219,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "Kh.28A": {
+      "stationId": "218",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.31229019165039,
+      "longitude": 101.7724609375,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "Kh.58A": {
+      "stationId": "220",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.49488067626953,
+      "longitude": 101.73446655273438,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "Kh.103": {
+      "stationId": "232",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.48257064819336,
+      "longitude": 102.79739379882812,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "Kh.74": {
+      "stationId": "222",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.82162094116211,
+      "longitude": 103.38693237304688,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "Kh.97": {
+      "stationId": "228",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.90028953552246,
+      "longitude": 101.67080688476562,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "Kh.1": {
+      "stationId": "215",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.887399673461914,
+      "longitude": 102.75206756591797,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "Kh.100": {
+      "stationId": "230",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 18.39961051940918,
+      "longitude": 103.60826110839844,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "Kh.16B": {
+      "stationId": "216",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 17.437639236450195,
+      "longitude": 104.75762176513672,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "Kh.104": {
+      "stationId": "233",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 16.535940170288086,
+      "longitude": 104.7334976196289,
+      "sourceApis": [
+        "hourly_hydro_3",
+        "daily_hydro_3"
+      ],
+      "lastUpdated": "2025-03-20T09:52:53.930Z"
+    },
+    "M.26A": {
+      "stationId": "4",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.875450134277344,
+      "longitude": 103.37879943847656,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.43A": {
+      "stationId": "283",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.512040138244629,
+      "longitude": 101.3803482055664,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.199": {
+      "stationId": "637",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.758689880371094,
+      "longitude": 105.40910339355469,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.89": {
+      "stationId": "286",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.697850227355957,
+      "longitude": 101.41515350341797,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.183B": {
+      "stationId": "271",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.728540420532227,
+      "longitude": 101.56421661376953,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.177": {
+      "stationId": "291",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.850190162658691,
+      "longitude": 101.61679077148438,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.192": {
+      "stationId": "298",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.932250022888184,
+      "longitude": 101.86788177490234,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.191": {
+      "stationId": "297",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.932809829711914,
+      "longitude": 101.95188903808594,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.164": {
+      "stationId": "288",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.984569549560547,
+      "longitude": 102.09294128417969,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.171": {
+      "stationId": "289",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.50133991241455,
+      "longitude": 101.76847839355469,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.180": {
+      "stationId": "269",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.635990142822266,
+      "longitude": 101.88469696044922,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.173": {
+      "stationId": "290",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.745039939880371,
+      "longitude": 102.21177673339844,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.2A": {
+      "stationId": "276",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.968029975891113,
+      "longitude": 102.23783111572266,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.188A": {
+      "stationId": "295",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.18159008026123,
+      "longitude": 102.24273681640625,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.195": {
+      "stationId": "626",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.209259986877441,
+      "longitude": 102.39295196533203,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.184": {
+      "stationId": "293",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.21996021270752,
+      "longitude": 102.42829895019531,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.186": {
+      "stationId": "294",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.066109657287598,
+      "longitude": 102.40249633789062,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.185A": {
+      "stationId": "272",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.026880264282227,
+      "longitude": 102.8056869506836,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.104": {
+      "stationId": "244",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.435270309448242,
+      "longitude": 103.01262664794922,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.6A": {
+      "stationId": "278",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.300029754638672,
+      "longitude": 103.29228210449219,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.187": {
+      "stationId": "273",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.857379913330078,
+      "longitude": 103.47693634033203,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.159": {
+      "stationId": "261",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.141189575195312,
+      "longitude": 103.42935943603516,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.4": {
+      "stationId": "277",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.329580307006836,
+      "longitude": 103.68260955810547,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.95A": {
+      "stationId": "242",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.571860313415527,
+      "longitude": 103.8198471069336,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.42": {
+      "stationId": "282",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.048210144042969,
+      "longitude": 104.0209732055664,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.5": {
+      "stationId": "235",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.339690208435059,
+      "longitude": 104.1540298461914,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.190": {
+      "stationId": "296",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.010519981384277,
+      "longitude": 104.12844848632812,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.9": {
+      "stationId": "280",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.118080139160156,
+      "longitude": 104.31864166259766,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.182": {
+      "stationId": "292",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.132080078125,
+      "longitude": 104.4884033203125,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.66": {
+      "stationId": "239",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.643289566040039,
+      "longitude": 104.65950012207031,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.176": {
+      "stationId": "266",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.006360054016113,
+      "longitude": 104.63345336914062,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "E.98": {
+      "stationId": "566",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.303230285644531,
+      "longitude": 104.50032043457031,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.32": {
+      "stationId": "237",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.840080261230469,
+      "longitude": 104.45570373535156,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.157": {
+      "stationId": "614",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.80624008178711,
+      "longitude": 104.32794952392578,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.179A": {
+      "stationId": "268",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.502989768981934,
+      "longitude": 104.59544372558594,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.7": {
+      "stationId": "279",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.223549842834473,
+      "longitude": 104.8591537475586,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.69": {
+      "stationId": "240",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.504210472106934,
+      "longitude": 104.96620178222656,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.140Z"
+    },
+    "M.170": {
+      "stationId": "263",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.79088020324707,
+      "longitude": 105.10276794433594,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.140Z"
+    },
+    "M.11B": {
+      "stationId": "281",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.249919891357422,
+      "longitude": 105.23924255371094,
+      "sourceApis": [
+        "hourly_hydro_4",
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.140Z"
+    },
+    "M.145": {
+      "stationId": "274",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.494059562683105,
+      "longitude": 101.6849136352539,
+      "sourceApis": [
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.174": {
+      "stationId": "588",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.513449668884277,
+      "longitude": 102.84382629394531,
+      "sourceApis": [
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.139Z"
+    },
+    "M.210": {
+      "stationId": "649",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.478839874267578,
+      "longitude": 104.99288177490234,
+      "sourceApis": [
+        "daily_hydro_4"
+      ],
+      "lastUpdated": "2025-03-20T09:52:58.140Z"
+    },
+    "03": {
+      "stationId": "611",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:00.224Z"
+    },
+    "04": {
+      "stationId": "607",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:00.224Z"
+    },
+    "05": {
+      "stationId": "608",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:00.224Z"
+    },
+    "01": {
+      "stationId": "609",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:00.224Z"
+    },
+    "02": {
+      "stationId": "610",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:00.224Z"
+    },
+    "P.17": {
+      "stationId": "347",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.93539047241211,
+      "longitude": 99.97608947753906,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "N.67": {
+      "stationId": "345",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.869179725646973,
+      "longitude": 100.26473236083984,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "N.80": {
+      "stationId": "346",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.744119644165039,
+      "longitude": 100.18509674072266,
+      "sourceApis": [
+        "hourly_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:00.224Z"
+    },
+    "C.2": {
+      "stationId": "315",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.6705904006958,
+      "longitude": 100.10935974121094,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "C.13": {
+      "stationId": "319",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.163840293884277,
+      "longitude": 100.18791961669922,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "C.3": {
+      "stationId": "316",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.898679733276367,
+      "longitude": 100.40186309814453,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "C.7A": {
+      "stationId": "318",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.590439796447754,
+      "longitude": 100.45329284667969,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "C.35": {
+      "stationId": "325",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.369099617004395,
+      "longitude": 100.52873229980469,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "C.36": {
+      "stationId": "326",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.41588020324707,
+      "longitude": 100.44080352783203,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "C.37": {
+      "stationId": "327",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.363189697265625,
+      "longitude": 100.48483276367188,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "C.67": {
+      "stationId": "624",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "C.68": {
+      "stationId": "625",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "C.29A": {
+      "stationId": "323",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.152460098266602,
+      "longitude": 100.51563262939453,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "C.38": {
+      "stationId": "659",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:00.224Z"
+    },
+    "C.22A": {
+      "stationId": "320",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.894740104675293,
+      "longitude": 100.49198913574219,
+      "sourceApis": [
+        "hourly_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:00.224Z"
+    },
+    "C.12": {
+      "stationId": "299",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.7881498336792,
+      "longitude": 100.50914764404297,
+      "sourceApis": [
+        "hourly_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:00.224Z"
+    },
+    "C.30": {
+      "stationId": "324",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.349699974060059,
+      "longitude": 99.53376770019531,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "Ct.5A": {
+      "stationId": "339",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.928319931030273,
+      "longitude": 99.50237274169922,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "Ct.4": {
+      "stationId": "338",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.785849571228027,
+      "longitude": 99.67832946777344,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "Ct.7": {
+      "stationId": "340",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.641929626464844,
+      "longitude": 99.50804901123047,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "Ct.9": {
+      "stationId": "342",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.518289566040039,
+      "longitude": 99.48352813720703,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "Ct.8": {
+      "stationId": "341",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.539290428161621,
+      "longitude": 99.89466857910156,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "Ct.25": {
+      "stationId": "633",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": 99,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "Ct.19": {
+      "stationId": "343",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.452739715576172,
+      "longitude": 100.03189086914062,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "Ct.2A": {
+      "stationId": "337",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.410849571228027,
+      "longitude": 100.05706787109375,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "S.43": {
+      "stationId": "357",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.32742977142334,
+      "longitude": 101.21240234375,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "S.14": {
+      "stationId": "352",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 15.225279808044434,
+      "longitude": 101.27745819091797,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "S.28": {
+      "stationId": "354",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.834639549255371,
+      "longitude": 101.08429718017578,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "S.9": {
+      "stationId": "351",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.629179954528809,
+      "longitude": 101.0144271850586,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "S.32": {
+      "stationId": "313",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.557519912719727,
+      "longitude": 100.9242172241211,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "S.26": {
+      "stationId": "353",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.56011962890625,
+      "longitude": 100.71994018554688,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "S.5": {
+      "stationId": "349",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.358719825744629,
+      "longitude": 100.58045196533203,
+      "sourceApis": [
+        "hourly_hydro_5",
+        "daily_hydro_5"
+      ],
+      "lastUpdated": "2025-03-20T09:53:02.291Z"
+    },
+    "Kgt.1": {
+      "stationId": "612",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.051440238952637,
+      "longitude": 101.36737823486328,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Kgt.3": {
+      "stationId": "362",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.98666000366211,
+      "longitude": 101.70540618896484,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Kgt.6": {
+      "stationId": "383",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.973409652709961,
+      "longitude": 101.51744842529297,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Kgt.9": {
+      "stationId": "384",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.66804027557373,
+      "longitude": 102.07559967041016,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Kgt.10": {
+      "stationId": "385",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.809599876403809,
+      "longitude": 102.05438232421875,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Kgt.12A": {
+      "stationId": "386",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.936349868774414,
+      "longitude": 101.97232055664062,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Kgt.13A": {
+      "stationId": "363",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.910090446472168,
+      "longitude": 101.83821105957031,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Kgt.14A": {
+      "stationId": "387",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.161310195922852,
+      "longitude": 101.883056640625,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Kgt.15B": {
+      "stationId": "388",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.06587028503418,
+      "longitude": 101.92263793945312,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Kgt.19A": {
+      "stationId": "365",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.404720306396484,
+      "longitude": 101.28177642822266,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Kgt.30": {
+      "stationId": "389",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.688799858093262,
+      "longitude": 101.07701110839844,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Kgt.34": {
+      "stationId": "366",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.104610443115234,
+      "longitude": 101.74417877197266,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Kgt.43A": {
+      "stationId": "392",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.021739959716797,
+      "longitude": 101.75066375732422,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Ny.1B": {
+      "stationId": "380",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.245820045471191,
+      "longitude": 101.27424621582031,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Ny.3": {
+      "stationId": "410",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.286439895629883,
+      "longitude": 101.07047271728516,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Ny.7": {
+      "stationId": "412",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.200480461120605,
+      "longitude": 101.21930694580078,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Z.10": {
+      "stationId": "396",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.476499557495117,
+      "longitude": 102.47786712646484,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Z.11": {
+      "stationId": "397",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.857830047607422,
+      "longitude": 101.61573791503906,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Z.13": {
+      "stationId": "398",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.763230323791504,
+      "longitude": 102.1380386352539,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Z.14": {
+      "stationId": "399",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.74450969696045,
+      "longitude": 102.2064208984375,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Z.21": {
+      "stationId": "400",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.791959762573242,
+      "longitude": 102.25466918945312,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Z.28": {
+      "stationId": "618",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.077349662780762,
+      "longitude": 101.9455337524414,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Z.38": {
+      "stationId": "403",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.737959861755371,
+      "longitude": 101.22840118408203,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Z.57": {
+      "stationId": "406",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.613590240478516,
+      "longitude": 102.1141128540039,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Z.58": {
+      "stationId": "407",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.35731029510498,
+      "longitude": 102.43789672851562,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Z.62": {
+      "stationId": "409",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.78357982635498,
+      "longitude": 101.29593658447266,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Z.64": {
+      "stationId": "622",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.392560005187988,
+      "longitude": 102.09156036376953,
+      "sourceApis": [
+        "hourly_hydro_6",
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Ny.4": {
+      "stationId": "411",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.294469833374023,
+      "longitude": 101.39530181884766,
+      "sourceApis": [
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "Z.18": {
+      "stationId": "370",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.956769943237305,
+      "longitude": 101.6720962524414,
+      "sourceApis": [
+        "daily_hydro_6"
+      ],
+      "lastUpdated": "2025-03-20T09:53:06.409Z"
+    },
+    "K.54": {
+      "stationId": "444",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.53557014465332,
+      "longitude": 98.78765106201172,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.31": {
+      "stationId": "438",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.434089660644531,
+      "longitude": 98.80908966064453,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.32A": {
+      "stationId": "417",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.276180267333984,
+      "longitude": 98.93106842041016,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.58": {
+      "stationId": "445",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.215129852294922,
+      "longitude": 99.05819702148438,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.10": {
+      "stationId": "433",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.092430114746094,
+      "longitude": 99.17899322509766,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.25A": {
+      "stationId": "437",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.402850151062012,
+      "longitude": 99.41700744628906,
+      "sourceApis": [
+        "hourly_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:08.581Z"
+    },
+    "K.61": {
+      "stationId": "446",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.692520141601562,
+      "longitude": 99.44973754882812,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.62": {
+      "stationId": "447",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.780920028686523,
+      "longitude": 99.4209213256836,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.37": {
+      "stationId": "441",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.93906021118164,
+      "longitude": 99.41625213623047,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.49": {
+      "stationId": "442",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.48943042755127,
+      "longitude": 99.46978759765625,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.12": {
+      "stationId": "435",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.175219535827637,
+      "longitude": 99.43406677246094,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.35A": {
+      "stationId": "439",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.058609962463379,
+      "longitude": 99.44522094726562,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.3A": {
+      "stationId": "432",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.995969772338867,
+      "longitude": 99.538818359375,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.11A": {
+      "stationId": "434",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.950940132141113,
+      "longitude": 99.64547729492188,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.55A": {
+      "stationId": "421",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.805680274963379,
+      "longitude": 99.87158966064453,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.56A": {
+      "stationId": "651",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.741180419921875,
+      "longitude": 99.84294128417969,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.2B": {
+      "stationId": "413",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.541150093078613,
+      "longitude": 99.82412719726562,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "K.57": {
+      "stationId": "423",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.492609977722168,
+      "longitude": 99.92401123046875,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "B.3A": {
+      "stationId": "459",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.86361026763916,
+      "longitude": 99.67850494384766,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "B.8A": {
+      "stationId": "461",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.81503963470459,
+      "longitude": 99.70086669921875,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "B.9": {
+      "stationId": "462",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.806229591369629,
+      "longitude": 99.77056884765625,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "B.18": {
+      "stationId": "635",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.813369750976562,
+      "longitude": 99.79402160644531,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "B.10": {
+      "stationId": "463",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.973979949951172,
+      "longitude": 99.8878402709961,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "B.16": {
+      "stationId": "549",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.049169540405273,
+      "longitude": 99.91854858398438,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "B.15": {
+      "stationId": "465",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.111249923706055,
+      "longitude": 99.9482192993164,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "B.11": {
+      "stationId": "464",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.17467975616455,
+      "longitude": 99.68070983886719,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "B.6A": {
+      "stationId": "460",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.93651008605957,
+      "longitude": 99.78022766113281,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "Ky.3": {
+      "stationId": "466",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.097649574279785,
+      "longitude": 99.78845977783203,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "Gt.9": {
+      "stationId": "450",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 11.496740341186523,
+      "longitude": 99.60230255126953,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "Gt.10": {
+      "stationId": "451",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 11.404159545898438,
+      "longitude": 99.51921844482422,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "Gt.7": {
+      "stationId": "449",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 11.24075984954834,
+      "longitude": 99.43621063232422,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "Gt.20": {
+      "stationId": "453",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 11.205570220947266,
+      "longitude": 99.50849914550781,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "Gt.21": {
+      "stationId": "648",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 11.203120231628418,
+      "longitude": 99.50850677490234,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "Pr.1": {
+      "stationId": "467",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 12.389949798583984,
+      "longitude": 99.91124725341797,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "Gt.11": {
+      "stationId": "452",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 11.064310073852539,
+      "longitude": 99.37225341796875,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "T.10": {
+      "stationId": "455",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.470459938049316,
+      "longitude": 100.1147689819336,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "T.13": {
+      "stationId": "456",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.156999588012695,
+      "longitude": 100.1279067993164,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "T.15": {
+      "stationId": "458",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 14.052209854125977,
+      "longitude": 100.17508697509766,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "T.1": {
+      "stationId": "454",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.800959587097168,
+      "longitude": 100.18802642822266,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "T.14": {
+      "stationId": "457",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 13.724109649658203,
+      "longitude": 100.21568298339844,
+      "sourceApis": [
+        "hourly_hydro_7",
+        "daily_hydro_7"
+      ],
+      "lastUpdated": "2025-03-20T09:53:11.632Z"
+    },
+    "X.36": {
+      "stationId": "468",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 9.029399871826172,
+      "longitude": 98.96955108642578,
+      "sourceApis": [
+        "hourly_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:14.581Z"
+    },
+    "X.113": {
+      "stationId": "481",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.635039806365967,
+      "longitude": 100.3934097290039,
+      "sourceApis": [
+        "hourly_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:14.582Z"
+    },
+    "X.187": {
+      "stationId": "487",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.776220321655273,
+      "longitude": 98.39047241210938,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.201A": {
+      "stationId": "492",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 10.503339767456055,
+      "longitude": 98.96440124511719,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.228": {
+      "stationId": "495",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.645559787750244,
+      "longitude": 99.5322036743164,
+      "sourceApis": [
+        "hourly_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:14.582Z"
+    },
+    "X.40A": {
+      "stationId": "510",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.540530204772949,
+      "longitude": 101.24976348876953,
+      "sourceApis": [
+        "hourly_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:14.582Z"
+    },
+    "X.276": {
+      "stationId": "506",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.707240104675293,
+      "longitude": 99.84174346923828,
+      "sourceApis": [
+        "hourly_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:14.582Z"
+    },
+    "X.188A": {
+      "stationId": "521",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.83333969116211,
+      "longitude": 98.45852661132812,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.190A": {
+      "stationId": "522",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.90339994430542,
+      "longitude": 98.34967803955078,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.195": {
+      "stationId": "523",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.508620262145996,
+      "longitude": 99.51052856445312,
+      "sourceApis": [
+        "hourly_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:14.582Z"
+    },
+    "X.213": {
+      "stationId": "525",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 9.783570289611816,
+      "longitude": 98.7778091430664,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.279": {
+      "stationId": "530",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.77741003036499,
+      "longitude": 100.07148742675781,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.281": {
+      "stationId": "544",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.803530216217041,
+      "longitude": 100.0965805053711,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.77": {
+      "stationId": "548",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.152500152587891,
+      "longitude": 101.08090209960938,
+      "sourceApis": [
+        "hourly_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:14.582Z"
+    },
+    "X.277": {
+      "stationId": "550",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.740240097045898,
+      "longitude": 99.98027801513672,
+      "sourceApis": [
+        "hourly_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:14.582Z"
+    },
+    "X.73": {
+      "stationId": "555",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.3399200439453125,
+      "longitude": 101.72695922851562,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.283": {
+      "stationId": "587",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.715489864349365,
+      "longitude": 101.285400390625,
+      "sourceApis": [
+        "hourly_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:14.582Z"
+    },
+    "X.285": {
+      "stationId": "589",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.39169979095459,
+      "longitude": 99.9708023071289,
+      "sourceApis": [
+        "hourly_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:14.582Z"
+    },
+    "X.207A": {
+      "stationId": "653",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 10.40326976776123,
+      "longitude": 98.77693176269531,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.176": {
+      "stationId": "656",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.429149627685547,
+      "longitude": 99.50836181640625,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.295": {
+      "stationId": "657",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.296": {
+      "stationId": "658",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.292": {
+      "stationId": "669",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.143430233001709,
+      "longitude": 100.27818298339844,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.293": {
+      "stationId": "670",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 10.497269630432129,
+      "longitude": 99.07752227783203,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.294": {
+      "stationId": "672",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 10.266240119934082,
+      "longitude": 98.8258285522461,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.175": {
+      "stationId": "675",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.73A": {
+      "stationId": "646",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.169919967651367,
+      "longitude": 101.7132568359375,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.207": {
+      "stationId": "650",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": null,
+      "longitude": null,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.209": {
+      "stationId": "600",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 9.958390235900879,
+      "longitude": 98.6485366821289,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.64": {
+      "stationId": "473",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 10.665619850158691,
+      "longitude": 99.17122650146484,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.53A": {
+      "stationId": "512",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 10.507200241088867,
+      "longitude": 99.1177978515625,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.158": {
+      "stationId": "483",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 10.594510078430176,
+      "longitude": 99.14176940917969,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.180": {
+      "stationId": "518",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 10.49705982208252,
+      "longitude": 99.17012023925781,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.212": {
+      "stationId": "524",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 9.954730033874512,
+      "longitude": 99.08003997802734,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.248": {
+      "stationId": "577",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 10.637499809265137,
+      "longitude": 99.05016326904297,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.269": {
+      "stationId": "592",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 10.107999801635742,
+      "longitude": 99.08088684082031,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.55": {
+      "stationId": "471",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.399660110473633,
+      "longitude": 99.83312225341797,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.70": {
+      "stationId": "476",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.428130149841309,
+      "longitude": 99.86061096191406,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.149": {
+      "stationId": "482",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.73097038269043,
+      "longitude": 99.74609375,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.167": {
+      "stationId": "484",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.280099868774414,
+      "longitude": 99.90648651123047,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.200": {
+      "stationId": "491",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.40835952758789,
+      "longitude": 99.7978515625,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.203": {
+      "stationId": "493",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.396289825439453,
+      "longitude": 99.9201431274414,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.243": {
+      "stationId": "498",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.555000305175781,
+      "longitude": 99.56928253173828,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.119": {
+      "stationId": "513",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.071139812469482,
+      "longitude": 102.03588104248047,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.289": {
+      "stationId": "615",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.30620002746582,
+      "longitude": 99.85991668701172,
+      "sourceApis": [
+        "hourly_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:14.582Z"
+    },
+    "X.119A": {
+      "stationId": "514",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.022610187530518,
+      "longitude": 101.97489166259766,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.184": {
+      "stationId": "519",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.2271599769592285,
+      "longitude": 101.4969482421875,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.199": {
+      "stationId": "597",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.350500106811523,
+      "longitude": 101.49507141113281,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.274": {
+      "stationId": "529",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 5.839159965515137,
+      "longitude": 101.89214324951172,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.5C": {
+      "stationId": "507",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 9.11322021484375,
+      "longitude": 99.22367858886719,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.37A": {
+      "stationId": "509",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.570980072021484,
+      "longitude": 99.25386810302734,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.198": {
+      "stationId": "490",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.414529800415039,
+      "longitude": 99.2498779296875,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.217": {
+      "stationId": "526",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.847530364990234,
+      "longitude": 99.19886016845703,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.258": {
+      "stationId": "595",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.548060417175293,
+      "longitude": 99.11000061035156,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.68": {
+      "stationId": "475",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.568709850311279,
+      "longitude": 100.04850006103516,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.170": {
+      "stationId": "485",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.559010028839111,
+      "longitude": 99.98755645751953,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.265": {
+      "stationId": "503",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.616889953613281,
+      "longitude": 100.07890319824219,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.44": {
+      "stationId": "469",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.002180099487305,
+      "longitude": 100.45606231689453,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.67A": {
+      "stationId": "474",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.105020046234131,
+      "longitude": 100.19393157958984,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.71B": {
+      "stationId": "477",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.98753023147583,
+      "longitude": 100.42478942871094,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.90": {
+      "stationId": "478",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.931240081787109,
+      "longitude": 100.43985748291016,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.173A": {
+      "stationId": "486",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.796629905700684,
+      "longitude": 100.44233703613281,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.174": {
+      "stationId": "517",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.986370086669922,
+      "longitude": 100.48185729980469,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.181": {
+      "stationId": "593",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.059969902038574,
+      "longitude": 100.45319366455078,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.240": {
+      "stationId": "594",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.983059883117676,
+      "longitude": 100.32833099365234,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.282": {
+      "stationId": "596",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.741399765014648,
+      "longitude": 100.69483947753906,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.10A": {
+      "stationId": "638",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.866001605987549,
+      "longitude": 101.25212860107422,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.272A": {
+      "stationId": "598",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.675710201263428,
+      "longitude": 101.60665130615234,
+      "sourceApis": [
+        "hourly_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:14.582Z"
+    },
+    "X.273": {
+      "stationId": "620",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.479770183563232,
+      "longitude": 101.44474029541016,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.275": {
+      "stationId": "599",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.82151985168457,
+      "longitude": 101.24488830566406,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.186": {
+      "stationId": "520",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.829339981079102,
+      "longitude": 98.3692398071289,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.196": {
+      "stationId": "489",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.702509880065918,
+      "longitude": 98.40902709960938,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.245": {
+      "stationId": "499",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.513360023498535,
+      "longitude": 98.5035629272461,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.191": {
+      "stationId": "488",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.891880035400391,
+      "longitude": 98.3906478881836,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.47": {
+      "stationId": "470",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.555830001831055,
+      "longitude": 99.57843780517578,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.56": {
+      "stationId": "472",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.770790100097656,
+      "longitude": 99.53742980957031,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.139A": {
+      "stationId": "515",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.320089817047119,
+      "longitude": 99.79570007324219,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.233": {
+      "stationId": "585",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.907410144805908,
+      "longitude": 99.54238891601562,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.234": {
+      "stationId": "497",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.58882999420166,
+      "longitude": 99.57687377929688,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.236": {
+      "stationId": "527",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.371990203857422,
+      "longitude": 99.6772689819336,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.150": {
+      "stationId": "516",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.940820217132568,
+      "longitude": 99.87291717529297,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.231A": {
+      "stationId": "496",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.875770092010498,
+      "longitude": 99.78263854980469,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.239": {
+      "stationId": "528",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.726620197296143,
+      "longitude": 100.06273651123047,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.280": {
+      "stationId": "601",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.645140171051025,
+      "longitude": 100.06741333007812,
+      "sourceApis": [
+        "hourly_hydro_8",
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.260": {
+      "stationId": "501",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 8.543729782104492,
+      "longitude": 99.22345733642578,
+      "sourceApis": [
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.267": {
+      "stationId": "505",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 7.3384199142456055,
+      "longitude": 100.10997772216797,
+      "sourceApis": [
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.112": {
+      "stationId": "480",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.7051100730896,
+      "longitude": 100.43318176269531,
+      "sourceApis": [
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    },
+    "X.261": {
+      "stationId": "602",
+      "stationName": null,
+      "riverName": null,
+      "province": null,
+      "latitude": 6.838359832763672,
+      "longitude": 100.069580078125,
+      "sourceApis": [
+        "daily_hydro_8"
+      ],
+      "lastUpdated": "2025-03-20T09:53:17.109Z"
+    }
+  },
+  "metadata": {
+    "lastUpdated": "2025-03-20T09:53:18.110Z",
+    "totalCount": 380,
+    "apiSources": [
+      "local_files",
+      "hourly_hydro_1",
+      "daily_hydro_1",
+      "hourly_hydro_2",
+      "daily_hydro_2",
+      "hourly_hydro_3",
+      "daily_hydro_3",
+      "hourly_hydro_4",
+      "daily_hydro_4",
+      "hourly_hydro_5",
+      "daily_hydro_5",
+      "hourly_hydro_6",
+      "daily_hydro_6",
+      "hourly_hydro_7",
+      "daily_hydro_7",
+      "hourly_hydro_8",
+      "daily_hydro_8"
+    ]
+  }
+}
