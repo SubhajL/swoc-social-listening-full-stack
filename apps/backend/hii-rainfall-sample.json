@@ -2,55 +2,46 @@
   {
     "rainfall10m": 0,
     "rainfall1h": 0,
-    "rainfall24h": 2.5,
-    "rainfall_date_calc": "2025-02-28T00:00:00Z",
-    "rainfall_datetime": "2025-02-28T18:30:00+07:00",
-    "rainfall_today": 1.8,
-    "tele_station_id": 418
+    "rainfall24h": 0,
+    "rainfall_date_calc": "2025-03-25T00:00:00Z",
+    "rainfall_datetime": "2025-03-25T22:00:00+07:00",
+    "rainfall_today": 0,
+    "tele_station_id": 12479
   },
   {
     "rainfall10m": 0,
     "rainfall1h": 0,
-    "rainfall24h": null,
-    "rainfall_date_calc": "2025-02-28T00:00:00Z",
-    "rainfall_datetime": "2025-02-28T18:00:00+07:00",
+    "rainfall24h": 0,
+    "rainfall_date_calc": "2025-03-25T00:00:00Z",
+    "rainfall_datetime": "2025-03-25T22:00:00+07:00",
     "rainfall_today": 0,
     "tele_station_id": 384
   },
   {
     "rainfall10m": 0,
     "rainfall1h": 0,
-    "rainfall24h": 1.6,
-    "rainfall_date_calc": "2025-02-28T00:00:00Z",
-    "rainfall_datetime": "2025-02-28T17:00:00+07:00",
-    "rainfall_today": 1.2,
-    "tele_station_id": 934
+    "rainfall24h": 0,
+    "rainfall_date_calc": "2025-03-25T00:00:00Z",
+    "rainfall_datetime": "2025-03-25T22:00:00+07:00",
+    "rainfall_today": 0,
+    "tele_station_id": 693
   },
   {
     "rainfall10m": 0,
     "rainfall1h": 0,
     "rainfall24h": 0,
-    "rainfall_date_calc": "2025-02-28T00:00:00Z",
-    "rainfall_datetime": "2025-02-28T17:00:00+07:00",
+    "rainfall_date_calc": "2025-03-25T00:00:00Z",
+    "rainfall_datetime": "2025-03-25T22:00:00+07:00",
     "rainfall_today": 0,
-    "tele_station_id": 1124861
+    "tele_station_id": 829
   },
   {
     "rainfall10m": 0,
     "rainfall1h": 0,
     "rainfall24h": 0,
-    "rainfall_date_calc": "2025-02-28T00:00:00Z",
-    "rainfall_datetime": "2025-02-28T17:00:00+07:00",
+    "rainfall_date_calc": "2025-03-25T00:00:00Z",
+    "rainfall_datetime": "2025-03-25T22:00:00+07:00",
     "rainfall_today": 0,
-    "tele_station_id": 479216
-  },
-  {
-    "rainfall10m": 0,
-    "rainfall1h": 0,
-    "rainfall24h": 0,
-    "rainfall_date_calc": "2025-02-28T00:00:00Z",
-    "rainfall_datetime": "2025-02-28T17:00:00+07:00",
-    "rainfall_today": 0,
-    "tele_station_id": 564
+    "tele_station_id": 471583
   }
 ]

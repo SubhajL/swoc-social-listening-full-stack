@@ -2,69 +2,242 @@ import schedule from 'node-schedule';
 import { exec } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { logger } from '../utils/logger.js';
+import fs from 'fs';
+import { createEnhancedLogger } from '../utils/enhanced-logger.js';
 import { updateTaskStatus } from './track-sync-progress.mjs';
+
+/**
+ * MAIN CONSOLIDATED SCHEDULER
+ * 
+ * This is the primary and only scheduler to be used for all data synchronization tasks.
+ * All other schedulers have been deprecated in favor of this consolidated approach.
+ * 
+ * Current scheduled tasks:
+ * - Reservoir data sync: Daily at 9:00 AM
+ * - HII rainfall data sync: Hourly at minute 40
+ * - TMD data sync: Hourly at minute 55
+ * - Task progress report: Daily at 9:15 AM
+ * 
+ * If you need to add new scheduled tasks, add them to this file only.
+ */
 
 // Get current directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Script paths
-const reservoirScriptPath = path.join(__dirname, 'sync-reservoir-data.mjs');
-const thaiWaterScriptPath = path.join(__dirname, 'fetch-thaiwater-rainfall.mjs');
-const tmdScriptPath = path.join(__dirname, 'sync-tmd-data.mjs');
+// Get the root directory of the backend
+const backendRoot = path.resolve(__dirname, '../..');
+
+// Create logs directory if it doesn't exist
+const logsDir = path.join(backendRoot, 'logs');
+if (!fs.existsSync(logsDir)) {
+  fs.mkdirSync(logsDir, { recursive: true });
+}
+
+// Lockfile path
+const lockFilePath = path.join(backendRoot, '.scheduler.lock');
+
+// Check if another instance is already running
+if (fs.existsSync(lockFilePath)) {
+  // Read the lockfile to get the PID
+  try {
+    const lockData = fs.readFileSync(lockFilePath, 'utf8');
+    const pid = parseInt(lockData.trim(), 10);
+    
+    // Check if the process with that PID is still running
+    try {
+      process.kill(pid, 0); // This just tests if the process exists, doesn't actually kill it
+      console.error(`Another scheduler instance is already running with PID ${pid}. Exiting.`);
+      process.exit(1);
+    } catch (e) {
+      // Process with that PID doesn't exist, so we can proceed
+      console.log(`Found stale lockfile from PID ${pid}. Proceeding with new instance.`);
+    }
+  } catch (e) {
+    console.log('Invalid lockfile found. Proceeding with new instance.');
+  }
+}
+
+// Create a new lockfile with current PID
+fs.writeFileSync(lockFilePath, process.pid.toString(), 'utf8');
+
+// Remove lockfile on exit
+const cleanupLockfile = () => {
+  try {
+    if (fs.existsSync(lockFilePath)) {
+      fs.unlinkSync(lockFilePath);
+    }
+  } catch (e) {
+    console.error('Failed to remove lockfile:', e);
+  }
+};
+
+// Register cleanup for different signals
+process.on('exit', cleanupLockfile);
+process.on('SIGINT', () => {
+  cleanupLockfile();
+  process.exit(0);
+});
+process.on('SIGTERM', () => {
+  cleanupLockfile();
+  process.exit(0);
+});
+process.on('uncaughtException', (e) => {
+  console.error('Uncaught exception:', e);
+  cleanupLockfile();
+  process.exit(1);
+});
+
+// Create enhanced logger for the scheduler
+const logger = createEnhancedLogger({
+  jobType: 'SCHEDULER',
+  filename: 'scheduler.log',
+  isScheduled: true
+});
+
+// Script paths for direct access (used for progress tracking)
 const progressScriptPath = path.join(__dirname, 'track-sync-progress.mjs');
 const reportScriptPath = path.join(__dirname, 'generate-sync-report.mjs');
 
-// Helper function to execute a script
-function executeScript(scriptPath, taskName, logPrefix) {
+// Log startup information
+logger.info('Data sync scheduler starting', {
+  component: 'Scheduler',
+  operation: 'Startup',
+  data: {
+    scriptPath: __filename,
+    workingDirectory: process.cwd(),
+    nodeVersion: process.version,
+    pid: process.pid,
+    env: {
+      NODE_ENV: process.env.NODE_ENV,
+      TZ: process.env.TZ
+    }
+  }
+});
+
+// Log environment information
+logger.logEnvironment();
+
+// Log data protection mode enabled
+logger.info('Data preservation mode is ENABLED for all sync operations', {
+  component: 'Scheduler',
+  operation: 'DataProtection',
+  data: {
+    enabled: true,
+    description: 'All sync operations will preserve existing data when new values are empty or null'
+  }
+});
+
+// Helper function to execute a sync command using npm run
+function executeNpmCommand(command, taskName, logPrefix) {
   const timestamp = new Date().toISOString();
-  logger.info(`[DataSyncScheduler] Starting scheduled ${logPrefix} at ${timestamp}`);
+  
+  logger.info(`Starting scheduled ${logPrefix}`, {
+    component: 'Scheduler',
+    operation: 'StartTask',
+    data: {
+      task: taskName,
+      command,
+      timestamp
+    }
+  });
   
   // Update task status to RUNNING
   updateTaskStatus(taskName, 'RUNNING', 0, null)
     .catch(err => {
-      logger.error(`[DataSyncScheduler] Error updating task status for ${taskName}:`, {
-        error: err.message
+      logger.error(`Error updating task status for ${taskName}`, {
+        component: 'Scheduler',
+        operation: 'StatusUpdateFailed',
+        error: err
       });
     });
   
   // Set NODE_TLS_REJECT_UNAUTHORIZED=0 to allow self-signed certificates
-  const env = { ...process.env, NODE_TLS_REJECT_UNAUTHORIZED: '0' };
+  // Also set SCHEDULER_MODE to ensure sync scripts know they're running in scheduled mode
+  const env = { 
+    ...process.env, 
+    NODE_TLS_REJECT_UNAUTHORIZED: '0',
+    SCHEDULER_MODE: 'true',
+    PRESERVE_DATA: 'true'
+  };
   
-  // Execute the sync script
-  exec(`node ${scriptPath}`, { env }, (error, stdout, stderr) => {
+  // Execute the npm command with the --scheduled flag and --preserve-data flag
+  const fullCommand = `cd "${backendRoot}" && npm run ${command} -- --scheduled --preserve-data`;
+  
+  logger.debug(`Executing command: ${fullCommand}`, {
+    component: 'Scheduler',
+    operation: 'ExecuteCommand',
+    data: { command: fullCommand }
+  });
+  
+  // Execute the command
+  const startTime = Date.now();
+  exec(fullCommand, { env }, (error, stdout, stderr) => {
+    const duration = Date.now() - startTime;
+    
     if (error) {
-      logger.error(`[DataSyncScheduler] Error running ${logPrefix} script`, {
-        error: error.message,
-        stderr
+      logger.error(`Error running ${logPrefix} command`, {
+        component: 'Scheduler',
+        operation: 'CommandFailed',
+        duration,
+        data: {
+          task: taskName,
+          error: error.message,
+          stderr,
+          exitCode: error.code
+        }
       });
       
       // Update task status to ERROR
       updateTaskStatus(taskName, 'ERROR', 0, error.message)
         .catch(err => {
-          logger.error(`[DataSyncScheduler] Error updating task status for ${taskName}:`, {
-            error: err.message
+          logger.error(`Error updating task status for ${taskName}`, {
+            component: 'Scheduler',
+            operation: 'StatusUpdateFailed',
+            error: err
           });
         });
       return;
     }
     
-    if (stderr) {
-      logger.warn(`[DataSyncScheduler] ${logPrefix} script produced stderr output`, {
-        stderr
+    if (stderr && stderr.trim().length > 0) {
+      logger.warn(`${logPrefix} command produced stderr output`, {
+        component: 'Scheduler',
+        operation: 'CommandWarning',
+        data: {
+          task: taskName,
+          stderr
+        }
       });
     }
     
-    logger.info(`[DataSyncScheduler] ${logPrefix} script completed successfully`, {
-      stdout
+    logger.info(`${logPrefix} command completed successfully`, {
+      component: 'Scheduler',
+      operation: 'CommandSuccess',
+      duration,
+      data: {
+        task: taskName,
+        stdout: stdout.trim().length > 500 ? `${stdout.substring(0, 500)}...` : stdout
+      }
     });
     
     // After successful execution, run the progress tracker to update records count
-    exec(`node ${progressScriptPath}`, { env }, (err) => {
+    logger.debug(`Running progress tracker for ${taskName}`, {
+      component: 'Scheduler',
+      operation: 'ProgressTracking'
+    });
+    
+    exec(`node ${progressScriptPath}`, { env }, (err, progStdout, progStderr) => {
       if (err) {
-        logger.error(`[DataSyncScheduler] Error running progress tracker after ${logPrefix}:`, {
-          error: err.message
+        logger.error(`Error running progress tracker after ${logPrefix}`, {
+          component: 'Scheduler',
+          operation: 'ProgressTrackingFailed',
+          error: err
+        });
+      } else {
+        logger.debug(`Progress tracker completed for ${taskName}`, {
+          component: 'Scheduler',
+          operation: 'ProgressTrackingComplete'
         });
       }
     });
@@ -73,68 +246,143 @@ function executeScript(scriptPath, taskName, logPrefix) {
 
 // Schedule jobs to run at 9:00 AM every day for reservoir data
 const reservoirJob = schedule.scheduleJob('0 9 * * *', function() {
-  executeScript(reservoirScriptPath, 'reservoir_sync', 'reservoir data sync');
+  logger.info('Executing reservoir data sync (consolidated scheduler)', {
+    component: 'Scheduler',
+    operation: 'ReservoirSync',
+    data: {
+      time: new Date().toISOString(),
+      schedule: 'daily at 9:00 AM'
+    }
+  });
+  executeNpmCommand('sync:reservoir', 'reservoir_sync', 'reservoir data sync');
 });
 
-// Schedule ThaiWater rainfall data sync to run hourly at minute 0
-const thaiWaterJob = schedule.scheduleJob('0 * * * *', function() {
-  executeScript(thaiWaterScriptPath, 'thaiwater_sync', 'ThaiWater data sync (hourly)');
+// Schedule HII rainfall data sync to run hourly at minute 40
+const hiiJob = schedule.scheduleJob('40 * * * *', function() {
+  executeNpmCommand('sync:hii', 'hii_sync', 'HII data sync (hourly)');
 });
 
-// TMD data sync job - schedule to run hourly at minute 15
-const tmdJob = schedule.scheduleJob('15 * * * *', function() {
-  executeScript(tmdScriptPath, 'tmd_sync', 'TMD data sync (hourly)');
+// TMD data sync job - schedule to run hourly at minute 55
+const tmdJob = schedule.scheduleJob('55 * * * *', function() {
+  executeNpmCommand('sync:tmd', 'tmd_sync', 'TMD data sync (hourly)');
 });
 
 // Schedule a daily task progress report
 const progressJob = schedule.scheduleJob('15 9 * * *', function() {
-  logger.info('[DataSyncScheduler] Running daily task progress report and generating report');
+  logger.info('Running daily task progress report and generating report', {
+    component: 'Scheduler',
+    operation: 'ReportGeneration'
+  });
   
   const env = { ...process.env, NODE_TLS_REJECT_UNAUTHORIZED: '0' };
   
   // First update the task progress data
   exec(`node ${progressScriptPath}`, { env }, (error, stdout, stderr) => {
     if (error) {
-      logger.error('[DataSyncScheduler] Error running task progress report:', {
-        error: error.message,
-        stderr
+      logger.error('Error running task progress report', {
+        component: 'Scheduler',
+        operation: 'ProgressReportFailed',
+        error
       });
       return;
     }
     
-    logger.info('[DataSyncScheduler] Task progress data updated successfully');
+    logger.info('Task progress data updated successfully', {
+      component: 'Scheduler',
+      operation: 'ProgressReportComplete'
+    });
     
     // Then generate the human-readable report
     exec(`node ${reportScriptPath}`, { env }, (reportError, reportStdout, reportStderr) => {
       if (reportError) {
-        logger.error('[DataSyncScheduler] Error generating sync report:', {
-          error: reportError.message,
-          stderr: reportStderr
+        logger.error('Error generating sync report', {
+          component: 'Scheduler',
+          operation: 'SyncReportFailed',
+          error: reportError
         });
         return;
       }
       
-      logger.info('[DataSyncScheduler] Sync report generated successfully');
+      logger.info('Sync report generated successfully', {
+        component: 'Scheduler',
+        operation: 'SyncReportComplete'
+      });
     });
   });
 });
 
-logger.info('[DataSyncScheduler] Scheduler started successfully');
-logger.info('[DataSyncScheduler] Reservoir data sync: daily at 9:00 AM');
-logger.info('[DataSyncScheduler] Next reservoir data sync scheduled for', reservoirJob.nextInvocation().toDate());
-logger.info('[DataSyncScheduler] ThaiWater data sync: hourly at minute 0');
-logger.info('[DataSyncScheduler] Next ThaiWater data sync scheduled for', thaiWaterJob.nextInvocation().toDate());
-logger.info('[DataSyncScheduler] TMD data sync: hourly at minute 15');
-logger.info('[DataSyncScheduler] Next TMD data sync scheduled for', tmdJob.nextInvocation().toDate());
-logger.info('[DataSyncScheduler] Task progress report: daily at 9:15 AM');
-logger.info('[DataSyncScheduler] Next task progress report scheduled for', progressJob.nextInvocation().toDate());
+// Log information about scheduled jobs
+logger.info('Scheduler started successfully', {
+  component: 'Scheduler',
+  operation: 'Started',
+  data: {
+    jobs: [
+      {
+        name: 'reservoir_sync',
+        schedule: 'daily at 9:00 AM',
+        nextRun: reservoirJob.nextInvocation().toDate()
+      },
+      {
+        name: 'hii_sync',
+        schedule: 'hourly at minute 40',
+        nextRun: hiiJob.nextInvocation().toDate()
+      },
+      {
+        name: 'tmd_sync',
+        schedule: 'hourly at minute 55', 
+        nextRun: tmdJob.nextInvocation().toDate()
+      },
+      {
+        name: 'progress_report',
+        schedule: 'daily at 9:15 AM',
+        nextRun: progressJob.nextInvocation().toDate()
+      }
+    ]
+  }
+});
 
-// Keep the script running
+// Log memory usage at startup
+logger.logMemoryUsage('SchedulerStartup');
+
+// Keep the script running and handle graceful shutdown
 process.on('SIGINT', function() {
+  logger.info('Received SIGINT signal, shutting down scheduler', {
+    component: 'Scheduler',
+    operation: 'Shutdown'
+  });
+  
   reservoirJob.cancel();
-  thaiWaterJob.cancel();
+  hiiJob.cancel();
   tmdJob.cancel();
   progressJob.cancel();
-  logger.info('[DataSyncScheduler] Scheduler stopped');
-  process.exit(0);
+  
+  logger.info('All scheduled jobs cancelled', {
+    component: 'Scheduler',
+    operation: 'JobsCancelled'
+  });
+  
+  // Give logger a chance to write remaining logs
+  setTimeout(() => {
+    process.exit(0);
+  }, 500);
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  logger.error('Uncaught exception in scheduler', {
+    component: 'Scheduler',
+    operation: 'UncaughtException',
+    error
+  });
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('Unhandled promise rejection in scheduler', {
+    component: 'Scheduler',
+    operation: 'UnhandledRejection',
+    data: {
+      reason: reason instanceof Error ? reason.stack : String(reason)
+    }
+  });
 }); 

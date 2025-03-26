@@ -1,0 +1,33 @@
+{
+  "job": "ThaiWater",
+  "runId": "2025-03-24_08-16-50",
+  "timestamp": "2025-03-24T08:16:50.850Z",
+  "manual": {
+    "success": true,
+    "exitCode": 0,
+    "duration": "0.783s",
+    "timedOut": false,
+    "stdoutFile": "/Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/logs/diagnostics/ThaiWater_manual_2025-03-24_08-16-50_stdout.log",
+    "stderrFile": "/Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/logs/diagnostics/ThaiWater_manual_2025-03-24_08-16-50_stderr.log"
+  },
+  "scheduled": {
+    "success": false,
+    "exitCode": 1,
+    "duration": "0.407s",
+    "timedOut": false,
+    "stdoutFile": "/Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/logs/diagnostics/ThaiWater_scheduled_2025-03-24_08-16-50_stdout.log",
+    "stderrFile": "/Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/logs/diagnostics/ThaiWater_scheduled_2025-03-24_08-16-50_stderr.log"
+  },
+  "logPaths": "/Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/logs/diagnostics/ThaiWater_2025-03-24_08-16-50.log",
+  "dbComparison": {
+    "job": "ThaiWater",
+    "runId": "2025-03-24_08-16-50",
+    "compared": false,
+    "message": "Database comparison not yet implemented"
+  },
+  "summary": {
+    "status": "ONLY_MANUAL_SUCCEEDED",
+    "durationDifference": "0.376s",
+    "durationRatio": 1.92
+  }
+}

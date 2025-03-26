@@ -1,0 +1,90 @@
+[
+  {
+    "tele_station_id": 457560,
+    "tele_station_name_th": "วัดบ้านคลองสมุย",
+    "status": "skipped",
+    "reason": "Invalid coordinates"
+  },
+  {
+    "tele_station_id": 1128155,
+    "tele_station_name_th": "บ่อเกลือ",
+    "status": "updated",
+    "location": {
+      "province": "Sainyabuli Province",
+      "amphure": "Ngeun",
+      "tambon": ""
+    }
+  },
+  {
+    "tele_station_id": 1128319,
+    "tele_station_name_th": "ธาตุพนม",
+    "status": "updated",
+    "location": {
+      "province": "Khammouane Province",
+      "amphure": "Nongbok",
+      "tambon": ""
+    }
+  },
+  {
+    "tele_station_id": 1128411,
+    "tele_station_name_th": "ตระการพืชผล",
+    "status": "updated",
+    "location": {
+      "province": "Champasak Province",
+      "amphure": "Phonthong",
+      "tambon": ""
+    }
+  },
+  {
+    "tele_station_id": 1128683,
+    "tele_station_name_th": "ดอนตูม",
+    "status": "failed",
+    "reason": "Geocoding failed"
+  },
+  {
+    "tele_station_id": 1128728,
+    "tele_station_name_th": "เขตลาดกระบัง",
+    "status": "updated",
+    "location": {
+      "province": "Zinder Region",
+      "amphure": "Goure",
+      "tambon": ""
+    }
+  },
+  {
+    "tele_station_id": 1128781,
+    "tele_station_name_th": "ตาพระยา",
+    "status": "updated",
+    "location": {
+      "province": "Banteay Meanchey Province",
+      "amphure": "Thma Puok",
+      "tambon": "Kouk Romiet"
+    }
+  },
+  {
+    "tele_station_id": 1128919,
+    "tele_station_name_th": "สวนสัตว์สงขลา",
+    "status": "failed",
+    "reason": "Geocoding failed"
+  },
+  {
+    "tele_station_id": 1128951,
+    "tele_station_name_th": "สุไหงโก-ลก",
+    "status": "updated",
+    "location": {
+      "province": "Kelantan",
+      "amphure": "",
+      "tambon": "Pasir Mas"
+    }
+  },
+  {
+    "tele_station_id": 1128954,
+    "tele_station_name_th": "แว้ง",
+    "status": "updated",
+    "location": {
+      "province": "Kelantan",
+      "amphure": "",
+      "tambon": "Pasir Mas"
+    }
+  }
+]

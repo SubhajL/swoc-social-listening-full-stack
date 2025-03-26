@@ -4,11 +4,33 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { logger } from '../utils/logger.js';
 
+/**
+ * DEPRECATED SCHEDULER - DO NOT USE
+ * 
+ * This scheduler is deprecated and has been replaced by the consolidated scheduler in:
+ * apps/backend/src/scripts/schedule-data-sync.mjs
+ * 
+ * Please use the consolidated scheduler for all data synchronization tasks.
+ * This file is kept for reference only and the scheduling functionality has been disabled.
+ */
+
 // Get current directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const scriptPath = path.join(__dirname, 'sync-reservoir-data.mjs');
 
+// Log deprecation warning
+logger.warn('[ReservoirScheduler] This scheduler is DEPRECATED. Use schedule-data-sync.mjs instead.', {
+  component: 'Scheduler',
+  operation: 'DeprecationWarning',
+  data: {
+    deprecatedFile: __filename,
+    recommendedFile: 'schedule-data-sync.mjs'
+  }
+});
+
+// DEPRECATED SCHEDULER - Scheduling code is commented out
+/*
 // Schedule job to run at 9:00 AM every day
 // The cron expression "0 9 * * *" means:
 // - 0 seconds
@@ -54,3 +76,4 @@ process.on('SIGINT', function() {
   logger.info('[ReservoirScheduler] Scheduler stopped');
   process.exit(0);
 }); 
+*/ 

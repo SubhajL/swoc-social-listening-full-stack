@@ -1,0 +1,194 @@
+[
+  {
+    "station_code": "TS.2",
+    "db_data": {
+      "station_name": "แม่น้ำป่าสัก",
+      "latitude": "16.830620",
+      "longitude": "104.130798",
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "X.295",
+    "db_data": {
+      "station_name": "เทศบาลเทพกระษัตรี",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "X.296",
+    "db_data": {
+      "station_name": "วัดท่าเรือ",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "S.41",
+    "db_data": {
+      "station_name": "Station 41",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "S.55",
+    "db_data": {
+      "station_name": "Station 55",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "S.607",
+    "db_data": {
+      "station_name": "Station 607",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "S.608",
+    "db_data": {
+      "station_name": "Station 608",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "S.609",
+    "db_data": {
+      "station_name": "Station 609",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "S.610",
+    "db_data": {
+      "station_name": "Station 610",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "S.611",
+    "db_data": {
+      "station_name": "Station 611",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "S.451",
+    "db_data": {
+      "station_name": "Station 451",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "S.452",
+    "db_data": {
+      "station_name": "Station 452",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "S.598",
+    "db_data": {
+      "station_name": "Station 598",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "S.675",
+    "db_data": {
+      "station_name": "Station 675",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "S.487",
+    "db_data": {
+      "station_name": "Station 487",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  },
+  {
+    "station_code": "S.476",
+    "db_data": {
+      "station_name": "Station 476",
+      "latitude": null,
+      "longitude": null,
+      "province": null,
+      "amphure": null
+    },
+    "daily_api_data": null,
+    "hourly_api_data": null
+  }
+]

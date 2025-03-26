@@ -1,0 +1,7898 @@
+[
+  {
+    "id": 15,
+    "name": "Krung Thep 11",
+    "old_amphure": "อำเภอบางบ่อ",
+    "data_source": "HII"
+  },
+  {
+    "id": 16,
+    "name": "Phra Ong Chao Chiayanuchit Canal",
+    "old_amphure": "อำเภอบางบ่อ",
+    "data_source": "HII"
+  },
+  {
+    "id": 17,
+    "name": "Chulachomklao Fortress",
+    "old_amphure": "อำเภอพระสมุทรเจดีย์",
+    "data_source": "HII"
+  },
+  {
+    "id": 18,
+    "name": "Laem Fa Pha",
+    "old_amphure": "อำเภอพระสมุทรเจดีย์",
+    "data_source": "HII"
+  },
+  {
+    "id": 19,
+    "name": "Krung Thep 12",
+    "old_amphure": "อำเภอบางเสาธง",
+    "data_source": "HII"
+  },
+  {
+    "id": 20,
+    "name": "Sisa Chorakhe Noi",
+    "old_amphure": "อำเภอบางเสาธง",
+    "data_source": "HII"
+  },
+  {
+    "id": 21,
+    "name": "Sri Varee Noi Temple",
+    "old_amphure": "อำเภอบางเสาธง",
+    "data_source": "HII"
+  },
+  {
+    "id": 22,
+    "name": "Nanthawan Village",
+    "old_amphure": "อำเภอบางกรวย",
+    "data_source": "HII"
+  },
+  {
+    "id": 24,
+    "name": "Phra Pimol Sai Noi",
+    "old_amphure": "อำเภอไทรน้อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 25,
+    "name": "Rajniyom",
+    "old_amphure": "อำเภอไทรน้อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 26,
+    "name": "Chao Phraya 14",
+    "old_amphure": "อำเภอเมืองปทุมธานี",
+    "data_source": "HII"
+  },
+  {
+    "id": 27,
+    "name": "Krung Thep 2",
+    "old_amphure": "อำเภอเมืองปทุมธานี",
+    "data_source": "HII"
+  },
+  {
+    "id": 28,
+    "name": "Rangsit Khlong 7",
+    "old_amphure": "อำเภอคลองหลวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 29,
+    "name": "Rabibadhana West Section",
+    "old_amphure": "อำเภอคลองหลวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 31,
+    "name": "Future Park Rangsit",
+    "old_amphure": "อำเภอธัญบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 34,
+    "name": "Khlong 13 Bridge",
+    "old_amphure": "อำเภอธัญบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 35,
+    "name": "Ban Noi Sawang",
+    "old_amphure": "อำเภอ หนองเสือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 36,
+    "name": "Rabibadhana Nong Suea",
+    "old_amphure": "อำเภอ หนองเสือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 37,
+    "name": "Lam Luk Ka Klong8",
+    "old_amphure": "อำเภอลำลูกกา",
+    "data_source": "HII"
+  },
+  {
+    "id": 38,
+    "name": "",
+    "old_amphure": "อำเภอลำลูกกา",
+    "data_source": "HII"
+  },
+  {
+    "id": 39,
+    "name": "Chao Phraya 11",
+    "old_amphure": "อำเภอ พระนครศรีอยุธยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 40,
+    "name": "Pa Sak 8",
+    "old_amphure": "อำเภอ ท่าเรือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 43,
+    "name": "Nong Khanak",
+    "old_amphure": "อำเภอ ท่าเรือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 44,
+    "name": "Pa Sak 9",
+    "old_amphure": "อำเภอนครหลวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 45,
+    "name": "Bang Sai",
+    "old_amphure": "อำเภอบางไทร",
+    "data_source": "HII"
+  },
+  {
+    "id": 46,
+    "name": "Chao Phraya 13",
+    "old_amphure": "อำเภอสามโคก",
+    "data_source": "HII"
+  },
+  {
+    "id": 47,
+    "name": "Chao Phraya 10",
+    "old_amphure": "อำเภอ บางบาล",
+    "data_source": "HII"
+  },
+  {
+    "id": 48,
+    "name": "Chao Phraya 9",
+    "old_amphure": "อำเภอ บางบาล",
+    "data_source": "HII"
+  },
+  {
+    "id": 49,
+    "name": "Chao Phraya 12",
+    "old_amphure": "อำเภอบางปะอิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 50,
+    "name": "Lop Buri 1",
+    "old_amphure": "อำเภอบางปะหัน",
+    "data_source": "HII"
+  },
+  {
+    "id": 51,
+    "name": "Lat Chit",
+    "old_amphure": "อำเภอ ผักไห่",
+    "data_source": "HII"
+  },
+  {
+    "id": 54,
+    "name": "Chao Phraya 16",
+    "old_amphure": "อำเภอลาดบัวหลวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 57,
+    "name": "Sena",
+    "old_amphure": "อำเภอเสนา",
+    "data_source": "HII"
+  },
+  {
+    "id": 58,
+    "name": "Chao Phraya 8",
+    "old_amphure": "อำเภอเมืองอ่างทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 59,
+    "name": "Ban Phran",
+    "old_amphure": "อำเภอ แสวงหา",
+    "data_source": "HII"
+  },
+  {
+    "id": 60,
+    "name": "Khok Tum",
+    "old_amphure": "อำเภอเมืองลพบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 61,
+    "name": "Lop Buri 2",
+    "old_amphure": "อำเภอเมืองลพบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 62,
+    "name": "Tha Manao",
+    "old_amphure": "อำเภอชัยบาดาล",
+    "data_source": "HII"
+  },
+  {
+    "id": 63,
+    "name": "Pa Sak 5",
+    "old_amphure": "อำเภอชัยบาดาล",
+    "data_source": "HII"
+  },
+  {
+    "id": 64,
+    "name": "Nong Makha",
+    "old_amphure": "อำเภอ โคกเจริญ",
+    "data_source": "HII"
+  },
+  {
+    "id": 65,
+    "name": "Phra Bot",
+    "old_amphure": "อำเภอ หนองม่วง",
+    "data_source": "HII"
+  },
+  {
+    "id": 68,
+    "name": "Chao Phraya 7",
+    "old_amphure": "อำเภอพรหมบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 71,
+    "name": "Chao Phraya 6",
+    "old_amphure": "อำเภออินทร์บุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 72,
+    "name": "Pho Chai",
+    "old_amphure": "อำเภออินทร์บุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 75,
+    "name": "Ban Kluay",
+    "old_amphure": "อำเภอเมืองชัยนาท",
+    "data_source": "HII"
+  },
+  {
+    "id": 79,
+    "name": "Tha Chin 1",
+    "old_amphure": "อำเภอเมืองชัยนาท",
+    "data_source": "HII"
+  },
+  {
+    "id": 80,
+    "name": "Chao Phraya 4",
+    "old_amphure": "อำเภอเมืองชัยนาท",
+    "data_source": "HII"
+  },
+  {
+    "id": 81,
+    "name": "Khung Sam Phao",
+    "old_amphure": "อำเภอมโนรมย์",
+    "data_source": "HII"
+  },
+  {
+    "id": 83,
+    "name": "Chao Phraya 3",
+    "old_amphure": "อำเภอมโนรมย์",
+    "data_source": "HII"
+  },
+  {
+    "id": 87,
+    "name": "Wat Sing",
+    "old_amphure": "อำเภอ วัดสิงห์",
+    "data_source": "HII"
+  },
+  {
+    "id": 88,
+    "name": "Sapphaya",
+    "old_amphure": "อำเภอสรรพยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 89,
+    "name": "Chao Phraya 5",
+    "old_amphure": "อำเภอสรรพยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 90,
+    "name": "Agri. Economics Office 7",
+    "old_amphure": "อำเภอสรรพยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 91,
+    "name": "Phraek Si Racha",
+    "old_amphure": "อำเภอ สรรคบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 92,
+    "name": "Tha Chin 2",
+    "old_amphure": "อำเภอ สรรคบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 93,
+    "name": "Hankha",
+    "old_amphure": "อำเภอ หันคา",
+    "data_source": "HII"
+  },
+  {
+    "id": 96,
+    "name": "",
+    "old_amphure": "อำเภอเมืองสระบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 97,
+    "name": "Thap Kwang",
+    "old_amphure": "อำเภอแก่งคอย",
+    "data_source": "HII"
+  },
+  {
+    "id": 98,
+    "name": "Srisaowapak Gate",
+    "old_amphure": "อำเภอหนองแค",
+    "data_source": "HII"
+  },
+  {
+    "id": 101,
+    "name": "Upper Srisaowapak Gate",
+    "old_amphure": "อำเภอหนองแค",
+    "data_source": "HII"
+  },
+  {
+    "id": 102,
+    "name": "",
+    "old_amphure": "อำเภอวิหารแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 103,
+    "name": "Maenam Nai",
+    "old_amphure": "อำเภอวิหารแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 104,
+    "name": "Charoentham",
+    "old_amphure": "อำเภอวิหารแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 105,
+    "name": "",
+    "old_amphure": "อำเภอวิหารแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 106,
+    "name": "Wang Muang",
+    "old_amphure": "อำเภอ วังม่วง",
+    "data_source": "HII"
+  },
+  {
+    "id": 107,
+    "name": "Pa Sak 6",
+    "old_amphure": "อำเภอ วังม่วง",
+    "data_source": "HII"
+  },
+  {
+    "id": 108,
+    "name": "Nong Bon Daeng",
+    "old_amphure": "อำเภอบ้านบึง",
+    "data_source": "HII"
+  },
+  {
+    "id": 109,
+    "name": "Bo Win",
+    "old_amphure": "อำเภอศรีราชา",
+    "data_source": "HII"
+  },
+  {
+    "id": 110,
+    "name": "Phlu Ta Luang",
+    "old_amphure": "อำเภอสัตหีบ",
+    "data_source": "HII"
+  },
+  {
+    "id": 111,
+    "name": "Bo Thong",
+    "old_amphure": "อำเภอบ่อทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 112,
+    "name": "Ban Laeng",
+    "old_amphure": "อำเภอเมืองระยอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 113,
+    "name": "Thap Ma",
+    "old_amphure": "อำเภอเมืองระยอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 114,
+    "name": "Ban Na",
+    "old_amphure": "อำเภอแกลง",
+    "data_source": "HII"
+  },
+  {
+    "id": 115,
+    "name": "Mueang Klaeng",
+    "old_amphure": "อำเภอแกลง",
+    "data_source": "HII"
+  },
+  {
+    "id": 116,
+    "name": "Prasae Communuty",
+    "old_amphure": "อำเภอแกลง",
+    "data_source": "HII"
+  },
+  {
+    "id": 117,
+    "name": "Ban Khai",
+    "old_amphure": "อำเภอบ้านค่าย",
+    "data_source": "HII"
+  },
+  {
+    "id": 118,
+    "name": "Nong Bua",
+    "old_amphure": "อำเภอบ้านค่าย",
+    "data_source": "HII"
+  },
+  {
+    "id": 119,
+    "name": "Nong Rai",
+    "old_amphure": "อำเภอปลวกแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 120,
+    "name": "Chanthaburi 1",
+    "old_amphure": "อำเภอเมืองจันทบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 121,
+    "name": "Thep Nimit",
+    "old_amphure": "อำเภอโป่งน้ำร้อน",
+    "data_source": "HII"
+  },
+  {
+    "id": 122,
+    "name": "Pong Nam Ron",
+    "old_amphure": "อำเภอโป่งน้ำร้อน",
+    "data_source": "HII"
+  },
+  {
+    "id": 123,
+    "name": "Pong Nam Ron",
+    "old_amphure": "อำเภอโป่งน้ำร้อน",
+    "data_source": "HII"
+  },
+  {
+    "id": 124,
+    "name": "Patthawi",
+    "old_amphure": "อำเภอ มะขาม",
+    "data_source": "HII"
+  },
+  {
+    "id": 125,
+    "name": "Phlio",
+    "old_amphure": "อำเภอ แหลมสิงห์",
+    "data_source": "HII"
+  },
+  {
+    "id": 126,
+    "name": "Thap Chang",
+    "old_amphure": "อำเภอ สอยดาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 127,
+    "name": "Saton",
+    "old_amphure": "อำเภอ สอยดาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 128,
+    "name": "Kaeng Hang Maeo",
+    "old_amphure": "อำเภอแก่งหางแมว",
+    "data_source": "HII"
+  },
+  {
+    "id": 129,
+    "name": "Khum Song",
+    "old_amphure": "อำเภอแก่งหางแมว",
+    "data_source": "HII"
+  },
+  {
+    "id": 130,
+    "name": "Na Yai Am",
+    "old_amphure": "อำเภอนายายอาม",
+    "data_source": "HII"
+  },
+  {
+    "id": 131,
+    "name": "Na Yai Am",
+    "old_amphure": "อำเภอนายายอาม",
+    "data_source": "HII"
+  },
+  {
+    "id": 132,
+    "name": "Khao Khitchakut",
+    "old_amphure": "อำเภอ เขาคิชฌกูฏ",
+    "data_source": "HII"
+  },
+  {
+    "id": 133,
+    "name": "Takhian Thong",
+    "old_amphure": "อำเภอ เขาคิชฌกูฏ",
+    "data_source": "HII"
+  },
+  {
+    "id": 134,
+    "name": "Trat 4",
+    "old_amphure": "อำเภอเมืองตราด",
+    "data_source": "HII"
+  },
+  {
+    "id": 135,
+    "name": "Pred Nai Communuty",
+    "old_amphure": "อำเภอเมืองตราด",
+    "data_source": "HII"
+  },
+  {
+    "id": 136,
+    "name": "Trat 3",
+    "old_amphure": "อำเภอเมืองตราด",
+    "data_source": "HII"
+  },
+  {
+    "id": 137,
+    "name": "Trat 1",
+    "old_amphure": "อำเภอเมืองตราด",
+    "data_source": "HII"
+  },
+  {
+    "id": 138,
+    "name": "Trat 2",
+    "old_amphure": "อำเภอเมืองตราด",
+    "data_source": "HII"
+  },
+  {
+    "id": 139,
+    "name": "Thaphrik Noensai",
+    "old_amphure": "อำเภอเมืองตราด",
+    "data_source": "HII"
+  },
+  {
+    "id": 140,
+    "name": "Mai Rut",
+    "old_amphure": "อำเภอ คลองใหญ่",
+    "data_source": "HII"
+  },
+  {
+    "id": 141,
+    "name": "Sato",
+    "old_amphure": "อำเภอ เขาสมิง",
+    "data_source": "HII"
+  },
+  {
+    "id": 142,
+    "name": "Dan Chumphon",
+    "old_amphure": "อำเภอ บ่อไร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 143,
+    "name": "Nong Bon",
+    "old_amphure": "อำเภอ บ่อไร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 144,
+    "name": "Bang Pit",
+    "old_amphure": "อำเภอ แหลมงอบ",
+    "data_source": "HII"
+  },
+  {
+    "id": 145,
+    "name": "Ko Chang",
+    "old_amphure": "อำเภอ เกาะช้าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 146,
+    "name": "Bang Khwan",
+    "old_amphure": "อำเภอเมืองฉะเชิงเทรา",
+    "data_source": "HII"
+  },
+  {
+    "id": 147,
+    "name": "Nakhon Nueang Khet",
+    "old_amphure": "อำเภอเมืองฉะเชิงเทรา",
+    "data_source": "HII"
+  },
+  {
+    "id": 148,
+    "name": "Bangpakong 2",
+    "old_amphure": "อำเภอเมืองฉะเชิงเทรา",
+    "data_source": "HII"
+  },
+  {
+    "id": 149,
+    "name": "Bang Nam Priao",
+    "old_amphure": "อำเภอบางน้ำเปรี้ยว",
+    "data_source": "HII"
+  },
+  {
+    "id": 150,
+    "name": "Bang Khanak",
+    "old_amphure": "อำเภอบางน้ำเปรี้ยว",
+    "data_source": "HII"
+  },
+  {
+    "id": 151,
+    "name": "Bang Nam Priao",
+    "old_amphure": "อำเภอบางน้ำเปรี้ยว",
+    "data_source": "HII"
+  },
+  {
+    "id": 152,
+    "name": "Don Chimphli",
+    "old_amphure": "อำเภอบางน้ำเปรี้ยว",
+    "data_source": "HII"
+  },
+  {
+    "id": 153,
+    "name": "",
+    "old_amphure": "อำเภอบางน้ำเปรี้ยว",
+    "data_source": "HII"
+  },
+  {
+    "id": 154,
+    "name": "Bangpakong 1",
+    "old_amphure": "อำเภอบางปะกง",
+    "data_source": "HII"
+  },
+  {
+    "id": 155,
+    "name": "Tha Kham",
+    "old_amphure": "อำเภอบางปะกง",
+    "data_source": "HII"
+  },
+  {
+    "id": 156,
+    "name": "Phanom Sarakham",
+    "old_amphure": "อำเภอพนมสารคาม",
+    "data_source": "HII"
+  },
+  {
+    "id": 157,
+    "name": "Nong Nae",
+    "old_amphure": "อำเภอพนมสารคาม",
+    "data_source": "HII"
+  },
+  {
+    "id": 158,
+    "name": "Tha Kradan",
+    "old_amphure": "อำเภอสนามชัยเขต",
+    "data_source": "HII"
+  },
+  {
+    "id": 159,
+    "name": "Khlong Takrao",
+    "old_amphure": "อำเภอท่าตะเกียบ",
+    "data_source": "HII"
+  },
+  {
+    "id": 160,
+    "name": "Prachinburi 2",
+    "old_amphure": "อำเภอเมืองปราจีนบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 161,
+    "name": "",
+    "old_amphure": "อำเภอเมืองปราจีนบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 162,
+    "name": "Prachinburi 1",
+    "old_amphure": "อำเภอกบินทร์บุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 163,
+    "name": "Kong Udom",
+    "old_amphure": "อำเภอกบินทร์บุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 164,
+    "name": "Wang Tha Chang",
+    "old_amphure": "อำเภอกบินทร์บุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 165,
+    "name": "Na Di",
+    "old_amphure": "อำเภอนาดี",
+    "data_source": "HII"
+  },
+  {
+    "id": 166,
+    "name": "Bu Phram",
+    "old_amphure": "อำเภอนาดี",
+    "data_source": "HII"
+  },
+  {
+    "id": 167,
+    "name": "Yothaka Bridge",
+    "old_amphure": "อำเภอ บ้านสร้าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 168,
+    "name": "Dong Phra Ram",
+    "old_amphure": "อำเภอเมืองปราจีนบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 169,
+    "name": "Prachinburi 4",
+    "old_amphure": "อำเภอ ประจันตคาม",
+    "data_source": "HII"
+  },
+  {
+    "id": 170,
+    "name": "Prachinburi 5",
+    "old_amphure": "อำเภอศรีมหาโพธิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 171,
+    "name": "",
+    "old_amphure": "อำเภอศรีมหาโพธิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 172,
+    "name": "Krok Sombun",
+    "old_amphure": "อำเภอศรีมหาโพธิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 173,
+    "name": "Si Chula",
+    "old_amphure": "อำเภอเมืองนครนายก",
+    "data_source": "HII"
+  },
+  {
+    "id": 174,
+    "name": "Dong Lakhon",
+    "old_amphure": "อำเภอเมืองนครนายก",
+    "data_source": "HII"
+  },
+  {
+    "id": 175,
+    "name": "Khao Nang Buat Bridge",
+    "old_amphure": "อำเภอเมืองนครนายก",
+    "data_source": "HII"
+  },
+  {
+    "id": 176,
+    "name": "Ban Dong Temple",
+    "old_amphure": "อำเภอเมืองนครนายก",
+    "data_source": "HII"
+  },
+  {
+    "id": 177,
+    "name": "Khlong Khlang Reservoir",
+    "old_amphure": "อำเภอปากพลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 178,
+    "name": "Sai Thong Resevoir",
+    "old_amphure": "อำเภอเมืองนครนายก",
+    "data_source": "HII"
+  },
+  {
+    "id": 179,
+    "name": "Si Ka-ang",
+    "old_amphure": "อำเภอบ้านนา",
+    "data_source": "HII"
+  },
+  {
+    "id": 180,
+    "name": "Huai Prue Resevoir",
+    "old_amphure": "อำเภอเมืองนครนายก",
+    "data_source": "HII"
+  },
+  {
+    "id": 181,
+    "name": "Khlong Bot Resevoir",
+    "old_amphure": "อำเภอเมืองนครนายก",
+    "data_source": "HII"
+  },
+  {
+    "id": 182,
+    "name": "Sisiat Reservoir",
+    "old_amphure": "อำเภอปากพลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 183,
+    "name": "Samo Poon Bridge",
+    "old_amphure": "อำเภอปากพลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 184,
+    "name": "Wang Muang Resevoir",
+    "old_amphure": "อำเภอปากพลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 185,
+    "name": "Na Hin Lat",
+    "old_amphure": "อำเภอปากพลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 186,
+    "name": "Ban Na Floodgate",
+    "old_amphure": "อำเภอบ้านนา",
+    "data_source": "HII"
+  },
+  {
+    "id": 187,
+    "name": "Wong Kaeng Bridge",
+    "old_amphure": "อำเภอบ้านนา",
+    "data_source": "HII"
+  },
+  {
+    "id": 188,
+    "name": "TAO. Sai Mun",
+    "old_amphure": "อำเภอองครักษ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 189,
+    "name": "Ongkharak",
+    "old_amphure": "อำเภอองครักษ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 190,
+    "name": "Klong Pra Prong",
+    "old_amphure": "อำเภอกบินทร์บุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 191,
+    "name": "Mueang Sa Kaeo",
+    "old_amphure": "อำเภอเมืองสระแก้ว",
+    "data_source": "HII"
+  },
+  {
+    "id": 192,
+    "name": "Ta Phraya",
+    "old_amphure": "อำเภอ ตาพระยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 193,
+    "name": "Thap Rat",
+    "old_amphure": "อำเภอ ตาพระยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 194,
+    "name": "Kho Khlan",
+    "old_amphure": "อำเภอ ตาพระยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 195,
+    "name": "Wang Nam Yen",
+    "old_amphure": "อำเภอ วังน้ำเย็น",
+    "data_source": "HII"
+  },
+  {
+    "id": 196,
+    "name": "Tha Kwian",
+    "old_amphure": "อำเภอวัฒนานคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 197,
+    "name": "Tha Yaek",
+    "old_amphure": "อำเภอเมืองสระแก้ว",
+    "data_source": "HII"
+  },
+  {
+    "id": 198,
+    "name": "Han Sai",
+    "old_amphure": "อำเภออรัญประเทศ",
+    "data_source": "HII"
+  },
+  {
+    "id": 199,
+    "name": "Tha Kham",
+    "old_amphure": "อำเภออรัญประเทศ",
+    "data_source": "HII"
+  },
+  {
+    "id": 200,
+    "name": "Klong Prom Hod",
+    "old_amphure": "อำเภออรัญประเทศ",
+    "data_source": "HII"
+  },
+  {
+    "id": 201,
+    "name": "Agri. Economics Office 5",
+    "old_amphure": "อำเภอพัฒนานิคม",
+    "data_source": "HII"
+  },
+  {
+    "id": 202,
+    "name": "Ban Ang Kone - Huai Sai School",
+    "old_amphure": "อำเภอครบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 203,
+    "name": "Khong",
+    "old_amphure": "อำเภอคง",
+    "data_source": "HII"
+  },
+  {
+    "id": 204,
+    "name": "Si Lako",
+    "old_amphure": "อำเภอ จักราช",
+    "data_source": "HII"
+  },
+  {
+    "id": 205,
+    "name": "Chai Mongkhon",
+    "old_amphure": "อำเภอเมืองนครราชสีมา",
+    "data_source": "HII"
+  },
+  {
+    "id": 206,
+    "name": "Mun 1",
+    "old_amphure": "อำเภอโชคชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 207,
+    "name": "Nong Bua Lakhon",
+    "old_amphure": "อำเภอด่านขุนทด",
+    "data_source": "HII"
+  },
+  {
+    "id": 208,
+    "name": "Dan Chak",
+    "old_amphure": "อำเภอ โนนไทย",
+    "data_source": "HII"
+  },
+  {
+    "id": 209,
+    "name": "Takhu",
+    "old_amphure": "อำเภอปักธงชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 210,
+    "name": "Upper Phimai Weir",
+    "old_amphure": "อำเภอพิมาย",
+    "data_source": "HII"
+  },
+  {
+    "id": 211,
+    "name": "Mun 4",
+    "old_amphure": "อำเภอพิมาย",
+    "data_source": "HII"
+  },
+  {
+    "id": 212,
+    "name": "",
+    "old_amphure": "อำเภอพิมาย",
+    "data_source": "HII"
+  },
+  {
+    "id": 213,
+    "name": "Samrit",
+    "old_amphure": "อำเภอพิมาย",
+    "data_source": "HII"
+  },
+  {
+    "id": 214,
+    "name": "Bot",
+    "old_amphure": "อำเภอพิมาย",
+    "data_source": "HII"
+  },
+  {
+    "id": 215,
+    "name": "Kong Rot",
+    "old_amphure": "อำเภอ ห้วยแถลง",
+    "data_source": "HII"
+  },
+  {
+    "id": 216,
+    "name": "Chum Phuang Weir",
+    "old_amphure": "อำเภอชุมพวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 217,
+    "name": "Upper Chum Phuang Weir",
+    "old_amphure": "อำเภอชุมพวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 218,
+    "name": "Mun 3",
+    "old_amphure": "อำเภอชุมพวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 219,
+    "name": "Talad Sai Communuty",
+    "old_amphure": "อำเภอชุมพวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 220,
+    "name": "Wang Rong Yai",
+    "old_amphure": "อำเภอสีคิ้ว",
+    "data_source": "HII"
+  },
+  {
+    "id": 221,
+    "name": "Khanong Phra",
+    "old_amphure": "อำเภอปากช่อง",
+    "data_source": "HII"
+  },
+  {
+    "id": 222,
+    "name": "Chi 4",
+    "old_amphure": "อำเภอ แก้งสนามนาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 223,
+    "name": "Yang Kaeng Sanam Nang Weir",
+    "old_amphure": "อำเภอ แก้งสนามนาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 224,
+    "name": "Upper Yang Kaeng Sanam Nang Weir",
+    "old_amphure": "อำเภอ แก้งสนามนาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 225,
+    "name": "Wang Nam Khiao",
+    "old_amphure": "อำเภอวังน้ำเขียว",
+    "data_source": "HII"
+  },
+  {
+    "id": 226,
+    "name": "Wang Mi",
+    "old_amphure": "อำเภอวังน้ำเขียว",
+    "data_source": "HII"
+  },
+  {
+    "id": 227,
+    "name": "Udomsup",
+    "old_amphure": "อำเภอวังน้ำเขียว",
+    "data_source": "HII"
+  },
+  {
+    "id": 228,
+    "name": "Mun 2",
+    "old_amphure": "อำเภอเฉลิมพระเกียรติ",
+    "data_source": "HII"
+  },
+  {
+    "id": 229,
+    "name": "Ban Kawao Weir",
+    "old_amphure": "อำเภอ คูเมือง",
+    "data_source": "HII"
+  },
+  {
+    "id": 230,
+    "name": "Upper Ban Kawao Weir",
+    "old_amphure": "อำเภอ คูเมือง",
+    "data_source": "HII"
+  },
+  {
+    "id": 231,
+    "name": "Mun 8",
+    "old_amphure": "อำเภอ พุทไธสง",
+    "data_source": "HII"
+  },
+  {
+    "id": 232,
+    "name": "Nong Kut YaiCommunuty",
+    "old_amphure": "อำเภอ กระสัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 233,
+    "name": "Ban Khok Puang Communuty",
+    "old_amphure": "อำเภอนางรอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 234,
+    "name": "Don A-Rang",
+    "old_amphure": "อำเภอหนองกี่",
+    "data_source": "HII"
+  },
+  {
+    "id": 235,
+    "name": "Lahan Sai",
+    "old_amphure": "อำเภอ ละหานทราย",
+    "data_source": "HII"
+  },
+  {
+    "id": 236,
+    "name": "Mun 12",
+    "old_amphure": "อำเภอปราสาท",
+    "data_source": "HII"
+  },
+  {
+    "id": 237,
+    "name": "Krok Pradu Communuty",
+    "old_amphure": "อำเภอ ลำปลายมาศ",
+    "data_source": "HII"
+  },
+  {
+    "id": 238,
+    "name": "Mun 14",
+    "old_amphure": "อำเภอ ชุมพลบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 239,
+    "name": "Huai Rat",
+    "old_amphure": "อำเภอ ห้วยราช",
+    "data_source": "HII"
+  },
+  {
+    "id": 240,
+    "name": "Nong Kong",
+    "old_amphure": "อำเภอนางรอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 241,
+    "name": "Lam Nang Rong",
+    "old_amphure": "อำเภอ โนนดินแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 242,
+    "name": "Non Khwang Communuty",
+    "old_amphure": "อำเภอ บ้านด่าน",
+    "data_source": "HII"
+  },
+  {
+    "id": 243,
+    "name": "Khaen Dong",
+    "old_amphure": "อำเภอ แคนดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 244,
+    "name": "Nok Mueang",
+    "old_amphure": "อำเภอเมืองสุรินทร์",
+    "data_source": "HII"
+  },
+  {
+    "id": 245,
+    "name": "Mun 9",
+    "old_amphure": "อำเภอเมืองสุรินทร์",
+    "data_source": "HII"
+  },
+  {
+    "id": 246,
+    "name": "Na Nong Phai",
+    "old_amphure": "อำเภอ ชุมพลบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 247,
+    "name": "Upper Ban Ta Lung Weir",
+    "old_amphure": "อำเภอ ชุมพลบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 248,
+    "name": "Ban Ta Lung Weir",
+    "old_amphure": "อำเภอ ชุมพลบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 249,
+    "name": "Mun 15",
+    "old_amphure": "อำเภอ ท่าตูม",
+    "data_source": "HII"
+  },
+  {
+    "id": 250,
+    "name": "Chom Phra",
+    "old_amphure": "อำเภอ จอมพระ",
+    "data_source": "HII"
+  },
+  {
+    "id": 251,
+    "name": "Kang Aen",
+    "old_amphure": "อำเภอปราสาท",
+    "data_source": "HII"
+  },
+  {
+    "id": 252,
+    "name": "Nong Yai Communuty",
+    "old_amphure": "อำเภอปราสาท",
+    "data_source": "HII"
+  },
+  {
+    "id": 253,
+    "name": "That",
+    "old_amphure": "อำเภอ รัตนบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 254,
+    "name": "Ban Charn",
+    "old_amphure": "อำเภอ สังขะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 255,
+    "name": "Mueang Sisaket",
+    "old_amphure": "อำเภอเมืองศรีสะเกษ",
+    "data_source": "HII"
+  },
+  {
+    "id": 256,
+    "name": "Kanthararom",
+    "old_amphure": "อำเภอ กันทรารมย์",
+    "data_source": "HII"
+  },
+  {
+    "id": 257,
+    "name": "Upper Hua Na Weir",
+    "old_amphure": "อำเภอ กันทรารมย์",
+    "data_source": "HII"
+  },
+  {
+    "id": 258,
+    "name": "Hua Na Weir",
+    "old_amphure": "อำเภอ กันทรารมย์",
+    "data_source": "HII"
+  },
+  {
+    "id": 259,
+    "name": "Ban Nam Yen Temple",
+    "old_amphure": "อำเภอกันทรลักษ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 260,
+    "name": "Ta Ut",
+    "old_amphure": "อำเภอ ขุขันธ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 261,
+    "name": "Suk Sawat",
+    "old_amphure": "อำเภอ ไพรบึง",
+    "data_source": "HII"
+  },
+  {
+    "id": 262,
+    "name": "Mun 5",
+    "old_amphure": "อำเภอ ราษีไศล",
+    "data_source": "HII"
+  },
+  {
+    "id": 263,
+    "name": "Rasi Salai Weir",
+    "old_amphure": "อำเภอ ราษีไศล",
+    "data_source": "HII"
+  },
+  {
+    "id": 264,
+    "name": "Upper Rasi Salai Weir",
+    "old_amphure": "อำเภอ ราษีไศล",
+    "data_source": "HII"
+  },
+  {
+    "id": 265,
+    "name": "Khayung",
+    "old_amphure": "อำเภออุทุมพรพิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 266,
+    "name": "Mun 13",
+    "old_amphure": "อำเภอ สำโรงทาบ",
+    "data_source": "HII"
+  },
+  {
+    "id": 267,
+    "name": "",
+    "old_amphure": "อำเภอเมืองอุบลราชธานี",
+    "data_source": "HII"
+  },
+  {
+    "id": 268,
+    "name": "Na Pho Khlang",
+    "old_amphure": "อำเภอ โขงเจียม",
+    "data_source": "HII"
+  },
+  {
+    "id": 269,
+    "name": "Chi 11",
+    "old_amphure": "อำเภอ เขื่องใน",
+    "data_source": "HII"
+  },
+  {
+    "id": 270,
+    "name": "Mun 17",
+    "old_amphure": "อำเภอเมืองอุบลราชธานี",
+    "data_source": "HII"
+  },
+  {
+    "id": 271,
+    "name": "Upper Tat Noi Weir",
+    "old_amphure": "อำเภอ เขื่องใน",
+    "data_source": "HII"
+  },
+  {
+    "id": 272,
+    "name": "Tat Noi Weir",
+    "old_amphure": "อำเภอ เขื่องใน",
+    "data_source": "HII"
+  },
+  {
+    "id": 273,
+    "name": "Nong Phue",
+    "old_amphure": "อำเภอ เขมราฐ",
+    "data_source": "HII"
+  },
+  {
+    "id": 274,
+    "name": "Na Suang",
+    "old_amphure": "อำเภอเดชอุดม",
+    "data_source": "HII"
+  },
+  {
+    "id": 275,
+    "name": "Kaeng",
+    "old_amphure": "อำเภอเดชอุดม",
+    "data_source": "HII"
+  },
+  {
+    "id": 276,
+    "name": "Nam Yuen",
+    "old_amphure": "อำเภอน้ำยืน",
+    "data_source": "HII"
+  },
+  {
+    "id": 277,
+    "name": "Ban Mat",
+    "old_amphure": "อำเภอบุณฑริก",
+    "data_source": "HII"
+  },
+  {
+    "id": 278,
+    "name": "Trakan Phuet Phon",
+    "old_amphure": "อำเภอตระการพืชผล",
+    "data_source": "HII"
+  },
+  {
+    "id": 279,
+    "name": "Khi Lek",
+    "old_amphure": "อำเภอเมืองอุบลราชธานี",
+    "data_source": "HII"
+  },
+  {
+    "id": 280,
+    "name": "Mun 6",
+    "old_amphure": "อำเภอเมืองอุบลราชธานี",
+    "data_source": "HII"
+  },
+  {
+    "id": 281,
+    "name": "Mun 11",
+    "old_amphure": "อำเภอ พิบูลมังสาหาร",
+    "data_source": "HII"
+  },
+  {
+    "id": 282,
+    "name": "Rawe",
+    "old_amphure": "อำเภอ พิบูลมังสาหาร",
+    "data_source": "HII"
+  },
+  {
+    "id": 283,
+    "name": "Ban Pha Chan Communuty",
+    "old_amphure": "อำเภอ โพธิ์ไทร",
+    "data_source": "HII"
+  },
+  {
+    "id": 284,
+    "name": "Lum Se Bok Bridge",
+    "old_amphure": "อำเภอ ดอนมดแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 285,
+    "name": "",
+    "old_amphure": "อำเภอ ดอนมดแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 286,
+    "name": "Chok Chamrae",
+    "old_amphure": "อำเภอ ทุ่งศรีอุดม",
+    "data_source": "HII"
+  },
+  {
+    "id": 287,
+    "name": "Na Tan",
+    "old_amphure": "อำเภอ นาตาล",
+    "data_source": "HII"
+  },
+  {
+    "id": 288,
+    "name": "Chi 14",
+    "old_amphure": "อำเภอเมืองยโสธร",
+    "data_source": "HII"
+  },
+  {
+    "id": 289,
+    "name": "Tung Nang Oak",
+    "old_amphure": "อำเภอเมืองยโสธร",
+    "data_source": "HII"
+  },
+  {
+    "id": 290,
+    "name": "Pa Tiew",
+    "old_amphure": "อำเภอ ป่าติ้ว",
+    "data_source": "HII"
+  },
+  {
+    "id": 291,
+    "name": "Chi 10",
+    "old_amphure": "อำเภอ มหาชนะชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 292,
+    "name": "Ban Muang",
+    "old_amphure": "อำเภอ มหาชนะชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 293,
+    "name": "Tum Communuty",
+    "old_amphure": "อำเภอ ค้อวัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 294,
+    "name": "Sawat",
+    "old_amphure": "อำเภอ เลิงนกทา",
+    "data_source": "HII"
+  },
+  {
+    "id": 295,
+    "name": "Tat Ton Communuty",
+    "old_amphure": "อำเภอเมืองชัยภูมิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 296,
+    "name": "Chi 3",
+    "old_amphure": "อำเภอเมืองชัยภูมิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 297,
+    "name": "Ban Khai",
+    "old_amphure": "อำเภอเมืองชัยภูมิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 298,
+    "name": "Chi 1",
+    "old_amphure": "อำเภอ บ้านเขว้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 299,
+    "name": "Nong Phon Ngam",
+    "old_amphure": "อำเภอเกษตรสมบูรณ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 300,
+    "name": "Non Kok",
+    "old_amphure": "อำเภอเกษตรสมบูรณ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 301,
+    "name": "Khok Roengrom",
+    "old_amphure": "อำเภอ บำเหน็จณรงค์",
+    "data_source": "HII"
+  },
+  {
+    "id": 302,
+    "name": "Chi 2",
+    "old_amphure": "อำเภอ หนองบัวระเหว",
+    "data_source": "HII"
+  },
+  {
+    "id": 303,
+    "name": "Chao Thong",
+    "old_amphure": "อำเภอ ภักดีชุมพล",
+    "data_source": "HII"
+  },
+  {
+    "id": 304,
+    "name": "Ban Tao",
+    "old_amphure": "อำเภอ บ้านแท่น",
+    "data_source": "HII"
+  },
+  {
+    "id": 305,
+    "name": "Chong Sam Mo",
+    "old_amphure": "อำเภอ แก้งคร้อ",
+    "data_source": "HII"
+  },
+  {
+    "id": 306,
+    "name": "Ban Jiang",
+    "old_amphure": "อำเภอ ภักดีชุมพล",
+    "data_source": "HII"
+  },
+  {
+    "id": 307,
+    "name": "Upper Yang  Kahad Weir",
+    "old_amphure": "อำเภอ เนินสง่า",
+    "data_source": "HII"
+  },
+  {
+    "id": 308,
+    "name": "Yang Kahad Weir",
+    "old_amphure": "อำเภอ เนินสง่า",
+    "data_source": "HII"
+  },
+  {
+    "id": 309,
+    "name": "Na Yom",
+    "old_amphure": "อำเภอเมืองอำนาจเจริญ",
+    "data_source": "HII"
+  },
+  {
+    "id": 310,
+    "name": "Kai Kham",
+    "old_amphure": "อำเภอเมืองอำนาจเจริญ",
+    "data_source": "HII"
+  },
+  {
+    "id": 311,
+    "name": "Na Kham Hai",
+    "old_amphure": "อำเภอเมืองหนองบัวลำภู",
+    "data_source": "HII"
+  },
+  {
+    "id": 312,
+    "name": "Pegfoei-HuaiToey Communuty",
+    "old_amphure": "อำเภอเมืองหนองบัวลำภู",
+    "data_source": "HII"
+  },
+  {
+    "id": 313,
+    "name": "Pang Ku",
+    "old_amphure": "อำเภอ โนนสัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 314,
+    "name": "Na Kok",
+    "old_amphure": "อำเภอ ศรีบุญเรือง",
+    "data_source": "HII"
+  },
+  {
+    "id": 315,
+    "name": "Khong 3",
+    "old_amphure": "อำเภอ สุวรรณคูหา",
+    "data_source": "HII"
+  },
+  {
+    "id": 316,
+    "name": "Wang Thong",
+    "old_amphure": "อำเภอ นาวัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 317,
+    "name": "Ban Thum",
+    "old_amphure": "อำเภอเมืองขอนแก่น",
+    "data_source": "HII"
+  },
+  {
+    "id": 318,
+    "name": "",
+    "old_amphure": "อำเภอเมืองขอนแก่น",
+    "data_source": "HII"
+  },
+  {
+    "id": 319,
+    "name": "Mueang Khon Kaen",
+    "old_amphure": "อำเภอเมืองขอนแก่น",
+    "data_source": "HII"
+  },
+  {
+    "id": 320,
+    "name": "Na Nong Thum",
+    "old_amphure": "อำเภอชุมแพ",
+    "data_source": "HII"
+  },
+  {
+    "id": 321,
+    "name": "",
+    "old_amphure": "อำเภอน้ำพอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 322,
+    "name": "Upper Nong Wai Weir",
+    "old_amphure": "อำเภอน้ำพอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 323,
+    "name": "Phang Thui",
+    "old_amphure": "อำเภอน้ำพอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 324,
+    "name": "Ban Kham Pla Lai Communuty",
+    "old_amphure": "อำเภอ อุบลรัตน์",
+    "data_source": "HII"
+  },
+  {
+    "id": 325,
+    "name": "Ban Phai",
+    "old_amphure": "อำเภอบ้านไผ่",
+    "data_source": "HII"
+  },
+  {
+    "id": 326,
+    "name": "Non Kha",
+    "old_amphure": "อำเภอพล",
+    "data_source": "HII"
+  },
+  {
+    "id": 327,
+    "name": "Dong Bung Communuty",
+    "old_amphure": "อำเภอ แวงใหญ่",
+    "data_source": "HII"
+  },
+  {
+    "id": 328,
+    "name": "Nong Kung Thanasan",
+    "old_amphure": "อำเภอ ภูเวียง",
+    "data_source": "HII"
+  },
+  {
+    "id": 329,
+    "name": "",
+    "old_amphure": "อำเภอ ภูเวียง",
+    "data_source": "HII"
+  },
+  {
+    "id": 330,
+    "name": "Chi 5",
+    "old_amphure": "อำเภอ มัญจาคีรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 331,
+    "name": "Chonnabot Weir",
+    "old_amphure": "อำเภอ ชนบท",
+    "data_source": "HII"
+  },
+  {
+    "id": 332,
+    "name": "Upper Chonnabot Weir",
+    "old_amphure": "อำเภอ ชนบท",
+    "data_source": "HII"
+  },
+  {
+    "id": 333,
+    "name": "Chi 6",
+    "old_amphure": "อำเภอเมืองขอนแก่น",
+    "data_source": "HII"
+  },
+  {
+    "id": 334,
+    "name": "Khlang Mueang Udon",
+    "old_amphure": "อำเภอเมืองอุดรธานี",
+    "data_source": "HII"
+  },
+  {
+    "id": 335,
+    "name": "Khong 4",
+    "old_amphure": "อำเภอเมืองอุดรธานี",
+    "data_source": "HII"
+  },
+  {
+    "id": 336,
+    "name": "Kumphawapi",
+    "old_amphure": "อำเภอกุมภวาปี",
+    "data_source": "HII"
+  },
+  {
+    "id": 337,
+    "name": "Ban Ya",
+    "old_amphure": "อำเภอหนองหาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 338,
+    "name": "Ba Yao",
+    "old_amphure": "อำเภอ วังสามหมอ",
+    "data_source": "HII"
+  },
+  {
+    "id": 339,
+    "name": "Khong 5",
+    "old_amphure": "อำเภอ เพ็ญ",
+    "data_source": "HII"
+  },
+  {
+    "id": 340,
+    "name": "Ban Phue",
+    "old_amphure": "อำเภอบ้านผือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 341,
+    "name": "Ban Dung",
+    "old_amphure": "อำเภอ บ้านดุง",
+    "data_source": "HII"
+  },
+  {
+    "id": 342,
+    "name": "Khong 2",
+    "old_amphure": "อำเภอเมืองเลย",
+    "data_source": "HII"
+  },
+  {
+    "id": 343,
+    "name": "Tha Sa-at",
+    "old_amphure": "อำเภอ นาด้วง",
+    "data_source": "HII"
+  },
+  {
+    "id": 344,
+    "name": "Na Sao",
+    "old_amphure": "อำเภอ เชียงคาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 345,
+    "name": "Kok Sathon",
+    "old_amphure": "อำเภอด่านซ้าย",
+    "data_source": "HII"
+  },
+  {
+    "id": 346,
+    "name": "Lao Ko Hok",
+    "old_amphure": "อำเภอ นาแห้ว",
+    "data_source": "HII"
+  },
+  {
+    "id": 347,
+    "name": "Phu Ruea",
+    "old_amphure": "อำเภอ ภูเรือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 348,
+    "name": "Khong 1",
+    "old_amphure": "อำเภอวังสะพุง",
+    "data_source": "HII"
+  },
+  {
+    "id": 349,
+    "name": "Khao Luang",
+    "old_amphure": "อำเภอวังสะพุง",
+    "data_source": "HII"
+  },
+  {
+    "id": 350,
+    "name": "Si Than",
+    "old_amphure": "อำเภอ ภูกระดึง",
+    "data_source": "HII"
+  },
+  {
+    "id": 351,
+    "name": "Nong Thin Public Park",
+    "old_amphure": "อำเภอเมืองหนองคาย",
+    "data_source": "HII"
+  },
+  {
+    "id": 352,
+    "name": "Nong Nang",
+    "old_amphure": "อำเภอ ท่าบ่อ",
+    "data_source": "HII"
+  },
+  {
+    "id": 353,
+    "name": "Chumphon",
+    "old_amphure": "อำเภอ โพนพิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 354,
+    "name": "Nong Ak School",
+    "old_amphure": "อำเภอ โพนพิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 355,
+    "name": "Sang Kom",
+    "old_amphure": "อำเภอ สังคม",
+    "data_source": "HII"
+  },
+  {
+    "id": 357,
+    "name": "Don Wan",
+    "old_amphure": "อำเภอเมืองมหาสารคาม",
+    "data_source": "HII"
+  },
+  {
+    "id": 358,
+    "name": "Mueang Maha Sarakham",
+    "old_amphure": "อำเภอเมืองมหาสารคาม",
+    "data_source": "HII"
+  },
+  {
+    "id": 359,
+    "name": "Chi 7",
+    "old_amphure": "อำเภอ โกสุมพิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 360,
+    "name": "Upper Maha Sarakham Weir",
+    "old_amphure": "อำเภอ โกสุมพิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 361,
+    "name": "Maha Sarakham Weir",
+    "old_amphure": "อำเภอ โกสุมพิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 362,
+    "name": "Kosum Phisai",
+    "old_amphure": "อำเภอ โกสุมพิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 363,
+    "name": "Non Daeng",
+    "old_amphure": "อำเภอ บรบือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 364,
+    "name": "Nong Pho",
+    "old_amphure": "อำเภอ นาเชือก",
+    "data_source": "HII"
+  },
+  {
+    "id": 365,
+    "name": "Weluwan Temple",
+    "old_amphure": "อำเภอเมืองร้อยเอ็ด",
+    "data_source": "HII"
+  },
+  {
+    "id": 366,
+    "name": "Kaset Wisai",
+    "old_amphure": "อำเภอ เกษตรวิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 367,
+    "name": "Upper Yasotorn Weir",
+    "old_amphure": "อำเภอ พนมไพร",
+    "data_source": "HII"
+  },
+  {
+    "id": 368,
+    "name": "",
+    "old_amphure": "อำเภอ พนมไพร",
+    "data_source": "HII"
+  },
+  {
+    "id": 369,
+    "name": "Akkha Kham",
+    "old_amphure": "อำเภอ โพธิ์ชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 370,
+    "name": "Pho Thong",
+    "old_amphure": "อำเภอเสลภูมิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 371,
+    "name": "Chi 9",
+    "old_amphure": "อำเภอเสลภูมิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 372,
+    "name": "Nong Thap Thai",
+    "old_amphure": "อำเภอ อาจสามารถ",
+    "data_source": "HII"
+  },
+  {
+    "id": 373,
+    "name": "Chumphon",
+    "old_amphure": "อำเภอ เมยวดี",
+    "data_source": "HII"
+  },
+  {
+    "id": 374,
+    "name": "Chi 8",
+    "old_amphure": "อำเภอ กมลาไสย",
+    "data_source": "HII"
+  },
+  {
+    "id": 375,
+    "name": "Roi Et Weir",
+    "old_amphure": "อำเภอ โพธิ์ชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 376,
+    "name": "Upper Roi Et Weir",
+    "old_amphure": "อำเภอ โพธิ์ชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 377,
+    "name": "nua",
+    "old_amphure": "อำเภอเมืองกาฬสินธุ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 378,
+    "name": "Non Si Charoen Communuty",
+    "old_amphure": "อำเภอ นามน",
+    "data_source": "HII"
+  },
+  {
+    "id": 379,
+    "name": "Chum Chang Communuty",
+    "old_amphure": "อำเภอ กุฉินารายณ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 380,
+    "name": "Yang Talad",
+    "old_amphure": "อำเภอยางตลาด",
+    "data_source": "HII"
+  },
+  {
+    "id": 381,
+    "name": "Khok Khruea",
+    "old_amphure": "อำเภอ หนองกุงศรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 382,
+    "name": "Noen Yang",
+    "old_amphure": "อำเภอ คำม่วง",
+    "data_source": "HII"
+  },
+  {
+    "id": 383,
+    "name": "Na Khu",
+    "old_amphure": "อำเภอ นาคู",
+    "data_source": "HII"
+  },
+  {
+    "id": 384,
+    "name": "Wang Yang Weir",
+    "old_amphure": "อำเภอ ฆ้องชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 385,
+    "name": "Upper Wang Yang Weir",
+    "old_amphure": "อำเภอ ฆ้องชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 386,
+    "name": "Tha Rae",
+    "old_amphure": "อำเภอเมืองสกลนคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 387,
+    "name": "Ban Bua Sawang",
+    "old_amphure": "อำเภอ พรรณานิคม",
+    "data_source": "HII"
+  },
+  {
+    "id": 388,
+    "name": "Phang Khon",
+    "old_amphure": "อำเภอ พังโคน",
+    "data_source": "HII"
+  },
+  {
+    "id": 389,
+    "name": "Nikhom Nam Un",
+    "old_amphure": "อำเภอ นิคมน้ำอูน",
+    "data_source": "HII"
+  },
+  {
+    "id": 390,
+    "name": "Khua Kai",
+    "old_amphure": "อำเภอวานรนิวาส",
+    "data_source": "HII"
+  },
+  {
+    "id": 391,
+    "name": "Kham Ta Kla",
+    "old_amphure": "อำเภอ คำตากล้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 392,
+    "name": "",
+    "old_amphure": "อำเภอ โซ่พิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 393,
+    "name": "Song Kram 3",
+    "old_amphure": "อำเภอ บ้านม่วง",
+    "data_source": "HII"
+  },
+  {
+    "id": 394,
+    "name": "Nong Paen",
+    "old_amphure": "อำเภอ เจริญศิลป์",
+    "data_source": "HII"
+  },
+  {
+    "id": 395,
+    "name": "Nathom Bridge",
+    "old_amphure": "อำเภอ นาทม",
+    "data_source": "HII"
+  },
+  {
+    "id": 396,
+    "name": "Sawang Daen Din",
+    "old_amphure": "อำเภอ บ้านดุง",
+    "data_source": "HII"
+  },
+  {
+    "id": 397,
+    "name": "Khok Si",
+    "old_amphure": "อำเภอสว่างแดนดิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 398,
+    "name": "Tao Ngoi",
+    "old_amphure": "อำเภอ เต่างอย",
+    "data_source": "HII"
+  },
+  {
+    "id": 399,
+    "name": "Dan Muang Kam",
+    "old_amphure": "อำเภอ โคกศรีสุพรรณ",
+    "data_source": "HII"
+  },
+  {
+    "id": 400,
+    "name": "Khok Phu",
+    "old_amphure": "อำเภอ ภูพาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 401,
+    "name": "Ban Phueng",
+    "old_amphure": "อำเภอเมืองนครพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 402,
+    "name": "Phum Kae",
+    "old_amphure": "อำเภอ นาแก",
+    "data_source": "HII"
+  },
+  {
+    "id": 403,
+    "name": "",
+    "old_amphure": "อำเภอ ศรีสงคราม",
+    "data_source": "HII"
+  },
+  {
+    "id": 404,
+    "name": "Si Songkhram",
+    "old_amphure": "อำเภอ ศรีสงคราม",
+    "data_source": "HII"
+  },
+  {
+    "id": 405,
+    "name": "Sri Songkram",
+    "old_amphure": "อำเภอ ศรีสงคราม",
+    "data_source": "HII"
+  },
+  {
+    "id": 406,
+    "name": "Ban Kham a Huan School",
+    "old_amphure": "อำเภอเมืองมุกดาหาร",
+    "data_source": "HII"
+  },
+  {
+    "id": 407,
+    "name": "Don Tan",
+    "old_amphure": "อำเภอ ดอนตาล",
+    "data_source": "HII"
+  },
+  {
+    "id": 408,
+    "name": "Nam Thiang",
+    "old_amphure": "อำเภอ คำชะอี",
+    "data_source": "HII"
+  },
+  {
+    "id": 409,
+    "name": "Chang Phueak",
+    "old_amphure": "อำเภอเมืองเชียงใหม่",
+    "data_source": "HII"
+  },
+  {
+    "id": 410,
+    "name": "Ban Luang",
+    "old_amphure": "อำเภอจอมทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 411,
+    "name": "Mae Had Communuty",
+    "old_amphure": "อำเภอจอมทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 412,
+    "name": "Chiang Mai 6",
+    "old_amphure": "อำเภอจอมทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 413,
+    "name": "Chang Khoeng",
+    "old_amphure": "อำเภอแม่แจ่ม",
+    "data_source": "HII"
+  },
+  {
+    "id": 414,
+    "name": "Chiang Mai 4",
+    "old_amphure": "อำเภอเชียงดาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 415,
+    "name": "Mae Na",
+    "old_amphure": "อำเภอเชียงดาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 416,
+    "name": "Choeng Doi",
+    "old_amphure": "อำเภอดอยสะเก็ด",
+    "data_source": "HII"
+  },
+  {
+    "id": 417,
+    "name": "Pa Sak Ngam Communuty",
+    "old_amphure": "อำเภอดอยสะเก็ด",
+    "data_source": "HII"
+  },
+  {
+    "id": 418,
+    "name": "Chiang Mai 5",
+    "old_amphure": "อำเภอแม่แตง",
+    "data_source": "HII"
+  },
+  {
+    "id": 419,
+    "name": "Chom Chaeng",
+    "old_amphure": "อำเภอแม่แตง",
+    "data_source": "HII"
+  },
+  {
+    "id": 421,
+    "name": "Wiang",
+    "old_amphure": "อำเภอ ฝาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 422,
+    "name": "Chiang Mai 7",
+    "old_amphure": "อำเภอ ฝาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 423,
+    "name": "Tha Ton",
+    "old_amphure": "อำเภอ แม่อาย",
+    "data_source": "HII"
+  },
+  {
+    "id": 424,
+    "name": "Chiang Mai 3",
+    "old_amphure": "อำเภอ แม่อาย",
+    "data_source": "HII"
+  },
+  {
+    "id": 425,
+    "name": "Ban Pong",
+    "old_amphure": "อำเภอพร้าว",
+    "data_source": "HII"
+  },
+  {
+    "id": 426,
+    "name": "Ban Huai Sai Communuty",
+    "old_amphure": "อำเภอพร้าว",
+    "data_source": "HII"
+  },
+  {
+    "id": 427,
+    "name": "Thung Satok",
+    "old_amphure": "อำเภอสันป่าตอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 428,
+    "name": "San Kamphaeng",
+    "old_amphure": "อำเภอสันกำแพง",
+    "data_source": "HII"
+  },
+  {
+    "id": 429,
+    "name": "San Na Meng",
+    "old_amphure": "อำเภอสันทราย",
+    "data_source": "HII"
+  },
+  {
+    "id": 430,
+    "name": "Chiang Mai 1",
+    "old_amphure": "อำเภอสันทราย",
+    "data_source": "HII"
+  },
+  {
+    "id": 431,
+    "name": "Nong Khrai",
+    "old_amphure": "อำเภอหางดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 432,
+    "name": "Sop Mae Kha",
+    "old_amphure": "อำเภอหางดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 433,
+    "name": "Ban Pong",
+    "old_amphure": "อำเภอหางดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 434,
+    "name": "Chiang Mai 2",
+    "old_amphure": "อำเภอฮอด",
+    "data_source": "HII"
+  },
+  {
+    "id": 435,
+    "name": "Hang Dong",
+    "old_amphure": "อำเภอฮอด",
+    "data_source": "HII"
+  },
+  {
+    "id": 436,
+    "name": "Doi Tao",
+    "old_amphure": "อำเภอ ดอยเต่า",
+    "data_source": "HII"
+  },
+  {
+    "id": 437,
+    "name": "Omkoi",
+    "old_amphure": "อำเภออมก๋อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 438,
+    "name": "Piang Luang",
+    "old_amphure": "อำเภอ เวียงแหง",
+    "data_source": "HII"
+  },
+  {
+    "id": 439,
+    "name": "Chai Prakan",
+    "old_amphure": "อำเภอ ไชยปราการ",
+    "data_source": "HII"
+  },
+  {
+    "id": 440,
+    "name": "Ban Kad",
+    "old_amphure": "อำเภอ แม่วาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 441,
+    "name": "Mae Wang",
+    "old_amphure": "อำเภอ แม่วาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 442,
+    "name": "Santi Suk",
+    "old_amphure": "อำเภอ ดอยหล่อ",
+    "data_source": "HII"
+  },
+  {
+    "id": 443,
+    "name": "Lamphun",
+    "old_amphure": "อำเภอเมืองลำพูน",
+    "data_source": "HII"
+  },
+  {
+    "id": 444,
+    "name": "Tha Sop Sao",
+    "old_amphure": "อำเภอแม่ทา",
+    "data_source": "HII"
+  },
+  {
+    "id": 445,
+    "name": "Ban Hong",
+    "old_amphure": "อำเภอ บ้านโฮ่ง",
+    "data_source": "HII"
+  },
+  {
+    "id": 446,
+    "name": "Wang Din",
+    "old_amphure": "อำเภอลี้",
+    "data_source": "HII"
+  },
+  {
+    "id": 447,
+    "name": "Thung Hua Chang",
+    "old_amphure": "อำเภอ ทุ่งหัวช้าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 448,
+    "name": "Pa Sang",
+    "old_amphure": "อำเภอ ป่าซาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 449,
+    "name": "Ban Thi",
+    "old_amphure": "อำเภอ บ้านธิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 450,
+    "name": "",
+    "old_amphure": "อำเภอเมืองลำปาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 451,
+    "name": "Bo Haeo",
+    "old_amphure": "อำเภอเมืองลำปาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 452,
+    "name": "Wang 5",
+    "old_amphure": "อำเภอเมืองลำปาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 453,
+    "name": "Mae Mo",
+    "old_amphure": "อำเภอแม่เมาะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 454,
+    "name": "Wang 4",
+    "old_amphure": "อำเภอเกาะคา",
+    "data_source": "HII"
+  },
+  {
+    "id": 455,
+    "name": "Lampang Luang",
+    "old_amphure": "อำเภอเกาะคา",
+    "data_source": "HII"
+  },
+  {
+    "id": 456,
+    "name": "Soem Ngam",
+    "old_amphure": "อำเภอ เสริมงาม",
+    "data_source": "HII"
+  },
+  {
+    "id": 457,
+    "name": "",
+    "old_amphure": "อำเภอ เสริมงาม",
+    "data_source": "HII"
+  },
+  {
+    "id": 458,
+    "name": "Ban Haeng",
+    "old_amphure": "อำเภองาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 459,
+    "name": "Yom 11",
+    "old_amphure": "อำเภองาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 460,
+    "name": "Chae Hom",
+    "old_amphure": "อำเภอแจ้ห่ม",
+    "data_source": "HII"
+  },
+  {
+    "id": 461,
+    "name": "Ban Mai",
+    "old_amphure": "อำเภอ วังเหนือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 462,
+    "name": "Mae Pa",
+    "old_amphure": "อำเภอเถิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 463,
+    "name": "Wang 3",
+    "old_amphure": "อำเภอเถิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 464,
+    "name": "Wang 2",
+    "old_amphure": "อำเภอ แม่พริก",
+    "data_source": "HII"
+  },
+  {
+    "id": 465,
+    "name": "Mae Phrik",
+    "old_amphure": "อำเภอ แม่พริก",
+    "data_source": "HII"
+  },
+  {
+    "id": 466,
+    "name": "Ban Kio",
+    "old_amphure": "อำเภอ แม่ทะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 467,
+    "name": "Na Yang",
+    "old_amphure": "อำเภอสบปราบ",
+    "data_source": "HII"
+  },
+  {
+    "id": 468,
+    "name": "Nong Lom",
+    "old_amphure": "อำเภอห้างฉัตร",
+    "data_source": "HII"
+  },
+  {
+    "id": 469,
+    "name": "Mae Tan Noi Communuty",
+    "old_amphure": "อำเภอห้างฉัตร",
+    "data_source": "HII"
+  },
+  {
+    "id": 470,
+    "name": "Sob Lee Commu.",
+    "old_amphure": "อำเภอ เมืองปาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 471,
+    "name": "Chae Son",
+    "old_amphure": "อำเภอ เมืองปาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 472,
+    "name": "Nan 11",
+    "old_amphure": "อำเภอเมืองอุตรดิตถ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 473,
+    "name": "Khung Taphao",
+    "old_amphure": "อำเภอเมืองอุตรดิตถ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 474,
+    "name": "Tron",
+    "old_amphure": "อำเภอตรอน",
+    "data_source": "HII"
+  },
+  {
+    "id": 475,
+    "name": "NAN 14",
+    "old_amphure": "อำเภอตรอน",
+    "data_source": "HII"
+  },
+  {
+    "id": 476,
+    "name": "Tha Phaek",
+    "old_amphure": "อำเภอท่าปลา",
+    "data_source": "HII"
+  },
+  {
+    "id": 477,
+    "name": "Nam Pat",
+    "old_amphure": "อำเภอน้ำปาด",
+    "data_source": "HII"
+  },
+  {
+    "id": 478,
+    "name": "Nan 10",
+    "old_amphure": "อำเภอน้ำปาด",
+    "data_source": "HII"
+  },
+  {
+    "id": 479,
+    "name": "Huai Mun",
+    "old_amphure": "อำเภอน้ำปาด",
+    "data_source": "HII"
+  },
+  {
+    "id": 480,
+    "name": "Ban Khok",
+    "old_amphure": "อำเภอ บ้านโคก",
+    "data_source": "HII"
+  },
+  {
+    "id": 481,
+    "name": "Nai Mueang",
+    "old_amphure": "อำเภอพิชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 482,
+    "name": "Nan 4",
+    "old_amphure": "อำเภอพิชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 483,
+    "name": "Yom-Nan 3",
+    "old_amphure": "อำเภอพิชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 484,
+    "name": "",
+    "old_amphure": "อำเภอพิชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 485,
+    "name": "Si Phanom Mat",
+    "old_amphure": "อำเภอ ลับแล",
+    "data_source": "HII"
+  },
+  {
+    "id": 486,
+    "name": "Thong Saen Khan",
+    "old_amphure": "อำเภอ ทองแสนขัน",
+    "data_source": "HII"
+  },
+  {
+    "id": 487,
+    "name": "Pa Maet",
+    "old_amphure": "อำเภอเมืองแพร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 488,
+    "name": "Cho Hae",
+    "old_amphure": "อำเภอเมืองแพร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 489,
+    "name": "Yom 10",
+    "old_amphure": "อำเภอเมืองแพร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 490,
+    "name": "Rong Kwang",
+    "old_amphure": "อำเภอ ร้องกวาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 491,
+    "name": "Thung Laeng",
+    "old_amphure": "อำเภอลอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 492,
+    "name": "Sung Men",
+    "old_amphure": "อำเภอสูงเม่น",
+    "data_source": "HII"
+  },
+  {
+    "id": 493,
+    "name": "Yom 4",
+    "old_amphure": "อำเภอเด่นชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 494,
+    "name": "Den Chai",
+    "old_amphure": "อำเภอเด่นชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 495,
+    "name": "Haui Rai Communuty",
+    "old_amphure": "อำเภอเด่นชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 496,
+    "name": "Ban Khlang",
+    "old_amphure": "อำเภอสอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 497,
+    "name": "Wang Chin",
+    "old_amphure": "อำเภอวังชิ้น",
+    "data_source": "HII"
+  },
+  {
+    "id": 498,
+    "name": "Nong Muang Khai",
+    "old_amphure": "อำเภอ หนองม่วงไข่",
+    "data_source": "HII"
+  },
+  {
+    "id": 499,
+    "name": "Yom 3",
+    "old_amphure": "อำเภอ หนองม่วงไข่",
+    "data_source": "HII"
+  },
+  {
+    "id": 500,
+    "name": "Nan",
+    "old_amphure": "อำเภอเมืองน่าน",
+    "data_source": "HII"
+  },
+  {
+    "id": 501,
+    "name": "Ban Ka Sai",
+    "old_amphure": "อำเภอเมืองน่าน",
+    "data_source": "HII"
+  },
+  {
+    "id": 502,
+    "name": "",
+    "old_amphure": "อำเภอเมืองน่าน",
+    "data_source": "HII"
+  },
+  {
+    "id": 503,
+    "name": "",
+    "old_amphure": "อำเภอเมืองน่าน",
+    "data_source": "HII"
+  },
+  {
+    "id": 504,
+    "name": "Song Kwae Bridge",
+    "old_amphure": "อำเภอเมืองน่าน",
+    "data_source": "HII"
+  },
+  {
+    "id": 505,
+    "name": "Mo Mueang",
+    "old_amphure": "อำเภอแม่จริม",
+    "data_source": "HII"
+  },
+  {
+    "id": 506,
+    "name": "Pha Ka Luang",
+    "old_amphure": "อำเภอ บ้านหลวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 507,
+    "name": "Na Noi",
+    "old_amphure": "อำเภอนาน้อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 508,
+    "name": "Chai Watthana",
+    "old_amphure": "อำเภอ ปัว",
+    "data_source": "HII"
+  },
+  {
+    "id": 509,
+    "name": "Pa Kha",
+    "old_amphure": "อำเภอ ท่าวังผา",
+    "data_source": "HII"
+  },
+  {
+    "id": 510,
+    "name": "Nan 1",
+    "old_amphure": "อำเภอ ท่าวังผา",
+    "data_source": "HII"
+  },
+  {
+    "id": 511,
+    "name": "Klang Wiang",
+    "old_amphure": "อำเภอเวียงสา",
+    "data_source": "HII"
+  },
+  {
+    "id": 512,
+    "name": "Wieng Sa",
+    "old_amphure": "อำเภอเวียงสา",
+    "data_source": "HII"
+  },
+  {
+    "id": 513,
+    "name": "Nam Muap",
+    "old_amphure": "อำเภอเวียงสา",
+    "data_source": "HII"
+  },
+  {
+    "id": 514,
+    "name": "Ai Na Lai",
+    "old_amphure": "อำเภอเวียงสา",
+    "data_source": "HII"
+  },
+  {
+    "id": 515,
+    "name": "Thung Chang",
+    "old_amphure": "อำเภอ ทุ่งช้าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 516,
+    "name": "Chiang Klang",
+    "old_amphure": "อำเภอ เชียงกลาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 517,
+    "name": "Bo Kaeo",
+    "old_amphure": "อำเภอ นาหมื่น",
+    "data_source": "HII"
+  },
+  {
+    "id": 518,
+    "name": "Du Phong",
+    "old_amphure": "อำเภอ สันติสุข",
+    "data_source": "HII"
+  },
+  {
+    "id": 519,
+    "name": "Bo Kluea Tai",
+    "old_amphure": "อำเภอ บ่อเกลือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 520,
+    "name": "Dong Pha Poon Temple Communuty",
+    "old_amphure": "อำเภอ บ่อเกลือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 521,
+    "name": "Na Rai Luang",
+    "old_amphure": "อำเภอ สองแคว",
+    "data_source": "HII"
+  },
+  {
+    "id": 522,
+    "name": "Nan 2",
+    "old_amphure": "อำเภอ ภูเพียง",
+    "data_source": "HII"
+  },
+  {
+    "id": 523,
+    "name": "Nan 3",
+    "old_amphure": "อำเภอเมืองน่าน",
+    "data_source": "HII"
+  },
+  {
+    "id": 524,
+    "name": "Huai Kron",
+    "old_amphure": "อำเภอ เฉลิมพระเกียรติ",
+    "data_source": "HII"
+  },
+  {
+    "id": 525,
+    "name": "Mae Sai",
+    "old_amphure": "อำเภอเมืองพะเยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 526,
+    "name": "Kwan Phayao",
+    "old_amphure": "อำเภอเมืองพะเยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 527,
+    "name": "",
+    "old_amphure": "อำเภอ แม่ใจ",
+    "data_source": "HII"
+  },
+  {
+    "id": 528,
+    "name": "Huai Khao Kam",
+    "old_amphure": "อำเภอ จุน",
+    "data_source": "HII"
+  },
+  {
+    "id": 529,
+    "name": "Yuan",
+    "old_amphure": "อำเภอ เชียงคำ",
+    "data_source": "HII"
+  },
+  {
+    "id": 530,
+    "name": "Chiang Muan",
+    "old_amphure": "อำเภอ เชียงม่วน",
+    "data_source": "HII"
+  },
+  {
+    "id": 531,
+    "name": "Yom 2",
+    "old_amphure": "อำเภอ เชียงม่วน",
+    "data_source": "HII"
+  },
+  {
+    "id": 532,
+    "name": "Pong",
+    "old_amphure": "อำเภอปง",
+    "data_source": "HII"
+  },
+  {
+    "id": 533,
+    "name": "Yom 1",
+    "old_amphure": "อำเภอปง",
+    "data_source": "HII"
+  },
+  {
+    "id": 534,
+    "name": "Mae Chai",
+    "old_amphure": "อำเภอ แม่ใจ",
+    "data_source": "HII"
+  },
+  {
+    "id": 535,
+    "name": "Mae Ing",
+    "old_amphure": "อำเภอ ภูกามยาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 536,
+    "name": "Rop Wiang",
+    "old_amphure": "อำเภอเมืองเชียงราย",
+    "data_source": "HII"
+  },
+  {
+    "id": 537,
+    "name": "Chaing Rai 1",
+    "old_amphure": "อำเภอเมืองเชียงราย",
+    "data_source": "HII"
+  },
+  {
+    "id": 538,
+    "name": "Siri Wiang Chai",
+    "old_amphure": "อำเภอ เวียงชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 539,
+    "name": "Wiang",
+    "old_amphure": "อำเภอ เชียงของ",
+    "data_source": "HII"
+  },
+  {
+    "id": 540,
+    "name": "Muang Chum Communuty",
+    "old_amphure": "อำเภอ เชียงของ",
+    "data_source": "HII"
+  },
+  {
+    "id": 541,
+    "name": "Wiang Terng",
+    "old_amphure": "อำเภอ เทิง",
+    "data_source": "HII"
+  },
+  {
+    "id": 542,
+    "name": "Chaing Rai 2",
+    "old_amphure": "อำเภอ เทิง",
+    "data_source": "HII"
+  },
+  {
+    "id": 543,
+    "name": "Mueang Phan",
+    "old_amphure": "อำเภอ พาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 544,
+    "name": "Pa Daet",
+    "old_amphure": "อำเภอ ป่าแดด",
+    "data_source": "HII"
+  },
+  {
+    "id": 545,
+    "name": "Chaing Rai 3",
+    "old_amphure": "อำเภอแม่จัน",
+    "data_source": "HII"
+  },
+  {
+    "id": 546,
+    "name": "Mae Chan",
+    "old_amphure": "อำเภอแม่จัน",
+    "data_source": "HII"
+  },
+  {
+    "id": 547,
+    "name": "Chaing Rai 5",
+    "old_amphure": "อำเภอ ดอยหลวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 548,
+    "name": "Yonok",
+    "old_amphure": "อำเภอ เชียงแสน",
+    "data_source": "HII"
+  },
+  {
+    "id": 549,
+    "name": "Wiang Phang Kham",
+    "old_amphure": "อำเภอแม่สาย",
+    "data_source": "HII"
+  },
+  {
+    "id": 550,
+    "name": "Chaing Rai 4",
+    "old_amphure": "อำเภอแม่สรวย",
+    "data_source": "HII"
+  },
+  {
+    "id": 551,
+    "name": "Mae Suai",
+    "old_amphure": "อำเภอแม่สรวย",
+    "data_source": "HII"
+  },
+  {
+    "id": 552,
+    "name": "Wiang Pa Pao",
+    "old_amphure": "อำเภอเวียงป่าเป้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 553,
+    "name": "Communuty Mae Lao Communuty",
+    "old_amphure": "อำเภอเวียงป่าเป้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 554,
+    "name": "Phaya Mengrai",
+    "old_amphure": "อำเภอ พญาเม็งราย",
+    "data_source": "HII"
+  },
+  {
+    "id": 555,
+    "name": "Lai Ngao",
+    "old_amphure": "อำเภอ เวียงแก่น",
+    "data_source": "HII"
+  },
+  {
+    "id": 556,
+    "name": "Yang Hom",
+    "old_amphure": "อำเภอ ขุนตาล",
+    "data_source": "HII"
+  },
+  {
+    "id": 557,
+    "name": "Ban Thoet Thai",
+    "old_amphure": "อำเภอ แม่ฟ้าหลวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 558,
+    "name": "Dong Mada",
+    "old_amphure": "อำเภอแม่ลาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 559,
+    "name": "Pang Mu",
+    "old_amphure": "อำเภอเมืองแม่ฮ่องสอน",
+    "data_source": "HII"
+  },
+  {
+    "id": 560,
+    "name": "Pai 1",
+    "old_amphure": "อำเภอเมืองแม่ฮ่องสอน",
+    "data_source": "HII"
+  },
+  {
+    "id": 561,
+    "name": "Khun Yuam",
+    "old_amphure": "อำเภอขุนยวม",
+    "data_source": "HII"
+  },
+  {
+    "id": 562,
+    "name": "Santichon",
+    "old_amphure": "อำเภอปาย",
+    "data_source": "HII"
+  },
+  {
+    "id": 563,
+    "name": "Pai 2",
+    "old_amphure": "อำเภอปาย",
+    "data_source": "HII"
+  },
+  {
+    "id": 564,
+    "name": "Mae Khong",
+    "old_amphure": "อำเภอแม่สะเรียง",
+    "data_source": "HII"
+  },
+  {
+    "id": 565,
+    "name": "",
+    "old_amphure": "อำเภอสบเมย",
+    "data_source": "HII"
+  },
+  {
+    "id": 566,
+    "name": "Mae Suat",
+    "old_amphure": "อำเภอสบเมย",
+    "data_source": "HII"
+  },
+  {
+    "id": 567,
+    "name": "Pang Mapha",
+    "old_amphure": "อำเภอปางมะผ้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 568,
+    "name": "Chao Phraya 1",
+    "old_amphure": "อำเภอเมืองนครสวรรค์",
+    "data_source": "HII"
+  },
+  {
+    "id": 569,
+    "name": "Nakhon Sawan Rim Nam",
+    "old_amphure": "อำเภอเมืองนครสวรรค์",
+    "data_source": "HII"
+  },
+  {
+    "id": 571,
+    "name": "Krok Phra",
+    "old_amphure": "อำเภอโกรกพระ",
+    "data_source": "HII"
+  },
+  {
+    "id": 572,
+    "name": "Phikun",
+    "old_amphure": "อำเภอ ชุมแสง",
+    "data_source": "HII"
+  },
+  {
+    "id": 573,
+    "name": "Nan 8",
+    "old_amphure": "อำเภอ ชุมแสง",
+    "data_source": "HII"
+  },
+  {
+    "id": 574,
+    "name": "Nong Bua",
+    "old_amphure": "อำเภอ หนองบัว",
+    "data_source": "HII"
+  },
+  {
+    "id": 575,
+    "name": "Bang Ta Ngai",
+    "old_amphure": "อำเภอบรรพตพิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 576,
+    "name": "Kao Liao",
+    "old_amphure": "อำเภอเก้าเลี้ยว",
+    "data_source": "HII"
+  },
+  {
+    "id": 577,
+    "name": "Ping 5",
+    "old_amphure": "อำเภอเก้าเลี้ยว",
+    "data_source": "HII"
+  },
+  {
+    "id": 578,
+    "name": "Takli",
+    "old_amphure": "อำเภอตาคลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 581,
+    "name": "Tha Tako",
+    "old_amphure": "อำเภอ ท่าตะโก",
+    "data_source": "HII"
+  },
+  {
+    "id": 582,
+    "name": "Phaisali",
+    "old_amphure": "อำเภอ ไพศาลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 583,
+    "name": "Khao Thong",
+    "old_amphure": "อำเภอพยุหะคีรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 584,
+    "name": "Chao Phraya 2",
+    "old_amphure": "อำเภอพยุหะคีรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 585,
+    "name": "Lat Yao",
+    "old_amphure": "อำเภอลาดยาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 586,
+    "name": "Sakae Krang 6",
+    "old_amphure": "อำเภอลาดยาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 587,
+    "name": "Sakae Krang 7",
+    "old_amphure": "อำเภอลาดยาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 588,
+    "name": "Tak Fa",
+    "old_amphure": "อำเภอ ตากฟ้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 589,
+    "name": "Mae Wong",
+    "old_amphure": "อำเภอแม่วงก์",
+    "data_source": "HII"
+  },
+  {
+    "id": 590,
+    "name": "",
+    "old_amphure": "อำเภอแม่วงก์",
+    "data_source": "HII"
+  },
+  {
+    "id": 591,
+    "name": "",
+    "old_amphure": "อำเภอแม่วงก์",
+    "data_source": "HII"
+  },
+  {
+    "id": 592,
+    "name": "Sakae Krang 4",
+    "old_amphure": "อำเภอแม่วงก์",
+    "data_source": "HII"
+  },
+  {
+    "id": 593,
+    "name": "Sakae Krang 8",
+    "old_amphure": "อำเภอแม่วงก์",
+    "data_source": "HII"
+  },
+  {
+    "id": 594,
+    "name": "",
+    "old_amphure": "อำเภอแม่วงก์",
+    "data_source": "HII"
+  },
+  {
+    "id": 595,
+    "name": "Sakae Krang 2",
+    "old_amphure": "อำเภอเมืองอุทัยธานี",
+    "data_source": "HII"
+  },
+  {
+    "id": 596,
+    "name": "Sakae Krang",
+    "old_amphure": "อำเภอเมืองอุทัยธานี",
+    "data_source": "HII"
+  },
+  {
+    "id": 597,
+    "name": "Thap Than",
+    "old_amphure": "อำเภอ ทัพทัน",
+    "data_source": "HII"
+  },
+  {
+    "id": 598,
+    "name": "Sakae Krang 1",
+    "old_amphure": "อำเภอ สว่างอารมณ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 599,
+    "name": "Sawang Arom",
+    "old_amphure": "อำเภอ สว่างอารมณ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 600,
+    "name": "Nong Chang",
+    "old_amphure": "อำเภอ หนองฉาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 601,
+    "name": "",
+    "old_amphure": "อำเภอ หนองขาหย่าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 602,
+    "name": "Nong Khayang",
+    "old_amphure": "อำเภอ หนองขาหย่าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 603,
+    "name": "Ban Rai",
+    "old_amphure": "อำเภอบ้านไร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 604,
+    "name": "Lan Sak",
+    "old_amphure": "อำเภอลานสัก",
+    "data_source": "HII"
+  },
+  {
+    "id": 605,
+    "name": "",
+    "old_amphure": "อำเภอลานสัก",
+    "data_source": "HII"
+  },
+  {
+    "id": 606,
+    "name": "Huai Kot",
+    "old_amphure": "อำเภอ ห้วยคต",
+    "data_source": "HII"
+  },
+  {
+    "id": 607,
+    "name": "Kamphaeng Phet",
+    "old_amphure": "อำเภอเมืองกำแพงเพชร",
+    "data_source": "HII"
+  },
+  {
+    "id": 608,
+    "name": "Nong Ping Kai Communuty",
+    "old_amphure": "อำเภอเมืองกำแพงเพชร",
+    "data_source": "HII"
+  },
+  {
+    "id": 609,
+    "name": "Mueang Kamphaeng Phet (P7A)",
+    "old_amphure": "อำเภอเมืองกำแพงเพชร",
+    "data_source": "HII"
+  },
+  {
+    "id": 610,
+    "name": "Ping 3",
+    "old_amphure": "อำเภอเมืองกำแพงเพชร",
+    "data_source": "HII"
+  },
+  {
+    "id": 611,
+    "name": "Tor Thong Daeng1",
+    "old_amphure": "อำเภอเมืองกำแพงเพชร",
+    "data_source": "HII"
+  },
+  {
+    "id": 612,
+    "name": "",
+    "old_amphure": "อำเภอเมืองกำแพงเพชร",
+    "data_source": "HII"
+  },
+  {
+    "id": 613,
+    "name": "Nong Mai Kong",
+    "old_amphure": "อำเภอ ไทรงาม",
+    "data_source": "HII"
+  },
+  {
+    "id": 614,
+    "name": "Khlong Lan Phatthana",
+    "old_amphure": "อำเภอคลองลาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 615,
+    "name": "Khanu Woralaksaburi",
+    "old_amphure": "อำเภอขาณุวรลักษบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 616,
+    "name": "Ping 4",
+    "old_amphure": "อำเภอขาณุวรลักษบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 617,
+    "name": "Sa Lok Bat",
+    "old_amphure": "อำเภอขาณุวรลักษบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 618,
+    "name": "Maewong Bridge",
+    "old_amphure": "อำเภอแม่วงก์",
+    "data_source": "HII"
+  },
+  {
+    "id": 619,
+    "name": "Ton num Bridge",
+    "old_amphure": "อำเภอแม่วงก์",
+    "data_source": "HII"
+  },
+  {
+    "id": 620,
+    "name": "Khlong Khlung",
+    "old_amphure": "อำเภอคลองขลุง",
+    "data_source": "HII"
+  },
+  {
+    "id": 621,
+    "name": "Phran Kratai",
+    "old_amphure": "อำเภอพรานกระต่าย",
+    "data_source": "HII"
+  },
+  {
+    "id": 622,
+    "name": "Lan Krabue",
+    "old_amphure": "อำเภอ ลานกระบือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 623,
+    "name": "Thung Sai",
+    "old_amphure": "อำเภอ ทรายทองวัฒนา",
+    "data_source": "HII"
+  },
+  {
+    "id": 624,
+    "name": "Pho Thong",
+    "old_amphure": "อำเภอ ปางศิลาทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 625,
+    "name": "Tak Province",
+    "old_amphure": "อำเภอเมืองตาก",
+    "data_source": "HII"
+  },
+  {
+    "id": 626,
+    "name": "Pongdaeng Commu.",
+    "old_amphure": "อำเภอเมืองตาก",
+    "data_source": "HII"
+  },
+  {
+    "id": 627,
+    "name": "Tak Ok",
+    "old_amphure": "อำเภอบ้านตาก",
+    "data_source": "HII"
+  },
+  {
+    "id": 628,
+    "name": "Ping 1",
+    "old_amphure": "อำเภอบ้านตาก",
+    "data_source": "HII"
+  },
+  {
+    "id": 629,
+    "name": "Sam Ngao",
+    "old_amphure": "อำเภอสามเงา",
+    "data_source": "HII"
+  },
+  {
+    "id": 630,
+    "name": "Wang 1",
+    "old_amphure": "อำเภอสามเงา",
+    "data_source": "HII"
+  },
+  {
+    "id": 631,
+    "name": "Mae Ramat",
+    "old_amphure": "อำเภอแม่ระมาด",
+    "data_source": "HII"
+  },
+  {
+    "id": 632,
+    "name": "Mae Omki",
+    "old_amphure": "อำเภอท่าสองยาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 633,
+    "name": "Wat Wang Takhian",
+    "old_amphure": "อำเภอแม่สอด",
+    "data_source": "HII"
+  },
+  {
+    "id": 634,
+    "name": "Huai Pla Lod",
+    "old_amphure": "อำเภอแม่สอด",
+    "data_source": "HII"
+  },
+  {
+    "id": 635,
+    "name": "Huai Pla Lot Communuty",
+    "old_amphure": "อำเภอแม่สอด",
+    "data_source": "HII"
+  },
+  {
+    "id": 636,
+    "name": "Phop Phra",
+    "old_amphure": "อำเภอ พบพระ",
+    "data_source": "HII"
+  },
+  {
+    "id": 637,
+    "name": "Umphang",
+    "old_amphure": "อำเภออุ้มผาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 638,
+    "name": "Ping 2",
+    "old_amphure": "อำเภอวังเจ้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 639,
+    "name": "Pak Khwae",
+    "old_amphure": "อำเภอเมืองสุโขทัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 640,
+    "name": "Yom 12",
+    "old_amphure": "อำเภอเมืองสุโขทัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 641,
+    "name": "Lan Hoi",
+    "old_amphure": "อำเภอ บ้านด่านลานหอย",
+    "data_source": "HII"
+  },
+  {
+    "id": 642,
+    "name": "Tanot",
+    "old_amphure": "อำเภอ คีรีมาศ",
+    "data_source": "HII"
+  },
+  {
+    "id": 643,
+    "name": "",
+    "old_amphure": "อำเภอ คีรีมาศ",
+    "data_source": "HII"
+  },
+  {
+    "id": 644,
+    "name": "Tor Thong Daeng 2",
+    "old_amphure": "อำเภอ คีรีมาศ",
+    "data_source": "HII"
+  },
+  {
+    "id": 645,
+    "name": "Yom 7",
+    "old_amphure": "อำเภอ กงไกรลาศ",
+    "data_source": "HII"
+  },
+  {
+    "id": 646,
+    "name": "Kong Krailat",
+    "old_amphure": "อำเภอ กงไกรลาศ",
+    "data_source": "HII"
+  },
+  {
+    "id": 647,
+    "name": "Yom 5",
+    "old_amphure": "อำเภอศรีสัชนาลัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 648,
+    "name": "Hat Siao",
+    "old_amphure": "อำเภอศรีสัชนาลัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 649,
+    "name": "Si Samrong",
+    "old_amphure": "อำเภอ ศรีสำโรง",
+    "data_source": "HII"
+  },
+  {
+    "id": 650,
+    "name": "Sawamkhalok",
+    "old_amphure": "อำเภอ สวรรคโลก",
+    "data_source": "HII"
+  },
+  {
+    "id": 651,
+    "name": "",
+    "old_amphure": "อำเภอ สวรรคโลก",
+    "data_source": "HII"
+  },
+  {
+    "id": 652,
+    "name": "Yom-Nan1",
+    "old_amphure": "อำเภอ สวรรคโลก",
+    "data_source": "HII"
+  },
+  {
+    "id": 653,
+    "name": "Yom 6",
+    "old_amphure": "อำเภอ สวรรคโลก",
+    "data_source": "HII"
+  },
+  {
+    "id": 654,
+    "name": "Si Nakhon",
+    "old_amphure": "อำเภอ ศรีนคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 655,
+    "name": "Thung Saliam",
+    "old_amphure": "อำเภอ ทุ่งเสลี่ยม",
+    "data_source": "HII"
+  },
+  {
+    "id": 656,
+    "name": "Regional Irrigation Office",
+    "old_amphure": "อำเภอเมืองพิษณุโลก",
+    "data_source": "HII"
+  },
+  {
+    "id": 657,
+    "name": "Nan 12",
+    "old_amphure": "อำเภอเมืองพิษณุโลก",
+    "data_source": "HII"
+  },
+  {
+    "id": 658,
+    "name": "Yom-Nan4",
+    "old_amphure": "อำเภอเมืองพิษณุโลก",
+    "data_source": "HII"
+  },
+  {
+    "id": 659,
+    "name": "",
+    "old_amphure": "อำเภอเมืองพิษณุโลก",
+    "data_source": "HII"
+  },
+  {
+    "id": 660,
+    "name": "Nakhon Thai",
+    "old_amphure": "อำเภอนครไทย",
+    "data_source": "HII"
+  },
+  {
+    "id": 661,
+    "name": "Nakhon Thai",
+    "old_amphure": "อำเภอนครไทย",
+    "data_source": "HII"
+  },
+  {
+    "id": 662,
+    "name": "Pha Daeng",
+    "old_amphure": "อำเภอชาติตระการ",
+    "data_source": "HII"
+  },
+  {
+    "id": 663,
+    "name": "Bang Rakam",
+    "old_amphure": "อำเภอบางระกำ",
+    "data_source": "HII"
+  },
+  {
+    "id": 664,
+    "name": "Yom 8",
+    "old_amphure": "อำเภอบางระกำ",
+    "data_source": "HII"
+  },
+  {
+    "id": 665,
+    "name": "Chum Saeng Songkhram Communuty",
+    "old_amphure": "อำเภอบางระกำ",
+    "data_source": "HII"
+  },
+  {
+    "id": 666,
+    "name": "Ban Rai",
+    "old_amphure": "อำเภอ บางกระทุ่ม",
+    "data_source": "HII"
+  },
+  {
+    "id": 667,
+    "name": "Nan 6",
+    "old_amphure": "อำเภอ บางกระทุ่ม",
+    "data_source": "HII"
+  },
+  {
+    "id": 668,
+    "name": "Nakhon Pa Mak Communuty",
+    "old_amphure": "อำเภอ บางกระทุ่ม",
+    "data_source": "HII"
+  },
+  {
+    "id": 669,
+    "name": "Phrom Phiram",
+    "old_amphure": "อำเภอพรหมพิราม",
+    "data_source": "HII"
+  },
+  {
+    "id": 670,
+    "name": "",
+    "old_amphure": "อำเภอพรหมพิราม",
+    "data_source": "HII"
+  },
+  {
+    "id": 671,
+    "name": "Yom-Nan2",
+    "old_amphure": "อำเภอพรหมพิราม",
+    "data_source": "HII"
+  },
+  {
+    "id": 672,
+    "name": "Wat Bot",
+    "old_amphure": "อำเภอวัดโบสถ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 673,
+    "name": "Wat Bot 2",
+    "old_amphure": "อำเภอวัดโบสถ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 674,
+    "name": "Wang Thong",
+    "old_amphure": "อำเภอวังทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 675,
+    "name": "Nan 13",
+    "old_amphure": "อำเภอวังทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 676,
+    "name": "Nan 5",
+    "old_amphure": "อำเภอวังทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 677,
+    "name": "Noen Maprang",
+    "old_amphure": "อำเภอเนินมะปราง",
+    "data_source": "HII"
+  },
+  {
+    "id": 678,
+    "name": "Mueang Phichit",
+    "old_amphure": "อำเภอเมืองพิจิตร",
+    "data_source": "HII"
+  },
+  {
+    "id": 679,
+    "name": "Wang Sai Phun",
+    "old_amphure": "อำเภอ วังทรายพูน",
+    "data_source": "HII"
+  },
+  {
+    "id": 680,
+    "name": "Yom 9",
+    "old_amphure": "อำเภอโพธิ์ประทับช้าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 681,
+    "name": "Pho Prathap Chang",
+    "old_amphure": "อำเภอโพธิ์ประทับช้าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 682,
+    "name": "Taphan Hin",
+    "old_amphure": "อำเภอ ตะพานหิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 683,
+    "name": "Nan 7",
+    "old_amphure": "อำเภอ ตะพานหิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 684,
+    "name": "Ho Krai",
+    "old_amphure": "อำเภอ บางมูลนาก",
+    "data_source": "HII"
+  },
+  {
+    "id": 685,
+    "name": "Pho Thale",
+    "old_amphure": "อำเภอ โพทะเล",
+    "data_source": "HII"
+  },
+  {
+    "id": 686,
+    "name": "Sam Ngam",
+    "old_amphure": "อำเภอสามง่าม",
+    "data_source": "HII"
+  },
+  {
+    "id": 687,
+    "name": "Nong Sano",
+    "old_amphure": "อำเภอสามง่าม",
+    "data_source": "HII"
+  },
+  {
+    "id": 688,
+    "name": "Tap Khlo",
+    "old_amphure": "อำเภอ ทับคล้อ",
+    "data_source": "HII"
+  },
+  {
+    "id": 689,
+    "name": "Wang Ngio",
+    "old_amphure": "อำเภอ ดงเจริญ",
+    "data_source": "HII"
+  },
+  {
+    "id": 690,
+    "name": "Phetchabun",
+    "old_amphure": "อำเภอเมืองเพชรบูรณ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 691,
+    "name": "Pa Sak 2",
+    "old_amphure": "อำเภอเมืองเพชรบูรณ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 692,
+    "name": "Chon Daen",
+    "old_amphure": "อำเภอชนแดน",
+    "data_source": "HII"
+  },
+  {
+    "id": 693,
+    "name": "Pa Sak 1",
+    "old_amphure": "อำเภอหล่มสัก",
+    "data_source": "HII"
+  },
+  {
+    "id": 694,
+    "name": "Tan Diao",
+    "old_amphure": "อำเภอหล่มสัก",
+    "data_source": "HII"
+  },
+  {
+    "id": 695,
+    "name": "Lom Kao",
+    "old_amphure": "อำเภอ หล่มเก่า",
+    "data_source": "HII"
+  },
+  {
+    "id": 696,
+    "name": "Tat Kloi",
+    "old_amphure": "อำเภอ หล่มเก่า",
+    "data_source": "HII"
+  },
+  {
+    "id": 697,
+    "name": "Pa Sak 4",
+    "old_amphure": "อำเภอ หนองวัวซอ",
+    "data_source": "HII"
+  },
+  {
+    "id": 698,
+    "name": "Wichiang Buri",
+    "old_amphure": "อำเภอวิเชียรบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 699,
+    "name": "Si Thep",
+    "old_amphure": "อำเภอศรีเทพ",
+    "data_source": "HII"
+  },
+  {
+    "id": 700,
+    "name": "Pa Sak 3",
+    "old_amphure": "อำเภอหนองไผ่",
+    "data_source": "HII"
+  },
+  {
+    "id": 701,
+    "name": "Nong Phai",
+    "old_amphure": "อำเภอหนองไผ่",
+    "data_source": "HII"
+  },
+  {
+    "id": 702,
+    "name": "Bueng Sam Phan",
+    "old_amphure": "อำเภอบึงสามพัน",
+    "data_source": "HII"
+  },
+  {
+    "id": 703,
+    "name": "Nam Nao",
+    "old_amphure": "อำเภอ น้ำหนาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 704,
+    "name": "Wang Pong",
+    "old_amphure": "อำเภอ วังโป่ง",
+    "data_source": "HII"
+  },
+  {
+    "id": 705,
+    "name": "Thung Samo",
+    "old_amphure": "อำเภอเขาค้อ",
+    "data_source": "HII"
+  },
+  {
+    "id": 706,
+    "name": "Ratchaburi 3",
+    "old_amphure": "อำเภอ สวนผึ้ง",
+    "data_source": "HII"
+  },
+  {
+    "id": 707,
+    "name": "Suan Phueng",
+    "old_amphure": "อำเภอ สวนผึ้ง",
+    "data_source": "HII"
+  },
+  {
+    "id": 708,
+    "name": "Pa Wai",
+    "old_amphure": "อำเภอ สวนผึ้ง",
+    "data_source": "HII"
+  },
+  {
+    "id": 709,
+    "name": "Ratchaburi 2",
+    "old_amphure": "อำเภอบ้านโป่ง",
+    "data_source": "HII"
+  },
+  {
+    "id": 710,
+    "name": "Ratchaburi 1",
+    "old_amphure": "อำเภอโพธาราม",
+    "data_source": "HII"
+  },
+  {
+    "id": 711,
+    "name": "Khao Khwang",
+    "old_amphure": "อำเภอโพธาราม",
+    "data_source": "HII"
+  },
+  {
+    "id": 712,
+    "name": "Municipality Thung Luang Communuty",
+    "old_amphure": "อำเภอปากท่อ",
+    "data_source": "HII"
+  },
+  {
+    "id": 713,
+    "name": "Ban Bueng",
+    "old_amphure": "อำเภอ บ้านคา",
+    "data_source": "HII"
+  },
+  {
+    "id": 714,
+    "name": "Kanchanaburi 1",
+    "old_amphure": "อำเภอเมืองกาญจนบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 715,
+    "name": "Nongya",
+    "old_amphure": "อำเภอเมืองกาญจนบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 716,
+    "name": "Ko Samrong",
+    "old_amphure": "อำเภอเมืองกาญจนบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 717,
+    "name": "Sai Yok",
+    "old_amphure": "อำเภอไทรโยค",
+    "data_source": "HII"
+  },
+  {
+    "id": 718,
+    "name": "Tha Sao",
+    "old_amphure": "อำเภอไทรโยค",
+    "data_source": "HII"
+  },
+  {
+    "id": 719,
+    "name": "Si Mongkhon",
+    "old_amphure": "อำเภอไทรโยค",
+    "data_source": "HII"
+  },
+  {
+    "id": 720,
+    "name": "Bo Phloi",
+    "old_amphure": "อำเภอบ่อพลอย",
+    "data_source": "HII"
+  },
+  {
+    "id": 721,
+    "name": "Na Suan",
+    "old_amphure": "อำเภอศรีสวัสดิ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 722,
+    "name": "Khao Chot",
+    "old_amphure": "อำเภอศรีสวัสดิ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 723,
+    "name": "Don Cha-am",
+    "old_amphure": "อำเภอท่ามะกา",
+    "data_source": "HII"
+  },
+  {
+    "id": 724,
+    "name": "Tha Khanun",
+    "old_amphure": "อำเภอทองผาภูมิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 725,
+    "name": "Hin Dat",
+    "old_amphure": "อำเภอทองผาภูมิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 726,
+    "name": "Nong Lu",
+    "old_amphure": "อำเภอสังขละบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 727,
+    "name": "Liwo",
+    "old_amphure": "อำเภอสังขละบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 728,
+    "name": "Prangphle",
+    "old_amphure": "อำเภอสังขละบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 729,
+    "name": "Thung Krabam",
+    "old_amphure": "อำเภอ เลาขวัญ",
+    "data_source": "HII"
+  },
+  {
+    "id": 730,
+    "name": "Sai Thong School",
+    "old_amphure": "อำเภอ ด่านมะขามเตี้ย",
+    "data_source": "HII"
+  },
+  {
+    "id": 731,
+    "name": "Tha Chin 5",
+    "old_amphure": "อำเภอเมืองสุพรรณบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 734,
+    "name": "Tha Chin 3",
+    "old_amphure": "อำเภอด่านช้าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 735,
+    "name": "Nikhom Krasiao",
+    "old_amphure": "อำเภอด่านช้าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 736,
+    "name": "Song Phi Nong",
+    "old_amphure": "อำเภอสองพี่น้อง",
+    "data_source": "HII"
+  },
+  {
+    "id": 737,
+    "name": "Tha Chin 6",
+    "old_amphure": "อำเภอสองพี่น้อง",
+    "data_source": "HII"
+  },
+  {
+    "id": 738,
+    "name": "Tha Chin 4",
+    "old_amphure": "อำเภอสามชุก",
+    "data_source": "HII"
+  },
+  {
+    "id": 741,
+    "name": "Nong Pak Nak",
+    "old_amphure": "อำเภอสามชุก",
+    "data_source": "HII"
+  },
+  {
+    "id": 742,
+    "name": "Chedi",
+    "old_amphure": "อำเภออู่ทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 743,
+    "name": "Kamphaeng Saen",
+    "old_amphure": "อำเภอกำแพงแสน",
+    "data_source": "HII"
+  },
+  {
+    "id": 744,
+    "name": "Nakhon Chai Si",
+    "old_amphure": "อำเภอนครชัยศรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 745,
+    "name": "Tha Chin 7",
+    "old_amphure": "อำเภอบางเลน",
+    "data_source": "HII"
+  },
+  {
+    "id": 746,
+    "name": "Tha Chin 11",
+    "old_amphure": "อำเภอบางเลน",
+    "data_source": "HII"
+  },
+  {
+    "id": 747,
+    "name": "Khlong Narapirom",
+    "old_amphure": "อำเภอไทรน้อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 748,
+    "name": "Nakhon Chai Si Bridge",
+    "old_amphure": "อำเภอนครชัยศรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 749,
+    "name": "Saladin Communuty",
+    "old_amphure": "อำเภอพุทธมณฑล",
+    "data_source": "HII"
+  },
+  {
+    "id": 750,
+    "name": "Tha Chin 9",
+    "old_amphure": "อำเภอเมืองสมุทรสาคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 751,
+    "name": "Krung Thep 6",
+    "old_amphure": "อำเภอเมืองสมุทรสาคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 752,
+    "name": "Bang Kra Chao",
+    "old_amphure": "อำเภอเมืองสมุทรสาคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 753,
+    "name": "Thachin River",
+    "old_amphure": "อำเภอเมืองสมุทรสาคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 754,
+    "name": "Ban Paew",
+    "old_amphure": "อำเภอบ้านแพ้ว",
+    "data_source": "HII"
+  },
+  {
+    "id": 755,
+    "name": "Phra Ram 2",
+    "old_amphure": "อำเภอเมืองสมุทรสงคราม",
+    "data_source": "HII"
+  },
+  {
+    "id": 756,
+    "name": "Plai Phong Phang",
+    "old_amphure": "อำเภออัมพวา",
+    "data_source": "HII"
+  },
+  {
+    "id": 757,
+    "name": "Bang Khrok",
+    "old_amphure": "อำเภอ บ้านแหลม",
+    "data_source": "HII"
+  },
+  {
+    "id": 758,
+    "name": "Petch Buri 1",
+    "old_amphure": "อำเภอเมืองเพชรบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 759,
+    "name": "Don Yang",
+    "old_amphure": "อำเภอเมืองเพชรบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 760,
+    "name": "Nong Ya Plong",
+    "old_amphure": "อำเภอหนองหญ้าปล้อง",
+    "data_source": "HII"
+  },
+  {
+    "id": 761,
+    "name": "Tha Takhro",
+    "old_amphure": "อำเภอหนองหญ้าปล้อง",
+    "data_source": "HII"
+  },
+  {
+    "id": 762,
+    "name": "Yak Cha-am",
+    "old_amphure": "อำเภอชะอำ",
+    "data_source": "HII"
+  },
+  {
+    "id": 763,
+    "name": "",
+    "old_amphure": "อำเภอชะอำ",
+    "data_source": "HII"
+  },
+  {
+    "id": 764,
+    "name": "Rai Mai Phatthana",
+    "old_amphure": "อำเภอท่ายาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 765,
+    "name": "Tha Yang",
+    "old_amphure": "อำเภอท่ายาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 766,
+    "name": "Klat Luang",
+    "old_amphure": "อำเภอท่ายาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 767,
+    "name": "Huai Pak Resevoir",
+    "old_amphure": "อำเภอท่ายาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 768,
+    "name": "Khao Kapuk",
+    "old_amphure": "อำเภอท่ายาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 769,
+    "name": "Ban Lat",
+    "old_amphure": "อำเภอบ้านลาด",
+    "data_source": "HII"
+  },
+  {
+    "id": 770,
+    "name": "Bang Taboon and East Bang Taboon",
+    "old_amphure": "อำเภอ บ้านแหลม",
+    "data_source": "HII"
+  },
+  {
+    "id": 771,
+    "name": "Song Phi Nong",
+    "old_amphure": "อำเภอแก่งกระจาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 772,
+    "name": "Petch Buri 2",
+    "old_amphure": "อำเภอท่ายาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 773,
+    "name": "",
+    "old_amphure": "อำเภอแก่งกระจาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 774,
+    "name": "Khao Panoenthung",
+    "old_amphure": "อำเภอแก่งกระจาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 775,
+    "name": "Ko Lak",
+    "old_amphure": "อำเภอเมืองประจวบคีรีขันธ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 776,
+    "name": "Kui Buri",
+    "old_amphure": "อำเภอกุยบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 777,
+    "name": "Yang Chum Temple",
+    "old_amphure": "อำเภอกุยบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 778,
+    "name": "Khao Lan",
+    "old_amphure": "อำเภอทับสะแก",
+    "data_source": "HII"
+  },
+  {
+    "id": 779,
+    "name": "",
+    "old_amphure": "อำเภอบางสะพาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 780,
+    "name": "Ron Thong",
+    "old_amphure": "อำเภอบางสะพาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 781,
+    "name": "Bang Saphan Noi",
+    "old_amphure": "อำเภอบางสะพานน้อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 782,
+    "name": "Pran Buri",
+    "old_amphure": "อำเภอปราณบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 783,
+    "name": "Nong Ta Taem",
+    "old_amphure": "อำเภอปราณบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 784,
+    "name": "Pran Buri 1",
+    "old_amphure": "อำเภอปราณบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 785,
+    "name": "",
+    "old_amphure": "อำเภอหัวหิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 786,
+    "name": "Thap Tai",
+    "old_amphure": "อำเภอหัวหิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 787,
+    "name": "Huai Sat Yai",
+    "old_amphure": "อำเภอหัวหิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 788,
+    "name": "Khlong Ta Dee",
+    "old_amphure": "อำเภอ ลานสกา",
+    "data_source": "HII"
+  },
+  {
+    "id": 789,
+    "name": "Khun Thale",
+    "old_amphure": "อำเภอ ลานสกา",
+    "data_source": "HII"
+  },
+  {
+    "id": 790,
+    "name": "Nakacha Subdistrict Administrative Organization",
+    "old_amphure": "อำเภอ ฉวาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 791,
+    "name": "Wat Tayikaram School",
+    "old_amphure": "อำเภอ เชียรใหญ่",
+    "data_source": "HII"
+  },
+  {
+    "id": 792,
+    "name": "Nakhon Si Thammarat 2",
+    "old_amphure": "อำเภอ เชียรใหญ่",
+    "data_source": "HII"
+  },
+  {
+    "id": 793,
+    "name": "Nop Phi Tam 2",
+    "old_amphure": "อำเภอท่าศาลา",
+    "data_source": "HII"
+  },
+  {
+    "id": 794,
+    "name": "Nop Phi Tam 1",
+    "old_amphure": "อำเภอท่าศาลา",
+    "data_source": "HII"
+  },
+  {
+    "id": 795,
+    "name": "Nakhon Si Thammarat 1",
+    "old_amphure": "อำเภอทุ่งสง",
+    "data_source": "HII"
+  },
+  {
+    "id": 796,
+    "name": "Pak Phanang",
+    "old_amphure": "อำเภอ ปากพนัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 797,
+    "name": "Theppharat",
+    "old_amphure": "อำเภอ สิชล",
+    "data_source": "HII"
+  },
+  {
+    "id": 798,
+    "name": "Ban Lamnao",
+    "old_amphure": "อำเภอ บางขัน",
+    "data_source": "HII"
+  },
+  {
+    "id": 799,
+    "name": "Sin Pun",
+    "old_amphure": "อำเภอ เขาพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 800,
+    "name": "Khlong Hin",
+    "old_amphure": "อำเภอ อ่าวลึก",
+    "data_source": "HII"
+  },
+  {
+    "id": 801,
+    "name": "khlong kanan",
+    "old_amphure": "อำเภอเหนือคลอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 802,
+    "name": "Takua Pa 2",
+    "old_amphure": "อำเภอเมืองพังงา",
+    "data_source": "HII"
+  },
+  {
+    "id": 803,
+    "name": "Takua Pa 1",
+    "old_amphure": "อำเภอตะกั่วป่า",
+    "data_source": "HII"
+  },
+  {
+    "id": 804,
+    "name": "Takua Pa Market",
+    "old_amphure": "อำเภอตะกั่วป่า",
+    "data_source": "HII"
+  },
+  {
+    "id": 805,
+    "name": "Bang Wan",
+    "old_amphure": "อำเภอ คุระบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 806,
+    "name": "Thap Put",
+    "old_amphure": "อำเภอ ทับปุด",
+    "data_source": "HII"
+  },
+  {
+    "id": 807,
+    "name": "Lam Kaen",
+    "old_amphure": "อำเภอ ท้ายเหมือง",
+    "data_source": "HII"
+  },
+  {
+    "id": 808,
+    "name": "Ra Wai",
+    "old_amphure": "อำเภอเมืองภูเก็ต",
+    "data_source": "HII"
+  },
+  {
+    "id": 809,
+    "name": "Mai Khao",
+    "old_amphure": "อำเภอถลาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 810,
+    "name": "",
+    "old_amphure": "อำเภอเกาะสมุย",
+    "data_source": "HII"
+  },
+  {
+    "id": 811,
+    "name": "Khlong Pha",
+    "old_amphure": "อำเภอท่าชนะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 812,
+    "name": "Tapi 4",
+    "old_amphure": "อำเภอ คีรีรัฐนิคม",
+    "data_source": "HII"
+  },
+  {
+    "id": 813,
+    "name": "Phasaeng",
+    "old_amphure": "อำเภอบ้านตาขุน",
+    "data_source": "HII"
+  },
+  {
+    "id": 814,
+    "name": "Khlong Sok",
+    "old_amphure": "อำเภอพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 815,
+    "name": "Khao Sok",
+    "old_amphure": "อำเภอพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 816,
+    "name": "Ban Tap Christ Communuty",
+    "old_amphure": "อำเภอพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 817,
+    "name": "Ban Thap Christ 2 Communuty",
+    "old_amphure": "อำเภอพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 818,
+    "name": "Pak Chalui",
+    "old_amphure": "อำเภอท่าฉาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 819,
+    "name": "Khuan Suban",
+    "old_amphure": "อำเภอบ้านนาสาร",
+    "data_source": "HII"
+  },
+  {
+    "id": 820,
+    "name": "Ban Sadet",
+    "old_amphure": "อำเภอ เคียนซา",
+    "data_source": "HII"
+  },
+  {
+    "id": 821,
+    "name": "Tapi 5",
+    "old_amphure": "อำเภอ พระแสง",
+    "data_source": "HII"
+  },
+  {
+    "id": 822,
+    "name": "Tha Kham",
+    "old_amphure": "อำเภอพุนพิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 823,
+    "name": "Tapi 1",
+    "old_amphure": "อำเภอเมืองสุราษฎร์ธานี",
+    "data_source": "HII"
+  },
+  {
+    "id": 824,
+    "name": "Tapi 3",
+    "old_amphure": "อำเภอพุนพิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 825,
+    "name": "Lilet Communuty",
+    "old_amphure": "อำเภอพุนพิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 826,
+    "name": "Tapi 2",
+    "old_amphure": "อำเภอพุนพิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 827,
+    "name": "Chai Buri",
+    "old_amphure": "อำเภอ ชัยบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 828,
+    "name": "Tapi 7",
+    "old_amphure": "อำเภอ วิภาวดี",
+    "data_source": "HII"
+  },
+  {
+    "id": 829,
+    "name": "Mueang Ranong",
+    "old_amphure": "อำเภอเมืองระนอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 830,
+    "name": "Ranong",
+    "old_amphure": "อำเภอเมืองระนอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 831,
+    "name": "Pak Nam",
+    "old_amphure": "อำเภอเมืองระนอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 832,
+    "name": "Bang Hin",
+    "old_amphure": "อำเภอ กะเปอร์",
+    "data_source": "HII"
+  },
+  {
+    "id": 833,
+    "name": "Bang Yai",
+    "old_amphure": "อำเภอ กระบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 834,
+    "name": "",
+    "old_amphure": "อำเภอ กระบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 835,
+    "name": "Chumphon 1",
+    "old_amphure": "อำเภอเมืองชุมพร",
+    "data_source": "HII"
+  },
+  {
+    "id": 836,
+    "name": "Wang Mai",
+    "old_amphure": "อำเภอเมืองชุมพร",
+    "data_source": "HII"
+  },
+  {
+    "id": 837,
+    "name": "Tha Kham",
+    "old_amphure": "อำเภอท่าแซะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 838,
+    "name": "Hong Charoen",
+    "old_amphure": "อำเภอท่าแซะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 839,
+    "name": "Pathiuwittaya School Communuty",
+    "old_amphure": "อำเภอปะทิว",
+    "data_source": "HII"
+  },
+  {
+    "id": 840,
+    "name": "Khao Chai Rat",
+    "old_amphure": "อำเภอปะทิว",
+    "data_source": "HII"
+  },
+  {
+    "id": 841,
+    "name": "Luang Suan",
+    "old_amphure": "อำเภอหลังสวน",
+    "data_source": "HII"
+  },
+  {
+    "id": 842,
+    "name": "Thung Kha Wat",
+    "old_amphure": "อำเภอละแม",
+    "data_source": "HII"
+  },
+  {
+    "id": 843,
+    "name": "",
+    "old_amphure": "อำเภอ พะโต๊ะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 844,
+    "name": "Prarak",
+    "old_amphure": "อำเภอ พะโต๊ะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 845,
+    "name": "Sawi 1",
+    "old_amphure": "อำเภอสวี",
+    "data_source": "HII"
+  },
+  {
+    "id": 846,
+    "name": "Sawi 2",
+    "old_amphure": "อำเภอสวี",
+    "data_source": "HII"
+  },
+  {
+    "id": 847,
+    "name": "Khao Khai",
+    "old_amphure": "อำเภอสวี",
+    "data_source": "HII"
+  },
+  {
+    "id": 848,
+    "name": "Pak Tako",
+    "old_amphure": "อำเภอทุ่งตะโก",
+    "data_source": "HII"
+  },
+  {
+    "id": 849,
+    "name": "Chana 1",
+    "old_amphure": "อำเภอจะนะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 850,
+    "name": "Na Tawi",
+    "old_amphure": "อำเภอ นาทวี",
+    "data_source": "HII"
+  },
+  {
+    "id": 851,
+    "name": "Choeng Sae Tai Temple",
+    "old_amphure": "อำเภอ กระแสสินธุ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 852,
+    "name": "Ban Khao Phra Community",
+    "old_amphure": "อำเภอรัตภูมิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 853,
+    "name": "Khao Phra",
+    "old_amphure": "อำเภอรัตภูมิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 854,
+    "name": "Sa Dao",
+    "old_amphure": "อำเภอสะเดา",
+    "data_source": "HII"
+  },
+  {
+    "id": 855,
+    "name": "Songkhla Lake 3",
+    "old_amphure": "อำเภอสะเดา",
+    "data_source": "HII"
+  },
+  {
+    "id": 856,
+    "name": "Songkhla Lake 1",
+    "old_amphure": "อำเภอหาดใหญ่",
+    "data_source": "HII"
+  },
+  {
+    "id": 857,
+    "name": "Phi Chit",
+    "old_amphure": "อำเภอ นาหม่อม",
+    "data_source": "HII"
+  },
+  {
+    "id": 858,
+    "name": "Songkhla 7",
+    "old_amphure": "อำเภอบางกล่ำ",
+    "data_source": "HII"
+  },
+  {
+    "id": 859,
+    "name": "Songkhla Lake 5",
+    "old_amphure": "อำเภอ ควนเนียง",
+    "data_source": "HII"
+  },
+  {
+    "id": 860,
+    "name": "Song Khla Lake 2",
+    "old_amphure": "อำเภอหาดใหญ่",
+    "data_source": "HII"
+  },
+  {
+    "id": 861,
+    "name": "Satun 1",
+    "old_amphure": "อำเภอเมืองสตูล",
+    "data_source": "HII"
+  },
+  {
+    "id": 862,
+    "name": "Che Bilang",
+    "old_amphure": "อำเภอเมืองสตูล",
+    "data_source": "HII"
+  },
+  {
+    "id": 863,
+    "name": "Khok Phayom Communuty",
+    "old_amphure": "อำเภอละงู",
+    "data_source": "HII"
+  },
+  {
+    "id": 864,
+    "name": "Pakae Bohin",
+    "old_amphure": "อำเภอ ทุ่งหว้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 865,
+    "name": "Trang 2",
+    "old_amphure": "อำเภอเมืองตรัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 866,
+    "name": "khuanpo",
+    "old_amphure": "อำเภอ ย่านตาขาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 867,
+    "name": "Kalase",
+    "old_amphure": "อำเภอ สิเกา",
+    "data_source": "HII"
+  },
+  {
+    "id": 868,
+    "name": "Huai Yod",
+    "old_amphure": "อำเภอ ห้วยยอด",
+    "data_source": "HII"
+  },
+  {
+    "id": 869,
+    "name": "Trang 1",
+    "old_amphure": "อำเภอ ห้วยยอด",
+    "data_source": "HII"
+  },
+  {
+    "id": 870,
+    "name": "Khlong Na Thom",
+    "old_amphure": "อำเภอเมืองพัทลุง",
+    "data_source": "HII"
+  },
+  {
+    "id": 871,
+    "name": "Khlong Chaloem",
+    "old_amphure": "อำเภอ กงหรา",
+    "data_source": "HII"
+  },
+  {
+    "id": 872,
+    "name": "Khlong Nang Riam",
+    "old_amphure": "อำเภอ ควนขนุน",
+    "data_source": "HII"
+  },
+  {
+    "id": 873,
+    "name": "",
+    "old_amphure": "อำเภอ ป่าพะยอม",
+    "data_source": "HII"
+  },
+  {
+    "id": 874,
+    "name": "",
+    "old_amphure": "อำเภอ ป่าพะยอม",
+    "data_source": "HII"
+  },
+  {
+    "id": 875,
+    "name": "Pa Phayom",
+    "old_amphure": "อำเภอ ป่าพะยอม",
+    "data_source": "HII"
+  },
+  {
+    "id": 876,
+    "name": "Pa Phayom",
+    "old_amphure": "อำเภอ ป่าพะยอม",
+    "data_source": "HII"
+  },
+  {
+    "id": 877,
+    "name": "Prince of Songkla U., Pattani Campus",
+    "old_amphure": "อำเภอเมืองปัตตานี",
+    "data_source": "HII"
+  },
+  {
+    "id": 878,
+    "name": "",
+    "old_amphure": "อำเภอเมืองปัตตานี",
+    "data_source": "HII"
+  },
+  {
+    "id": 879,
+    "name": "Chok Pho",
+    "old_amphure": "อำเภอ โคกโพธิ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 880,
+    "name": "Pattani Rice Research Center",
+    "old_amphure": "อำเภอ โคกโพธิ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 881,
+    "name": "Demonstration Farm Mae Lan",
+    "old_amphure": "อำเภอ แม่ลาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 882,
+    "name": "",
+    "old_amphure": "อำเภอ โคกโพธิ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 883,
+    "name": "Ban Tha Dan Communuty",
+    "old_amphure": "อำเภอ หนองจิก",
+    "data_source": "HII"
+  },
+  {
+    "id": 884,
+    "name": "Tuyong Gate",
+    "old_amphure": "อำเภอ หนองจิก",
+    "data_source": "HII"
+  },
+  {
+    "id": 885,
+    "name": "",
+    "old_amphure": "อำเภอ หนองจิก",
+    "data_source": "HII"
+  },
+  {
+    "id": 886,
+    "name": "Demonstration Farm Panare",
+    "old_amphure": "อำเภอ ปะนาเระ",
+    "data_source": "HII"
+  },
+  {
+    "id": 887,
+    "name": "",
+    "old_amphure": "อำเภอ มายอ",
+    "data_source": "HII"
+  },
+  {
+    "id": 888,
+    "name": "Mayo",
+    "old_amphure": "อำเภอ มายอ",
+    "data_source": "HII"
+  },
+  {
+    "id": 889,
+    "name": "Thung Yang Daeng Agri. Office",
+    "old_amphure": "อำเภอ ทุ่งยางแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 890,
+    "name": "Sai Buri Disctrict Office",
+    "old_amphure": "อำเภอ ยะรัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 891,
+    "name": "Manang Dalam",
+    "old_amphure": "อำเภอ สายบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 892,
+    "name": "Mai Kaen District Office",
+    "old_amphure": "อำเภอ ไม้แก่น",
+    "data_source": "HII"
+  },
+  {
+    "id": 893,
+    "name": "",
+    "old_amphure": "อำเภอ ยะหริ่ง",
+    "data_source": "HII"
+  },
+  {
+    "id": 894,
+    "name": "Phru Sanor",
+    "old_amphure": "อำเภอ ยะหริ่ง",
+    "data_source": "HII"
+  },
+  {
+    "id": 895,
+    "name": "Khao Tum",
+    "old_amphure": "อำเภอ ยะรัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 896,
+    "name": "Kapho Police Station",
+    "old_amphure": "อำเภอ กะพ้อ",
+    "data_source": "HII"
+  },
+  {
+    "id": 897,
+    "name": "Yala Irragation",
+    "old_amphure": "อำเภอเมืองยะลา",
+    "data_source": "HII"
+  },
+  {
+    "id": 898,
+    "name": "Ban Khuan 2 Communuty",
+    "old_amphure": "อำเภอเมืองยะลา",
+    "data_source": "HII"
+  },
+  {
+    "id": 899,
+    "name": "Ban Khuan 1 Communuty",
+    "old_amphure": "อำเภอเมืองยะลา",
+    "data_source": "HII"
+  },
+  {
+    "id": 900,
+    "name": "Maintenance Pattani",
+    "old_amphure": "อำเภอเมืองยะลา",
+    "data_source": "HII"
+  },
+  {
+    "id": 901,
+    "name": "Patthani 2",
+    "old_amphure": "อำเภอเมืองยะลา",
+    "data_source": "HII"
+  },
+  {
+    "id": 902,
+    "name": "Border patrols 445",
+    "old_amphure": "อำเภอ ธารโต",
+    "data_source": "HII"
+  },
+  {
+    "id": 903,
+    "name": "Yarom",
+    "old_amphure": "อำเภอเบตง",
+    "data_source": "HII"
+  },
+  {
+    "id": 904,
+    "name": "Ban Mueang Communuty",
+    "old_amphure": "อำเภอเบตง",
+    "data_source": "HII"
+  },
+  {
+    "id": 905,
+    "name": "Patthani 1",
+    "old_amphure": "อำเภอ บันนังสตา",
+    "data_source": "HII"
+  },
+  {
+    "id": 906,
+    "name": "",
+    "old_amphure": "อำเภอ บันนังสตา",
+    "data_source": "HII"
+  },
+  {
+    "id": 907,
+    "name": "Khuean Bang Lang",
+    "old_amphure": "อำเภอ ธารโต",
+    "data_source": "HII"
+  },
+  {
+    "id": 908,
+    "name": "Yala Land Office",
+    "old_amphure": "อำเภอ ธารโต",
+    "data_source": "HII"
+  },
+  {
+    "id": 909,
+    "name": "",
+    "old_amphure": "อำเภอ ยะหา",
+    "data_source": "HII"
+  },
+  {
+    "id": 910,
+    "name": "",
+    "old_amphure": "อำเภอ รามัน",
+    "data_source": "HII"
+  },
+  {
+    "id": 911,
+    "name": "Raman Disctrict Office",
+    "old_amphure": "อำเภอ รามัน",
+    "data_source": "HII"
+  },
+  {
+    "id": 912,
+    "name": "",
+    "old_amphure": "อำเภอ รามัน",
+    "data_source": "HII"
+  },
+  {
+    "id": 913,
+    "name": "Ka Bang",
+    "old_amphure": "อำเภอ กาบัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 914,
+    "name": "Kabang Disctrict Office",
+    "old_amphure": "อำเภอ กาบัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 915,
+    "name": "Krong Pinang Disctrict Office",
+    "old_amphure": "อำเภอ กรงปินัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 916,
+    "name": "Narathiwat Road Office",
+    "old_amphure": "อำเภอ จะแนะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 918,
+    "name": "Ba Jor Hospital",
+    "old_amphure": "อำเภอ บาเจาะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 919,
+    "name": "Yi-ngo",
+    "old_amphure": "อำเภอ ยี่งอ",
+    "data_source": "HII"
+  },
+  {
+    "id": 920,
+    "name": "Ra  Ngae",
+    "old_amphure": "อำเภอ ระแงะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 921,
+    "name": "Rue Scho Park",
+    "old_amphure": "อำเภอ รือเสาะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 922,
+    "name": "Sai Buri 2",
+    "old_amphure": "อำเภอ ศรีสาคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 923,
+    "name": "Si Sakhon Waterwork",
+    "old_amphure": "อำเภอ ศรีสาคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 924,
+    "name": "Waeng",
+    "old_amphure": "อำเภอ แว้ง",
+    "data_source": "HII"
+  },
+  {
+    "id": 925,
+    "name": "Bu Ke Ta",
+    "old_amphure": "อำเภอ แว้ง",
+    "data_source": "HII"
+  },
+  {
+    "id": 926,
+    "name": "",
+    "old_amphure": "อำเภอ แว้ง",
+    "data_source": "HII"
+  },
+  {
+    "id": 927,
+    "name": "Sukirin",
+    "old_amphure": "อำเภอ สุคิริน",
+    "data_source": "HII"
+  },
+  {
+    "id": 928,
+    "name": "Sai Buri 1",
+    "old_amphure": "อำเภอ สุคิริน",
+    "data_source": "HII"
+  },
+  {
+    "id": 929,
+    "name": "SIRINDHORN Swamp Forest Research Center",
+    "old_amphure": "อำเภอ สุไหงโก-ลก",
+    "data_source": "HII"
+  },
+  {
+    "id": 930,
+    "name": "Pa Lu Ru",
+    "old_amphure": "อำเภอ สุไหงปาดี",
+    "data_source": "HII"
+  },
+  {
+    "id": 931,
+    "name": "",
+    "old_amphure": "อำเภอ สุไหงปาดี",
+    "data_source": "HII"
+  },
+  {
+    "id": 932,
+    "name": "Chanae",
+    "old_amphure": "อำเภอ จะแนะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 933,
+    "name": "Cho-airong Agriculture Office",
+    "old_amphure": "อำเภอ เจาะไอร้อง",
+    "data_source": "HII"
+  },
+  {
+    "id": 934,
+    "name": "Bukit",
+    "old_amphure": "อำเภอ เจาะไอร้อง",
+    "data_source": "HII"
+  },
+  {
+    "id": 938,
+    "name": "Nong Phan Tha",
+    "old_amphure": "อำเภอ โซ่พิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 939,
+    "name": "Bueng Khong Long",
+    "old_amphure": "อำเภอ บึงโขงหลง",
+    "data_source": "HII"
+  },
+  {
+    "id": 940,
+    "name": "Bung Khla Communuty",
+    "old_amphure": "อำเภอ บุ่งคล้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 941,
+    "name": "Mae La-up Communuty",
+    "old_amphure": "อำเภอ กัลยาณิวัฒนา",
+    "data_source": "HII"
+  },
+  {
+    "id": 12349,
+    "name": "Khuan Kalong",
+    "old_amphure": "อำเภอ มะนัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 12350,
+    "name": "Trang 6",
+    "old_amphure": "อำเภอ รัษฎา",
+    "data_source": "HII"
+  },
+  {
+    "id": 12351,
+    "name": "Wang Dong",
+    "old_amphure": "อำเภอเมืองกาญจนบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 12474,
+    "name": "Manang",
+    "old_amphure": "อำเภอละงู",
+    "data_source": "HII"
+  },
+  {
+    "id": 12475,
+    "name": "Trang 4",
+    "old_amphure": "อำเภอ ปะเหลียน",
+    "data_source": "HII"
+  },
+  {
+    "id": 12476,
+    "name": "Lin Thin",
+    "old_amphure": "อำเภอทองผาภูมิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 12477,
+    "name": "Pran Buri 2",
+    "old_amphure": "อำเภอหัวหิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 12478,
+    "name": "Tha Yang",
+    "old_amphure": "อำเภอท่ายาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 12479,
+    "name": "Khlong Khanan",
+    "old_amphure": "อำเภอบางสะพาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 12480,
+    "name": "Trang 3",
+    "old_amphure": "อำเภอเมืองตรัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 12481,
+    "name": "La-ngu",
+    "old_amphure": "อำเภอละงู",
+    "data_source": "HII"
+  },
+  {
+    "id": 12482,
+    "name": "",
+    "old_amphure": "อำเภอแจ้ห่ม",
+    "data_source": "HII"
+  },
+  {
+    "id": 12483,
+    "name": "Nakhon Si Thammarat 3",
+    "old_amphure": "อำเภอ ทุ่งใหญ่",
+    "data_source": "HII"
+  },
+  {
+    "id": 12484,
+    "name": "Tapi 6",
+    "old_amphure": "อำเภอ พระแสง",
+    "data_source": "HII"
+  },
+  {
+    "id": 12485,
+    "name": "Nakhon Si Thammarat 4",
+    "old_amphure": "อำเภอ ทุ่งใหญ่",
+    "data_source": "HII"
+  },
+  {
+    "id": 13829,
+    "name": "Wat Sepala",
+    "old_amphure": "อำเภออุ้มผาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 13869,
+    "name": "Kaen Makrut",
+    "old_amphure": "อำเภอบ้านไร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 13870,
+    "name": "Wang Yao",
+    "old_amphure": "อำเภอด่านช้าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 13871,
+    "name": "Thungsueathon",
+    "old_amphure": "อำเภอทองผาภูมิ",
+    "data_source": "HII"
+  },
+  {
+    "id": 13872,
+    "name": "National Park Protection Kaeng Krachan",
+    "old_amphure": "อำเภอแก่งกระจาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13873,
+    "name": "Ka Moei Temple",
+    "old_amphure": "อำเภอแก่งกระจาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13874,
+    "name": "Pu Sawan",
+    "old_amphure": "อำเภอแก่งกระจาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13875,
+    "name": "Naresuan Ban Huai Sok Border Patrol Police School",
+    "old_amphure": "อำเภอแก่งกระจาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13876,
+    "name": "Nong Phlap School",
+    "old_amphure": "อำเภอหัวหิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13877,
+    "name": "Hua Hin",
+    "old_amphure": "อำเภอหัวหิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13878,
+    "name": "Phraek Talui",
+    "old_amphure": "อำเภอสามร้อยยอด",
+    "data_source": "HII"
+  },
+  {
+    "id": 13879,
+    "name": "Ban Khlong Phloen",
+    "old_amphure": "อำเภอบางสะพาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13880,
+    "name": "Dong Mai Ngam",
+    "old_amphure": "อำเภอบางสะพาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13881,
+    "name": "Sai Khu Waterfall",
+    "old_amphure": "อำเภอบางสะพาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13882,
+    "name": "Bang Saphan Agriculture Office",
+    "old_amphure": "อำเภอบางสะพาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13883,
+    "name": "Ban Nai Lok",
+    "old_amphure": "อำเภอบางสะพาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13884,
+    "name": "Bandokdang School",
+    "old_amphure": "อำเภอตะกั่วป่า",
+    "data_source": "HII"
+  },
+  {
+    "id": 13885,
+    "name": "Tha  Han School",
+    "old_amphure": "อำเภอ กะปง",
+    "data_source": "HII"
+  },
+  {
+    "id": 13886,
+    "name": "Ban Chang Chuea School",
+    "old_amphure": "อำเภอ กะปง",
+    "data_source": "HII"
+  },
+  {
+    "id": 13887,
+    "name": "Tha Na",
+    "old_amphure": "อำเภอ กะปง",
+    "data_source": "HII"
+  },
+  {
+    "id": 13888,
+    "name": "Tapan",
+    "old_amphure": "อำเภอพุนพิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13889,
+    "name": "Wiang Sa",
+    "old_amphure": "อำเภอเวียงสระ",
+    "data_source": "HII"
+  },
+  {
+    "id": 13890,
+    "name": "Plai Phraya",
+    "old_amphure": "อำเภอ ปลายพระยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 13891,
+    "name": "Chandi",
+    "old_amphure": "อำเภอ ฉวาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 13892,
+    "name": "Na Luang Sen",
+    "old_amphure": "อำเภอทุ่งสง",
+    "data_source": "HII"
+  },
+  {
+    "id": 13893,
+    "name": "Ban Phun School",
+    "old_amphure": "อำเภอทุ่งสง",
+    "data_source": "HII"
+  },
+  {
+    "id": 13894,
+    "name": "Ao Tong",
+    "old_amphure": "อำเภอ วังวิเศษ",
+    "data_source": "HII"
+  },
+  {
+    "id": 13895,
+    "name": "Ban Nong Khla School",
+    "old_amphure": "อำเภอ วังวิเศษ",
+    "data_source": "HII"
+  },
+  {
+    "id": 13896,
+    "name": "Wat Khuan Sinuan School",
+    "old_amphure": "อำเภอ นาโยง",
+    "data_source": "HII"
+  },
+  {
+    "id": 13897,
+    "name": "Ban Lam Plok Nuea School",
+    "old_amphure": "อำเภอ ปะเหลียน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13898,
+    "name": "Ban Khao Pu",
+    "old_amphure": "อำเภอ ศรีบรรพต",
+    "data_source": "HII"
+  },
+  {
+    "id": 13899,
+    "name": "Ban Lam Ka",
+    "old_amphure": "อำเภอ ศรีนครินทร์",
+    "data_source": "HII"
+  },
+  {
+    "id": 13900,
+    "name": "Muang Phatthalung",
+    "old_amphure": "อำเภอเมืองพัทลุง",
+    "data_source": "HII"
+  },
+  {
+    "id": 13901,
+    "name": "Ban Muang Ta Kua School",
+    "old_amphure": "อำเภอ ป่าบอน",
+    "data_source": "HII"
+  },
+  {
+    "id": 13902,
+    "name": "Wang Na",
+    "old_amphure": "อำเภอ ทุ่งหว้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 13903,
+    "name": "Masjid Muhajireen",
+    "old_amphure": "อำเภอ ทุ่งหว้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 13904,
+    "name": "Phang Palm 4 School",
+    "old_amphure": "อำเภอ มะนัง",
+    "data_source": "HII"
+  },
+  {
+    "id": 13905,
+    "name": "Masjid Shuhada",
+    "old_amphure": "อำเภอ ควนกาหลง",
+    "data_source": "HII"
+  },
+  {
+    "id": 13906,
+    "name": "Trang 5",
+    "old_amphure": "อำเภอ วังวิเศษ",
+    "data_source": "HII"
+  },
+  {
+    "id": 385578,
+    "name": "Pethlanna Farm",
+    "old_amphure": "อำเภอแจ้ห่ม",
+    "data_source": "HII"
+  },
+  {
+    "id": 385579,
+    "name": "Water Transmission and Maintenance 2",
+    "old_amphure": "อำเภอสันทราย",
+    "data_source": "HII"
+  },
+  {
+    "id": 385580,
+    "name": "Huai Mae Kiang",
+    "old_amphure": "อำเภอเมืองลำปาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 385581,
+    "name": "Khlong Kriang Krai Bridge",
+    "old_amphure": "อำเภอ ชุมแสง",
+    "data_source": "HII"
+  },
+  {
+    "id": 385582,
+    "name": "Lam Pathia Bridge",
+    "old_amphure": "อำเภอ เฉลิมพระเกียรติ",
+    "data_source": "HII"
+  },
+  {
+    "id": 385583,
+    "name": "Khu Khad",
+    "old_amphure": "อำเภอประโคนชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 385584,
+    "name": "Huai Din Sai",
+    "old_amphure": "อำเภอ ละหานทราย",
+    "data_source": "HII"
+  },
+  {
+    "id": 385585,
+    "name": "Khot Sok",
+    "old_amphure": "อำเภอท่าแซะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 385586,
+    "name": "Rap Ro - Hin Kaeo Bridge",
+    "old_amphure": "อำเภอท่าแซะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 435217,
+    "name": "Khlong Luang Phang",
+    "old_amphure": "อำเภอเมืองฉะเชิงเทรา",
+    "data_source": "HII"
+  },
+  {
+    "id": 435367,
+    "name": "Wiang Tan",
+    "old_amphure": "อำเภอห้างฉัตร",
+    "data_source": "HII"
+  },
+  {
+    "id": 435368,
+    "name": "Nong Ta Ngu",
+    "old_amphure": "อำเภอบรรพตพิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 435369,
+    "name": "Tha Sao",
+    "old_amphure": "อำเภอ โพทะเล",
+    "data_source": "HII"
+  },
+  {
+    "id": 435370,
+    "name": "Na Pong",
+    "old_amphure": "อำเภอเถิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 435372,
+    "name": "Ban Mai Samakkhi",
+    "old_amphure": "อำเภอ ลำปลายมาศ",
+    "data_source": "HII"
+  },
+  {
+    "id": 435373,
+    "name": "Ban Nam Yen",
+    "old_amphure": "อำเภอท่าแซะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 435436,
+    "name": "Karung Temple",
+    "old_amphure": "อำเภอบ้านไร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 435493,
+    "name": "Pa phu tham Communuty",
+    "old_amphure": "อำเภอ แวงน้อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 435494,
+    "name": "Bang Taen Temple Communuty",
+    "old_amphure": "อำเภอ บ้านสร้าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 435495,
+    "name": "Dong Pha Pun Communuty",
+    "old_amphure": "อำเภอ บ่อเกลือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 455472,
+    "name": "Kong",
+    "old_amphure": "อำเภอเชียงดาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 455700,
+    "name": "Krok I Dok",
+    "old_amphure": "อำเภอแก่งคอย",
+    "data_source": "HII"
+  },
+  {
+    "id": 455701,
+    "name": "Khlong Maduea",
+    "old_amphure": "อำเภอเมืองนครนายก",
+    "data_source": "HII"
+  },
+  {
+    "id": 455780,
+    "name": "Pangnamthu School",
+    "old_amphure": "อำเภอดอยสะเก็ด",
+    "data_source": "HII"
+  },
+  {
+    "id": 455781,
+    "name": "Mueang Na child development centers",
+    "old_amphure": "อำเภอเชียงดาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 455782,
+    "name": "Mueang Na",
+    "old_amphure": "อำเภอเชียงดาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 455783,
+    "name": "Wang Kaeo",
+    "old_amphure": "อำเภอ วังเหนือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 455784,
+    "name": "Pa Dang",
+    "old_amphure": "อำเภองาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 457561,
+    "name": "Ban Dong",
+    "old_amphure": "อำเภอชาติตระการ",
+    "data_source": "HII"
+  },
+  {
+    "id": 457562,
+    "name": "Wat Suk Samran",
+    "old_amphure": "อำเภอสามง่าม",
+    "data_source": "HII"
+  },
+  {
+    "id": 457563,
+    "name": "Wat Nong Pling",
+    "old_amphure": "อำเภอขาณุวรลักษบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 457564,
+    "name": "The Forest Industry Organization School",
+    "old_amphure": "อำเภอวังทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 457565,
+    "name": "Chiang Tong",
+    "old_amphure": "อำเภอวังเจ้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 457566,
+    "name": "Kaeng Luang",
+    "old_amphure": "อำเภอศรีสัชนาลัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 457567,
+    "name": "Mae Tha Phae Temple",
+    "old_amphure": "อำเภอศรีสัชนาลัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 457568,
+    "name": "Bo Pho School",
+    "old_amphure": "อำเภอนครไทย",
+    "data_source": "HII"
+  },
+  {
+    "id": 457569,
+    "name": "Phu Hin Rong Kla",
+    "old_amphure": "อำเภอนครไทย",
+    "data_source": "HII"
+  },
+  {
+    "id": 457570,
+    "name": "Wat Khao Chai po",
+    "old_amphure": "อำเภอโกสัมพีนคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 457571,
+    "name": "Nong Luang",
+    "old_amphure": "อำเภอเมืองกำแพงเพชร",
+    "data_source": "HII"
+  },
+  {
+    "id": 457572,
+    "name": "Ban Na Faek School",
+    "old_amphure": "อำเภอนครไทย",
+    "data_source": "HII"
+  },
+  {
+    "id": 457573,
+    "name": "Wat Khao Noi Charoentham",
+    "old_amphure": "อำเภอ ปางศิลาทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 457574,
+    "name": "Nong Phra",
+    "old_amphure": "อำเภอวังทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 457841,
+    "name": "Sap Sombun Communuty",
+    "old_amphure": "อำเภอวิเชียรบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 458737,
+    "name": "Na Khaem Communuty",
+    "old_amphure": "อำเภอกบินทร์บุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 471583,
+    "name": "Chong Sa Dao",
+    "old_amphure": "อำเภออุทัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 471584,
+    "name": "Khanon Ti Temple",
+    "old_amphure": "อำเภอบางปะอิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 479216,
+    "name": "Mueang Yasothon",
+    "old_amphure": "อำเภอเมืองยโสธร",
+    "data_source": "HII"
+  },
+  {
+    "id": 479217,
+    "name": "Na So",
+    "old_amphure": "อำเภอ กุดชุม",
+    "data_source": "HII"
+  },
+  {
+    "id": 479218,
+    "name": "Som Pho",
+    "old_amphure": "อำเภอ ไทยเจริญ",
+    "data_source": "HII"
+  },
+  {
+    "id": 479219,
+    "name": "Hong Saeng",
+    "old_amphure": "อำเภอ เลิงนกทา",
+    "data_source": "HII"
+  },
+  {
+    "id": 479220,
+    "name": "Bung Kha",
+    "old_amphure": "อำเภอ เลิงนกทา",
+    "data_source": "HII"
+  },
+  {
+    "id": 479230,
+    "name": "Kok1",
+    "old_amphure": "อำเภอเมืองเชียงราย",
+    "data_source": "HII"
+  },
+  {
+    "id": 479231,
+    "name": "Ing 3",
+    "old_amphure": "อำเภอ ป่าแดด",
+    "data_source": "HII"
+  },
+  {
+    "id": 479232,
+    "name": "Ing 1",
+    "old_amphure": "อำเภอ เชียงของ",
+    "data_source": "HII"
+  },
+  {
+    "id": 479233,
+    "name": "Chi 1-1",
+    "old_amphure": "อำเภอ ร่องคำ",
+    "data_source": "HII"
+  },
+  {
+    "id": 479234,
+    "name": "Chi 11-1",
+    "old_amphure": "อำเภอ ห้วยผึ้ง",
+    "data_source": "HII"
+  },
+  {
+    "id": 479235,
+    "name": "Songkhram 2",
+    "old_amphure": "อำเภอ พรรณานิคม",
+    "data_source": "HII"
+  },
+  {
+    "id": 479236,
+    "name": "Songkhram 3",
+    "old_amphure": "อำเภอ อากาศอำนวย",
+    "data_source": "HII"
+  },
+  {
+    "id": 479237,
+    "name": "Chi 10-1",
+    "old_amphure": "อำเภอ เมยวดี",
+    "data_source": "HII"
+  },
+  {
+    "id": 479238,
+    "name": "Num Pung",
+    "old_amphure": "อำเภอ เต่างอย",
+    "data_source": "HII"
+  },
+  {
+    "id": 479239,
+    "name": "Yasothon 2",
+    "old_amphure": "อำเภอ ป่าติ้ว",
+    "data_source": "HII"
+  },
+  {
+    "id": 479240,
+    "name": "Num Kum 1",
+    "old_amphure": "อำเภอ นาแก",
+    "data_source": "HII"
+  },
+  {
+    "id": 479241,
+    "name": "Yasothon 1",
+    "old_amphure": "อำเภอ เลิงนกทา",
+    "data_source": "HII"
+  },
+  {
+    "id": 479242,
+    "name": "Sub Lek",
+    "old_amphure": "อำเภอเมืองลพบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 479243,
+    "name": "Som",
+    "old_amphure": "อำเภอเมืองลพบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 485148,
+    "name": "",
+    "old_amphure": "อำเภอแม่ทา",
+    "data_source": "HII"
+  },
+  {
+    "id": 485150,
+    "name": "",
+    "old_amphure": "อำเภอแม่จริม",
+    "data_source": "HII"
+  },
+  {
+    "id": 485151,
+    "name": "",
+    "old_amphure": "อำเภอ แม่อาย",
+    "data_source": "HII"
+  },
+  {
+    "id": 488828,
+    "name": "",
+    "old_amphure": "อำเภอแม่แจ่ม",
+    "data_source": "HII"
+  },
+  {
+    "id": 492316,
+    "name": "Pholthep Gate",
+    "old_amphure": "อำเภอเมืองชัยนาท",
+    "data_source": "HII"
+  },
+  {
+    "id": 492317,
+    "name": "Manorom Gate",
+    "old_amphure": "อำเภอมโนรมย์",
+    "data_source": "HII"
+  },
+  {
+    "id": 492318,
+    "name": "Baromthat Gate",
+    "old_amphure": "อำเภอเมืองชัยนาท",
+    "data_source": "HII"
+  },
+  {
+    "id": 492319,
+    "name": "Makhamtoa-Uthong Gate",
+    "old_amphure": "อำเภอ วัดสิงห์",
+    "data_source": "HII"
+  },
+  {
+    "id": 492320,
+    "name": "Phra Narai Gate",
+    "old_amphure": "อำเภอ ท่าเรือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 492321,
+    "name": "Phrasrisilp Gate",
+    "old_amphure": "อำเภอหนองแค",
+    "data_source": "HII"
+  },
+  {
+    "id": 492322,
+    "name": "Dhammaraja Gate",
+    "old_amphure": "อำเภอธัญบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 492323,
+    "name": "Intararaja Gate",
+    "old_amphure": "อำเภอวังน้อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 492324,
+    "name": "Chulalongkorn Gate",
+    "old_amphure": "อำเภอธัญบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 492325,
+    "name": "Maharaj Gate",
+    "old_amphure": "อำเภอเมืองชัยนาท",
+    "data_source": "HII"
+  },
+  {
+    "id": 492326,
+    "name": "Ta Boad Gate",
+    "old_amphure": "อำเภอ หันคา",
+    "data_source": "HII"
+  },
+  {
+    "id": 492327,
+    "name": "Cholmakpijarn Gate",
+    "old_amphure": "อำเภอสามชุก",
+    "data_source": "HII"
+  },
+  {
+    "id": 492328,
+    "name": "Pho Phraya Gate",
+    "old_amphure": "อำเภอเมืองสุพรรณบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 492329,
+    "name": "Bang Rachan Gate",
+    "old_amphure": "อำเภอ บางระจัน",
+    "data_source": "HII"
+  },
+  {
+    "id": 492330,
+    "name": "Yang Manee Gate",
+    "old_amphure": "อำเภอ ท่าช้าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 492331,
+    "name": "Phak Hai Gate",
+    "old_amphure": "อำเภอ ผักไห่",
+    "data_source": "HII"
+  },
+  {
+    "id": 492332,
+    "name": "Chong Khae Gate",
+    "old_amphure": "อำเภอตาคลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 492333,
+    "name": "HanTra Gate",
+    "old_amphure": "อำเภอ พระนครศรีอยุธยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 492334,
+    "name": "Kamang Gate",
+    "old_amphure": "อำเภอ พระนครศรีอยุธยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 492335,
+    "name": "Khlong Khao Mao",
+    "old_amphure": "อำเภอ พระนครศรีอยุธยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 492340,
+    "name": "Manorom Gate",
+    "old_amphure": "อำเภอมโนรมย์",
+    "data_source": "HII"
+  },
+  {
+    "id": 492341,
+    "name": "Manorom Gate",
+    "old_amphure": "อำเภอมโนรมย์",
+    "data_source": "HII"
+  },
+  {
+    "id": 492342,
+    "name": "Upper Baromthat Gate",
+    "old_amphure": "อำเภอเมืองชัยนาท",
+    "data_source": "HII"
+  },
+  {
+    "id": 492343,
+    "name": "Baromthat Gate",
+    "old_amphure": "อำเภอเมืองชัยนาท",
+    "data_source": "HII"
+  },
+  {
+    "id": 492344,
+    "name": "Upper Makhamtoa-Uthong Gate",
+    "old_amphure": "อำเภอ วัดสิงห์",
+    "data_source": "HII"
+  },
+  {
+    "id": 492345,
+    "name": "Makhamtoa-Uthong Gate",
+    "old_amphure": "อำเภอ วัดสิงห์",
+    "data_source": "HII"
+  },
+  {
+    "id": 492346,
+    "name": "Upper Phra Narai Gate",
+    "old_amphure": "อำเภอ ท่าเรือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 492347,
+    "name": "Phra Narai gate",
+    "old_amphure": "อำเภอ ท่าเรือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 492348,
+    "name": "Upper Phrasrisilp Gate",
+    "old_amphure": "อำเภอหนองแค",
+    "data_source": "HII"
+  },
+  {
+    "id": 492349,
+    "name": "Phrasrisilp Gate",
+    "old_amphure": "อำเภอหนองแค",
+    "data_source": "HII"
+  },
+  {
+    "id": 492350,
+    "name": "Upper Dhammaraja Gate",
+    "old_amphure": "อำเภอธัญบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 492351,
+    "name": "Dhammaraja Gate",
+    "old_amphure": "อำเภอธัญบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 492352,
+    "name": "Upper Intararaja Gate",
+    "old_amphure": "อำเภอวังน้อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 492353,
+    "name": "Intararaja Gate",
+    "old_amphure": "อำเภอวังน้อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 492355,
+    "name": "Upper Maharaj Gate",
+    "old_amphure": "อำเภอเมืองชัยนาท",
+    "data_source": "HII"
+  },
+  {
+    "id": 492356,
+    "name": "Maharaj Gate",
+    "old_amphure": "อำเภอเมืองชัยนาท",
+    "data_source": "HII"
+  },
+  {
+    "id": 492357,
+    "name": "Upper Ta Boad Gate",
+    "old_amphure": "อำเภอ หันคา",
+    "data_source": "HII"
+  },
+  {
+    "id": 492358,
+    "name": "Ta Bot Gate",
+    "old_amphure": "อำเภอ หันคา",
+    "data_source": "HII"
+  },
+  {
+    "id": 492359,
+    "name": "Upper Cholmakpijarn Gate",
+    "old_amphure": "อำเภอสามชุก",
+    "data_source": "HII"
+  },
+  {
+    "id": 492360,
+    "name": "Cholmakpijarn Gate",
+    "old_amphure": "อำเภอสามชุก",
+    "data_source": "HII"
+  },
+  {
+    "id": 492361,
+    "name": "Upper Pho Phraya Gate",
+    "old_amphure": "อำเภอเมืองสุพรรณบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 492362,
+    "name": "Pho Phraya Gate",
+    "old_amphure": "อำเภอเมืองสุพรรณบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 492363,
+    "name": "Upper Bang Rachan Gate",
+    "old_amphure": "อำเภอ บางระจัน",
+    "data_source": "HII"
+  },
+  {
+    "id": 492364,
+    "name": "Bang Rachan Gate",
+    "old_amphure": "อำเภอ บางระจัน",
+    "data_source": "HII"
+  },
+  {
+    "id": 492365,
+    "name": "Upper Yang Manee Gate",
+    "old_amphure": "อำเภอ ท่าช้าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 492366,
+    "name": "Yang Manee Gate",
+    "old_amphure": "อำเภอ ท่าช้าง",
+    "data_source": "HII"
+  },
+  {
+    "id": 492367,
+    "name": "Upper Phak Hai Gate",
+    "old_amphure": "อำเภอ ผักไห่",
+    "data_source": "HII"
+  },
+  {
+    "id": 492368,
+    "name": "Phak Hai Gate",
+    "old_amphure": "อำเภอ ผักไห่",
+    "data_source": "HII"
+  },
+  {
+    "id": 492369,
+    "name": "Upper Chong Khae Gate",
+    "old_amphure": "อำเภอตาคลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 492370,
+    "name": "Chong Khae Gate",
+    "old_amphure": "อำเภอตาคลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 493833,
+    "name": "",
+    "old_amphure": "อำเภอ ท่าวังผา",
+    "data_source": "HII"
+  },
+  {
+    "id": 494431,
+    "name": "",
+    "old_amphure": "อำเภอเวียงสา",
+    "data_source": "HII"
+  },
+  {
+    "id": 494765,
+    "name": "",
+    "old_amphure": "อำเภอเมืองน่าน",
+    "data_source": "HII"
+  },
+  {
+    "id": 494767,
+    "name": "",
+    "old_amphure": "อำเภอ สองแคว",
+    "data_source": "HII"
+  },
+  {
+    "id": 494769,
+    "name": "",
+    "old_amphure": "อำเภอนาน้อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 507020,
+    "name": "",
+    "old_amphure": "อำเภอ ห้วยคต",
+    "data_source": "HII"
+  },
+  {
+    "id": 507021,
+    "name": "",
+    "old_amphure": "อำเภอบ้านไร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 507022,
+    "name": "",
+    "old_amphure": "อำเภอลานสัก",
+    "data_source": "HII"
+  },
+  {
+    "id": 507023,
+    "name": "",
+    "old_amphure": "อำเภอบ้านไร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 507024,
+    "name": "",
+    "old_amphure": "อำเภอสรรพยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 507025,
+    "name": "",
+    "old_amphure": "อำเภอสีคิ้ว",
+    "data_source": "HII"
+  },
+  {
+    "id": 507026,
+    "name": "",
+    "old_amphure": "อำเภอ เลาขวัญ",
+    "data_source": "HII"
+  },
+  {
+    "id": 507027,
+    "name": "",
+    "old_amphure": "อำเภอสีคิ้ว",
+    "data_source": "HII"
+  },
+  {
+    "id": 507054,
+    "name": "",
+    "old_amphure": "อำเภอตาคลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 507055,
+    "name": "",
+    "old_amphure": "อำเภอ ไพศาลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 507056,
+    "name": "",
+    "old_amphure": "อำเภอ ตากฟ้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 507058,
+    "name": "",
+    "old_amphure": "อำเภอ ชุมตาบง",
+    "data_source": "HII"
+  },
+  {
+    "id": 513369,
+    "name": "Ko Samui",
+    "old_amphure": "อำเภอเกาะสมุย",
+    "data_source": "HII"
+  },
+  {
+    "id": 513370,
+    "name": "Ran Phu Soi Fa",
+    "old_amphure": "อำเภอเกาะสมุย",
+    "data_source": "HII"
+  },
+  {
+    "id": 513371,
+    "name": "Phru Na Mueang",
+    "old_amphure": "อำเภอเกาะสมุย",
+    "data_source": "HII"
+  },
+  {
+    "id": 513372,
+    "name": "Phru Krachood",
+    "old_amphure": "อำเภอเกาะสมุย",
+    "data_source": "HII"
+  },
+  {
+    "id": 513373,
+    "name": "Phru Cha-weng",
+    "old_amphure": "อำเภอเกาะสมุย",
+    "data_source": "HII"
+  },
+  {
+    "id": 515577,
+    "name": "",
+    "old_amphure": "อำเภอ ไพศาลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 515581,
+    "name": "",
+    "old_amphure": "อำเภอลาดยาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 515582,
+    "name": "",
+    "old_amphure": "อำเภอตาคลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 515583,
+    "name": "",
+    "old_amphure": "อำเภอ ตากฟ้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 515584,
+    "name": "Chao Phraya Dam",
+    "old_amphure": "อำเภอสรรพยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 515592,
+    "name": "",
+    "old_amphure": "อำเภอ ชุมตาบง",
+    "data_source": "HII"
+  },
+  {
+    "id": 515594,
+    "name": "",
+    "old_amphure": "อำเภอ ห้วยคต",
+    "data_source": "HII"
+  },
+  {
+    "id": 515596,
+    "name": "",
+    "old_amphure": "อำเภอบ้านไร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 515599,
+    "name": "",
+    "old_amphure": "อำเภอลานสัก",
+    "data_source": "HII"
+  },
+  {
+    "id": 515600,
+    "name": "",
+    "old_amphure": "อำเภอบ้านไร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 515602,
+    "name": "",
+    "old_amphure": "อำเภอสีคิ้ว",
+    "data_source": "HII"
+  },
+  {
+    "id": 515604,
+    "name": "",
+    "old_amphure": "อำเภอ เลาขวัญ",
+    "data_source": "HII"
+  },
+  {
+    "id": 515605,
+    "name": "",
+    "old_amphure": "อำเภอสีคิ้ว",
+    "data_source": "HII"
+  },
+  {
+    "id": 518416,
+    "name": "",
+    "old_amphure": "อำเภอบางบ่อ",
+    "data_source": "HII"
+  },
+  {
+    "id": 519377,
+    "name": "",
+    "old_amphure": "อำเภอ ร้องกวาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 519399,
+    "name": "",
+    "old_amphure": "อำเภอเวียงสา",
+    "data_source": "HII"
+  },
+  {
+    "id": 519405,
+    "name": "",
+    "old_amphure": "อำเภอสอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 519417,
+    "name": "",
+    "old_amphure": "อำเภอ ร้องกวาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 519419,
+    "name": "",
+    "old_amphure": "อำเภอสะเมิง",
+    "data_source": "HII"
+  },
+  {
+    "id": 529737,
+    "name": "",
+    "old_amphure": "อำเภอ เชียงม่วน",
+    "data_source": "HII"
+  },
+  {
+    "id": 575565,
+    "name": "Srinakorn Khuaenkhan Park",
+    "old_amphure": "อำเภอพระประแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 575566,
+    "name": "Wat Bangkachao Nok Gate",
+    "old_amphure": "อำเภอพระประแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 575567,
+    "name": "Khlong Lat Bang Yo 1 Gate",
+    "old_amphure": "อำเภอพระประแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 575568,
+    "name": "Khlong Lat Bang Yo 2 Gate",
+    "old_amphure": "อำเภอพระประแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 575569,
+    "name": "Khlong Ta Sot Gate",
+    "old_amphure": "อำเภอพระประแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 575570,
+    "name": "Khlong Bang Namphueng Gate",
+    "old_amphure": "อำเภอพระประแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 575571,
+    "name": "Khlong Phae Gate",
+    "old_amphure": "อำเภอพระประแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 575572,
+    "name": "Bang Namphueng Market",
+    "old_amphure": "อำเภอพระประแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 602809,
+    "name": "Yang  Kahad Weir",
+    "old_amphure": "อำเภอ เนินสง่า",
+    "data_source": "HII"
+  },
+  {
+    "id": 602810,
+    "name": "Yang Kaeng Sanam Nang Weir",
+    "old_amphure": "อำเภอ แก้งสนามนาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 602811,
+    "name": "Chonnabot Weir",
+    "old_amphure": "อำเภอ ชนบท",
+    "data_source": "HII"
+  },
+  {
+    "id": 602812,
+    "name": "Nong Wai Weir",
+    "old_amphure": "อำเภอน้ำพอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 602813,
+    "name": "Maha Sarakham Weir",
+    "old_amphure": "อำเภอ โกสุมพิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 602814,
+    "name": "Wang Yang Weir",
+    "old_amphure": "อำเภอ ฆ้องชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 602815,
+    "name": "Roi Et Weir",
+    "old_amphure": "อำเภอ โพธิ์ชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 602816,
+    "name": "Yasotorn Weir",
+    "old_amphure": "อำเภอ พนมไพร",
+    "data_source": "HII"
+  },
+  {
+    "id": 602817,
+    "name": "Tat Noi Weir",
+    "old_amphure": "อำเภอ เขื่องใน",
+    "data_source": "HII"
+  },
+  {
+    "id": 602818,
+    "name": "Hua Na Weir",
+    "old_amphure": "อำเภอ กันทรารมย์",
+    "data_source": "HII"
+  },
+  {
+    "id": 602819,
+    "name": "Rasi Salai Weir",
+    "old_amphure": "อำเภอ ราษีไศล",
+    "data_source": "HII"
+  },
+  {
+    "id": 602820,
+    "name": "Ban Ta Lung Weir",
+    "old_amphure": "อำเภอ ชุมพลบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 602821,
+    "name": "Ban Kawao Weir",
+    "old_amphure": "อำเภอ คูเมือง",
+    "data_source": "HII"
+  },
+  {
+    "id": 602822,
+    "name": "Chum Phuang Weir",
+    "old_amphure": "อำเภอชุมพวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 602823,
+    "name": "Phimai Weir",
+    "old_amphure": "อำเภอพิมาย",
+    "data_source": "HII"
+  },
+  {
+    "id": 684532,
+    "name": "Tao Pun - Tan Diao Bridge",
+    "old_amphure": "อำเภอแก่งคอย",
+    "data_source": "HII"
+  },
+  {
+    "id": 685250,
+    "name": "",
+    "old_amphure": "อำเภอบางบ่อ",
+    "data_source": "HII"
+  },
+  {
+    "id": 740532,
+    "name": "Nam Loei Bridge",
+    "old_amphure": "อำเภอ เชียงคาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 740533,
+    "name": "Huay Nam Huay Bridge",
+    "old_amphure": "อำเภอ สังคม",
+    "data_source": "HII"
+  },
+  {
+    "id": 740534,
+    "name": "Huay Luang Bridge",
+    "old_amphure": "อำเภอ โพนพิสัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 740535,
+    "name": "Had Guan - Um Phai Phatthana Bridge",
+    "old_amphure": "อำเภอ ท่าอุเทน",
+    "data_source": "HII"
+  },
+  {
+    "id": 740536,
+    "name": "Huay Bang Huak Bridge",
+    "old_amphure": "อำเภอ ธาตุพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 740537,
+    "name": "Huay Muk Bridge",
+    "old_amphure": "อำเภอเมืองมุกดาหาร",
+    "data_source": "HII"
+  },
+  {
+    "id": 740538,
+    "name": "Bang Ee Bridge",
+    "old_amphure": "อำเภอ ดอนตาล",
+    "data_source": "HII"
+  },
+  {
+    "id": 740539,
+    "name": "Huay Khan Tung Bridge",
+    "old_amphure": "อำเภอ นาตาล",
+    "data_source": "HII"
+  },
+  {
+    "id": 740540,
+    "name": "Nam Mun Bridge",
+    "old_amphure": "อำเภอ โขงเจียม",
+    "data_source": "HII"
+  },
+  {
+    "id": 740812,
+    "name": "Khwae Noi",
+    "old_amphure": "อำเภอวัดโบสถ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 745748,
+    "name": "Huay Bang Bat Bridge",
+    "old_amphure": "อำเภอเมืองบึงกาฬ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1033654,
+    "name": "Ram 2",
+    "old_amphure": "อำเภอคลองหลวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1082073,
+    "name": "Wildlife Sanctuary of Khao Soidao",
+    "old_amphure": "อำเภอ สอยดาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 1082074,
+    "name": "Chit Ma Ni Weir",
+    "old_amphure": "อำเภอ สอยดาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 1082075,
+    "name": "Khlong Pa Tong Weir",
+    "old_amphure": "อำเภอ สอยดาว",
+    "data_source": "HII"
+  },
+  {
+    "id": 1082427,
+    "name": "Bo Din Khao",
+    "old_amphure": "อำเภอตาคลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 1085209,
+    "name": "Ai Pa Cho Bridge",
+    "old_amphure": "อำเภอ สุคิริน",
+    "data_source": "HII"
+  },
+  {
+    "id": 1085210,
+    "name": "Bua Ban Ya De Bridge",
+    "old_amphure": "อำเภอ สุคิริน",
+    "data_source": "HII"
+  },
+  {
+    "id": 1085211,
+    "name": "Ka Lu Bi Ban Sai Pa Ri Bridge",
+    "old_amphure": "อำเภอ สุคิริน",
+    "data_source": "HII"
+  },
+  {
+    "id": 1091066,
+    "name": "",
+    "old_amphure": "อำเภอ พระนครศรีอยุธยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1091067,
+    "name": "",
+    "old_amphure": "อำเภอบางปะอิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 1091551,
+    "name": "Khao Wong",
+    "old_amphure": "อำเภอตาคลี",
+    "data_source": "HII"
+  },
+  {
+    "id": 1093079,
+    "name": "Khlong Cha Uat",
+    "old_amphure": "อำเภอ ชะอวด",
+    "data_source": "HII"
+  },
+  {
+    "id": 1094448,
+    "name": "Wat Khok Pho Sathit School",
+    "old_amphure": "อำเภอ ลานสกา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1095455,
+    "name": "Trang Phatthana Bridge",
+    "old_amphure": "อำเภอ พะโต๊ะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1104015,
+    "name": "Pak Khlong Song Nam Sai",
+    "old_amphure": "อำเภอเสนา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1105332,
+    "name": "Ku Ti",
+    "old_amphure": "อำเภอ ผักไห่",
+    "data_source": "HII"
+  },
+  {
+    "id": 1106448,
+    "name": "Khlong Bang So",
+    "old_amphure": "อำเภอสองพี่น้อง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1106449,
+    "name": "Lat Chado",
+    "old_amphure": "อำเภอ ผักไห่",
+    "data_source": "HII"
+  },
+  {
+    "id": 1106450,
+    "name": "Lat Chit",
+    "old_amphure": "อำเภอ ผักไห่",
+    "data_source": "HII"
+  },
+  {
+    "id": 1106451,
+    "name": "BangKaeo",
+    "old_amphure": "อำเภอ ผักไห่",
+    "data_source": "HII"
+  },
+  {
+    "id": 1106453,
+    "name": "Thung PaMok",
+    "old_amphure": "อำเภอบางปลาม้า",
+    "data_source": "HII"
+  },
+  {
+    "id": 1106454,
+    "name": "Khlong Sai Huai Kaeo Pumping Station",
+    "old_amphure": "อำเภอ บ้านหมี่",
+    "data_source": "HII"
+  },
+  {
+    "id": 1106455,
+    "name": "Khlong Sa Ta Waeo Pumping Station",
+    "old_amphure": "อำเภอ บ้านหมี่",
+    "data_source": "HII"
+  },
+  {
+    "id": 1106456,
+    "name": "Pak Khlong Ha Wa",
+    "old_amphure": "อำเภอเมืองลพบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 1106457,
+    "name": "Khlong Rabai Chai Nat Pa Sak Pumping Station",
+    "old_amphure": "อำเภออินทร์บุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 1107582,
+    "name": "Sena",
+    "old_amphure": "อำเภอเสนา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1108707,
+    "name": "Mae Nam Noi",
+    "old_amphure": "อำเภอ ผักไห่",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109490,
+    "name": "Tha Nam Bridge",
+    "old_amphure": "อำเภอเมืองกระบี่",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109491,
+    "name": "Krabi Yai 1 Bridge",
+    "old_amphure": "อำเภอเมืองกระบี่",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109492,
+    "name": "I Pan Bridge",
+    "old_amphure": "อำเภอ ปลายพระยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109493,
+    "name": "Khlong Tako Bridge",
+    "old_amphure": "อำเภอทุ่งตะโก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109494,
+    "name": "Nong Chik - Wang Pla Bridge",
+    "old_amphure": "อำเภอทุ่งตะโก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109495,
+    "name": "Upper Ni Naruemit Gate ",
+    "old_amphure": "อำเภอ ธาตุพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109496,
+    "name": "Ni Naruemit Gate",
+    "old_amphure": "อำเภอ ธาตุพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109497,
+    "name": "Upper Huai Kean Upper Gate",
+    "old_amphure": "อำเภอ ธาตุพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109498,
+    "name": "Huai Kean Gate",
+    "old_amphure": "อำเภอ ธาตุพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109499,
+    "name": "Kaeng Pho Bridge",
+    "old_amphure": "อำเภอ ธาตุพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109500,
+    "name": "Upper Ban Na Khu Gate",
+    "old_amphure": "อำเภอ นาแก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109501,
+    "name": "Ban Na Khu Gate",
+    "old_amphure": "อำเภอ นาแก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109502,
+    "name": "Mittraphap Tha Lat Pak Bang",
+    "old_amphure": "อำเภอ นาแก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109503,
+    "name": "Upper BanNa Kham Gate",
+    "old_amphure": "อำเภอ นาแก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109504,
+    "name": "BanNa Kham Gate",
+    "old_amphure": "อำเภอ นาแก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109505,
+    "name": "Nam Kam Ban Nong Khaen",
+    "old_amphure": "อำเภอ โคกศรีสุพรรณ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109506,
+    "name": "Upper Na Bua Gate",
+    "old_amphure": "อำเภอ เรณูนคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109507,
+    "name": "Na Bua Gate",
+    "old_amphure": "อำเภอ เรณูนคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109508,
+    "name": "Upper Ban Tap Tao Gate",
+    "old_amphure": "อำเภอ ปลาปาก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109509,
+    "name": "Ban Tap Tao Gate",
+    "old_amphure": "อำเภอ ปลาปาก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109510,
+    "name": "Khlong Chiang Krai Ban Don",
+    "old_amphure": "อำเภอด่านขุนทด",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109511,
+    "name": "Khlong Sam Bat Ban Kut Phiman",
+    "old_amphure": "อำเภอด่านขุนทด",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109512,
+    "name": "Khlong ThaPhae Bridge",
+    "old_amphure": "อำเภอทุ่งสง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109513,
+    "name": "Khlong Bang Muang Bridge",
+    "old_amphure": "อำเภอ ปากพะยูน",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109514,
+    "name": "Khlong Lampam Bridge",
+    "old_amphure": "อำเภอเมืองพัทลุง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109515,
+    "name": "Nam Yom Sai Kao - Ban Wang Nam Bo Bridge",
+    "old_amphure": "อำเภอ กงไกรลาศ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109516,
+    "name": "Khlong Ka Poe Bridge",
+    "old_amphure": "อำเภอ กะเปอร์",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109517,
+    "name": "Upper Ban Nong Bueng Gate",
+    "old_amphure": "อำเภอ โคกศรีสุพรรณ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109518,
+    "name": "Ban Nong Bueng Gate",
+    "old_amphure": "อำเภอ โคกศรีสุพรรณ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109519,
+    "name": "Khlong Teark Bridge",
+    "old_amphure": "อำเภอเมืองสกลนคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109520,
+    "name": "Upper Suratsawadi Gate",
+    "old_amphure": "อำเภอเมืองสกลนคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109521,
+    "name": "Suratsawadi Gate",
+    "old_amphure": "อำเภอเมืองสกลนคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109522,
+    "name": "Khlong Mong Bridge",
+    "old_amphure": "อำเภอเมืองสกลนคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109523,
+    "name": "Huai Samo Bridge",
+    "old_amphure": "อำเภอเมืองสกลนคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109524,
+    "name": "Khlong Thepha Bridge",
+    "old_amphure": "อำเภอ สะบ้าย้อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109525,
+    "name": "Thepha Santi Suk Bridge",
+    "old_amphure": "อำเภอ เทพา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109526,
+    "name": "Khlong U Taphao Bridge",
+    "old_amphure": "อำเภอหาดใหญ่",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109527,
+    "name": "Queen Bridge",
+    "old_amphure": "อำเภอเมืองสงขลา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109528,
+    "name": "Khlong Ranot Bridge",
+    "old_amphure": "อำเภอ ระโนด",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109529,
+    "name": "Yom Sai Kao - Tambon Krai Nai Bridge",
+    "old_amphure": "อำเภอพรหมพิราม",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109530,
+    "name": "Yom Sai Kao - Wat Paknam Bridge",
+    "old_amphure": "อำเภอ สวรรคโลก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109531,
+    "name": "Khlong Nam Kao Bridge",
+    "old_amphure": "อำเภอ สวรรคโลก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109532,
+    "name": "Nam Yom Nan 1 Bridge",
+    "old_amphure": "อำเภอ สวรรคโลก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109533,
+    "name": "Khlong Chaiya Bridge",
+    "old_amphure": "อำเภอไชยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109534,
+    "name": "Khlong Pak Mak Bridge",
+    "old_amphure": "อำเภอไชยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109535,
+    "name": "Khlong Tha Chana Bridge",
+    "old_amphure": "อำเภอท่าชนะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109536,
+    "name": "Esia 4265 Bridge",
+    "old_amphure": "อำเภอท่าชนะ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109537,
+    "name": "Nam Yom Nan 2 Bridge",
+    "old_amphure": "อำเภอพิชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109538,
+    "name": "Bang Kam Prat Reservoir",
+    "old_amphure": "อำเภอ เขาพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109539,
+    "name": "Ban Huai Daeng School",
+    "old_amphure": "อำเภอ กุฉินารายณ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109540,
+    "name": "Ban Kham Phi Mun Bridge",
+    "old_amphure": "อำเภอ คำม่วง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109541,
+    "name": "Tambon Health Promoting Hospital of Kham Mueat Kaeo",
+    "old_amphure": "อำเภอ ห้วยเม็ก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109542,
+    "name": "Tambon Health Promoting Hospital of Ban Nong Bot",
+    "old_amphure": "อำเภอครบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109543,
+    "name": "Ban Non Teng School",
+    "old_amphure": "อำเภอคง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109544,
+    "name": "Ban Nong Prue Pong School",
+    "old_amphure": "อำเภอ บ้านเหลื่อม",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109545,
+    "name": "Chin Wong Upatham School",
+    "old_amphure": "อำเภอสูงเนิน",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109546,
+    "name": "Ta Khop",
+    "old_amphure": "อำเภอปักธงชัย",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109547,
+    "name": "Ban Khlong Khrok School",
+    "old_amphure": "อำเภอแก่งหางแมว",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109548,
+    "name": "Khok Ta Phong Temple",
+    "old_amphure": "อำเภอ มะขาม",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109549,
+    "name": "Santi Tham Khiri (Khao Hin Khong) Temple",
+    "old_amphure": "อำเภอ เขาคิชฌกูฏ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109550,
+    "name": "Ban Talat Noen Hin School",
+    "old_amphure": "อำเภอบ่อทอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109551,
+    "name": "Wat Ban Pong School",
+    "old_amphure": "อำเภอบางละมุง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109552,
+    "name": "Wat Nong Nam Khiao School",
+    "old_amphure": "อำเภอบ้านบึง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109553,
+    "name": "Tham Ni Mit Temple Temple",
+    "old_amphure": "อำเภอศรีราชา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109554,
+    "name": "Ban Chanuan School",
+    "old_amphure": "อำเภอ ภูเขียว",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109555,
+    "name": "Thung Tong Temple Temple",
+    "old_amphure": "อำเภอ บ่อไร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109556,
+    "name": "Tambon Health Promoting Hospital of Ban Khlong Khwang",
+    "old_amphure": "อำเภอเมืองตราด",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109557,
+    "name": "Khao Chang Temple",
+    "old_amphure": "อำเภอ นาแก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109558,
+    "name": "Ban Na Dokmai School",
+    "old_amphure": "อำเภอ ปลาปาก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109559,
+    "name": "Tham Ta Chai Temple",
+    "old_amphure": "อำเภอ นาแก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109560,
+    "name": "Ban Hin Thoen School",
+    "old_amphure": "อำเภอนาดี",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109561,
+    "name": "Tambon Health Promoting Hospital of Rat Rak Daen",
+    "old_amphure": "อำเภอ ละหานทราย",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109562,
+    "name": "Ban Sai Tho 4 Tai School",
+    "old_amphure": "อำเภอ บ้านกรวด",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109563,
+    "name": "Nikhom Pracha San Temple",
+    "old_amphure": "อำเภอเมืองประจวบคีรีขันธ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109564,
+    "name": "Khlong Chong Lom Reservoir",
+    "old_amphure": "อำเภอทับสะแก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109565,
+    "name": "Huai Kasian Temple",
+    "old_amphure": "อำเภอเมืองปราจีนบุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109566,
+    "name": "Huai Chan Temple",
+    "old_amphure": "อำเภอวัฒนานคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109567,
+    "name": "Wang Plachon Temple",
+    "old_amphure": "อำเภอปากท่อ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109568,
+    "name": "Ban Huai Phai School",
+    "old_amphure": "อำเภอแก่งกระจาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109569,
+    "name": "Ban Khao AngKaeo School",
+    "old_amphure": "อำเภอท่ายาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109570,
+    "name": "Bang Wat Dam",
+    "old_amphure": "อำเภอกะทู้",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109571,
+    "name": "Bang Niao Dam Reservoir",
+    "old_amphure": "อำเภอถลาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109572,
+    "name": "Bamrung Phong U Patham School",
+    "old_amphure": "อำเภอ นิคมคำสร้อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109573,
+    "name": "Ban Nong Mek School",
+    "old_amphure": "อำเภอ ดอนตาล",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109574,
+    "name": "Ban Wang Nong School",
+    "old_amphure": "อำเภอ หนองสูง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109575,
+    "name": "Ban Sok School",
+    "old_amphure": "อำเภอ ดงหลวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109576,
+    "name": "Dan Hin Taek Temple",
+    "old_amphure": "อำเภอ เลิงนกทา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109577,
+    "name": "Ban Mueangrae School",
+    "old_amphure": "อำเภอ เขาชะเมา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109578,
+    "name": "Ban Si Ra Man School",
+    "old_amphure": "อำเภอ เขาชะเมา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109579,
+    "name": "Tambon Health Promoting Hospital of Ban Chak Mak",
+    "old_amphure": "อำเภอบ้านฉาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109580,
+    "name": "PluakDaeng",
+    "old_amphure": "อำเภอปลวกแดง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109581,
+    "name": "Tham Bang Bot Temple",
+    "old_amphure": "อำเภอ เขาวง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109582,
+    "name": "Tambon Health Promoting Hospital of Thapthim Siam 07",
+    "old_amphure": "อำเภอ ขุนหาญ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109583,
+    "name": "Ban Lup Lao School",
+    "old_amphure": "อำเภอ ภูพาน",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109584,
+    "name": "Ban Kuan Bun School",
+    "old_amphure": "อำเภอ เต่างอย",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109585,
+    "name": "Ban Na Kham Witthayakhan School",
+    "old_amphure": "อำเภอเมืองสกลนคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109586,
+    "name": "Ban Phu Phek School",
+    "old_amphure": "อำเภอ พรรณานิคม",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109587,
+    "name": "Tha Phraya",
+    "old_amphure": "อำเภอ สะบ้าย้อย",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109588,
+    "name": "Ban Khlong Yai In School",
+    "old_amphure": "อำเภอ วังสมบูรณ์",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109589,
+    "name": "Khlong Khan Tho Temple",
+    "old_amphure": "อำเภอวัฒนานคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109590,
+    "name": "Tambon Health Promoting Hospital of Charat",
+    "old_amphure": "อำเภอ บัวเชด",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109591,
+    "name": "Khuean Kaeo Temple",
+    "old_amphure": "อำเภอ กาบเชิง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109592,
+    "name": "Non Nam Thaeng School",
+    "old_amphure": "อำเภอเมืองอำนาจเจริญ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109593,
+    "name": "Phu khao Kham School",
+    "old_amphure": "อำเภอเมืองอำนาจเจริญ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109594,
+    "name": "Ban Nong O Noi School",
+    "old_amphure": "อำเภอ หนองวัวซอ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109595,
+    "name": "Nong Waeng Chumphon School",
+    "old_amphure": "อำเภอ หนองวัวซอ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1109596,
+    "name": "Dom Pradit",
+    "old_amphure": "อำเภอน้ำยืน",
+    "data_source": "HII"
+  },
+  {
+    "id": 1116457,
+    "name": "Si Racha Fisheries Research Station",
+    "old_amphure": "อำเภอศรีราชา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1117429,
+    "name": "Nong Leng Sai Weir",
+    "old_amphure": "อำเภอ แม่ใจ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1117430,
+    "name": "Ban Tam Bridge",
+    "old_amphure": "อำเภอเมืองพะเยา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1117431,
+    "name": "Ban Chedi Ngam Bridge",
+    "old_amphure": "อำเภอ ดอกคำใต้",
+    "data_source": "HII"
+  },
+  {
+    "id": 1117939,
+    "name": "Ni Naruemit Gate ",
+    "old_amphure": "อำเภอ ธาตุพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 1117940,
+    "name": "Huai Kean Upper Gate",
+    "old_amphure": "อำเภอ ธาตุพนม",
+    "data_source": "HII"
+  },
+  {
+    "id": 1117941,
+    "name": "Ban Na Khu Gate",
+    "old_amphure": "อำเภอ นาแก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1117942,
+    "name": "BanNa Kham Gate",
+    "old_amphure": "อำเภอ นาแก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1117943,
+    "name": "Na Bua Gate",
+    "old_amphure": "อำเภอ เรณูนคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 1117944,
+    "name": "Ban Tap Tao Gate",
+    "old_amphure": "อำเภอ ปลาปาก",
+    "data_source": "HII"
+  },
+  {
+    "id": 1117945,
+    "name": "Ban Nong Bueng Gate",
+    "old_amphure": "อำเภอ โคกศรีสุพรรณ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1117946,
+    "name": "Suratsawadi Gate",
+    "old_amphure": "อำเภอเมืองสกลนคร",
+    "data_source": "HII"
+  },
+  {
+    "id": 1124861,
+    "name": "Si Mak Ya Temple",
+    "old_amphure": "อำเภอ หนองวัวซอ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1126506,
+    "name": "Ban Tha Wang Bridge ",
+    "old_amphure": "อำเภอ เขาชัยสน",
+    "data_source": "HII"
+  },
+  {
+    "id": 1132567,
+    "name": "Ban Kanae Chutha Border Patrol Police Learning Center",
+    "old_amphure": "อำเภอท่าสองยาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1132568,
+    "name": "Ban Teebokee Community Public Health Service Center",
+    "old_amphure": "อำเภอท่าสองยาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1132569,
+    "name": "Ban Mae Wei Subdistrict Health Promoting Hospital",
+    "old_amphure": "อำเภอท่าสองยาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1139393,
+    "name": "Kham Lamnam Choen Bridge (MitrPhol NongRuea)",
+    "old_amphure": "อำเภอหนองเรือ",
+    "data_source": "HII"
+  },
+  {
+    "id": 1140845,
+    "name": "Chao Pho Phaya On Shrine",
+    "old_amphure": "อำเภอสอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1197836,
+    "name": "Huai Pha Tang",
+    "old_amphure": "อำเภอ เวียงแก่น",
+    "data_source": "HII"
+  },
+  {
+    "id": 1197955,
+    "name": "Kabinburi Industrial Zone",
+    "old_amphure": "อำเภอกบินทร์บุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 1197956,
+    "name": "Khlong Daeng",
+    "old_amphure": "อำเภอกบินทร์บุรี",
+    "data_source": "HII"
+  },
+  {
+    "id": 1197957,
+    "name": "Huai Yang Canal",
+    "old_amphure": "อำเภอนาดี",
+    "data_source": "HII"
+  },
+  {
+    "id": 1198081,
+    "name": "Sa River",
+    "old_amphure": "อำเภอเวียงสา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1198082,
+    "name": "Sa water",
+    "old_amphure": "อำเภอเวียงสา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1198297,
+    "name": "Tha River Bridge",
+    "old_amphure": "อำเภอแม่ทา",
+    "data_source": "HII"
+  },
+  {
+    "id": 1198298,
+    "name": "Tha River",
+    "old_amphure": "อำเภอ ป่าซาง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1198299,
+    "name": "Li River-Ban Hong",
+    "old_amphure": "อำเภอ บ้านโฮ่ง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1198300,
+    "name": "Huai Mae Li",
+    "old_amphure": "อำเภอลี้",
+    "data_source": "HII"
+  },
+  {
+    "id": 1198301,
+    "name": "Namko",
+    "old_amphure": "อำเภอลี้",
+    "data_source": "HII"
+  },
+  {
+    "id": 1198626,
+    "name": "Khlong Praneat, Talung Village",
+    "old_amphure": "อำเภอ เขาสมิง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1198627,
+    "name": "Khlong Sano",
+    "old_amphure": "อำเภอ บ่อไร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 1198628,
+    "name": "Khao Rakam Canal",
+    "old_amphure": "อำเภอเมืองตราด",
+    "data_source": "HII"
+  },
+  {
+    "id": 1198760,
+    "name": "Nong Chan Bridge",
+    "old_amphure": "อำเภอสอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1198761,
+    "name": "Mother Ta",
+    "old_amphure": "อำเภอลอง",
+    "data_source": "HII"
+  },
+  {
+    "id": 1238679,
+    "name": "Wildlife Learning Center Right bank Lam Nam Nan Wildlife Sanctuary",
+    "old_amphure": "อำเภอเมืองแพร่",
+    "data_source": "HII"
+  },
+  {
+    "id": 1252774,
+    "name": "Huai Mae Payang Reservoir",
+    "old_amphure": "อำเภอวังชิ้น",
+    "data_source": "HII"
+  },
+  {
+    "id": 2183,
+    "name": " ",
+    "old_amphure": "อำเภอบางละมุง",
+    "data_source": "TMD"
+  },
+  {
+    "id": 3713,
+    "name": "PILOT STATION",
+    "old_amphure": "อำเภอพระสมุทรเจดีย์",
+    "data_source": "TMD"
+  },
+  {
+    "id": 3719,
+    "name": "LAEM CHABANG",
+    "old_amphure": "อำเภอศรีราชา",
+    "data_source": "TMD"
+  },
+  {
+    "id": 1128649,
+    "name": "",
+    "old_amphure": "อำเภอเมืองสมุทรปราการ",
+    "data_source": "TMD"
+  },
+  {
+    "id": 1128683,
+    "name": "",
+    "old_amphure": "อำเภอดอนตูม",
+    "data_source": "TMD"
+  },
+  {
+    "id": 1128951,
+    "name": "",
+    "old_amphure": "อำเภอเมืองชัยภูมิ",
+    "data_source": "TMD"
+  },
+  {
+    "id": 1128954,
+    "name": "",
+    "old_amphure": "อำเภอเมืองชัยภูมิ",
+    "data_source": "TMD"
+  }
+]

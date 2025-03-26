@@ -859,6 +859,14 @@ const ComplaintForm = () => {
     jotaiProvince: stationData.currentProvince
   });
 
+  // Update station management location once when location data changes
+  useEffect(() => {
+    if (stationData.updateLocation && locationInfo.amphure && locationInfo.province) {
+      console.log('[ComplaintForm] Updating station management location (useEffect):', locationInfo);
+      stationData.updateLocation(locationInfo.amphure, locationInfo.province);
+    }
+  }, [locationInfo, stationData.updateLocation]);
+
   // Helper function to convert ExtendedComplaintData to Complaint
   const convertToComplaintType = (data: Complaint | ExtendedComplaintData | ProcessedPost | null): Complaint | ProcessedPost | null => {
     console.log('[convertToComplaintType] Input data:', data);
@@ -906,12 +914,6 @@ const ComplaintForm = () => {
     };
     
     console.log('[ComplaintForm] Rendering WaterLevelInfoCard with location:', locationInfo);
-    
-    // Ensure station management location is updated
-    if (stationData.updateLocation) {
-      console.log('[ComplaintForm] Updating station management location:', locationInfo);
-      stationData.updateLocation(locationInfo.amphure, locationInfo.province);
-    }
     
     // Pass the location data to the WaterLevelInfoCard component
     return (

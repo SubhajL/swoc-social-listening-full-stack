@@ -2,36 +2,36 @@
   {
     "rainfall24h": 0,
     "rainfall3h": 0,
-    "rainfall_date_calc": "2025-02-28T00:00:00Z",
-    "rainfall_datetime": "2025-02-28T16:00:00+07:00",
-    "tele_station_id": 3670
-  },
-  {
-    "rainfall24h": 0.7,
-    "rainfall3h": 0,
-    "rainfall_date_calc": "2025-02-28T00:00:00Z",
-    "rainfall_datetime": "2025-02-28T16:00:00+07:00",
-    "tele_station_id": 3748
+    "rainfall_date_calc": "2025-03-25T00:00:00Z",
+    "rainfall_datetime": "2025-03-25T19:00:00+07:00",
+    "tele_station_id": 3710
   },
   {
     "rainfall24h": 0,
     "rainfall3h": 0,
-    "rainfall_date_calc": "2025-02-28T00:00:00Z",
-    "rainfall_datetime": "2025-02-28T16:00:00+07:00",
-    "tele_station_id": 3689
+    "rainfall_date_calc": "2025-03-25T00:00:00Z",
+    "rainfall_datetime": "2025-03-25T19:00:00+07:00",
+    "tele_station_id": 3703
   },
   {
     "rainfall24h": 0,
     "rainfall3h": 0,
-    "rainfall_date_calc": "2025-02-28T00:00:00Z",
-    "rainfall_datetime": "2025-02-28T16:00:00+07:00",
-    "tele_station_id": 3679
+    "rainfall_date_calc": "2025-03-25T00:00:00Z",
+    "rainfall_datetime": "2025-03-25T19:00:00+07:00",
+    "tele_station_id": 3711
   },
   {
     "rainfall24h": 0,
     "rainfall3h": 0,
-    "rainfall_date_calc": "2025-02-28T00:00:00Z",
-    "rainfall_datetime": "2025-02-28T16:00:00+07:00",
-    "tele_station_id": 3742
+    "rainfall_date_calc": "2025-03-25T00:00:00Z",
+    "rainfall_datetime": "2025-03-25T19:00:00+07:00",
+    "tele_station_id": 3726
+  },
+  {
+    "rainfall24h": 0,
+    "rainfall3h": 0,
+    "rainfall_date_calc": "2025-03-25T00:00:00Z",
+    "rainfall_datetime": "2025-03-25T19:00:00+07:00",
+    "tele_station_id": 3645
   }
 ]

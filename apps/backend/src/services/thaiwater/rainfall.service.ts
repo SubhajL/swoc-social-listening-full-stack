@@ -47,6 +47,15 @@ export async function getRainfallData(params: RainfallQueryParams, pool: Pool) {
 
   try {
     let query = `
+      WITH latest_records AS (
+        SELECT 
+          tele_station_id, 
+          MAX(rainfall_datetime) as latest_datetime
+        FROM 
+          thaiwater_rainfall_data_new
+        GROUP BY 
+          tele_station_id
+      )
       SELECT 
         r.id,
         r.tele_station_id,
@@ -68,12 +77,20 @@ export async function getRainfallData(params: RainfallQueryParams, pool: Pool) {
         thaiwater_rainfall_data_new r
       JOIN 
         thaiwater_tele_stations s ON r.tele_station_id = s.tele_station_id
-      WHERE 
-        r.rainfall24h >= $1
+      JOIN
+        latest_records lr ON r.tele_station_id = lr.tele_station_id AND r.rainfall_datetime = lr.latest_datetime
+      WHERE 1=1
     `;
 
-    const queryParams: any[] = [minRainfall];
-    let paramIndex = 2;
+    const queryParams: any[] = [];
+    let paramIndex = 1;
+
+    // Only apply minRainfall filter if rainfall24h is not NULL
+    if (minRainfall > 0) {
+      query += ` AND (r.rainfall24h >= $${paramIndex} OR r.rainfall24h IS NULL)`;
+      queryParams.push(minRainfall);
+      paramIndex++;
+    }
 
     if (date) {
       query += ` AND DATE(r.rainfall_datetime) = $${paramIndex}`;
@@ -105,8 +122,8 @@ export async function getRainfallData(params: RainfallQueryParams, pool: Pool) {
       paramIndex++;
     }
 
-    // Add sorting and pagination
-    query += ` ORDER BY r.rainfall24h DESC, r.rainfall_datetime DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+    // Add sorting with NULL handling - sort NULL rainfall24h values last
+    query += ` ORDER BY (CASE WHEN r.rainfall24h IS NULL THEN 0 ELSE 1 END) DESC, r.rainfall24h DESC, r.rainfall_datetime DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
     queryParams.push(limit, offset);
 
     logger.debug('Executing rainfall query', {

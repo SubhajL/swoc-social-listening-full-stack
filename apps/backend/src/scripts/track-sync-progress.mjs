@@ -200,14 +200,14 @@ async function checkRainfallData() {
       SELECT EXISTS (
         SELECT FROM information_schema.tables 
         WHERE table_schema = 'public' 
-        AND table_name = 'thaiwater_rainfall_data'
+        AND table_name = 'thaiwater_rainfall_data_new'
       )
     `);
     
     if (!checkResult.rows[0].exists) {
       return {
         success: false,
-        error: 'thaiwater_rainfall_data table does not exist'
+        error: 'thaiwater_rainfall_data_new table does not exist'
       };
     }
     
@@ -217,7 +217,7 @@ async function checkRainfallData() {
         COUNT(*) as total_records,
         MAX(updated_at) as last_updated,
         COUNT(DISTINCT tele_station_id) as unique_stations
-      FROM thaiwater_rainfall_data
+      FROM thaiwater_rainfall_data_new
     `);
     
     return {

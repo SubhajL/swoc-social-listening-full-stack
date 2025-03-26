@@ -78,7 +78,7 @@ async function testRidApi() {
     // Prepare request body
     const requestBody = {
       hydro: {
-        StationID: 'P.1',
+        stationid: "7",
         TimeStart: time_start
       }
     };

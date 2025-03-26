@@ -135,164 +135,102 @@ async function upsertTeleStation(client: any, station: ThaiWaterTeleStation): Pr
     tambon
   } = station;
   
-  // Check if station exists
-  const existingStation = await client.query(
-    'SELECT tele_station_id FROM thaiwater_tele_stations WHERE tele_station_id = $1',
-    [tele_station_id]
-  );
+  // Use upsert pattern with ON CONFLICT for better efficiency
+  await client.query(`
+    INSERT INTO thaiwater_tele_stations (
+      tele_station_id,
+      tele_station_name,
+      tele_station_name_th,
+      tele_station_oldcode,
+      tele_station_lat,
+      tele_station_long,
+      tele_station_type,
+      agency_id,
+      ground_level,
+      left_bank,
+      right_bank,
+      is_warning,
+      province,
+      amphure,
+      tambon,
+      created_at,
+      updated_at
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, NOW(), NOW())
+    ON CONFLICT (tele_station_id) DO UPDATE SET
+      tele_station_name = EXCLUDED.tele_station_name,
+      tele_station_name_th = EXCLUDED.tele_station_name_th,
+      tele_station_oldcode = EXCLUDED.tele_station_oldcode,
+      tele_station_lat = EXCLUDED.tele_station_lat,
+      tele_station_long = EXCLUDED.tele_station_long,
+      tele_station_type = EXCLUDED.tele_station_type,
+      agency_id = EXCLUDED.agency_id,
+      ground_level = EXCLUDED.ground_level,
+      left_bank = EXCLUDED.left_bank,
+      right_bank = EXCLUDED.right_bank,
+      is_warning = EXCLUDED.is_warning,
+      province = EXCLUDED.province,
+      amphure = EXCLUDED.amphure,
+      tambon = EXCLUDED.tambon,
+      updated_at = NOW()
+  `, [
+    tele_station_id,
+    tele_station_name,
+    tele_station_name_th,
+    tele_station_oldcode,
+    tele_station_lat,
+    tele_station_long,
+    tele_station_type,
+    agency_id,
+    ground_level,
+    left_bank,
+    right_bank,
+    is_warning === 'Y', // Convert 'Y'/'N' to boolean
+    province,
+    amphure,
+    tambon
+  ]);
   
-  if (existingStation.rows.length === 0) {
-    // Insert new station
-    await client.query(`
-      INSERT INTO thaiwater_tele_stations (
-        tele_station_id,
-        tele_station_name,
-        tele_station_name_th,
-        tele_station_oldcode,
-        tele_station_lat,
-        tele_station_long,
-        tele_station_type,
-        agency_id,
-        ground_level,
-        left_bank,
-        right_bank,
-        is_warning,
-        province,
-        amphure,
-        tambon,
-        created_at,
-        updated_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, NOW(), NOW())
-    `, [
-      tele_station_id,
-      tele_station_name,
-      tele_station_name_th,
-      tele_station_oldcode,
-      tele_station_lat,
-      tele_station_long,
-      tele_station_type,
-      agency_id,
-      ground_level,
-      left_bank,
-      right_bank,
-      is_warning === 'Y', // Convert 'Y'/'N' to boolean
-      province,
-      amphure,
-      tambon
-    ]);
-    
-    logger.info('[ThaiWaterDB] Inserted new telemetry station', {
-      station_id: tele_station_id,
-      station_name: tele_station_name
-    });
-    
-  } else {
-    // Update existing station
-    await client.query(`
-      UPDATE thaiwater_tele_stations SET
-        tele_station_name = $2,
-        tele_station_name_th = $3,
-        tele_station_oldcode = $4,
-        tele_station_lat = $5,
-        tele_station_long = $6,
-        tele_station_type = $7,
-        agency_id = $8,
-        ground_level = $9,
-        left_bank = $10,
-        right_bank = $11,
-        is_warning = $12,
-        province = $13,
-        amphure = $14,
-        tambon = $15,
-        updated_at = NOW()
-      WHERE tele_station_id = $1
-    `, [
-      tele_station_id,
-      tele_station_name,
-      tele_station_name_th,
-      tele_station_oldcode,
-      tele_station_lat,
-      tele_station_long,
-      tele_station_type,
-      agency_id,
-      ground_level,
-      left_bank,
-      right_bank,
-      is_warning === 'Y', // Convert 'Y'/'N' to boolean
-      province,
-      amphure,
-      tambon
-    ]);
-    
-    logger.info('[ThaiWaterDB] Updated existing telemetry station', {
-      station_id: tele_station_id,
-      station_name: tele_station_name
-    });
-  }
+  logger.info('[ThaiWaterDB] Upserted telemetry station', {
+    station_id: tele_station_id,
+    name: tele_station_name
+  });
 }
 
 /**
  * Inserts or updates rainfall data for a telemetry station
  */
 async function insertRainfallData(client: any, stationId: number, rainfallData: ThaiWaterRainfallValue): Promise<void> {
-  const {
+  const { rainfall10m, rainfall1h, rainfall24h, rainfall_datetime } = rainfallData;
+  
+  // Skip if missing datetime
+  if (!rainfall_datetime) {
+    logger.warn(`[ThaiWaterDB] Skipping record with missing datetime for station ${stationId}`);
+    return;
+  }
+  
+  // Use upsert pattern with ON CONFLICT for better efficiency
+  await client.query(`
+    INSERT INTO thaiwater_rainfall_data (
+      tele_station_id,
+      rainfall10m,
+      rainfall1h,
+      rainfall24h,
+      rainfall_datetime,
+      created_at,
+      updated_at
+    ) VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
+    ON CONFLICT (tele_station_id, rainfall_datetime) DO UPDATE SET
+      rainfall10m = EXCLUDED.rainfall10m,
+      rainfall1h = EXCLUDED.rainfall1h,
+      rainfall24h = EXCLUDED.rainfall24h,
+      updated_at = NOW()
+  `, [
+    stationId,
     rainfall10m,
     rainfall1h,
     rainfall24h,
     rainfall_datetime
-  } = rainfallData;
-  
-  // Skip if no datetime
-  if (!rainfall_datetime) {
-    logger.warn('[ThaiWaterDB] Skipping rainfall data with missing datetime', {
-      station_id: stationId
-    });
-    return;
-  }
-  
-  // Check if data for this timestamp already exists
-  const existingData = await client.query(
-    'SELECT id FROM thaiwater_rainfall_data WHERE tele_station_id = $1 AND rainfall_datetime = $2',
-    [stationId, rainfall_datetime]
-  );
-  
-  if (existingData.rows.length === 0) {
-    // Insert new data
-    await client.query(`
-      INSERT INTO thaiwater_rainfall_data (
-        tele_station_id,
-        rainfall10m,
-        rainfall1h,
-        rainfall24h,
-        rainfall_datetime,
-        created_at,
-        updated_at
-      ) VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
-    `, [
-      stationId,
-      rainfall10m,
-      rainfall1h,
-      rainfall24h,
-      rainfall_datetime
-    ]);
-    
-  } else {
-    // Update existing data
-    await client.query(`
-      UPDATE thaiwater_rainfall_data SET
-        rainfall10m = $2,
-        rainfall1h = $3,
-        rainfall24h = $4,
-        updated_at = NOW()
-      WHERE tele_station_id = $1 AND rainfall_datetime = $5
-    `, [
-      stationId,
-      rainfall10m,
-      rainfall1h,
-      rainfall24h,
-      rainfall_datetime
-    ]);
-  }
+  ]);
 }
 
 /**

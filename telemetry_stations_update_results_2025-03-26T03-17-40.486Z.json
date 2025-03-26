@@ -1,0 +1,82 @@
+[
+  {
+    "station_id": "605",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "657",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "658",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "41",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "55",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "607",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "608",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "609",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "610",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "611",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "451",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "452",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "598",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "675",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "487",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  },
+  {
+    "station_id": "476",
+    "status": "not_found_in_api",
+    "message": "Station not found in API data"
+  }
+]

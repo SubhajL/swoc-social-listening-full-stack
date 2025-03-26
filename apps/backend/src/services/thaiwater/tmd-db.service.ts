@@ -116,42 +116,37 @@ export async function syncTMDData(pool: Pool): Promise<{ success: boolean; messa
  */
 async function upsertTMDStation(client: any, station: TMDStationData): Promise<void> {
   try {
+    // Use upsert pattern with ON CONFLICT for better efficiency
     const query = `
       INSERT INTO thaiwater_tele_stations (
         tele_station_id,
         tele_station_name,
-        tele_station_name_th,
-        tele_station_oldcode,
         tele_station_lat,
         tele_station_long,
         agency_id,
-        data_source,
+        created_at,
         updated_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
-      ON CONFLICT (tele_station_id) 
-      DO UPDATE SET
+      ) VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
+      ON CONFLICT (tele_station_id) DO UPDATE SET
         tele_station_name = EXCLUDED.tele_station_name,
-        tele_station_name_th = EXCLUDED.tele_station_name_th,
-        tele_station_oldcode = EXCLUDED.tele_station_oldcode,
         tele_station_lat = EXCLUDED.tele_station_lat,
         tele_station_long = EXCLUDED.tele_station_long,
         agency_id = EXCLUDED.agency_id,
-        data_source = EXCLUDED.data_source,
         updated_at = NOW()
     `;
     
-    const values = [
-      station.id,
-      station.tele_station_name.en || '',
-      station.tele_station_name.th,
-      station.tele_station_oldcode,
+    await client.query(query, [
+      station.id, // Use id as tele_station_id
+      station.tele_station_name.en || station.tele_station_name.th || '', // Use English name or fallback to Thai
       parseFloat(station.tele_station_lat),
       parseFloat(station.tele_station_long),
-      station.agency_id,
-      'TMD'
-    ];
+      station.agency_id
+    ]);
     
-    await client.query(query, values);
+    logger.info('[TMDSync] Upserted TMD station', {
+      station_id: station.id,
+      name: station.tele_station_name.en || station.tele_station_name.th || ''
+    });
     
   } catch (error) {
     logger.error('[TMDSync] Error upserting TMD station', {
@@ -167,56 +162,40 @@ async function upsertTMDStation(client: any, station: TMDStationData): Promise<v
  */
 async function insertTMDRainfallData(client: any, rainfallData: TMDRainfallData): Promise<void> {
   try {
-    // Check if a record already exists for this station and datetime
-    const checkQuery = `
-      SELECT id FROM thaiwater_rainfall_data 
-      WHERE tele_station_id = $1 AND rainfall_datetime = $2
+    // Skip if missing required data
+    if (!rainfallData.rainfall_datetime || !rainfallData.tele_station_id) {
+      logger.warn('[TMDSync] Skipping TMD rainfall data with missing datetime or station ID', {
+        stationId: rainfallData.tele_station_id,
+        datetime: rainfallData.rainfall_datetime
+      });
+      return;
+    }
+    
+    // Use upsert pattern with ON CONFLICT for better efficiency
+    const query = `
+      INSERT INTO thaiwater_rainfall_data (
+        tele_station_id,
+        rainfall24h,
+        rainfall3h,
+        rainfall_datetime,
+        data_source,
+        created_at,
+        updated_at
+      ) VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
+      ON CONFLICT (tele_station_id, rainfall_datetime) DO UPDATE SET
+        rainfall24h = EXCLUDED.rainfall24h,
+        rainfall3h = EXCLUDED.rainfall3h,
+        data_source = EXCLUDED.data_source,
+        updated_at = NOW()
     `;
     
-    const checkResult = await client.query(checkQuery, [
+    await client.query(query, [
       rainfallData.tele_station_id,
-      rainfallData.rainfall_datetime
+      rainfallData.rainfall24h,
+      rainfallData.rainfall3h,
+      rainfallData.rainfall_datetime,
+      'TMD'
     ]);
-    
-    if (checkResult.rows.length > 0) {
-      // Update existing record
-      const updateQuery = `
-        UPDATE thaiwater_rainfall_data SET
-          rainfall24h = $1,
-          rainfall3h = $2,
-          data_source = $3,
-          updated_at = NOW()
-        WHERE tele_station_id = $4 AND rainfall_datetime = $5
-      `;
-      
-      await client.query(updateQuery, [
-        rainfallData.rainfall24h,
-        rainfallData.rainfall3h,
-        'TMD',
-        rainfallData.tele_station_id,
-        rainfallData.rainfall_datetime
-      ]);
-      
-    } else {
-      // Insert new record
-      const insertQuery = `
-        INSERT INTO thaiwater_rainfall_data (
-          tele_station_id,
-          rainfall24h,
-          rainfall3h,
-          rainfall_datetime,
-          data_source
-        ) VALUES ($1, $2, $3, $4, $5)
-      `;
-      
-      await client.query(insertQuery, [
-        rainfallData.tele_station_id,
-        rainfallData.rainfall24h,
-        rainfallData.rainfall3h,
-        rainfallData.rainfall_datetime,
-        'TMD'
-      ]);
-    }
     
   } catch (error) {
     logger.error('[TMDSync] Error inserting TMD rainfall data', {

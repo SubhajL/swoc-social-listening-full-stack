@@ -29,11 +29,11 @@ const __dirname = path.dirname(__filename);
 // Path to the crontab file
 const CRONTAB_FILE = path.join(__dirname, '..', '..', 'crontab');
 
-// Cron schedule for HII data sync (every hour at minute 0)
-const HII_CRON_SCHEDULE = '0 * * * *';
+// Cron schedule for HII data sync (every hour at minute 40)
+const HII_CRON_SCHEDULE = '40 * * * *';
 
-// Cron schedule for TMD data sync (every hour at minute 30)
-const TMD_CRON_SCHEDULE = '30 * * * *';
+// Cron schedule for TMD data sync (every hour at minute 55)
+const TMD_CRON_SCHEDULE = '55 * * * *';
 
 // Get the absolute path to the scripts
 const HII_SCRIPT_PATH = path.resolve(__dirname, 'insert-thaiwater-rainfall-data.mjs');
@@ -68,10 +68,10 @@ PATH=${process.env.PATH}
 NODE_ENV=${process.env.NODE_ENV || 'production'}
 DATABASE_URL=${databaseUrl}
 
-# HII data sync - Every hour at minute 0
+# HII data sync - Every hour at minute 40
 ${HII_CRON_SCHEDULE} ${nodeExecutable} ${HII_SCRIPT_PATH} >> ${path.join(LOG_DIR, 'hii-sync.log')} 2>&1
 
-# TMD data sync - Every hour at minute 30
+# TMD data sync - Every hour at minute 55
 ${TMD_CRON_SCHEDULE} ${nodeExecutable} ${TMD_SCRIPT_PATH} >> ${path.join(LOG_DIR, 'tmd-sync.log')} 2>&1
 `;
 };

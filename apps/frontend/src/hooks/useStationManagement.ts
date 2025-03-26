@@ -473,18 +473,28 @@ export function useStationManagement() {
   const updateLocation = useCallback((amphure?: string, province?: string) => {
     console.log('[useStationManagement] Updating location:', { amphure, province });
     
+    // Normalize inputs to empty strings if undefined to simplify comparison
+    const normalizedAmphure = amphure || '';
+    const normalizedProvince = province || '';
+    
+    // Check if we actually need to update
+    if (normalizedAmphure === currentAmphure && normalizedProvince === currentProvince) {
+      console.log('[useStationManagement] Location unchanged, skipping update');
+      return;
+    }
+    
     // Track if location actually changed
     let locationChanged = false;
     
-    if (amphure !== undefined && amphure !== currentAmphure) {
-      console.log('[useStationManagement] Setting amphure:', amphure);
-      setCurrentAmphure(amphure);
+    if (normalizedAmphure !== currentAmphure) {
+      console.log('[useStationManagement] Setting amphure:', normalizedAmphure);
+      setCurrentAmphure(normalizedAmphure);
       locationChanged = true;
     }
     
-    if (province !== undefined && province !== currentProvince) {
-      console.log('[useStationManagement] Setting province:', province);
-      setCurrentProvince(province);
+    if (normalizedProvince !== currentProvince) {
+      console.log('[useStationManagement] Setting province:', normalizedProvince);
+      setCurrentProvince(normalizedProvince);
       locationChanged = true;
     }
     

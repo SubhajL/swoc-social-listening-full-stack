@@ -1,0 +1,329 @@
+[
+  {
+    "id": 337,
+    "station_id": "324",
+    "station_name": "บ้านสมอทอง",
+    "status": "updated",
+    "location": {
+      "province": "อุทัยธานี",
+      "amphure": "ห้วยคต"
+    }
+  },
+  {
+    "id": 338,
+    "station_id": "190",
+    "station_name": "ประปายโสธร",
+    "status": "updated",
+    "location": {
+      "province": "ยโสธร",
+      "amphure": "อำเภอเมืองยโสธร"
+    }
+  },
+  {
+    "id": 339,
+    "station_id": "213",
+    "station_name": "บ้านธวัชดินแดง",
+    "status": "updated",
+    "location": {
+      "province": "ร้อยเอ็ด",
+      "amphure": "อำเภอธวัชบุรี"
+    }
+  },
+  {
+    "id": 340,
+    "station_id": "651",
+    "station_name": "สะพานบ้านหม้อ-สร้อยฟ้า ",
+    "status": "updated",
+    "location": {
+      "province": "ราชบุรี",
+      "amphure": "อำเภอโพธาราม"
+    }
+  },
+  {
+    "id": 342,
+    "station_id": "215",
+    "station_name": "บ้านมีชัย",
+    "status": "updated",
+    "location": {
+      "province": "หนองคาย",
+      "amphure": "อำเภอเมืองหนองคาย"
+    }
+  },
+  {
+    "id": 343,
+    "station_id": "230",
+    "station_name": "บ้านพันลำ",
+    "status": "updated",
+    "location": {
+      "province": "บึงกาฬ",
+      "amphure": "อำเภอเมืองบึงกาฬ"
+    }
+  },
+  {
+    "id": 344,
+    "station_id": "232",
+    "station_name": "บ้านโนนตูม",
+    "status": "updated",
+    "location": {
+      "province": "อุดรธานี",
+      "amphure": "อำเภอเมืองอุดรธานี"
+    }
+  },
+  {
+    "id": 345,
+    "station_id": "233",
+    "station_name": "วัดศรีบุญเรือง",
+    "status": "updated",
+    "location": {
+      "province": "มุกดาหาร",
+      "amphure": "อำเภอเมืองมุกดาหาร"
+    }
+  },
+  {
+    "id": 346,
+    "station_id": "216",
+    "station_name": "บ้านท่าควาย",
+    "status": "updated",
+    "location": {
+      "province": "นครพนม",
+      "amphure": "อำเภอเมืองนครพนม"
+    }
+  },
+  {
+    "id": 347,
+    "station_id": "218",
+    "station_name": "บ้านนาหลัก",
+    "status": "updated",
+    "location": {
+      "province": "เลย",
+      "amphure": "อำเภอวังสะพุง"
+    }
+  },
+  {
+    "id": 348,
+    "station_id": "220",
+    "station_name": "บ้านฟากเลย",
+    "status": "updated",
+    "location": {
+      "province": "เลย",
+      "amphure": "อำเภอเมืองเลย"
+    }
+  },
+  {
+    "id": 349,
+    "station_id": "221",
+    "station_name": "บ้านแก่งบง",
+    "status": "updated",
+    "location": {
+      "province": "เลย",
+      "amphure": "ภูหลวง"
+    }
+  },
+  {
+    "id": 350,
+    "station_id": "222",
+    "station_name": "บ้านท่าห้วยหลัว",
+    "status": "updated",
+    "location": {
+      "province": "สกลนคร",
+      "amphure": "บ้านม่วง"
+    }
+  },
+  {
+    "id": 351,
+    "station_id": "228",
+    "station_name": "บ้านเชียงคาน",
+    "status": "updated",
+    "location": {
+      "province": "เลย",
+      "amphure": "เชียงคาน"
+    }
+  },
+  {
+    "id": 352,
+    "station_id": "637",
+    "station_name": "บ้านขนงพระเหนือ",
+    "status": "updated",
+    "location": {
+      "province": "อุบลราชธานี",
+      "amphure": "อำเภอบุณฑริก"
+    }
+  },
+  {
+    "id": 353,
+    "station_id": "649",
+    "station_name": "ห้วยบอน สถานีสูบน้ำ หน่วยบริการน้ำยืน",
+    "status": "updated",
+    "location": {
+      "province": "อุบลราชธานี",
+      "amphure": "อำเภอน้ำยืน"
+    }
+  },
+  {
+    "id": 354,
+    "station_id": "106",
+    "station_name": "น้ำปาด",
+    "status": "updated",
+    "location": {
+      "province": "อุตรดิตถ์",
+      "amphure": "ฟากท่า"
+    }
+  },
+  {
+    "id": 355,
+    "station_id": "643",
+    "station_name": "คลองสอง",
+    "status": "updated",
+    "location": {
+      "province": "อุตรดิตถ์",
+      "amphure": "อำเภอเมืองอุตรดิตถ์"
+    }
+  },
+  {
+    "id": 356,
+    "station_id": "654",
+    "station_name": "แม่น้ำน่าน",
+    "status": "updated",
+    "location": {
+      "province": "พิจิตร",
+      "amphure": "บางมูลนาก"
+    }
+  },
+  {
+    "id": 357,
+    "station_id": "81",
+    "station_name": "บ้านโป่งน้ำร้อน",
+    "status": "updated",
+    "location": {
+      "province": "กำแพงเพชร",
+      "amphure": "อำเภอคลองลาน"
+    }
+  },
+  {
+    "id": 358,
+    "station_id": "467",
+    "station_name": "บ้านเขาน้อย",
+    "status": "updated",
+    "location": {
+      "province": "ประจวบคีรีขันธ์",
+      "amphure": "อำเภอปราณบุรี"
+    }
+  },
+  {
+    "id": 359,
+    "station_id": "660",
+    "station_name": "บ้านใหม่วังสีมา",
+    "status": "updated",
+    "location": {
+      "province": "เพชรบูรณ์",
+      "amphure": "อำเภอหนองไผ่"
+    }
+  },
+  {
+    "id": 360,
+    "station_id": "661",
+    "station_name": "บ้านท่าไม้ทอง",
+    "status": "updated",
+    "location": {
+      "province": "เพชรบูรณ์",
+      "amphure": "อำเภอศรีเทพ"
+    }
+  },
+  {
+    "id": 362,
+    "station_id": "605",
+    "station_name": "แม่น้ำป่าสัก",
+    "status": "failed",
+    "reason": "Geocoding failed"
+  },
+  {
+    "id": 363,
+    "station_id": "513",
+    "station_name": "บ้านมูโน๊ะ",
+    "status": "updated",
+    "location": {
+      "province": "นราธิวาส",
+      "amphure": "สุไหงโก-ลก"
+    }
+  },
+  {
+    "id": 364,
+    "station_id": "656",
+    "station_name": "แม่น้ำตาปี บ้านหาดทรายแก้ว อ.ฉวาง จ.นครศรีธรรมราช",
+    "status": "updated",
+    "location": {
+      "province": "นครศรีธรรมราช",
+      "amphure": "ฉวาง"
+    }
+  },
+  {
+    "id": 365,
+    "station_id": "669",
+    "station_name": "หน้าวัดห้วยหลาด ",
+    "status": "updated",
+    "location": {
+      "province": "สงขลา",
+      "amphure": "อำเภอรัตภูมิ"
+    }
+  },
+  {
+    "id": 366,
+    "station_id": "670",
+    "station_name": "บ้านนา ",
+    "status": "updated",
+    "location": {
+      "province": "ชุมพร",
+      "amphure": "อำเภอเมืองชุมพร"
+    }
+  },
+  {
+    "id": 367,
+    "station_id": "672",
+    "station_name": "บ้านสองแพรก ",
+    "status": "updated",
+    "location": {
+      "province": "ระนอง",
+      "amphure": "กระบุรี"
+    }
+  },
+  {
+    "id": 371,
+    "station_id": "639",
+    "station_name": "แม่น้ำยม",
+    "status": "updated",
+    "location": {
+      "province": "พิษณุโลก",
+      "amphure": "อำเภอบางระกำ"
+    }
+  },
+  {
+    "id": 372,
+    "station_id": "640",
+    "station_name": "แม่น้ำยม",
+    "status": "updated",
+    "location": {
+      "province": "พิษณุโลก",
+      "amphure": "อำเภอบางระกำ"
+    }
+  },
+  {
+    "id": 373,
+    "station_id": "641",
+    "station_name": "แม่น้ำยม",
+    "status": "updated",
+    "location": {
+      "province": "พิจิตร",
+      "amphure": "อำเภอโพธิ์ประทับช้าง"
+    }
+  },
+  {
+    "id": 374,
+    "station_id": "642",
+    "station_name": "แม่น้ำยม",
+    "status": "updated",
+    "location": {
+      "province": "สุโขทัย",
+      "amphure": "อำเภอศรีสัชนาลัย"
+    }
+  }
+]

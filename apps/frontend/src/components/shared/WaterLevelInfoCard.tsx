@@ -4,7 +4,7 @@ import { RainStationCard } from "@/components/monitoring/RainStationCard";
 import { ReservoirCard } from "@/components/monitoring/ReservoirCard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
-import { useEffect, useState, useMemo, FC } from "react";
+import { useEffect, useState, useMemo, FC, useRef } from "react";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { cn } from "@/lib/utils";
 import { MonitoringStation } from "@/types/monitoring-station";
@@ -488,8 +488,19 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
   // Check if we have valid location data
   const hasValidLocationData = !!displayAmphure || !!displayProvince;
   
-  // Add a ref to track previous location values to prevent unnecessary updates
-  const prevLocationRef = React.useRef({ amphure: '', province: '' });
+  // Reference to track location changes
+  const prevLocationRef = useRef<{ amphure: string; province: string }>({ 
+    amphure: '', 
+    province: '' 
+  });
+  
+  // Memoize the display location from props or state
+  const displayLocation = useMemo(() => {
+    return {
+      amphure: displayAmphure || '',
+      province: displayProvince || ''
+    };
+  }, [displayAmphure, displayProvince]);
   
   // Use the useStationManagement hook to get all station data and filtering logic
   const {
@@ -528,26 +539,26 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
   
   // Update location data in useStationManagement when component mounts or location changes
   useEffect(() => {
-    if (displayAmphure || displayProvince) {
-      // Only update if location has actually changed
+    if (displayLocation.amphure || displayLocation.province) {
+      // Deep comparison to check if location has actually changed
       const hasLocationChanged = 
-        displayAmphure !== prevLocationRef.current.amphure || 
-        displayProvince !== prevLocationRef.current.province;
+        displayLocation.amphure !== prevLocationRef.current.amphure || 
+        displayLocation.province !== prevLocationRef.current.province;
       
       if (hasLocationChanged) {
         console.log('[WaterLevelInfoCard] Location changed, updating:', {
           from: prevLocationRef.current,
-          to: { amphure: displayAmphure, province: displayProvince }
+          to: displayLocation
         });
         
         // Update our ref with the new values
         prevLocationRef.current = { 
-          amphure: displayAmphure || '', 
-          province: displayProvince || '' 
+          amphure: displayLocation.amphure, 
+          province: displayLocation.province 
         };
         
         // Update location and trigger data fetching
-        updateLocation(displayAmphure, displayProvince);
+        updateLocation(displayLocation.amphure, displayLocation.province);
         
         // Log the current state of user-selected stations
         console.log('[WaterLevelInfoCard] Current user-selected stations:', {
@@ -559,7 +570,7 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
         console.log('[WaterLevelInfoCard] Location unchanged, skipping update');
       }
     }
-  }, [displayAmphure, displayProvince, updateLocation]); // Removed userSelectedMonitoring, userSelectedRain, userSelectedReservoirs from dependencies to prevent infinite loops
+  }, [displayLocation, updateLocation]); // Only depend on the memoized displayLocation and updateLocation
   
   // Memoize the loading state
   const isLoading = useMemo(() => 

@@ -50,16 +50,15 @@ console.log(`- Google Maps API Key: ${GOOGLE_MAPS_API_KEY !== 'YOUR_GOOGLE_MAPS_
  */
 async function geocodeWithLongdo(lat, lng) {
   try {
-    // Skip if no valid API key
+    // Skip if no API key
     if (!LONGDO_MAP_KEY || LONGDO_MAP_KEY === 'YOUR_LONGDO_MAP_KEY') {
       console.log('  Skipping Longdo geocoding: No valid API key');
       return null;
     }
-
-    // Ensure coordinates are valid numbers
+    
+    // Validate coordinates
     const latitude = parseFloat(lat);
     const longitude = parseFloat(lng);
-    
     if (isNaN(latitude) || isNaN(longitude)) {
       console.error('  Invalid coordinates for Longdo geocoding');
       return null;
@@ -67,93 +66,96 @@ async function geocodeWithLongdo(lat, lng) {
     
     console.log(`  Longdo request for coordinates: ${latitude},${longitude}`);
     
-    // Construct request URL according to documentation
+    // Make API request
     const response = await axios.get(LONGDO_API_URL, {
       params: {
         key: LONGDO_MAP_KEY,
         lon: longitude,
-        lat: latitude,
-        locale: 'th',
-        noelevation: 1  // We don't need elevation data
+        lat: latitude
       }
     });
-
-    // For debugging
-    console.log(`  Longdo response: ${JSON.stringify(response.data)}`);
-
-    if (response.data) {
-      // Extract data according to the API documentation
-      // The API returns: province, district, subdistrict, etc.
-      
-      // Clean up province name - ensure it has "จังหวัด" prefix
-      let province = response.data.province || null;
-      if (province) {
-        if (province.startsWith('จ.')) {
-          province = 'จังหวัด' + province.substring(2);
-        } else if (!province.startsWith('จังหวัด')) {
-          province = 'จังหวัด' + province;
-        }
+    
+    // Handle response
+    const data = response.data;
+    console.log(`  Longdo response: ${JSON.stringify(data)}`);
+    
+    let province = null;
+    let amphoe = null;
+    let tambon = null;
+    
+    // Extract province
+    if (data.province) {
+      province = data.province;
+      if (province.startsWith('จ.')) {
+        province = 'จังหวัด' + province.substring(2).trim();
+      } else if (!province.startsWith('จังหวัด') && !province.startsWith('กรุงเทพ')) {
+        province = 'จังหวัด' + province.trim();
+      } else if (province === 'กรุงเทพมหานคร') {
+        province = 'จังหวัด' + province.trim();
       }
-
-      // Clean up amphoe (district) name - ensure it has "อำเภอ" or "เขต" prefix
-      let amphoe = response.data.district || null;
-      if (amphoe) {
-        if (amphoe.startsWith('อ.')) {
-          amphoe = 'อำเภอ' + amphoe.substring(2);
-        } else if (amphoe.startsWith('เขต')) {
-          // Already has correct prefix for Bangkok districts
-        } else if (!amphoe.startsWith('อำเภอ')) {
-          // Check if this is a Bangkok district
-          if (province && (province.includes('กรุงเทพ') || province.includes('bangkok'))) {
-            if (!amphoe.startsWith('เขต')) {
-              amphoe = 'เขต' + amphoe;
-            }
-          } else {
-            amphoe = 'อำเภอ' + amphoe;
-          }
-        }
-      }
-
-      // Clean up tambon (subdistrict) name - ensure it has "ตำบล" or "แขวง" prefix
-      let tambon = response.data.subdistrict || null;
-      if (tambon) {
-        if (tambon.startsWith('ต.')) {
-          tambon = 'ตำบล' + tambon.substring(2);
-        } else if (tambon.startsWith('แขวง')) {
-          // Already has correct prefix for Bangkok subdistricts
-        } else if (!tambon.startsWith('ตำบล')) {
-          // Check if this is a Bangkok subdistrict
-          if (province && (province.includes('กรุงเทพ') || province.includes('bangkok'))) {
-            if (!tambon.startsWith('แขวง')) {
-              tambon = 'แขวง' + tambon;
-            }
-          } else {
-            tambon = 'ตำบล' + tambon;
-          }
-        }
-      }
-
-      // Log what we found
-      console.log(`  Longdo found: Province=${province || 'None'}, District=${amphoe || 'None'}, Subdistrict=${tambon || 'None'}`);
-
-      return {
-        province: province,
-        amphoe: amphoe,
-        tambon: tambon,
-        source: 'longdo'
-      };
     }
     
-    console.log('  Longdo returned no usable data');
-    return null;
-  } catch (error) {
-    console.error(`Longdo geocoding error: ${error.message}`);
-    if (error.response) {
-      console.error(`  Status: ${error.response.status}`);
-      console.error(`  Data: ${JSON.stringify(error.response.data)}`);
+    // Extract amphoe/district
+    if (data.district) {
+      amphoe = data.district;
     }
+    
+    // Extract tambon/subdistrict
+    if (data.subdistrict) {
+      tambon = data.subdistrict;
+    }
+    
+    console.log(`  Longdo found: Province=${province || 'None'}, District=${amphoe || 'None'}, Subdistrict=${tambon || 'None'}`);
+    
+    // Return cleaned location data
+    return {
+      province: cleanAdminName(province, 'province'),
+      amphoe: cleanAdminName(amphoe, 'amphoe'),
+      tambon: cleanAdminName(tambon, 'tambon'),
+      source: 'longdo'
+    };
+  } catch (error) {
+    console.log('  Longdo returned no usable data');
+    console.error(`Longdo geocoding error: ${error.message}`);
     return null;
   }
+}
+
+/**
+ * Cleans administrative names by removing common prefixes
+ * @param {string} name - The name to clean
+ * @param {string} type - The type of administrative area ('province', 'amphoe', or 'tambon')
+ * @returns {string} - The cleaned name
+ */
+function cleanAdminName(name, type) {
+  if (!name) return name;
+  
+  switch (type) {
+    case 'province':
+      // Remove "จังหวัด" prefix
+      if (name.startsWith('จังหวัด')) {
+        return name.substring('จังหวัด'.length).trim();
+      }
+      break;
+    case 'amphoe':
+      // Remove "อำเภอ" or "เขต" prefix
+      if (name.startsWith('อำเภอ')) {
+        return name.substring('อำเภอ'.length).trim();
+      } else if (name.startsWith('เขต')) {
+        return name.substring('เขต'.length).trim();
+      }
+      break;
+    case 'tambon':
+      // Remove "ตำบล" or "แขวง" prefix
+      if (name.startsWith('ตำบล')) {
+        return name.substring('ตำบล'.length).trim();
+      } else if (name.startsWith('แขวง')) {
+        return name.substring('แขวง'.length).trim();
+      }
+      break;
+  }
+  
+  return name;
 }
 
 /**
@@ -163,139 +165,66 @@ async function geocodeWithLongdo(lat, lng) {
  * @returns {Promise<{province: string, amphoe: string, tambon: string}>}
  */
 async function geocodeWithMapbox(lat, lng) {
-  // Skip if no valid token
-  if (!MAPBOX_ACCESS_TOKEN || MAPBOX_ACCESS_TOKEN === 'YOUR_MAPBOX_ACCESS_TOKEN') {
-    console.log('  Skipping Mapbox geocoding: No valid access token');
-    return null;
-  }
-
   try {
-    // Ensure coordinates are valid numbers
-    const longitude = parseFloat(lng);
-    const latitude = parseFloat(lat);
+    // Skip if no API key
+    if (!MAPBOX_ACCESS_TOKEN || MAPBOX_ACCESS_TOKEN === 'YOUR_MAPBOX_ACCESS_TOKEN') {
+      console.log('  Skipping Mapbox geocoding: No valid access token');
+      return null;
+    }
     
-    if (isNaN(longitude) || isNaN(latitude)) {
+    // Validate coordinates
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lng);
+    if (isNaN(latitude) || isNaN(longitude)) {
       console.error('  Invalid coordinates for Mapbox geocoding');
       return null;
     }
     
-    // Use reverse geocoding endpoint with correct format
-    // Format: /geocoding/v5/{endpoint}/{longitude},{latitude}.json
-    const url = `${MAPBOX_API_URL}/${longitude.toFixed(6)},${latitude.toFixed(6)}.json`;
+    console.log(`  Mapbox request for coordinates: ${longitude},${latitude}`);
     
-    console.log(`  Mapbox request URL: ${url}`);
-    
-    const response = await axios.get(url, {
+    // Make API request
+    const response = await axios.get(`${MAPBOX_API_URL}/${longitude},${latitude}.json`, {
       params: {
         access_token: MAPBOX_ACCESS_TOKEN,
         language: 'th',
-        country: 'th',
-        types: 'region',  // Specify a single type as required by the API
-        limit: 1          // Specify a limit as required by the API
+        types: 'region,district,locality'
       }
     });
-
-    // For debugging
-    console.log(`  Mapbox response status: ${response.status}`);
     
-    if (response.data && response.data.features) {
-      console.log(`  Mapbox response features: ${response.data.features.length}`);
-      
-      // Log the first feature for debugging
-      if (response.data.features.length > 0) {
-        console.log(`  First feature: ${JSON.stringify(response.data.features[0].place_name)}`);
-      }
+    // Handle response
+    const data = response.data;
+    
+    if (!data.features || data.features.length === 0) {
+      console.log('  Mapbox returned no features');
+      return null;
     }
-
-    if (response.data && response.data.features && response.data.features.length > 0) {
-      // Extract province and amphoe from features
-      let province = null;
-      let amphoe = null;
-      let tambon = null;
-
-      // Process features to extract administrative information
-      for (const feature of response.data.features) {
-        console.log(`  Feature: ${feature.place_type} - ${feature.text}`);
-        
-        // Check place_type to determine administrative level
-        if (feature.place_type.includes('region')) {
-          province = feature.text;
-          console.log(`  Found province: ${province}`);
-        } 
-        
-        // Check context for additional information
-        if (feature.context) {
-          for (const ctx of feature.context) {
-            const id = ctx.id || '';
-            if (id.startsWith('district')) {
-              amphoe = ctx.text;
-              console.log(`  Found amphoe from context: ${amphoe}`);
-            } 
-            else if (id.startsWith('region') && !province) {
-              province = ctx.text;
-              console.log(`  Found province from context: ${province}`);
-            }
-          }
-        }
-      }
-
-      // Try a second request for district level if we found a province but no amphoe
-      if (province && !amphoe) {
-        console.log('  Found province but no amphoe, trying a second request for district level');
-        
-        try {
-          const districtResponse = await axios.get(url, {
-            params: {
-              access_token: MAPBOX_ACCESS_TOKEN,
-              language: 'th',
-              country: 'th',
-              types: 'district',  // Look specifically for district
-              limit: 1
-            }
-          });
-          
-          if (districtResponse.data && 
-              districtResponse.data.features && 
-              districtResponse.data.features.length > 0) {
-            
-            const districtFeature = districtResponse.data.features[0];
-            if (districtFeature.place_type.includes('district')) {
-              amphoe = districtFeature.text;
-              console.log(`  Found amphoe from district request: ${amphoe}`);
-            }
-          }
-        } catch (districtError) {
-          console.log(`  Error in district request: ${districtError.message}`);
-        }
-      }
-
-      if (province || amphoe) {
-        // Format province name to match Thai format if needed
-        if (province && !province.startsWith('จังหวัด')) {
-          province = `จังหวัด${province}`;
-        }
-        
-        // Format amphoe name to match Thai format if needed
-        if (amphoe && !amphoe.startsWith('อำเภอ')) {
-          amphoe = `อำเภอ${amphoe}`;
-        }
-        
-        return {
-          province: province,
-          amphoe: amphoe,
-          tambon: tambon,
-          source: 'mapbox'
-        };
+    
+    // Extract province, amphoe, and tambon
+    let province = null;
+    let amphoe = null;
+    let tambon = null;
+    
+    for (const feature of data.features) {
+      if (feature.place_type.includes('region') && !province) {
+        province = feature.text;
+      } else if (feature.place_type.includes('district') && !amphoe) {
+        amphoe = feature.text;
+      } else if (feature.place_type.includes('locality') && !tambon) {
+        tambon = feature.text;
       }
     }
     
-    return null;
+    console.log(`  Mapbox found: Province=${province || 'None'}, District=${amphoe || 'None'}, Subdistrict=${tambon || 'None'}`);
+    
+    // Return cleaned location data
+    return {
+      province: cleanAdminName(province, 'province'),
+      amphoe: cleanAdminName(amphoe, 'amphoe'),
+      tambon: cleanAdminName(tambon, 'tambon'),
+      source: 'mapbox'
+    };
   } catch (error) {
     console.error(`Mapbox geocoding error: ${error.message}`);
-    if (error.response) {
-      console.error(`  Status: ${error.response.status}`);
-      console.error(`  Data: ${JSON.stringify(error.response.data)}`);
-    }
     return null;
   }
 }
@@ -307,17 +236,16 @@ async function geocodeWithMapbox(lat, lng) {
  * @returns {Promise<{province: string, amphoe: string, tambon: string}>}
  */
 async function geocodeWithGoogleMaps(lat, lng) {
-  // Skip if no valid API key
-  if (!GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY === 'YOUR_GOOGLE_MAPS_API_KEY') {
-    console.log('  Skipping Google Maps geocoding: No valid API key');
-    return null;
-  }
-
   try {
-    // Ensure coordinates are valid numbers
+    // Skip if no API key
+    if (!GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY === 'YOUR_GOOGLE_MAPS_API_KEY') {
+      console.log('  Skipping Google Maps geocoding: No valid API key');
+      return null;
+    }
+    
+    // Validate coordinates
     const latitude = parseFloat(lat);
     const longitude = parseFloat(lng);
-    
     if (isNaN(latitude) || isNaN(longitude)) {
       console.error('  Invalid coordinates for Google Maps geocoding');
       return null;
@@ -325,86 +253,51 @@ async function geocodeWithGoogleMaps(lat, lng) {
     
     console.log(`  Google Maps request for coordinates: ${latitude},${longitude}`);
     
+    // Make API request
     const response = await axios.get(GOOGLE_MAPS_API_URL, {
       params: {
         latlng: `${latitude},${longitude}`,
-        key: GOOGLE_MAPS_API_KEY,
-        language: 'th'
+        language: 'th',
+        key: GOOGLE_MAPS_API_KEY
       }
     });
-
-    // For debugging
-    console.log(`  Google Maps response status: ${response.status}`);
-    console.log(`  Google Maps response status text: ${response.data.status}`);
     
-    if (response.data && response.data.results && response.data.results.length > 0) {
-      console.log(`  Google Maps results: ${response.data.results.length}`);
-      
-      // Log the first result for debugging
-      if (response.data.results.length > 0) {
-        console.log(`  First result types: ${JSON.stringify(response.data.results[0].types)}`);
-      }
-      
-      let province = null;
-      let amphoe = null;
-      let tambon = null;
-      
-      // Process each result to extract administrative information
-      for (const result of response.data.results) {
-        // Extract address components
-        if (result.address_components) {
-          for (const component of result.address_components) {
-            if (component.types.includes('administrative_area_level_1')) {
-              province = component.long_name;
-              console.log(`  Found province: ${province}`);
-            } 
-            else if (component.types.includes('administrative_area_level_2')) {
-              amphoe = component.long_name;
-              console.log(`  Found amphoe: ${amphoe}`);
-            }
-            else if (component.types.includes('administrative_area_level_3')) {
-              tambon = component.long_name;
-              console.log(`  Found tambon: ${tambon}`);
-            }
-          }
-        }
-      }
-      
-      if (province || amphoe) {
-        // Format province name to match Thai format if needed
-        if (province && !province.startsWith('จังหวัด')) {
-          province = `จังหวัด${province}`;
-        }
-        
-        // Format amphoe name to match Thai format if needed
-        if (amphoe && !amphoe.startsWith('อำเภอ')) {
-          amphoe = `อำเภอ${amphoe}`;
-        }
-        
-        // Format tambon name to match Thai format if needed
-        if (tambon && !tambon.startsWith('ตำบล')) {
-          tambon = `ตำบล${tambon}`;
-        }
-        
-        return {
-          province: province,
-          amphoe: amphoe,
-          tambon: tambon,
-          source: 'google'
-        };
-      }
-    } else {
-      console.log(`  Google Maps returned no results or error: ${response.data.status}`);
-      console.log(`  Error message: ${response.data.error_message || 'No error message'}`);
+    // Handle response
+    const data = response.data;
+    
+    if (data.status !== 'OK' || !data.results || data.results.length === 0) {
+      console.log('  Google Maps returned no results');
+      return null;
     }
     
-    return null;
+    // Extract administrative components
+    let province = null;
+    let amphoe = null;
+    let tambon = null;
+    
+    for (const result of data.results) {
+      for (const component of result.address_components) {
+        if (component.types.includes('administrative_area_level_1')) {
+          province = component.long_name;
+        } else if (component.types.includes('administrative_area_level_2')) {
+          amphoe = component.long_name;
+        } else if (component.types.includes('administrative_area_level_3')) {
+          tambon = component.long_name;
+        }
+      }
+    }
+    
+    console.log(`  Google Maps found: Province=${province || 'None'}, District=${amphoe || 'None'}, Subdistrict=${tambon || 'None'}`);
+    
+    // Return cleaned location data
+    return {
+      province: cleanAdminName(province, 'province'),
+      amphoe: cleanAdminName(amphoe, 'amphoe'),
+      tambon: cleanAdminName(tambon, 'tambon'),
+      source: 'google'
+    };
   } catch (error) {
     console.error(`Google Maps geocoding error: ${error.message}`);
-    if (error.response) {
-      console.error(`  Status: ${error.response.status}`);
-      console.error(`  Data: ${JSON.stringify(error.response.data)}`);
-    }
     return null;
   }
 }

@@ -76,9 +76,9 @@ async function getRainfallData() {
 }
 
 /**
- * Inserts or updates rainfall data for a telemetry station using DELETE then INSERT
+ * Inserts or updates rainfall data for a telemetry station using UPSERT pattern
  */
-async function insertRainfallData(client, tele_station_id, rainfall_datetime, rainfall1h, rainfall_today, data_source) {
+async function insertRainfallData(client, tele_station_id, rainfall_datetime, rainfall10m, rainfall1h, rainfall3h, rainfall24h, rainfall_today, data_source) {
   try {
     // Skip if missing datetime
     if (!rainfall_datetime) {
@@ -86,23 +86,46 @@ async function insertRainfallData(client, tele_station_id, rainfall_datetime, ra
       return { action: 'skipped' };
     }
 
-    // First delete any existing record for this station and datetime
-    const deleteQuery = `
-      DELETE FROM thaiwater_rainfall_data_new 
-      WHERE tele_station_id = $1 AND rainfall_datetime = $2
-    `;
-    const deleteResult = await client.query(deleteQuery, [tele_station_id, rainfall_datetime]);
+    // Ensure the timestamp is correctly parsed - handle both UTC and timezone-aware formats
+    let parsedDateTime;
+    try {
+      // Check if the timestamp has timezone information
+      if (rainfall_datetime.includes('+')) {
+        // Convert to standardized ISO format
+        parsedDateTime = new Date(rainfall_datetime).toISOString();
+        logger.debug(`[ThaiWaterDB] Converted timezone-aware timestamp to UTC: ${rainfall_datetime} -> ${parsedDateTime} for station ${tele_station_id}`);
+      } else {
+        // If no timezone info, assume it's already in UTC
+        parsedDateTime = rainfall_datetime;
+      }
+    } catch (error) {
+      logger.error({
+        message: '[ThaiWaterDB] Error parsing timestamp',
+        station_id: tele_station_id,
+        timestamp: rainfall_datetime,
+        error: error.message
+      });
+      parsedDateTime = rainfall_datetime; // Fall back to original value
+    }
+
+    // Use upsert pattern with ON CONFLICT for better efficiency
+    const result = await client.query(`
+      INSERT INTO thaiwater_rainfall_data_new
+      (tele_station_id, rainfall_datetime, rainfall10m, rainfall1h, rainfall3h, rainfall24h, rainfall_today, data_source, created_at, updated_at)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
+      ON CONFLICT (tele_station_id, rainfall_datetime) DO UPDATE SET
+        rainfall10m = EXCLUDED.rainfall10m,
+        rainfall1h = EXCLUDED.rainfall1h,
+        rainfall3h = EXCLUDED.rainfall3h,
+        rainfall24h = EXCLUDED.rainfall24h,
+        rainfall_today = EXCLUDED.rainfall_today,
+        data_source = EXCLUDED.data_source,
+        updated_at = NOW()
+      RETURNING (xmax = 0) AS inserted
+    `, [tele_station_id, parsedDateTime, rainfall10m, rainfall1h, rainfall3h, rainfall24h, rainfall_today, data_source]);
     
-    // Then insert the new record
-    const insertQuery = `
-      INSERT INTO thaiwater_rainfall_data_new 
-      (tele_station_id, rainfall_datetime, rainfall1h, rainfall_today, data_source, created_at, updated_at)
-      VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
-    `;
-    await client.query(insertQuery, [tele_station_id, rainfall_datetime, rainfall1h, rainfall_today, data_source]);
-    
-    // Determine if this was an insert or update based on the delete result
-    const action = deleteResult.rowCount > 0 ? 'updated' : 'inserted';
+    // Determine if this was an insert or update based on the returning clause
+    const action = result.rows[0]?.inserted ? 'inserted' : 'updated';
     return { action };
   } catch (error) {
     logger.error({
@@ -158,19 +181,50 @@ async function syncRainfallData() {
           continue;
         }
 
+        // Add special logging for station 420
+        if (record.tele_station_id == 420) {
+          logger.info(`[ThaiWaterRainfall] Processing record for station 420`, {
+            rainfall_datetime: record.rainfall_datetime,
+            rainfall24h: record.rainfall24h,
+            rainfall_today: record.rainfall_today
+          });
+        }
+
         // Parse the data directly from the API
-        const rainfall1h = parseFloat(record.rainfall1h) || 0;
-        const rainfall_today = parseFloat(record.rainfall_today) || 0;
+        const rainfall10m = record.rainfall10m !== undefined && record.rainfall10m !== null ? parseFloat(record.rainfall10m) : null;
+        const rainfall1h = record.rainfall1h !== undefined && record.rainfall1h !== null ? parseFloat(record.rainfall1h) : null;
+        const rainfall3h = record.rainfall3h !== undefined && record.rainfall3h !== null ? parseFloat(record.rainfall3h) : null;
+        const rainfall24h = record.rainfall24h !== undefined && record.rainfall24h !== null ? parseFloat(record.rainfall24h) : null;
+        const rainfall_today = record.rainfall_today !== undefined && record.rainfall_today !== null ? parseFloat(record.rainfall_today) : null;
+
+        // Log the parsed values for station 420
+        if (record.tele_station_id == 420) {
+          logger.info(`[ThaiWaterRainfall] Parsed values for station 420`, {
+            rainfall10m,
+            rainfall1h,
+            rainfall3h,
+            rainfall24h,
+            rainfall_today
+          });
+        }
 
         // Insert or update the rainfall data
         const result = await insertRainfallData(
           client, 
           record.tele_station_id, 
-          record.rainfall_datetime, 
-          rainfall1h, 
+          record.rainfall_datetime,
+          rainfall10m,
+          rainfall1h,
+          rainfall3h,
+          rainfall24h,
           rainfall_today, 
           'HII'
         );
+        
+        // Log the result specifically for station 420
+        if (record.tele_station_id == 420) {
+          logger.info(`[ThaiWaterRainfall] Upsert result for station 420: ${result.action}`);
+        }
         
         if (result.action === 'inserted') {
           stats.inserted++;

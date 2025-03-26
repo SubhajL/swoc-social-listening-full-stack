@@ -1,0 +1,93 @@
+[
+  {
+    "hourlytime": "/Date(1742601600000+0700)/",
+    "hourlytimeUTC": "2025-03-22T07:00:00.0000000Z",
+    "indexhourlywaterlevel": 0,
+    "notationString": "-",
+    "notationid": 4,
+    "qavrvalues": null,
+    "qvalues": null,
+    "stationcode": null,
+    "stationid": 669,
+    "wlvalues": 19.530000686645508,
+    "wlvaluesabove": null
+  },
+  {
+    "hourlytime": "/Date(1742598000000+0700)/",
+    "hourlytimeUTC": "2025-03-22T06:00:00.0000000Z",
+    "indexhourlywaterlevel": 0,
+    "notationString": "-",
+    "notationid": 4,
+    "qavrvalues": null,
+    "qvalues": null,
+    "stationcode": null,
+    "stationid": 669,
+    "wlvalues": 19.540000915527344,
+    "wlvaluesabove": null
+  },
+  {
+    "hourlytime": "/Date(1742594400000+0700)/",
+    "hourlytimeUTC": "2025-03-22T05:00:00.0000000Z",
+    "indexhourlywaterlevel": 0,
+    "notationString": "-",
+    "notationid": 4,
+    "qavrvalues": null,
+    "qvalues": null,
+    "stationcode": null,
+    "stationid": 669,
+    "wlvalues": 19.540000915527344,
+    "wlvaluesabove": null
+  },
+  {
+    "hourlytime": "/Date(1742590800000+0700)/",
+    "hourlytimeUTC": "2025-03-22T04:00:00.0000000Z",
+    "indexhourlywaterlevel": 0,
+    "notationString": "-",
+    "notationid": 4,
+    "qavrvalues": null,
+    "qvalues": null,
+    "stationcode": null,
+    "stationid": 669,
+    "wlvalues": 19.540000915527344,
+    "wlvaluesabove": null
+  },
+  {
+    "hourlytime": "/Date(1742587200000+0700)/",
+    "hourlytimeUTC": "2025-03-22T03:00:00.0000000Z",
+    "indexhourlywaterlevel": 0,
+    "notationString": "-",
+    "notationid": 4,
+    "qavrvalues": null,
+    "qvalues": null,
+    "stationcode": null,
+    "stationid": 669,
+    "wlvalues": 19.540000915527344,
+    "wlvaluesabove": null
+  },
+  {
+    "hourlytime": "/Date(1742583600000+0700)/",
+    "hourlytimeUTC": "2025-03-22T02:00:00.0000000Z",
+    "indexhourlywaterlevel": 0,
+    "notationString": "-",
+    "notationid": 4,
+    "qavrvalues": null,
+    "qvalues": null,
+    "stationcode": null,
+    "stationid": 669,
+    "wlvalues": 19.540000915527344,
+    "wlvaluesabove": null
+  },
+  {
+    "hourlytime": "/Date(1742580000000+0700)/",
+    "hourlytimeUTC": "2025-03-22T01:00:00.0000000Z",
+    "indexhourlywaterlevel": 0,
+    "notationString": "-",
+    "notationid": 4,
+    "qavrvalues": null,
+    "qvalues": null,
+    "stationcode": null,
+    "stationid": 669,
+    "wlvalues": 19.540000915527344,
+    "wlvaluesabove": null
+  }
+]

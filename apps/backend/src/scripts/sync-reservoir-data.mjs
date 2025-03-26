@@ -1,3 +1,17 @@
+/**
+ * Reservoir Data Synchronization Script
+ * 
+ * This script synchronizes reservoir data from the API to the database.
+ * It uses the reservoir_id (string format like 'rsv123') as the unique identifier
+ * for each reservoir rather than the numeric id.
+ * 
+ * The database has a unique constraint on the combination of reservoir_id and date
+ * to prevent duplicate entries for the same reservoir on the same date.
+ * 
+ * If you encounter issues with duplicate data, run the add-reservoir-constraint.mjs script
+ * to clean up duplicates and add the unique constraint if it's missing.
+ */
+
 import pkg from 'pg';
 const { Pool } = pkg;
 import dotenv from 'dotenv';
@@ -91,73 +105,60 @@ async function processDamData(client, damData) {
           const volume = dam.volume === '' || dam.volume === undefined ? null : dam.volume;
           
           logger.info(`[ReservoirSync] Processing dam: ${stationName} (ID: ${apiStationId})`);
+          logger.info(`[ReservoirSync] Data values: storage=${storage}, dead_storage=${deadStorage}, volume=${volume}, inflow=${inflow}, outflow=${outflow}`);
           
-          // Check if data for this dam and date already exists
-          const dataCheck = await client.query(
-            'SELECT id FROM reservoir_data WHERE reservoir_id = $1 AND date = $2',
+          // Use upsert pattern with ON CONFLICT
+          await client.query(`
+            INSERT INTO reservoir_data (
+              reservoir_id,
+              reservoir_name,
+              storage,
+              dead_storage,
+              volume,
+              inflow,
+              outflow,
+              date,
+              type,
+              created_at,
+              updated_at
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
+            ON CONFLICT (reservoir_id, date) DO UPDATE SET
+              storage = EXCLUDED.storage,
+              dead_storage = EXCLUDED.dead_storage,
+              volume = EXCLUDED.volume,
+              inflow = EXCLUDED.inflow,
+              outflow = EXCLUDED.outflow,
+              updated_at = NOW()
+          `, [
+            apiStationId,
+            stationName,
+            storage,
+            deadStorage,
+            volume,
+            inflow,
+            outflow,
+            formattedDate,
+            'dam'
+          ]);
+          
+          // Count as either inserted or updated based on the existence of rows
+          const isUpdate = await client.query(
+            'SELECT EXISTS(SELECT 1 FROM reservoir_data WHERE reservoir_id = $1 AND date = $2 AND updated_at > created_at)',
             [apiStationId, formattedDate]
           );
           
-          if (dataCheck.rows.length === 0) {
-            // Insert new data
-            logger.info(`[ReservoirSync] Inserting new data for dam ${stationName} (ID=${apiStationId})`);
-            logger.info(`[ReservoirSync] Data values: storage=${storage}, dead_storage=${deadStorage}, volume=${volume}, inflow=${inflow}, outflow=${outflow}`);
-            
-            await client.query(`
-              INSERT INTO reservoir_data (
-                reservoir_id,
-                reservoir_name,
-                storage,
-                dead_storage,
-                volume,
-                inflow,
-                outflow,
-                date,
-                type,
-                created_at,
-                updated_at
-              ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
-            `, [
-              apiStationId,
-              stationName,
-              storage,
-              deadStorage,
-              volume,
-              inflow,
-              outflow,
-              formattedDate,
-              'dam'
-            ]);
-            
-            insertedCount++;
-          } else {
-            // Update existing data
-            await client.query(`
-              UPDATE reservoir_data SET
-                storage = $2,
-                dead_storage = $3,
-                volume = $4,
-                inflow = $5,
-                outflow = $6,
-                updated_at = NOW()
-              WHERE reservoir_id = $1 AND date = $7
-            `, [
-              apiStationId,
-              storage,
-              deadStorage,
-              volume,
-              inflow,
-              outflow,
-              formattedDate
-            ]);
-            
+          if (isUpdate.rows[0].exists) {
             updatedCount++;
+          } else {
+            insertedCount++;
           }
         } catch (damError) {
           errorCount++;
           logger.error('[ReservoirSync] Error processing dam', {
             dam: dam.name,
-            error: damError instanceof Error ? damError.message : String(damError)
+            id: dam.id,
+            error: damError instanceof Error ? damError.message : String(damError),
+            stack: damError instanceof Error ? damError.stack : undefined
           });
         }
       }
@@ -277,7 +278,9 @@ async function processReservoirData(client, reservoirData) {
           errorCount++;
           logger.error('[ReservoirSync] Error processing reservoir', {
             reservoir: reservoir.name,
-            error: reservoirError instanceof Error ? reservoirError.message : String(reservoirError)
+            id: reservoir.id,
+            error: reservoirError instanceof Error ? reservoirError.message : String(reservoirError),
+            stack: reservoirError instanceof Error ? reservoirError.stack : undefined
           });
         }
       }

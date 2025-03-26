@@ -237,10 +237,10 @@ const RainStationCardComponent = ({
     // Check if we have ThaiWater data for this station
     if (thaiWaterData) {
       data = {
-        rainfall24h: parseFloat(thaiWaterData.rainfall24h?.toString() || '0'),
-        rainfallToday: parseFloat(thaiWaterData.rainfall_today?.toString() || '0'),
+        rainfall24h: thaiWaterData.rainfall24h !== null ? parseFloat(thaiWaterData.rainfall24h?.toString() || '0') : null,
+        rainfallToday: thaiWaterData.rainfall_today !== null ? parseFloat(thaiWaterData.rainfall_today?.toString() || '0') : null,
         lastUpdated: thaiWaterData.rainfall_datetime || null,
-        dataAvailable: true
+        dataAvailable: true // Always true if we have thaiWaterData, even if rainfall24h is null
       };
       
       console.log(`[RainStationCard] Parsed rainfall data for station ${station.station_id}:`, data);
@@ -303,23 +303,40 @@ const RainStationCardComponent = ({
     const hasApiData = !!thaiWaterData;
     
     // For rainfall24h:
+    // - If data is from API, stale but not null, show value with note
+    // - If data is from API and value is null, show "ไม่มีข้อมูล"
     // - If data is from API and value is 0, show "0.00"
     // - If data is from API and value is not 0, show the value
     // - If no data is from API, show "-"
-    const rainfall24hValue = hasApiData 
-      ? (rainfallData.rainfall24h === 0 ? "0.00" : (rainfallData.rainfall24h || 0).toFixed(2))
-      : "-";
+    
+    let rainfall24hValue = "-";
+    if (hasApiData) {
+      if (rainfallData.rainfall24h === null) {
+        rainfall24hValue = "ไม่มีข้อมูล";
+      } else if (rainfallData.rainfall24h === 0) {
+        rainfall24hValue = "0.00";
+      } else {
+        rainfall24hValue = (rainfallData.rainfall24h || 0).toFixed(2);
+      }
+    }
     
     // For rainfallToday:
     // - If it's a TMD station, always show "-"
+    // - If data is from API and value is null, show "ไม่มีข้อมูล"
     // - If data is from API and value is 0, show "0.00"
     // - If data is from API and value is not 0, show the value
     // - If no data is from API, show "-"
-    const rainfallTodayValue = isTMD
-      ? "-"
-      : (hasApiData 
-          ? (rainfallData.rainfallToday === 0 ? "0.00" : (rainfallData.rainfallToday || 0).toFixed(2))
-          : "-");
+    
+    let rainfallTodayValue = "-";
+    if (!isTMD && hasApiData) {
+      if (rainfallData.rainfallToday === null) {
+        rainfallTodayValue = "ไม่มีข้อมูล";
+      } else if (rainfallData.rainfallToday === 0) {
+        rainfallTodayValue = "0.00";
+      } else {
+        rainfallTodayValue = (rainfallData.rainfallToday || 0).toFixed(2);
+      }
+    }
     
     return {
       rainfall24h: rainfall24hValue,
@@ -329,8 +346,9 @@ const RainStationCardComponent = ({
 
   // Determine if the station has data available from the API
   const hasData = useMemo(() => {
-    return !!thaiWaterData;
-  }, [thaiWaterData]);
+    // Consider data available if we have a timestamp, either from thaiWaterData or from the station
+    return !!rainfallData.lastUpdated;
+  }, [rainfallData.lastUpdated]);
 
   // Determine if we're still loading data
   const isLoadingData = useMemo(() => {
@@ -341,6 +359,21 @@ const RainStationCardComponent = ({
   const hasError = useMemo(() => {
     return !!error;
   }, [error]);
+
+  // Determine if the timestamp is stale (older than 30 days)
+  const isStaleData = useMemo(() => {
+    if (!rainfallData.lastUpdated) return false;
+    
+    const lastUpdatedDate = new Date(rainfallData.lastUpdated);
+    const now = new Date();
+    const diffDays = Math.floor((now.getTime() - lastUpdatedDate.getTime()) / (1000 * 60 * 60 * 24));
+    
+    console.log(`[RainStationCard] Station ${station.station_id} timestamp age: ${diffDays} days`);
+    const isStale = diffDays > 30;
+    console.log(`[RainStationCard] Station ${station.station_id} has stale data: ${isStale}`);
+    
+    return isStale;
+  }, [rainfallData.lastUpdated, station.station_id]);
 
   return (
     <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-1.5">
@@ -363,9 +396,14 @@ const RainStationCardComponent = ({
         }`}>
           {displayDataSource}
         </span>
-        {!hasData && !isLoadingData && (
+        {(!rainfallData.lastUpdated) && !isLoadingData && (
           <span className="text-xs bg-yellow-100 text-yellow-800 rounded-full px-2 py-0.5 ml-2">
             ไม่พบข้อมูล
+          </span>
+        )}
+        {isStaleData && rainfallData.lastUpdated && (
+          <span className="text-xs bg-orange-100 text-orange-800 rounded-full px-2 py-0.5 ml-2">
+            ข้อมูลเก่า
           </span>
         )}
         {isLoadingData && (
@@ -429,8 +467,8 @@ const RainStationCardComponent = ({
                     <span>
                       {isLoadingData 
                         ? "กำลังโหลดข้อมูล..." 
-                        : (rainfallData.dataAvailable && rainfallData.lastUpdated
-                            ? `อัพเดทล่าสุด: ${formattedTimestamp}`
+                        : (rainfallData.lastUpdated
+                            ? `อัพเดทล่าสุด: ${formattedTimestamp}${isStaleData ? ' (ข้อมูลเก่า)' : ''}`
                             : "ไม่พบข้อมูลเวลา")}
                     </span>
                     <Button 

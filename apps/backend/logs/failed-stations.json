@@ -1,0 +1,23 @@
+[
+  {
+    "tele_station_id": 785,
+    "tele_station_name_th": "สะพานปลาหัวหิน",
+    "lat": "12.575800",
+    "lng": "99.961000",
+    "error": "Database update failed"
+  },
+  {
+    "tele_station_id": 453636,
+    "tele_station_name_th": "",
+    "lat": "NaN",
+    "lng": "NaN",
+    "error": "Geocoding failed"
+  },
+  {
+    "tele_station_id": 453684,
+    "tele_station_name_th": "",
+    "lat": "NaN",
+    "lng": "NaN",
+    "error": "Geocoding failed"
+  }
+]

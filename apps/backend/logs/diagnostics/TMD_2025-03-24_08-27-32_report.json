@@ -1,0 +1,33 @@
+{
+  "job": "TMD",
+  "runId": "2025-03-24_08-27-32",
+  "timestamp": "2025-03-24T08:27:32.704Z",
+  "manual": {
+    "success": false,
+    "exitCode": 1,
+    "duration": "0.506s",
+    "timedOut": false,
+    "stdoutFile": "/Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/logs/diagnostics/TMD_manual_2025-03-24_08-27-32_stdout.log",
+    "stderrFile": "/Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/logs/diagnostics/TMD_manual_2025-03-24_08-27-32_stderr.log"
+  },
+  "scheduled": {
+    "success": false,
+    "exitCode": 1,
+    "duration": "0.502s",
+    "timedOut": false,
+    "stdoutFile": "/Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/logs/diagnostics/TMD_scheduled_2025-03-24_08-27-32_stdout.log",
+    "stderrFile": "/Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/logs/diagnostics/TMD_scheduled_2025-03-24_08-27-32_stderr.log"
+  },
+  "logPaths": "/Users/subhajlimanond/dev/swoc-social-listening-fullstack/apps/backend/logs/diagnostics/TMD_2025-03-24_08-27-32.log",
+  "dbComparison": {
+    "job": "TMD",
+    "runId": "2025-03-24_08-27-32",
+    "compared": false,
+    "message": "Database comparison not yet implemented"
+  },
+  "summary": {
+    "status": "BOTH_FAILED",
+    "durationDifference": "0.004s",
+    "durationRatio": 1.01
+  }
+}

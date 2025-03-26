@@ -1,0 +1,39 @@
+{
+  "jobs": [
+    {
+      "name": "Hydroid Data Sync - All Regions",
+      "description": "Fetches telemetry data for all hydro regions",
+      "schedule": "5 * * * *",
+      "command": "npm run sync:hydroid",
+      "enabled": true
+    },
+    {
+      "name": "Reservoir Data Sync",
+      "description": "Fetches reservoir data from RID API",
+      "schedule": "0 9 * * *",
+      "command": "npm run sync:reservoir",
+      "enabled": true
+    },
+    {
+      "name": "HII Rainfall Data Sync",
+      "description": "Fetches rainfall data from ThaiWater/HII API",
+      "schedule": "40 * * * *",
+      "command": "cd apps/backend && node -r dotenv/config src/scripts/sync-hii-data.mjs",
+      "enabled": true
+    },
+    {
+      "name": "TMD Rainfall Data Sync",
+      "description": "Fetches and syncs TMD station and rainfall data",
+      "schedule": "55 * * * *",
+      "command": "cd apps/backend && node -r dotenv/config src/scripts/sync-tmd-data.mjs",
+      "enabled": true
+    },
+    {
+      "name": "Combined Rainfall Data Sync",
+      "description": "Fetches and syncs both HII and TMD rainfall data",
+      "schedule": "0 8 * * *",
+      "command": "cd apps/backend && node -r dotenv/config src/scripts/run-all-rainfall-sync.mjs",
+      "enabled": false
+    }
+  ]
+} 

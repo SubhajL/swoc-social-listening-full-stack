@@ -71,28 +71,17 @@ export async function getRainfallData(): Promise<ThaiWaterResponse> {
       throw new Error('Invalid response format: expected array');
     }
 
-    // Filter data for our stations using the mapping
-    const targetStationIds = Object.values(STATION_ID_MAP);
-    const filteredData = response.data.filter(item => 
-      targetStationIds.includes(item.tele_station_id)
-    );
-
-    logger.info('[ThaiWaterService] API response filtered', {
+    // Return all station data from API instead of filtering
+    logger.info('[ThaiWaterService] API response', {
       totalStations: response.data.length,
-      matchedStations: filteredData.length,
-      targetStationIds,
-      matchedData: filteredData,
       timestamp: new Date().toISOString()
     });
 
     return {
       success: true,
-      data: filteredData,
+      data: response.data,
       debug: {
-        totalStations: response.data.length,
-        matchedStations: filteredData.length,
-        targetStationIds,
-        matchedData: filteredData
+        totalStations: response.data.length
       }
     };
 
