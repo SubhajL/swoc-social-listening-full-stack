@@ -219,14 +219,14 @@ class RIDTelemetryService {
       timestamp: new Date().toISOString()
     });
 
-    const data = {
+    const requestData = {
       hydro: {
-        StationID: stationId,
+        stationid: stationId,
         TimeStart: formattedDate
       }
     };
 
-    return this.fetchWithAuth('getHourlyTodayFromStationID', data);
+    return this.fetchWithAuth('getHourlyTodayFromStationID', requestData);
   }
 
   async getStationList(hydroId: string) {

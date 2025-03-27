@@ -34,8 +34,8 @@ export class RIDOAuth {
 
   constructor() {
     this.consumerKey = process.env.RID_CONSUMER_KEY || '38b992bd1c9d445ba5305bc90edd2b4a';
-    this.consumerSecret = process.env.RID_CONSUMER_SECRET || '1974b85763c2496d80911b48dfbb53af';
-    this.realm = 'https://hyd-app.rid.go.th/webservice';
+    this.consumerSecret = process.env.RID_CONSUMER_SECRET || '38b992bd1c9d445ba5305bc90edd2b4a';
+    this.realm = 'http://hyd-app.rid.go.th/webservice';
     
     logger.info('RIDOAuth initialized', 'RIDOAuth', {
       consumerKeyLength: this.consumerKey.length,
@@ -81,8 +81,8 @@ export class RIDOAuth {
   /**
    * Normalizes parameters for OAuth signature base string
    */
-  private normalizeParameters(params: Record<string, string>): string {
-    return Object.entries(params)
+  private normalizeParameters(params: Array<[string, string]>): string {
+    return params
       .filter(([key]) => key !== 'oauth_signature') // Exclude signature
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([key, val]) => `${this.percentEncode(key)}=${this.percentEncode(val)}`)
@@ -92,13 +92,21 @@ export class RIDOAuth {
   /**
    * Generates the OAuth signature base string
    */
-  private generateBaseString(method: string, url: string, params: Record<string, string>): string {
-    const baseString = `${method.toUpperCase()}&${this.percentEncode(url)}&${this.percentEncode(this.normalizeParameters(params))}`;
+  private generateBaseString(method: string, url: string, params: Array<[string, string]>): string {
+    // Create parameter string
+    const paramString = this.normalizeParameters(params);
+    
+    // Create signature base string
+    const baseString = [
+      method.toUpperCase(),
+      this.percentEncode(url),
+      this.percentEncode(paramString)
+    ].join('&');
     
     logger.debug('OAuth base string generation', 'RIDOAuth', {
       method: method.toUpperCase(),
       url,
-      normalizedParams: this.normalizeParameters(params),
+      normalizedParams: paramString,
       baseStringLength: baseString.length
     });
     
@@ -124,136 +132,38 @@ export class RIDOAuth {
   }
 
   /**
-   * Generates a signed URL with OAuth parameters in the query string
-   * This follows the PHP example in the RID API documentation
+   * Generates OAuth 1.0a authorization header
+   * @param url The request URL
+   * @param method The HTTP method
+   * @param params URL parameters as a string
+   * @returns OAuth authorization header
    */
-  public async getSignedUrl(
+  async getAuthorizationHeader(
     url: string,
     method: string,
-    requestBody: Record<string, any> = {}
+    params: string
   ): Promise<string> {
-    try {
-      logger.info('Starting OAuth signed URL generation', 'RIDOAuth', {
-        url,
-        method,
-        requestBodyKeys: Object.keys(requestBody)
-      });
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    const nonce = crypto.randomBytes(16).toString('hex');
 
-      const timestamp = this.generateTimestamp();
-      const nonce = this.generateNonce();
-      
-      // Create OAuth parameters
-      const oauthParams: Record<string, string> = {
-        oauth_consumer_key: this.consumerKey,
-        oauth_nonce: nonce,
-        oauth_signature_method: 'HMAC-SHA1',
-        oauth_timestamp: timestamp,
-        oauth_version: '1.0'
-      };
+    // Create parameter string for signature
+    const paramString = params ? `&${params}` : '';
 
-      // Generate base string and signature
-      const baseString = this.generateBaseString(method, url, oauthParams);
-      const signature = this.sign(baseString);
-      
-      // Create parameter string
-      const paramString = this.normalizeParameters(oauthParams);
-      
-      // Create signed URL
-      const signedUrl = `${url}?${paramString}&oauth_signature=${this.percentEncode(signature)}`;
-      
-      logger.info('Generated OAuth signed URL', 'RIDOAuth', {
-        url,
-        method,
-        signedUrlLength: signedUrl.length
-      });
+    // Create signature base string
+    const baseString = [
+      method.toUpperCase(),
+      encodeURIComponent(url),
+      encodeURIComponent(`oauth_consumer_key=${this.consumerKey}&oauth_nonce=${nonce}&oauth_signature_method=HMAC-SHA1&oauth_timestamp=${timestamp}&oauth_version=1.0${paramString}`)
+    ].join('&');
 
-      return signedUrl;
-    } catch (error) {
-      logger.error('Failed to generate OAuth signed URL', 'RIDOAuth', { 
-        error: error instanceof Error ? {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        } : error
-      });
-      
-      throw error;
-    }
-  }
+    // Generate signature
+    const signature = crypto
+      .createHmac('sha1', this.consumerSecret)
+      .update(baseString)
+      .digest('base64');
 
-  /**
-   * Generates the OAuth authorization header
-   * Note: This method is kept for backward compatibility but is not used
-   * as the RID API prefers the signed URL approach
-   */
-  public async getAuthorizationHeader(
-    url: string,
-    method: string,
-    requestBody: Record<string, any> = {}
-  ): Promise<string> {
-    try {
-      logger.info('Starting OAuth header generation', 'RIDOAuth', {
-        url,
-        method,
-        requestBodyKeys: Object.keys(requestBody)
-      });
-
-      const timestamp = this.generateTimestamp();
-      const nonce = this.generateNonce();
-      
-      // Create OAuth parameters
-      const oauthParams: Record<string, string> = {
-        oauth_consumer_key: this.consumerKey,
-        oauth_nonce: nonce,
-        oauth_signature_method: 'HMAC-SHA1',
-        oauth_timestamp: timestamp,
-        oauth_version: '1.0'
-      };
-
-      // Generate base string and signature
-      const baseString = this.generateBaseString(method, url, oauthParams);
-      const signature = this.sign(baseString);
-      
-      // Add signature to parameters
-      oauthParams.oauth_signature = signature;
-
-      // Build authorization header
-      const headerParams = [
-        `realm="${this.realm}"`,
-        `oauth_consumer_key="${this.percentEncode(this.consumerKey)}"`,
-        `oauth_nonce="${this.percentEncode(nonce)}"`,
-        `oauth_signature_method="HMAC-SHA1"`,
-        `oauth_timestamp="${timestamp}"`,
-        `oauth_version="1.0"`,
-        `oauth_signature="${this.percentEncode(signature)}"`
-      ].join(', ');
-
-      const authHeader = `OAuth ${headerParams}`;
-      
-      logger.info('Generated OAuth authorization header', 'RIDOAuth', {
-        url,
-        method,
-        oauthParams: {
-          oauth_consumer_key: oauthParams.oauth_consumer_key,
-          oauth_nonce: oauthParams.oauth_nonce,
-          oauth_timestamp: oauthParams.oauth_timestamp,
-          oauth_signature_method: oauthParams.oauth_signature_method,
-          oauth_version: oauthParams.oauth_version
-        }
-      });
-
-      return authHeader;
-    } catch (error) {
-      logger.error('Failed to generate OAuth header', 'RIDOAuth', { 
-        error: error instanceof Error ? {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        } : error
-      });
-      
-      throw error;
-    }
+    // Create authorization header
+    return `OAuth realm="${url}", oauth_consumer_key="${this.consumerKey}", oauth_nonce="${nonce}", oauth_signature_method="HMAC-SHA1", oauth_timestamp="${timestamp}", oauth_version="1.0", oauth_signature="${encodeURIComponent(signature)}"`;
   }
 }
 
@@ -261,22 +171,26 @@ export class RIDOAuth {
 let ridOAuthInstance: RIDOAuth | null = null;
 
 /**
- * Helper function to get OAuth header
- * @deprecated Use getSignedUrl instead
+ * Generates OAuth 1.0a authorization header
+ * @param url The request URL
+ * @param method The HTTP method
+ * @param params URL parameters as a string
+ * @returns OAuth authorization header
  */
 export async function getOAuthHeader(
   url: string,
   method: string,
-  requestBody: Record<string, any> = {}
+  params: string
 ): Promise<string> {
   if (!ridOAuthInstance) {
     ridOAuthInstance = new RIDOAuth();
   }
-  return ridOAuthInstance.getAuthorizationHeader(url, method, requestBody);
+  return ridOAuthInstance.getAuthorizationHeader(url, method, params);
 }
 
 /**
  * Helper function to get a signed URL with OAuth parameters
+ * @deprecated Use getOAuthHeader instead
  */
 export async function getSignedUrl(
   url: string,
@@ -286,5 +200,5 @@ export async function getSignedUrl(
   if (!ridOAuthInstance) {
     ridOAuthInstance = new RIDOAuth();
   }
-  return ridOAuthInstance.getSignedUrl(url, method, requestBody);
+  return ridOAuthInstance.getAuthorizationHeader(url, method, requestBody);
 }

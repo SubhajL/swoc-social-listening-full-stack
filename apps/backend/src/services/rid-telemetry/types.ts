@@ -19,6 +19,7 @@ export interface TelemetryResponse {
 // Request parameters
 export interface TelemetryRequest {
   station_id: string;
+  hydro_id: string;  // Hydro ID (string in RID API)
   time_start: string; // Format: dd/MM/yyyy in Buddhist calendar
   time_end?: string;  // Optional end time
 }

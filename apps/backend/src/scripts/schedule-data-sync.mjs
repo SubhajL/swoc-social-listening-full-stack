@@ -98,6 +98,7 @@ const logger = createEnhancedLogger({
 // Script paths for direct access (used for progress tracking)
 const progressScriptPath = path.join(__dirname, 'track-sync-progress.mjs');
 const reportScriptPath = path.join(__dirname, 'generate-sync-report.mjs');
+const telemetrySyncScriptPath = path.join(__dirname, 'telemetry/sync-telemetry.mjs');
 
 // Log startup information
 logger.info('Data sync scheduler starting', {
@@ -311,6 +312,71 @@ const progressJob = schedule.scheduleJob('15 9 * * *', function() {
   });
 });
 
+// Schedule telemetry sync jobs
+// 1. Station sync at end of month
+schedule.scheduleJob('0 0 28-31 * *', async () => {
+  try {
+    // Check if it's the last day of the month
+    const now = new Date();
+    const isLastDay = now.getDate() === new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    
+    if (isLastDay) {
+      logger.info('Starting monthly telemetry station sync', 'Scheduler');
+      
+      // Update task status to running
+      await updateTaskStatus('telemetry_station_sync', 'running');
+      
+      // Run the telemetry sync script with --scheduled flag
+      exec(`node ${telemetrySyncScriptPath} --scheduled`, (error, stdout, stderr) => {
+        if (error) {
+          logger.error('Telemetry station sync failed:', error);
+          updateTaskStatus('telemetry_station_sync', 'failed');
+          return;
+        }
+        
+        if (stderr) {
+          logger.warn('Telemetry station sync warnings:', stderr);
+        }
+        
+        logger.info('Telemetry station sync completed:', stdout);
+        updateTaskStatus('telemetry_station_sync', 'completed');
+      });
+    }
+  } catch (error) {
+    logger.error('Error in telemetry station sync job:', error);
+    updateTaskStatus('telemetry_station_sync', 'failed');
+  }
+});
+
+// 2. Data sync at :20 of every hour
+schedule.scheduleJob('20 * * * *', async () => {
+  try {
+    logger.info('Starting hourly telemetry data sync', 'Scheduler');
+    
+    // Update task status to running
+    await updateTaskStatus('telemetry_data_sync', 'running');
+    
+    // Run the telemetry sync script with --scheduled flag
+    exec(`node ${telemetrySyncScriptPath} --scheduled`, (error, stdout, stderr) => {
+      if (error) {
+        logger.error('Telemetry data sync failed:', error);
+        updateTaskStatus('telemetry_data_sync', 'failed');
+        return;
+      }
+      
+      if (stderr) {
+        logger.warn('Telemetry data sync warnings:', stderr);
+      }
+      
+      logger.info('Telemetry data sync completed:', stdout);
+      updateTaskStatus('telemetry_data_sync', 'completed');
+    });
+  } catch (error) {
+    logger.error('Error in telemetry data sync job:', error);
+    updateTaskStatus('telemetry_data_sync', 'failed');
+  }
+});
+
 // Log information about scheduled jobs
 logger.info('Scheduler started successfully', {
   component: 'Scheduler',
@@ -336,6 +402,16 @@ logger.info('Scheduler started successfully', {
         name: 'progress_report',
         schedule: 'daily at 9:15 AM',
         nextRun: progressJob.nextInvocation().toDate()
+      },
+      {
+        name: 'telemetry_station_sync',
+        schedule: 'end of month',
+        nextRun: 'Last day of each month'
+      },
+      {
+        name: 'telemetry_data_sync',
+        schedule: 'hourly at minute 20',
+        nextRun: 'Every hour at :20'
       }
     ]
   }

@@ -1,0 +1,62 @@
+-- Create telemetry_data_stations table
+CREATE TABLE IF NOT EXISTS telemetry_data_stations (
+    station_id VARCHAR(50) PRIMARY KEY,
+    station_name VARCHAR(255) NOT NULL,
+    hydro_id VARCHAR(50) NOT NULL,
+    data_source VARCHAR(50) NOT NULL,
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(11, 8),
+    last_sync TIMESTAMP WITH TIME ZONE NOT NULL,
+    station_code VARCHAR(50),
+    hydro_name VARCHAR(255),
+    basin_id INTEGER,
+    basin_name VARCHAR(255),
+    province_code INTEGER,
+    brae_level DECIMAL(10, 2),
+    q_max DECIMAL(10, 2),
+    use_msl INTEGER,
+    use_msl_string VARCHAR(50),
+    order_no INTEGER,
+    station_detail TEXT,
+    zero_gauge DECIMAL(10, 2),
+    ground_level DECIMAL(10, 2),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create telemetry_data table
+CREATE TABLE IF NOT EXISTS telemetry_data (
+    id SERIAL PRIMARY KEY,
+    station_id VARCHAR(50) NOT NULL REFERENCES telemetry_data_stations(station_id),
+    reading_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    reading_time_utc TIMESTAMP WITH TIME ZONE NOT NULL,
+    water_level DECIMAL(10, 2),
+    water_level_above DECIMAL(10, 2),
+    flow_rate DECIMAL(10, 2),
+    average_flow_rate DECIMAL(10, 2),
+    notation_id INTEGER,
+    notation_string TEXT,
+    source VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(station_id, reading_time)
+);
+
+-- Create indexes for better query performance
+CREATE INDEX IF NOT EXISTS idx_telemetry_data_stations_hydro_id ON telemetry_data_stations(hydro_id);
+CREATE INDEX IF NOT EXISTS idx_telemetry_data_station_id ON telemetry_data(station_id);
+CREATE INDEX IF NOT EXISTS idx_telemetry_data_reading_time ON telemetry_data(reading_time);
+
+-- Create function to update updated_at timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Create trigger for telemetry_data_stations
+CREATE TRIGGER update_telemetry_data_stations_updated_at
+    BEFORE UPDATE ON telemetry_data_stations
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column(); 

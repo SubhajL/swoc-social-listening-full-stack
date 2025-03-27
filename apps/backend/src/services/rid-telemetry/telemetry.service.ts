@@ -1,64 +1,151 @@
-import axios from 'axios';
+import https from 'https';
+import axios, { AxiosError } from 'axios';
+import crypto from 'crypto';
 import { logger } from '../../utils/logger';
-import { getOAuthHeader, getSignedUrl } from './oauth';
 import type { TelemetryReading, TelemetryResponse, TelemetryRequest, TelemetryError } from './types';
 import { TelemetryRequest as TelemetryRequestDto } from '../../dto/telemetry.dto';
-import https from 'https';
 
-// API configuration
+/**
+ * ⚠️ PARTIALLY LOCKED IMPLEMENTATION - DO NOT MODIFY CORE FUNCTIONALITY
+ * Last Lock Date: 2025-02-09
+ * 
+ * The following features are locked and should not be modified:
+ * 1. Core API Integration:
+ *    - Base URL configuration
+ *    - Request/response handling
+ *    - Error handling
+ * 
+ * 2. Data Models:
+ *    - Response interfaces
+ *    - Data transformation
+ * 
+ * 3. Security:
+ *    - OAuth integration
+ *    - HTTPS configuration
+ * 
+ * Additional features and enhancements should be implemented separately
+ * without modifying the core locked functionality.
+ */
+
+// Base URL for RID API
 const RID_API_BASE_URL = 'http://hyd-app.rid.go.th/webservice';
 const RID_API_SERVICE = `${RID_API_BASE_URL}/HydroAuthenticateService.svc`;
-const TELEMETRY_ENDPOINT = `${RID_API_SERVICE}/getHourlyTodayFromStationID`;
-const STATION_LIST_ENDPOINT = `${RID_API_SERVICE}/getHourlyStationList`;
 
-// Retry configuration
-const MAX_RETRIES = 3;
-const RETRY_DELAY_MS = 1000;
+// API Endpoints
+const ENDPOINTS = {
+  TELEMETRY: `${RID_API_SERVICE}/getHourlyTodayFromStationID`,
+  DAILY_STATION: `${RID_API_SERVICE}/getDailyStationList`,
+  HOURLY_STATION: `${RID_API_SERVICE}/getHourlyStationList`,
+  HYDRO_TELEMETRY: `${RID_API_SERVICE}/getHourlyTodayFromHydroID`
+};
 
-// Response cache to reduce API calls
-const responseCache: Record<string, { data: any; timestamp: number }> = {};
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+// Create HTTPS agent that allows self-signed certificates
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false
+});
+
+// Consumer credentials
+const CONSUMER_KEY = process.env.RID_CONSUMER_KEY || '38b992bd1c9d445ba5305bc90edd2b4a';
+const CONSUMER_SECRET = process.env.RID_CONSUMER_SECRET || '1974b85763c2496d80911b48dfbb53af';
 
 /**
- * Helper function to implement exponential backoff for retries
+ * Generate OAuth 1.0 signature using the approach from the API documentation
  */
-function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+function generateOAuthSignature(url: string, method: string): { signedUrl: string, authHeader: string } {
+  // Generate timestamp and nonce
+  const timestamp = Math.floor(Date.now() / 1000).toString();
+  const nonce = crypto.randomBytes(16).toString('hex');
+  
+  // Create OAuth parameters
+  const oauthParams: Record<string, string> = {
+    oauth_consumer_key: CONSUMER_KEY,
+    oauth_nonce: nonce,
+    oauth_signature_method: 'HMAC-SHA1',
+    oauth_timestamp: timestamp,
+    oauth_version: '1.0'
+  };
+  
+  // Create parameter string
+  const paramString = Object.entries(oauthParams)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+    .join('&');
+  
+  // Create signature base string
+  const signatureBaseString = [
+    method.toUpperCase(),
+    encodeURIComponent(url),
+    encodeURIComponent(paramString)
+  ].join('&');
+  
+  // Create signing key
+  const signingKey = `${CONSUMER_SECRET}&`;
+  
+  // Generate signature
+  const signature = crypto
+    .createHmac('sha1', signingKey)
+    .update(signatureBaseString)
+    .digest('base64');
+  
+  // Add signature to parameters
+  oauthParams.oauth_signature = signature;
+  
+  // Create signed URL (for PHP style)
+  const signedUrl = `${url}?${paramString}&oauth_signature=${encodeURIComponent(signature)}`;
+  
+  // Create Authorization header (for header style)
+  const authHeader = 'OAuth ' + Object.entries(oauthParams)
+    .map(([key, value]) => `${encodeURIComponent(key)}="${encodeURIComponent(value)}"`)
+    .join(', ');
+  
+  return { signedUrl, authHeader };
+}
+
+// Response interfaces
+export interface RIDTelemetryResponse {
+  stationid: string;
+  hourlytime: string;
+  wlvalues: string[];
+  qvalues: string[];
+}
+
+export interface RIDStationResponse {
+  stationid: string;
+  stationname: string;
+  latitude: string;
+  longitude: string;
+  river: string;
+  province: string;
+  district: string;
+  subdistrict: string;
 }
 
 /**
- * Helper function to generate a cache key
+ * Gets list of all stations
  */
-function generateCacheKey(endpoint: string, params: Record<string, any>): string {
-  return `${endpoint}:${JSON.stringify(params)}`;
-}
-
-/**
- * Makes an API request to the RID telemetry service with retry logic
- */
-async function makeRidApiRequest(
-  endpoint: string,
-  requestBody: Record<string, any>,
-  retryCount = 0
-): Promise<any> {
+export async function getStationList(hydroId: string): Promise<{ success: boolean; data: RIDStationResponse[] }> {
   try {
-    // Generate cache key
-    const cacheKey = generateCacheKey(endpoint, requestBody);
-    
-    // Check cache first
-    const cachedResponse = responseCache[cacheKey];
-    if (cachedResponse && (Date.now() - cachedResponse.timestamp) < CACHE_TTL) {
-      logger.debug('Using cached response', 'RidTelemetryService', {
-        endpoint,
-        cacheAge: `${(Date.now() - cachedResponse.timestamp) / 1000}s`
-      });
-      return cachedResponse.data;
-    }
-    
-    // Get signed URL with OAuth parameters
-    const signedUrl = await getSignedUrl(endpoint, 'POST', requestBody);
+    logger.info('Fetching hourly station list', 'RidTelemetryService', {
+      endpoint: ENDPOINTS.HOURLY_STATION,
+      hydroId,
+      timestamp: new Date().toISOString()
+    });
+
+    // Prepare request body
+    const requestBody = {
+      hydro: {
+        hydroid: hydroId
+      }
+    };
+
+    logger.info('Request Body:', JSON.stringify(requestBody, null, 2));
+
+    // Generate OAuth signature
+    const { signedUrl } = generateOAuthSignature(ENDPOINTS.HOURLY_STATION, 'POST');
+    logger.info('Generated signed URL:', { signedUrl });
 
     // Make API request
+    logger.info('Making API request...');
     const response = await axios.post(
       signedUrl,
       requestBody,
@@ -68,103 +155,49 @@ async function makeRidApiRequest(
           'Accept': 'application/json',
           'User-Agent': 'RID-Telemetry-Client/1.0'
         },
-        timeout: 30000, // 30 seconds timeout
-        validateStatus: () => true, // Handle all status codes in our code
-        // @ts-ignore - httpsAgent is valid but TypeScript doesn't recognize it
-        httpsAgent: new https.Agent({ 
-          rejectUnauthorized: false // Allow self-signed certificates
-        })
+        httpsAgent,
+        validateStatus: () => true,
+        timeout: 30000
       }
     );
 
-    // Check for HTTP errors
-    if (response.status !== 200) {
-      logger.error('RID API returned non-200 status code', 'RidTelemetryService', {
-        endpoint,
-        status: response.status,
-        statusText: response.statusText,
-        data: response.data,
-        requestBody: JSON.stringify(requestBody),
-        headers: {
-          'Content-Type': response.headers['content-type'],
-          'Date': response.headers['date']
-        }
-      });
+    logger.info('API Response:', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+      data: typeof response.data === 'string' ? response.data : JSON.stringify(response.data)
+    });
 
-      // If we get a 429 (Too Many Requests) or 5xx error, retry
-      if ((response.status === 429 || response.status >= 500) && retryCount < MAX_RETRIES) {
-        const delayMs = RETRY_DELAY_MS * Math.pow(2, retryCount);
-        logger.info(`Retrying request after ${delayMs}ms (attempt ${retryCount + 1}/${MAX_RETRIES})`, 'RidTelemetryService', {
-          endpoint,
-          status: response.status
-        });
-        
-        await sleep(delayMs);
-        return makeRidApiRequest(endpoint, requestBody, retryCount + 1);
-      }
-
-      const telemetryError: TelemetryError = {
-        status: response.status,
-        message: `RID API returned status ${response.status}: ${response.statusText}`,
-        details: typeof response.data === 'object' ? JSON.stringify(response.data) : String(response.data)
-      };
-      throw telemetryError;
+    if (response.status >= 400) {
+      throw new Error(`RID API request failed with status ${response.status}: ${response.statusText}`);
     }
 
-    // Parse response data
-    let data;
-    try {
-      // Handle both string and object responses
-      if (typeof response.data === 'string') {
-        data = JSON.parse(response.data);
-      } else {
-        data = response.data;
-      }
-      
-      // Cache the successful response
-      responseCache[cacheKey] = {
-        data,
-        timestamp: Date.now()
-      };
-      
-      return data;
-    } catch (parseError) {
-      logger.error('Failed to parse RID API response', 'RidTelemetryService', {
-        error: parseError instanceof Error ? parseError.message : String(parseError),
-        responseData: response.data
-      });
-
-      const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
-      const telemetryError: TelemetryError = {
-        status: 500,
-        message: 'Failed to parse RID API response',
-        details: `Error: ${errorMessage}, Response: ${typeof response.data === 'string' ? response.data.substring(0, 100) : 'non-string data'}`
-      };
-      throw telemetryError;
-    }
+    return {
+      success: true,
+      data: Array.isArray(response.data) ? response.data : []
+    };
   } catch (error) {
-    // Handle network errors with retry
-    if (
-      error && 
-      typeof error === 'object' && 
-      'isAxiosError' in error && 
-      error.isAxiosError && 
-      'code' in error && 
-      error.code === 'ECONNABORTED' && 
-      retryCount < MAX_RETRIES
-    ) {
-      const delayMs = RETRY_DELAY_MS * Math.pow(2, retryCount);
-      logger.info(`Request timed out, retrying after ${delayMs}ms (attempt ${retryCount + 1}/${MAX_RETRIES})`, 'RidTelemetryService', {
-        endpoint
-      });
-      
-      await sleep(delayMs);
-      return makeRidApiRequest(endpoint, requestBody, retryCount + 1);
-    }
-    
-    // Re-throw the error for the caller to handle
+    logger.error('Failed to fetch hourly station list', 'RidTelemetryService', {
+      error: error instanceof Error ? error.message : String(error)
+    });
     throw error;
   }
+}
+
+/**
+ * Gets current daily station count
+ */
+export async function getDailyStationCount(hydroId: string): Promise<number> {
+  const stations = await getDailyStationList(hydroId);
+  return stations.data.length;
+}
+
+/**
+ * Gets current hourly station count
+ */
+export async function getStationCount(hydroId: string): Promise<number> {
+  const stations = await getStationList(hydroId);
+  return stations.data.length;
 }
 
 /**
@@ -175,7 +208,7 @@ export async function getTelemetryData(
 ): Promise<TelemetryResponse> {
   try {
     logger.info('Starting telemetry data fetch', 'RidTelemetryService', {
-      endpoint: TELEMETRY_ENDPOINT,
+      endpoint: ENDPOINTS.TELEMETRY,
       request,
       timestamp: new Date().toISOString()
     });
@@ -183,23 +216,54 @@ export async function getTelemetryData(
     // Prepare request body
     const requestBody = {
       hydro: {
-        StationID: request.stationid,
+        stationid: request.stationid,
         TimeStart: request.timestart
       }
     };
 
-    // Make API request with retry logic
-    const data = await makeRidApiRequest(TELEMETRY_ENDPOINT, requestBody);
+    logger.info('Request Body:', JSON.stringify(requestBody, null, 2));
+
+    // Generate OAuth signature
+    const { signedUrl } = generateOAuthSignature(ENDPOINTS.TELEMETRY, 'POST');
+    logger.info('Generated signed URL:', { signedUrl });
+
+    // Make API request
+    logger.info('Making API request...');
+    const response = await axios.post(
+      signedUrl,
+      requestBody,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'User-Agent': 'RID-Telemetry-Client/1.0'
+        },
+        httpsAgent,
+        validateStatus: () => true,
+        timeout: 30000
+      }
+    );
+
+    logger.info('API Response:', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+      data: typeof response.data === 'string' ? response.data : JSON.stringify(response.data)
+    });
+
+    if (response.status >= 400) {
+      throw new Error(`RID API request failed with status ${response.status}: ${response.statusText}`);
+    }
 
     logger.info('Successfully fetched telemetry data', 'RidTelemetryService', {
       stationId: request.stationid,
-      dataPoints: Array.isArray(data) ? data.length : 0,
+      dataPoints: Array.isArray(response.data) ? response.data.length : 0,
       timestamp: new Date().toISOString()
     });
 
     return {
       success: true,
-      data: data
+      data: response.data
     };
   } catch (error) {
     // Handle known TelemetryError
@@ -216,58 +280,6 @@ export async function getTelemetryData(
     const telemetryError: TelemetryError = {
       status: 500,
       message: 'Failed to fetch telemetry data',
-      details: error instanceof Error ? error.message : String(error)
-    };
-    throw telemetryError;
-  }
-}
-
-/**
- * Fetches list of available telemetry stations
- */
-export async function getStationList(hydroId: string): Promise<TelemetryResponse> {
-  try {
-    logger.info('Fetching station list', 'RidTelemetryService', {
-      endpoint: STATION_LIST_ENDPOINT,
-      hydroId,
-      timestamp: new Date().toISOString()
-    });
-
-    // Prepare request body
-    const requestBody = {
-      hydro: {
-        HydroID: hydroId
-      }
-    };
-
-    // Make API request with retry logic
-    const data = await makeRidApiRequest(STATION_LIST_ENDPOINT, requestBody);
-
-    logger.info('Successfully fetched station list', 'RidTelemetryService', {
-      hydroId,
-      stationCount: Array.isArray(data) ? data.length : 0,
-      timestamp: new Date().toISOString()
-    });
-
-    return {
-      success: true,
-      data: data
-    };
-  } catch (error) {
-    // Handle known TelemetryError
-    if (error && typeof error === 'object' && 'status' in error) {
-      throw error;
-    }
-
-    // Handle other errors
-    logger.error('Failed to fetch station list', 'RidTelemetryService', {
-      error: error instanceof Error ? error.message : String(error),
-      hydroId
-    });
-
-    const telemetryError: TelemetryError = {
-      status: 500,
-      message: 'Failed to fetch station list',
       details: error instanceof Error ? error.message : String(error)
     };
     throw telemetryError;
@@ -301,4 +313,176 @@ export async function testTelemetryService(): Promise<TelemetryResponse> {
     stationid: testStationId,
     timestart: timeStart
   });
+}
+
+/**
+ * Fetches telemetry data for all stations in a hydro region
+ */
+export async function getHydroTelemetryData(hydroId: string): Promise<TelemetryResponse> {
+  try {
+    logger.info('Starting hydro telemetry data fetch', 'RidTelemetryService', {
+      endpoint: ENDPOINTS.HYDRO_TELEMETRY,
+      hydroId,
+      timestamp: new Date().toISOString()
+    });
+
+    // Format date in Thai Buddhist calendar format (dd/MM/yyyy)
+    const now = new Date();
+    const buddhistYear = now.getFullYear() + 543;
+    const time_start = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${buddhistYear}`;
+
+    // Prepare request body
+    const requestBody = {
+      hydro: {
+        hydroid: hydroId,
+        TimeStart: time_start
+      }
+    };
+
+    logger.info('Request Body:', JSON.stringify(requestBody, null, 2));
+
+    // Generate OAuth signature
+    const { signedUrl } = generateOAuthSignature(ENDPOINTS.HYDRO_TELEMETRY, 'POST');
+    logger.info('Generated signed URL:', { signedUrl });
+
+    // Make API request
+    logger.info('Making API request...');
+    const response = await axios.post(
+      signedUrl,
+      requestBody,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'User-Agent': 'RID-Telemetry-Client/1.0'
+        },
+        httpsAgent,
+        validateStatus: () => true,
+        timeout: 30000
+      }
+    );
+
+    logger.info('API Response:', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+      data: typeof response.data === 'string' ? response.data : JSON.stringify(response.data)
+    });
+
+    if (response.status >= 400) {
+      throw new Error(`RID API request failed with status ${response.status}: ${response.statusText}`);
+    }
+
+    logger.info('Successfully fetched hydro telemetry data', 'RidTelemetryService', {
+      hydroId,
+      dataPoints: Array.isArray(response.data) ? response.data.length : 0,
+      timestamp: new Date().toISOString()
+    });
+
+    return {
+      success: true,
+      data: response.data
+    };
+  } catch (error) {
+    // Handle known TelemetryError
+    if (error && typeof error === 'object' && 'status' in error) {
+      throw error;
+    }
+
+    // Handle other errors
+    logger.error('Failed to fetch hydro telemetry data', 'RidTelemetryService', {
+      error: error instanceof Error ? error.message : String(error),
+      hydroId
+    });
+
+    const telemetryError: TelemetryError = {
+      status: 500,
+      message: 'Failed to fetch hydro telemetry data',
+      details: error instanceof Error ? error.message : String(error)
+    };
+    throw telemetryError;
+  }
+}
+
+/**
+ * Fetches list of daily telemetry stations
+ */
+export async function getDailyStationList(hydroId: string): Promise<TelemetryResponse> {
+  try {
+    logger.info('Fetching daily station list', 'RidTelemetryService', {
+      endpoint: ENDPOINTS.DAILY_STATION,
+      hydroId,
+      timestamp: new Date().toISOString()
+    });
+
+    // Prepare request body
+    const requestBody = {
+      hydro: {
+        hydroid: hydroId.toString()
+      }
+    };
+
+    logger.info('Request Body:', JSON.stringify(requestBody, null, 2));
+
+    // Generate OAuth signature
+    const { signedUrl } = generateOAuthSignature(ENDPOINTS.DAILY_STATION, 'POST');
+    logger.info('Generated signed URL:', { signedUrl });
+
+    // Make API request
+    logger.info('Making API request...');
+    const response = await axios.post(
+      signedUrl,
+      requestBody,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'User-Agent': 'RID-Telemetry-Client/1.0'
+        },
+        httpsAgent,
+        validateStatus: () => true,
+        timeout: 30000
+      }
+    );
+
+    logger.info('API Response:', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+      data: typeof response.data === 'string' ? response.data : JSON.stringify(response.data)
+    });
+
+    if (response.status >= 400) {
+      throw new Error(`RID API request failed with status ${response.status}: ${response.statusText}`);
+    }
+
+    logger.info('Successfully fetched daily station list', 'RidTelemetryService', {
+      hydroId,
+      stationCount: Array.isArray(response.data) ? response.data.length : 0,
+      timestamp: new Date().toISOString()
+    });
+
+    return {
+      success: true,
+      data: response.data
+    };
+  } catch (error) {
+    // Handle known TelemetryError
+    if (error && typeof error === 'object' && 'status' in error) {
+      throw error;
+    }
+
+    // Handle other errors
+    logger.error('Failed to fetch daily station list', 'RidTelemetryService', {
+      error: error instanceof Error ? error.message : String(error),
+      hydroId
+    });
+
+    const telemetryError: TelemetryError = {
+      status: 500,
+      message: 'Failed to fetch daily station list',
+      details: error instanceof Error ? error.message : String(error)
+    };
+    throw telemetryError;
+  }
 } 

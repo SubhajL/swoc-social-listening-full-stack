@@ -5,9 +5,9 @@
     "node": ">=20.10.0"
   },
   "scripts": {
-    "dev": "concurrently \"pnpm run dev:backend\" \"pnpm run dev:frontend\"",
-    "dev:frontend": "cd apps/frontend && npx --yes vite --port 8080",
-    "dev:backend": "pnpm --filter backend dev",
+    "dev": "./clear-ports.sh && concurrently \"pnpm run dev:backend\" \"pnpm run dev:frontend\"",
+    "dev:frontend": "./clear-ports.sh && cd apps/frontend && npx --yes vite --port 8080",
+    "dev:backend": "./clear-ports.sh && pnpm --filter backend dev",
     "build": "pnpm --filter frontend build",
     "lint": "pnpm --filter frontend lint",
     "fetch-telemetry": "node scripts/fetch-telemetry-data-by-hydroid.js",

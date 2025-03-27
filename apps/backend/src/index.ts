@@ -29,6 +29,7 @@ import morgan from 'morgan';
 import { errorHandler } from './middleware/error-handler.js';
 import { notFoundHandler } from './middleware/not-found-handler.js';
 import { dirname } from 'path';
+import fs from 'fs';
 
 // Define SystemError interface for Node.js system errors
 interface SystemError extends Error {
@@ -78,9 +79,37 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
+// Clear any process running on the specified port
+async function clearPort(port: number): Promise<void> {
+  logger.info(`[Server] Clearing port ${port}`);
+  
+  try {
+    // For macOS/Linux
+    await new Promise((resolve, reject) => {
+      exec(`lsof -i :${port} | grep LISTEN | awk '{print $2}' | xargs kill -9`, (error) => {
+        // Ignore error as it might mean no process was found
+        resolve(null);
+      });
+    });
+    
+    logger.info(`[Server] Successfully cleared port ${port}`);
+  } catch (error) {
+    logger.error(`[Server] Error clearing port ${port}:`, {
+      error: error instanceof Error ? error.message : String(error)
+    });
+    // Continue anyway
+  }
+}
+
 // Initialize services before starting the server
 const startServer = async () => {
   try {
+    const port = parseInt(process.env.PORT || '3000', 10);
+    
+    // Clear port and stop scheduler before starting
+    await clearPort(port);
+    await startScheduler();
+    
     logger.info('🔄 Initializing services...', {
       timestamp: new Date().toISOString()
     });
@@ -155,16 +184,12 @@ const startServer = async () => {
       timestamp: new Date().toISOString()
     });
 
-    const port = process.env.PORT || 3000;
     httpServer.listen(port, () => {
       logger.info(`🚀 Server is running on port ${port}`, {
         port,
         env: process.env.NODE_ENV,
         timestamp: new Date().toISOString()
       });
-      
-      // Start the comprehensive data sync scheduler
-      startScheduler();
     }).on('error', (err: SystemError) => {
       logger.error('❌ Error during server startup:', {
         error: err.message,
@@ -188,13 +213,45 @@ const startServer = async () => {
   }
 };
 
-// Start the scheduler
-function startScheduler(): void {
+// Stop and restart the scheduler
+async function startScheduler(): Promise<void> {
   // Get current file's directory path in ES modules
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
   
   const schedulerScript = path.resolve(__dirname, 'scripts/schedule-data-sync.mjs');
+  const stopScript = path.resolve(__dirname, 'scripts/stop-scheduler.sh');
+
+  logger.info('[Scheduler] Stopping any existing scheduler processes');
+  
+  // First stop any existing scheduler
+  try {
+    await new Promise((resolve, reject) => {
+      exec(`bash ${stopScript}`, (error, stdout, stderr) => {
+        if (error && error.code !== 1) { // Ignore error code 1 which means no process found
+          reject(error);
+          return;
+        }
+        resolve(stdout);
+      });
+    });
+    
+    logger.info('[Scheduler] Successfully stopped existing scheduler processes');
+    
+    // Remove any existing lock file
+    const lockFile = path.resolve(__dirname, '../.scheduler.lock');
+    if (fs.existsSync(lockFile)) {
+      fs.unlinkSync(lockFile);
+      logger.info('[Scheduler] Removed existing lock file');
+    }
+  } catch (error) {
+    logger.error('[Scheduler] Error stopping existing scheduler', {
+      error: error instanceof Error ? error.message : String(error)
+    });
+    // Continue anyway to start new scheduler
+  }
+
+  // Start new scheduler
   logger.info('[Scheduler] Starting data sync scheduler', {
     scriptPath: schedulerScript,
     currentDir: __dirname
