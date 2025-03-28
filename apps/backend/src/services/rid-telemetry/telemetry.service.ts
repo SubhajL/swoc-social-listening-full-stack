@@ -1,7 +1,7 @@
 import https from 'https';
 import axios, { AxiosError } from 'axios';
 import crypto from 'crypto';
-import { logger } from '../../utils/logger';
+import { logger } from '../../utils/logger.js';
 import type { TelemetryReading, TelemetryResponse, TelemetryRequest, TelemetryError } from './types';
 import { TelemetryRequest as TelemetryRequestDto } from '../../dto/telemetry.dto';
 
@@ -111,27 +111,39 @@ export interface RIDTelemetryResponse {
 
 export interface RIDStationResponse {
   stationid: string;
-  stationname: string;
   stationcode: string;
-  latitude: string;
-  longitude: string;
-  elevation: string;
-  river: string;
-  province: string;
-  district: string;
-  subdistrict: string;
-  hydroname: string;
-  basinid: string;
-  basinname: string;
-  provincecode: string;
-  braelevel: string;
-  QMax: string;
-  UseMSL: string;
-  UseMSLString: string;
-  orderno: string;
-  stationdetail: string;
-  ZG: string;
-  GroundLevel: string;
+  stationname?: string;
+  stationdetail?: string;
+  hydroid?: string;
+  hydroname?: string;
+  basinid?: string;
+  basinname?: string;
+  provincecode?: string;
+  province?: string;
+  amphurecode?: string;
+  amphure?: string;
+  latitude?: string;
+  longitude?: string;
+  GroundLevel?: string;
+  QMax?: string;
+  ZG?: string;
+  braelevel?: string;
+  UseMSL?: string;
+  UseMSLString?: string;
+  UseQAuto?: string;
+  telemetryid?: string;
+  telemetrysource?: string;
+  showhourlyreport?: string;
+  showdailyreport?: string;
+  iswarning?: string;
+  notes?: string;
+  category?: string;
+  hasdata?: string;
+  orderno?: string;
+  elevation?: string;
+  river?: string;
+  district?: string;
+  subdistrict?: string;
 }
 
 /**

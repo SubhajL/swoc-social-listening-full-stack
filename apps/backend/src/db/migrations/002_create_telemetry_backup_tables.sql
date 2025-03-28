@@ -14,11 +14,11 @@ CREATE TABLE IF NOT EXISTS telemetry_data_stations_backup (
     brae_level DECIMAL(10, 2),
     q_max DECIMAL(10, 2),
     use_msl INTEGER,
-    use_msl_string VARCHAR(50),
-    order_no INTEGER,
     station_detail TEXT,
-    zero_gauge DECIMAL(10, 2),
+    zg DECIMAL(10, 2),
     ground_level DECIMAL(10, 2),
+    province VARCHAR(255),
+    amphure VARCHAR(255),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -34,9 +34,9 @@ CREATE TABLE IF NOT EXISTS telemetry_data_backup (
     flow_rate DECIMAL(10, 2),
     average_flow_rate DECIMAL(10, 2),
     notation_id INTEGER,
-    notation_string TEXT,
     source VARCHAR(50) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(station_id, reading_time)
 );
 
@@ -48,5 +48,11 @@ CREATE INDEX IF NOT EXISTS idx_telemetry_data_backup_reading_time ON telemetry_d
 -- Create trigger for telemetry_data_stations_backup
 CREATE TRIGGER update_telemetry_data_stations_backup_updated_at
     BEFORE UPDATE ON telemetry_data_stations_backup
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Create trigger for telemetry_data_backup
+CREATE TRIGGER update_telemetry_data_backup_updated_at
+    BEFORE UPDATE ON telemetry_data_backup
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column(); 

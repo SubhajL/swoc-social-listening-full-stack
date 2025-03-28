@@ -29,6 +29,83 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
+// Mock stations for testing (empty array)
+const mockStations: RIDStationResponse[] = [];
+
+// Thai province mapping
+const provinceMapping: Record<string, string> = {
+  'Bangkok': 'กรุงเทพมหานคร',
+  'Chiang Mai': 'เชียงใหม่',
+  'Phuket': 'ภูเก็ต',
+  'Chonburi': 'ชลบุรี',
+  'Krabi': 'กระบี่',
+  'Chiang Rai': 'เชียงราย',
+  'Songkhla': 'สงขลา',
+  'Udon Thani': 'อุดรธานี',
+  'Sukhothai': 'สุโขทัย',
+  'Ayutthaya': 'พระนครศรีอยุธยา'
+};
+
+function formatThaiProvince(province: string | null): string | null {
+  if (!province) return null;
+  province = province.trim();
+  
+  // Remove จังหวัด prefix if present
+  province = province.replace(/^จังหวัด\s*/i, '');
+  
+  // Special cases for Bangkok
+  if (province.toLowerCase() === 'bangkok' || province.toLowerCase() === 'กรุงเทพมหานคร') {
+    return 'กรุงเทพมหานคร';
+  }
+  
+  // Ensure the province name is in Thai
+  if (!/[\u0E00-\u0E7F]/.test(province)) {
+    logger.warn('Province name not in Thai script, skipping formatting', { province });
+    return null;
+  }
+  
+  return province;
+}
+
+function formatThaiAmphure(amphure: string | null, province: string | null): string | null {
+  if (!amphure) return null;
+  amphure = amphure.trim();
+  
+  // Ensure the amphure name is in Thai
+  if (!/[\u0E00-\u0E7F]/.test(amphure)) {
+    logger.warn('Amphure name not in Thai script, skipping formatting', { amphure });
+    return null;
+  }
+  
+  // For Bangkok, remove เขต prefix
+  if (province === 'กรุงเทพมหานคร') {
+    return amphure.replace(/^เขต\s*/i, '');
+  }
+  
+  // For other provinces, remove อำเภอ prefix
+  return amphure.replace(/^อำเภอ\s*/i, '');
+}
+
+function formatStationLocationData(locationDetails: LocationDetails): LocationDetails {
+  const formattedProvince = formatThaiProvince(locationDetails.province);
+  const formattedAmphure = formatThaiAmphure(locationDetails.amphure, formattedProvince);
+  
+  // Log the formatting results
+  logger.info('Location formatting results', {
+    original: locationDetails,
+    formatted: {
+      province: formattedProvince,
+      amphure: formattedAmphure
+    }
+  });
+  
+  return {
+    province: formattedProvince,
+    amphure: formattedAmphure,
+    formatted_address: locationDetails.formatted_address
+  };
+}
+
 /**
  * Syncs station data from RID API
  */
@@ -44,12 +121,203 @@ async function syncStations() {
       // Get daily stations
       const dailyStations = await getDailyStationList(hydroId.toString());
       if (dailyStations.success && Array.isArray(dailyStations.data)) {
+        // Add mock stations in test mode
+        if (process.env.TEST_MODE === 'true') {
+          logger.info('Test mode enabled - adding mock stations', 'TelemetrySync');
+          // Create a mock station response that matches the API response structure
+          const mockStationResponse = {
+            success: true,
+            data: mockStations
+          };
+          // Process the mock stations
+          for (const station of mockStationResponse.data) {
+            const stationData = station as unknown as RIDStationResponse;
+            
+            // Check if station exists
+            const existingStation = await client.query(
+              'SELECT station_id FROM telemetry_data_stations WHERE station_id = $1',
+              [stationData.stationid]
+            );
+
+            if (existingStation.rows.length === 0) {
+              // Get location details from Google Maps API
+              const defaultLocationDetails: LocationDetails = {
+                province: null,
+                amphure: null,
+                formatted_address: null
+              };
+              let locationDetails = defaultLocationDetails;
+
+              if (stationData.latitude && stationData.longitude) {
+                try {
+                  locationDetails = await getLocationDetails(
+                    parseFloat(stationData.latitude),
+                    parseFloat(stationData.longitude)
+                  );
+                  // Format Thai text
+                  const formattedLocationDetails = formatStationLocationData(locationDetails);
+                  
+                  logger.info(`Fetched location details for station ${stationData.stationid}`, formattedLocationDetails);
+                  
+                  // Update locationDetails with formatted values
+                  locationDetails = formattedLocationDetails;
+                } catch (error) {
+                  logger.error(`Failed to fetch location details for station ${stationData.stationid}`, {
+                    error: error instanceof Error ? error.message : String(error)
+                  });
+                }
+              }
+
+              // Insert new station if it doesn't exist
+              const insertQuery = `
+                INSERT INTO telemetry_data_stations (
+                  station_id, station_code, station_name, station_detail,
+                  hydro_id, hydro_name, basin_id, basin_name,
+                  province_code, province, amphure_code, amphure,
+                  latitude, longitude, ground_level, q_max,
+                  zg, brae_level, use_msl, use_q_auto,
+                  telemetry_id, telemetry_source,
+                  show_hourly_report, show_daily_report,
+                  is_warning, status, notes, data_source,
+                  category, has_data
+                ) VALUES (
+                  $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+                  $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
+                  $21, $22, $23, $24, $25, $26, $27, $28, $29, $30
+                )
+              `;
+              const values = [
+                stationData.stationid,                               // station_id
+                stationData.stationcode,                            // station_code
+                stationData.stationname,                            // station_name
+                stationData.stationdetail,                          // station_detail
+                parseInt(stationData.hydroid || '0', 10),           // hydro_id
+                stationData.hydroname,                              // hydro_name
+                parseInt(stationData.basinid || '0', 10),           // basin_id
+                stationData.basinname,                              // basin_name
+                parseInt(stationData.provincecode || '0', 10),      // province_code
+                locationDetails.province,                           // province
+                null,                                               // amphure_code
+                locationDetails.amphure,                            // amphure
+                parseFloat(stationData.latitude || '0'),            // latitude
+                parseFloat(stationData.longitude || '0'),           // longitude
+                parseFloat(stationData.GroundLevel || '0'),         // ground_level
+                parseFloat(stationData.QMax || '0'),                // q_max
+                parseFloat(stationData.ZG || '0'),                  // zg
+                parseFloat(stationData.braelevel || '0'),           // brae_level
+                stationData.UseMSL === '1',                         // use_msl
+                stationData.UseQAuto === '1',                       // use_q_auto
+                parseInt(stationData.telemetryid || '0', 10),       // telemetry_id
+                stationData.telemetrysource || null,                // telemetry_source
+                true,                                               // show_hourly_report
+                true,                                               // show_daily_report
+                false,                                              // is_warning
+                'active',                                           // status
+                null,                                               // notes
+                'RID',                                             // data_source
+                'Common',                                           // category
+                true                                                // has_data
+              ];
+              await client.query(insertQuery, values);
+              logger.info(`Inserted new station: ${stationData.stationid}`, 'TelemetrySync');
+            } else {
+              // Update existing station with new data from RID API
+              // Get location details from Google Maps API
+              const defaultLocationDetails: LocationDetails = {
+                province: null,
+                amphure: null,
+                formatted_address: null
+              };
+              let locationDetails = defaultLocationDetails;
+
+              if (stationData.latitude && stationData.longitude) {
+                try {
+                  locationDetails = await getLocationDetails(
+                    parseFloat(stationData.latitude),
+                    parseFloat(stationData.longitude)
+                  );
+                  // Format Thai text
+                  const formattedLocationDetails = formatStationLocationData(locationDetails);
+                  
+                  logger.info(`Fetched location details for station ${stationData.stationid}`, formattedLocationDetails);
+                  
+                  // Update locationDetails with formatted values
+                  locationDetails = formattedLocationDetails;
+                } catch (error) {
+                  logger.error(`Failed to fetch location details for station ${stationData.stationid}`, {
+                    error: error instanceof Error ? error.message : String(error)
+                  });
+                }
+              }
+
+              const updateQuery = `
+                UPDATE telemetry_data_stations 
+                SET 
+                  station_code = $2,
+                  station_name = $3,
+                  station_detail = $4,
+                  hydro_id = $5,
+                  hydro_name = $6,
+                  basin_id = $7,
+                  basin_name = $8,
+                  province_code = $9,
+                  province = $10,
+                  amphure = $11,
+                  latitude = $12,
+                  longitude = $13,
+                  ground_level = $14,
+                  q_max = $15,
+                  zg = $16,
+                  brae_level = $17,
+                  use_msl = $18,
+                  use_q_auto = $19,
+                  telemetry_id = $20,
+                  telemetry_source = $21,
+                  show_hourly_report = $22,
+                  show_daily_report = $23,
+                  updated_at = $24
+                WHERE station_id = $1
+              `;
+              const values = [
+                stationData.stationid,                               // station_id
+                stationData.stationcode,                            // station_code
+                stationData.stationname,                            // station_name
+                stationData.stationdetail,                          // station_detail
+                parseInt(stationData.hydroid || '0', 10),           // hydro_id
+                stationData.hydroname,                              // hydro_name
+                parseInt(stationData.basinid || '0', 10),           // basin_id
+                stationData.basinname,                              // basin_name
+                parseInt(stationData.provincecode || '0', 10),      // province_code
+                locationDetails.province,                           // province
+                locationDetails.amphure,                            // amphure
+                parseFloat(stationData.latitude || '0'),            // latitude
+                parseFloat(stationData.longitude || '0'),           // longitude
+                parseFloat(stationData.GroundLevel || '0'),         // ground_level
+                parseFloat(stationData.QMax || '0'),                // q_max
+                parseFloat(stationData.ZG || '0'),                  // zg
+                parseFloat(stationData.braelevel || '0'),           // brae_level
+                stationData.UseMSL === '1',                         // use_msl
+                stationData.UseQAuto === '1',                       // use_q_auto
+                parseInt(stationData.telemetryid || '0', 10),       // telemetry_id
+                stationData.telemetrysource || null,                // telemetry_source
+                true,                                               // show_hourly_report
+                true,                                               // show_daily_report
+                new Date().toISOString()                            // updated_at
+              ];
+              await client.query(updateQuery, values);
+              logger.info(`Updated existing station: ${stationData.stationid}`, 'TelemetrySync');
+            }
+          }
+        }
+
+        // Process regular stations
         for (const station of dailyStations.data) {
           // Type assertion to handle the API response
           const stationData = station as unknown as RIDStationResponse;
+          
           // Check if station exists
           const existingStation = await client.query(
-            'SELECT station_id FROM telemetry_data_stations_backup WHERE station_id = $1',
+            'SELECT station_id FROM telemetry_data_stations WHERE station_id = $1',
             [stationData.stationid]
           );
 
@@ -58,7 +326,6 @@ async function syncStations() {
             const defaultLocationDetails: LocationDetails = {
               province: null,
               amphure: null,
-              tambon: null,
               formatted_address: null
             };
             let locationDetails = defaultLocationDetails;
@@ -69,11 +336,13 @@ async function syncStations() {
                   parseFloat(stationData.latitude),
                   parseFloat(stationData.longitude)
                 );
-                logger.info(`Fetched location details for station ${stationData.stationid}`, {
-                  province: locationDetails.province,
-                  amphure: locationDetails.amphure,
-                  tambon: locationDetails.tambon
-                });
+                // Format Thai text
+                const formattedLocationDetails = formatStationLocationData(locationDetails);
+                
+                logger.info(`Fetched location details for station ${stationData.stationid}`, formattedLocationDetails);
+                
+                // Update locationDetails with formatted values
+                locationDetails = formattedLocationDetails;
               } catch (error) {
                 logger.error(`Failed to fetch location details for station ${stationData.stationid}`, {
                   error: error instanceof Error ? error.message : String(error)
@@ -82,162 +351,143 @@ async function syncStations() {
             }
 
             // Insert new station if it doesn't exist
-            await client.query(`
-              INSERT INTO telemetry_data_stations_backup (
-                station_id, station_name, hydro_id, data_source,
-                latitude, longitude, elevation, last_sync,
-                station_code, hydro_name, basin_id, basin_name,
-                province_code, brae_level, q_max, use_msl,
-                use_msl_string, order_no, station_detail,
-                zero_gauge, ground_level,
-                province, amphure, tambon, formatted_address
-              ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)
-            `, [
-              stationData.stationid,
-              stationData.stationname,
-              hydroId,
-              'daily',
-              stationData.latitude,
-              stationData.longitude,
-              stationData.elevation,
-              new Date().toISOString(),
-              stationData.stationcode,
-              stationData.hydroname,
-              stationData.basinid,
-              stationData.basinname,
-              stationData.provincecode,
-              stationData.braelevel,
-              stationData.QMax,
-              stationData.UseMSL,
-              stationData.UseMSLString,
-              stationData.orderno,
-              stationData.stationdetail,
-              stationData.ZG,
-              stationData.GroundLevel,
-              locationDetails.province,
-              locationDetails.amphure,
-              locationDetails.tambon,
-              locationDetails.formatted_address
-            ]);
+            const insertQuery = `
+              INSERT INTO telemetry_data_stations (
+                station_id, station_code, station_name, station_detail,
+                hydro_id, hydro_name, basin_id, basin_name,
+                province_code, province, amphure_code, amphure,
+                latitude, longitude, ground_level, q_max,
+                zg, brae_level, use_msl, use_q_auto,
+                telemetry_id, telemetry_source,
+                show_hourly_report, show_daily_report,
+                is_warning, status, notes, data_source,
+                category, has_data
+              ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+                $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
+                $21, $22, $23, $24, $25, $26, $27, $28, $29, $30
+              )
+            `;
+            const values = [
+              stationData.stationid,                               // station_id
+              stationData.stationcode,                            // station_code
+              stationData.stationname,                            // station_name
+              stationData.stationdetail,                          // station_detail
+              parseInt(stationData.hydroid || '0', 10),           // hydro_id
+              stationData.hydroname,                              // hydro_name
+              parseInt(stationData.basinid || '0', 10),           // basin_id
+              stationData.basinname,                              // basin_name
+              parseInt(stationData.provincecode || '0', 10),      // province_code
+              locationDetails.province,                           // province
+              null,                                               // amphure_code
+              locationDetails.amphure,                            // amphure
+              parseFloat(stationData.latitude || '0'),            // latitude
+              parseFloat(stationData.longitude || '0'),           // longitude
+              parseFloat(stationData.GroundLevel || '0'),         // ground_level
+              parseFloat(stationData.QMax || '0'),                // q_max
+              parseFloat(stationData.ZG || '0'),                  // zg
+              parseFloat(stationData.braelevel || '0'),           // brae_level
+              stationData.UseMSL === '1',                         // use_msl
+              stationData.UseQAuto === '1',                       // use_q_auto
+              parseInt(stationData.telemetryid || '0', 10),       // telemetry_id
+              stationData.telemetrysource || null,                // telemetry_source
+              true,                                               // show_hourly_report
+              true,                                               // show_daily_report
+              false,                                              // is_warning
+              'active',                                           // status
+              null,                                               // notes
+              'RID',                                             // data_source
+              'Common',                                           // category
+              true                                                // has_data
+            ];
+            await client.query(insertQuery, values);
             logger.info(`Inserted new station: ${stationData.stationid}`, 'TelemetrySync');
           } else {
-            // Update existing station if there are changes
-            // First get existing station data to protect non-NULL fields
-            const existingStationData = await client.query(
-              'SELECT * FROM telemetry_data_stations_backup WHERE station_id = $1',
-              [stationData.stationid]
-            );
-            const existing = existingStationData.rows[0];
-
-            // Build update query dynamically based on non-NULL values
-            const updateFields: string[] = [];
-            const updateValues: any[] = [stationData.stationid];
-            let paramCount = 1;
-
-            // Helper function to check if a value should be updated
-            const shouldUpdateField = (newValue: any, existingValue: any) => {
-              // Don't update if new value is NULL/empty and existing value is not
-              if ((newValue === null || newValue === '') && (existingValue !== null && existingValue !== '')) {
-                return false;
-              }
-              return true;
+            // Update existing station with new data from RID API
+            // Get location details from Google Maps API
+            const defaultLocationDetails: LocationDetails = {
+              province: null,
+              amphure: null,
+              formatted_address: null
             };
+            let locationDetails = defaultLocationDetails;
 
-            // Check each field
-            if (shouldUpdateField(stationData.stationname, existing.station_name)) {
-              updateFields.push(`station_name = $${++paramCount}`);
-              updateValues.push(stationData.stationname);
-            }
-            if (shouldUpdateField(hydroId, existing.hydro_id)) {
-              updateFields.push(`hydro_id = $${++paramCount}`);
-              updateValues.push(hydroId);
-            }
-            if (shouldUpdateField('daily', existing.data_source)) {
-              updateFields.push(`data_source = $${++paramCount}`);
-              updateValues.push('daily');
-            }
-            if (shouldUpdateField(stationData.latitude, existing.latitude)) {
-              updateFields.push(`latitude = $${++paramCount}`);
-              updateValues.push(stationData.latitude);
-            }
-            if (shouldUpdateField(stationData.longitude, existing.longitude)) {
-              updateFields.push(`longitude = $${++paramCount}`);
-              updateValues.push(stationData.longitude);
-            }
-            if (shouldUpdateField(stationData.elevation, existing.elevation)) {
-              updateFields.push(`elevation = $${++paramCount}`);
-              updateValues.push(stationData.elevation);
-            }
-            if (shouldUpdateField(new Date().toISOString(), existing.last_sync)) {
-              updateFields.push(`last_sync = $${++paramCount}`);
-              updateValues.push(new Date().toISOString());
-            }
-            if (shouldUpdateField(stationData.stationcode, existing.station_code)) {
-              updateFields.push(`station_code = $${++paramCount}`);
-              updateValues.push(stationData.stationcode);
-            }
-            if (shouldUpdateField(stationData.hydroname, existing.hydro_name)) {
-              updateFields.push(`hydro_name = $${++paramCount}`);
-              updateValues.push(stationData.hydroname);
-            }
-            if (shouldUpdateField(stationData.basinid, existing.basin_id)) {
-              updateFields.push(`basin_id = $${++paramCount}`);
-              updateValues.push(stationData.basinid);
-            }
-            if (shouldUpdateField(stationData.basinname, existing.basin_name)) {
-              updateFields.push(`basin_name = $${++paramCount}`);
-              updateValues.push(stationData.basinname);
-            }
-            if (shouldUpdateField(stationData.provincecode, existing.province_code)) {
-              updateFields.push(`province_code = $${++paramCount}`);
-              updateValues.push(stationData.provincecode);
-            }
-            if (shouldUpdateField(stationData.braelevel, existing.brae_level)) {
-              updateFields.push(`brae_level = $${++paramCount}`);
-              updateValues.push(stationData.braelevel);
-            }
-            if (shouldUpdateField(stationData.QMax, existing.q_max)) {
-              updateFields.push(`q_max = $${++paramCount}`);
-              updateValues.push(stationData.QMax);
-            }
-            if (shouldUpdateField(stationData.UseMSL, existing.use_msl)) {
-              updateFields.push(`use_msl = $${++paramCount}`);
-              updateValues.push(stationData.UseMSL);
-            }
-            if (shouldUpdateField(stationData.UseMSLString, existing.use_msl_string)) {
-              updateFields.push(`use_msl_string = $${++paramCount}`);
-              updateValues.push(stationData.UseMSLString);
-            }
-            if (shouldUpdateField(stationData.orderno, existing.order_no)) {
-              updateFields.push(`order_no = $${++paramCount}`);
-              updateValues.push(stationData.orderno);
-            }
-            if (shouldUpdateField(stationData.stationdetail, existing.station_detail)) {
-              updateFields.push(`station_detail = $${++paramCount}`);
-              updateValues.push(stationData.stationdetail);
-            }
-            if (shouldUpdateField(stationData.ZG, existing.zero_gauge)) {
-              updateFields.push(`zero_gauge = $${++paramCount}`);
-              updateValues.push(stationData.ZG);
-            }
-            if (shouldUpdateField(stationData.GroundLevel, existing.ground_level)) {
-              updateFields.push(`ground_level = $${++paramCount}`);
-              updateValues.push(stationData.GroundLevel);
+            if (stationData.latitude && stationData.longitude) {
+              try {
+                locationDetails = await getLocationDetails(
+                  parseFloat(stationData.latitude),
+                  parseFloat(stationData.longitude)
+                );
+                // Format Thai text
+                const formattedLocationDetails = formatStationLocationData(locationDetails);
+                
+                logger.info(`Fetched location details for station ${stationData.stationid}`, formattedLocationDetails);
+                
+                // Update locationDetails with formatted values
+                locationDetails = formattedLocationDetails;
+              } catch (error) {
+                logger.error(`Failed to fetch location details for station ${stationData.stationid}`, {
+                  error: error instanceof Error ? error.message : String(error)
+                });
+              }
             }
 
-            // Always update the updated_at timestamp
-            updateFields.push(`updated_at = CURRENT_TIMESTAMP`);
-
-            if (updateFields.length > 0) {
-              await client.query(`
-                UPDATE telemetry_data_stations_backup 
-                SET ${updateFields.join(', ')}
-                WHERE station_id = $1
-              `, updateValues);
-              logger.info(`Updated existing station: ${stationData.stationid}`, 'TelemetrySync');
-            } else {
-              logger.info(`No updates needed for station: ${stationData.stationid}`, 'TelemetrySync');
-            }
+            const updateQuery = `
+              UPDATE telemetry_data_stations 
+              SET 
+                station_code = $2,
+                station_name = $3,
+                station_detail = $4,
+                hydro_id = $5,
+                hydro_name = $6,
+                basin_id = $7,
+                basin_name = $8,
+                province_code = $9,
+                province = $10,
+                amphure = $11,
+                latitude = $12,
+                longitude = $13,
+                ground_level = $14,
+                q_max = $15,
+                zg = $16,
+                brae_level = $17,
+                use_msl = $18,
+                use_q_auto = $19,
+                telemetry_id = $20,
+                telemetry_source = $21,
+                show_hourly_report = $22,
+                show_daily_report = $23,
+                updated_at = $24
+              WHERE station_id = $1
+            `;
+            const values = [
+              stationData.stationid,                               // station_id
+              stationData.stationcode,                            // station_code
+              stationData.stationname,                            // station_name
+              stationData.stationdetail,                          // station_detail
+              parseInt(stationData.hydroid || '0', 10),           // hydro_id
+              stationData.hydroname,                              // hydro_name
+              parseInt(stationData.basinid || '0', 10),           // basin_id
+              stationData.basinname,                              // basin_name
+              parseInt(stationData.provincecode || '0', 10),      // province_code
+              locationDetails.province,                           // province
+              locationDetails.amphure,                            // amphure
+              parseFloat(stationData.latitude || '0'),            // latitude
+              parseFloat(stationData.longitude || '0'),           // longitude
+              parseFloat(stationData.GroundLevel || '0'),         // ground_level
+              parseFloat(stationData.QMax || '0'),                // q_max
+              parseFloat(stationData.ZG || '0'),                  // zg
+              parseFloat(stationData.braelevel || '0'),           // brae_level
+              stationData.UseMSL === '1',                         // use_msl
+              stationData.UseQAuto === '1',                       // use_q_auto
+              parseInt(stationData.telemetryid || '0', 10),       // telemetry_id
+              stationData.telemetrysource || null,                // telemetry_source
+              true,                                               // show_hourly_report
+              true,                                               // show_daily_report
+              new Date().toISOString()                            // updated_at
+            ];
+            await client.query(updateQuery, values);
+            logger.info(`Updated existing station: ${stationData.stationid}`, 'TelemetrySync');
           }
         }
       }
@@ -248,7 +498,7 @@ async function syncStations() {
         for (const station of hourlyStations.data as RIDStationResponse[]) {
           // Check if station exists
           const existingStation = await client.query(
-            'SELECT station_id FROM telemetry_data_stations_backup WHERE station_id = $1',
+            'SELECT station_id FROM telemetry_data_stations WHERE station_id = $1',
             [station.stationid]
           );
 
@@ -257,7 +507,6 @@ async function syncStations() {
             const defaultLocationDetails: LocationDetails = {
               province: null,
               amphure: null,
-              tambon: null,
               formatted_address: null
             };
             let locationDetails = defaultLocationDetails;
@@ -268,11 +517,13 @@ async function syncStations() {
                   parseFloat(station.latitude),
                   parseFloat(station.longitude)
                 );
-                logger.info(`Fetched location details for station ${station.stationid}`, {
-                  province: locationDetails.province,
-                  amphure: locationDetails.amphure,
-                  tambon: locationDetails.tambon
-                });
+                // Format Thai text
+                const formattedLocationDetails = formatStationLocationData(locationDetails);
+                
+                logger.info(`Fetched location details for station ${station.stationid}`, formattedLocationDetails);
+                
+                // Update locationDetails with formatted values
+                locationDetails = formattedLocationDetails;
               } catch (error) {
                 logger.error(`Failed to fetch location details for station ${station.stationid}`, {
                   error: error instanceof Error ? error.message : String(error)
@@ -281,46 +532,143 @@ async function syncStations() {
             }
 
             // Insert new station if it doesn't exist
-            await client.query(`
-              INSERT INTO telemetry_data_stations_backup (
-                station_id, station_name, hydro_id, data_source,
-                latitude, longitude, elevation, last_sync,
-                station_code, hydro_name, basin_id, basin_name,
-                province_code, brae_level, q_max, use_msl,
-                use_msl_string, order_no, station_detail,
-                zero_gauge, ground_level,
-                province, amphure, tambon, formatted_address
-              ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)
-            `, [
-              station.stationid,
-              station.stationname,
-              hydroId,
-              'hourly',
-              station.latitude,
-              station.longitude,
-              station.elevation,
-              new Date().toISOString(),
-              station.stationcode,
-              station.hydroname,
-              station.basinid,
-              station.basinname,
-              station.provincecode,
-              station.braelevel,
-              station.QMax,
-              station.UseMSL,
-              station.UseMSLString,
-              station.orderno,
-              station.stationdetail,
-              station.ZG,
-              station.GroundLevel,
-              locationDetails.province,
-              locationDetails.amphure,
-              locationDetails.tambon,
-              locationDetails.formatted_address
-            ]);
+            const insertQuery = `
+              INSERT INTO telemetry_data_stations (
+                station_id, station_code, station_name, station_detail,
+                hydro_id, hydro_name, basin_id, basin_name,
+                province_code, province, amphure_code, amphure,
+                latitude, longitude, ground_level, q_max,
+                zg, brae_level, use_msl, use_q_auto,
+                telemetry_id, telemetry_source,
+                show_hourly_report, show_daily_report,
+                is_warning, status, notes, data_source,
+                category, has_data
+              ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+                $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
+                $21, $22, $23, $24, $25, $26, $27, $28, $29, $30
+              )
+            `;
+            const values = [
+              station.stationid,                               // station_id
+              station.stationcode,                            // station_code
+              station.stationname,                            // station_name
+              station.stationdetail,                          // station_detail
+              parseInt(station.hydroid || '0', 10),           // hydro_id
+              station.hydroname,                              // hydro_name
+              parseInt(station.basinid || '0', 10),           // basin_id
+              station.basinname,                              // basin_name
+              parseInt(station.provincecode || '0', 10),      // province_code
+              locationDetails.province,                           // province
+              null,                                               // amphure_code
+              locationDetails.amphure,                            // amphure
+              parseFloat(station.latitude || '0'),            // latitude
+              parseFloat(station.longitude || '0'),           // longitude
+              parseFloat(station.GroundLevel || '0'),         // ground_level
+              parseFloat(station.QMax || '0'),                // q_max
+              parseFloat(station.ZG || '0'),                  // zg
+              parseFloat(station.braelevel || '0'),           // brae_level
+              station.UseMSL === '1',                         // use_msl
+              station.UseQAuto === '1',                       // use_q_auto
+              parseInt(station.telemetryid || '0', 10),       // telemetry_id
+              station.telemetrysource || null,                // telemetry_source
+              true,                                               // show_hourly_report
+              true,                                               // show_daily_report
+              false,                                              // is_warning
+              'active',                                           // status
+              null,                                               // notes
+              'RID',                                             // data_source
+              'Common',                                           // category
+              true                                                // has_data
+            ];
+            await client.query(insertQuery, values);
             logger.info(`Inserted new station: ${station.stationid}`, 'TelemetrySync');
           } else {
-            logger.info(`Station ${station.stationid} already exists, skipping`, 'TelemetrySync');
+            // Update existing station with new data from RID API
+            // Get location details from Google Maps API
+            const defaultLocationDetails: LocationDetails = {
+              province: null,
+              amphure: null,
+              formatted_address: null
+            };
+            let locationDetails = defaultLocationDetails;
+
+            if (station.latitude && station.longitude) {
+              try {
+                locationDetails = await getLocationDetails(
+                  parseFloat(station.latitude),
+                  parseFloat(station.longitude)
+                );
+                // Format Thai text
+                const formattedLocationDetails = formatStationLocationData(locationDetails);
+                
+                logger.info(`Fetched location details for station ${station.stationid}`, formattedLocationDetails);
+                
+                // Update locationDetails with formatted values
+                locationDetails = formattedLocationDetails;
+              } catch (error) {
+                logger.error(`Failed to fetch location details for station ${station.stationid}`, {
+                  error: error instanceof Error ? error.message : String(error)
+                });
+              }
+            }
+
+            const updateQuery = `
+              UPDATE telemetry_data_stations 
+              SET 
+                station_code = $2,
+                station_name = $3,
+                station_detail = $4,
+                hydro_id = $5,
+                hydro_name = $6,
+                basin_id = $7,
+                basin_name = $8,
+                province_code = $9,
+                province = $10,
+                amphure = $11,
+                latitude = $12,
+                longitude = $13,
+                ground_level = $14,
+                q_max = $15,
+                zg = $16,
+                brae_level = $17,
+                use_msl = $18,
+                use_q_auto = $19,
+                telemetry_id = $20,
+                telemetry_source = $21,
+                show_hourly_report = $22,
+                show_daily_report = $23,
+                updated_at = $24
+              WHERE station_id = $1
+            `;
+            const values = [
+              station.stationid,                               // station_id
+              station.stationcode,                            // station_code
+              station.stationname,                            // station_name
+              station.stationdetail,                          // station_detail
+              parseInt(station.hydroid || '0', 10),           // hydro_id
+              station.hydroname,                              // hydro_name
+              parseInt(station.basinid || '0', 10),           // basin_id
+              station.basinname,                              // basin_name
+              parseInt(station.provincecode || '0', 10),      // province_code
+              locationDetails.province,                           // province
+              locationDetails.amphure,                            // amphure
+              parseFloat(station.latitude || '0'),            // latitude
+              parseFloat(station.longitude || '0'),           // longitude
+              parseFloat(station.GroundLevel || '0'),         // ground_level
+              parseFloat(station.QMax || '0'),                // q_max
+              parseFloat(station.ZG || '0'),                  // zg
+              parseFloat(station.braelevel || '0'),           // brae_level
+              station.UseMSL === '1',                         // use_msl
+              station.UseQAuto === '1',                       // use_q_auto
+              parseInt(station.telemetryid || '0', 10),       // telemetry_id
+              station.telemetrysource || null,                // telemetry_source
+              true,                                               // show_hourly_report
+              true,                                               // show_daily_report
+              new Date().toISOString()                            // updated_at
+            ];
+            await client.query(updateQuery, values);
+            logger.info(`Updated existing station: ${station.stationid}`, 'TelemetrySync');
           }
         }
       }

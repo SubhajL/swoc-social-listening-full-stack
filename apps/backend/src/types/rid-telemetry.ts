@@ -11,6 +11,9 @@ export interface RIDStationResponse {
   basinid?: string;
   basinname?: string;
   provincecode?: string;
+  province?: string;
+  amphurecode?: string;
+  amphure?: string;
   latitude?: string;
   longitude?: string;
   GroundLevel?: string;
@@ -19,6 +22,24 @@ export interface RIDStationResponse {
   braelevel?: string;
   UseMSL?: string;
   UseMSLString?: string;
+  UseQAuto?: string;
+  telemetryid?: string;
+  telemetrysource?: string;
+  showhourlyreport?: string;
+  showdailyreport?: string;
+  iswarning?: string;
+  notes?: string;
+  category?: string;
+  hasdata?: string;
   orderno?: string;
   elevation?: string;
+}
+
+/**
+ * Response type for RID Telemetry API
+ */
+export interface RIDTelemetryResponse {
+  success: boolean;
+  data: RIDStationResponse[];
+  error?: string;
 } 

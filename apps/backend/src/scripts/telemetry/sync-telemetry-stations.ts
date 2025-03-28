@@ -32,9 +32,12 @@ const FIELD_MAPPINGS: StationFieldMapping[] = [
   { apiField: 'stationdetail', dbField: 'station_detail' },
   { apiField: 'hydroid', dbField: 'hydro_id', transform: (v) => v ? parseInt(v, 10) : null },
   { apiField: 'hydroname', dbField: 'hydro_name' },
-  { apiField: 'basinid', dbField: 'basin_id' },
+  { apiField: 'basinid', dbField: 'basin_id', transform: (v) => v ? parseInt(v, 10) : null },
   { apiField: 'basinname', dbField: 'basin_name' },
-  { apiField: 'provincecode', dbField: 'province_code' },
+  { apiField: 'provincecode', dbField: 'province_code', transform: (v) => v ? parseInt(v, 10) : null },
+  { apiField: 'province', dbField: 'province' },
+  { apiField: 'amphurecode', dbField: 'amphure_code', transform: (v) => v ? parseInt(v, 10) : null },
+  { apiField: 'amphure', dbField: 'amphure' },
   { apiField: 'latitude', dbField: 'latitude', transform: (v) => v ? parseFloat(v) : null },
   { apiField: 'longitude', dbField: 'longitude', transform: (v) => v ? parseFloat(v) : null },
   { apiField: 'GroundLevel', dbField: 'ground_level', transform: (v) => v ? parseFloat(v) : null },
@@ -42,6 +45,16 @@ const FIELD_MAPPINGS: StationFieldMapping[] = [
   { apiField: 'ZG', dbField: 'zg', transform: (v) => v ? parseFloat(v) : null },
   { apiField: 'braelevel', dbField: 'brae_level', transform: (v) => v ? parseFloat(v) : null },
   { apiField: 'UseMSL', dbField: 'use_msl', transform: (v) => v === '1' },
+  { apiField: 'UseQAuto', dbField: 'use_q_auto', transform: (v) => v === '1' },
+  { apiField: 'telemetryid', dbField: 'telemetry_id', transform: (v) => v ? parseInt(v, 10) : null },
+  { apiField: 'telemetrysource', dbField: 'telemetry_source' },
+  { apiField: 'showhourlyreport', dbField: 'show_hourly_report', transform: (v) => v === '1' },
+  { apiField: 'showdailyreport', dbField: 'show_daily_report', transform: (v) => v === '1' },
+  { apiField: 'iswarning', dbField: 'is_warning', transform: (v) => v === '1' },
+  { apiField: 'notes', dbField: 'notes' },
+  { apiField: 'category', dbField: 'category' },
+  { apiField: 'hasdata', dbField: 'has_data', transform: (v) => v === '1' },
+  { apiField: 'stationid', dbField: 'original_station_id' }
 ];
 
 interface SyncStats {
@@ -127,7 +140,7 @@ async function syncStation(
 
     // Check if station exists
     const existingStation = await client.query(
-      'SELECT id FROM telemetry_data_stations WHERE station_id = $1',
+      'SELECT id, province, amphure FROM telemetry_data_stations WHERE station_id = $1',
       [station.stationid]
     );
 
@@ -145,6 +158,17 @@ async function syncStation(
       logger.info('Created new station', { stationId: station.stationid });
       return { success: true, action: 'created' };
     } else {
+      // For update, we need to preserve existing province and amphure values if API doesn't provide them
+      const existingData = existingStation.rows[0];
+      
+      // If API doesn't provide province/amphure, use existing values
+      if (!station.province && existingData.province) {
+        dbFields.province = existingData.province;
+      }
+      if (!station.amphure && existingData.amphure) {
+        dbFields.amphure = existingData.amphure;
+      }
+
       // Update existing station, excluding protected fields
       const setClause = Object.entries(dbFields)
         .filter(([field]) => !PROTECTED_FIELDS.includes(field))
@@ -158,7 +182,11 @@ async function syncStation(
 
       logger.info('Updated existing station', { 
         stationId: station.stationid,
-        protectedFields: PROTECTED_FIELDS
+        protectedFields: PROTECTED_FIELDS,
+        preservedFields: {
+          province: !station.province ? 'existing' : 'new',
+          amphure: !station.amphure ? 'existing' : 'new'
+        }
       });
       return { success: true, action: 'updated' };
     }
