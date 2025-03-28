@@ -112,12 +112,26 @@ export interface RIDTelemetryResponse {
 export interface RIDStationResponse {
   stationid: string;
   stationname: string;
+  stationcode: string;
   latitude: string;
   longitude: string;
+  elevation: string;
   river: string;
   province: string;
   district: string;
   subdistrict: string;
+  hydroname: string;
+  basinid: string;
+  basinname: string;
+  provincecode: string;
+  braelevel: string;
+  QMax: string;
+  UseMSL: string;
+  UseMSLString: string;
+  orderno: string;
+  stationdetail: string;
+  ZG: string;
+  GroundLevel: string;
 }
 
 /**
