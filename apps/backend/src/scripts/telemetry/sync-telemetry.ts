@@ -7,7 +7,7 @@ import { logger } from '../../utils/logger.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import type { RIDStationResponse } from '../../services/rid-telemetry/telemetry.service.js';
+import type { RIDStationResponse } from '../../types/rid-telemetry.js';
 import { getLocationDetails, type LocationDetails } from '../../services/google-maps/google-maps.service.js';
 
 // Get current directory
@@ -28,9 +28,6 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
-
-// Mock stations for testing (empty array)
-const mockStations: RIDStationResponse[] = [];
 
 // Thai province mapping
 const provinceMapping: Record<string, string> = {
@@ -121,195 +118,6 @@ async function syncStations() {
       // Get daily stations
       const dailyStations = await getDailyStationList(hydroId.toString());
       if (dailyStations.success && Array.isArray(dailyStations.data)) {
-        // Add mock stations in test mode
-        if (process.env.TEST_MODE === 'true') {
-          logger.info('Test mode enabled - adding mock stations', 'TelemetrySync');
-          // Create a mock station response that matches the API response structure
-          const mockStationResponse = {
-            success: true,
-            data: mockStations
-          };
-          // Process the mock stations
-          for (const station of mockStationResponse.data) {
-            const stationData = station as unknown as RIDStationResponse;
-            
-            // Check if station exists
-            const existingStation = await client.query(
-              'SELECT station_id FROM telemetry_data_stations WHERE station_id = $1',
-              [stationData.stationid]
-            );
-
-            if (existingStation.rows.length === 0) {
-              // Get location details from Google Maps API
-              const defaultLocationDetails: LocationDetails = {
-                province: null,
-                amphure: null,
-                formatted_address: null
-              };
-              let locationDetails = defaultLocationDetails;
-
-              if (stationData.latitude && stationData.longitude) {
-                try {
-                  locationDetails = await getLocationDetails(
-                    parseFloat(stationData.latitude),
-                    parseFloat(stationData.longitude)
-                  );
-                  // Format Thai text
-                  const formattedLocationDetails = formatStationLocationData(locationDetails);
-                  
-                  logger.info(`Fetched location details for station ${stationData.stationid}`, formattedLocationDetails);
-                  
-                  // Update locationDetails with formatted values
-                  locationDetails = formattedLocationDetails;
-                } catch (error) {
-                  logger.error(`Failed to fetch location details for station ${stationData.stationid}`, {
-                    error: error instanceof Error ? error.message : String(error)
-                  });
-                }
-              }
-
-              // Insert new station if it doesn't exist
-              const insertQuery = `
-                INSERT INTO telemetry_data_stations (
-                  station_id, station_code, station_name, station_detail,
-                  hydro_id, hydro_name, basin_id, basin_name,
-                  province_code, province, amphure_code, amphure,
-                  latitude, longitude, ground_level, q_max,
-                  zg, brae_level, use_msl, use_q_auto,
-                  telemetry_id, telemetry_source,
-                  show_hourly_report, show_daily_report,
-                  is_warning, status, notes, data_source,
-                  category, has_data
-                ) VALUES (
-                  $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-                  $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
-                  $21, $22, $23, $24, $25, $26, $27, $28, $29, $30
-                )
-              `;
-              const values = [
-                stationData.stationid,                               // station_id
-                stationData.stationcode,                            // station_code
-                stationData.stationname,                            // station_name
-                stationData.stationdetail,                          // station_detail
-                parseInt(stationData.hydroid || '0', 10),           // hydro_id
-                stationData.hydroname,                              // hydro_name
-                parseInt(stationData.basinid || '0', 10),           // basin_id
-                stationData.basinname,                              // basin_name
-                parseInt(stationData.provincecode || '0', 10),      // province_code
-                locationDetails.province,                           // province
-                null,                                               // amphure_code
-                locationDetails.amphure,                            // amphure
-                parseFloat(stationData.latitude || '0'),            // latitude
-                parseFloat(stationData.longitude || '0'),           // longitude
-                parseFloat(stationData.GroundLevel || '0'),         // ground_level
-                parseFloat(stationData.QMax || '0'),                // q_max
-                parseFloat(stationData.ZG || '0'),                  // zg
-                parseFloat(stationData.braelevel || '0'),           // brae_level
-                stationData.UseMSL === '1',                         // use_msl
-                stationData.UseQAuto === '1',                       // use_q_auto
-                parseInt(stationData.telemetryid || '0', 10),       // telemetry_id
-                stationData.telemetrysource || null,                // telemetry_source
-                true,                                               // show_hourly_report
-                true,                                               // show_daily_report
-                false,                                              // is_warning
-                'active',                                           // status
-                null,                                               // notes
-                'RID',                                             // data_source
-                'Common',                                           // category
-                true                                                // has_data
-              ];
-              await client.query(insertQuery, values);
-              logger.info(`Inserted new station: ${stationData.stationid}`, 'TelemetrySync');
-            } else {
-              // Update existing station with new data from RID API
-              // Get location details from Google Maps API
-              const defaultLocationDetails: LocationDetails = {
-                province: null,
-                amphure: null,
-                formatted_address: null
-              };
-              let locationDetails = defaultLocationDetails;
-
-              if (stationData.latitude && stationData.longitude) {
-                try {
-                  locationDetails = await getLocationDetails(
-                    parseFloat(stationData.latitude),
-                    parseFloat(stationData.longitude)
-                  );
-                  // Format Thai text
-                  const formattedLocationDetails = formatStationLocationData(locationDetails);
-                  
-                  logger.info(`Fetched location details for station ${stationData.stationid}`, formattedLocationDetails);
-                  
-                  // Update locationDetails with formatted values
-                  locationDetails = formattedLocationDetails;
-                } catch (error) {
-                  logger.error(`Failed to fetch location details for station ${stationData.stationid}`, {
-                    error: error instanceof Error ? error.message : String(error)
-                  });
-                }
-              }
-
-              const updateQuery = `
-                UPDATE telemetry_data_stations 
-                SET 
-                  station_code = $2,
-                  station_name = $3,
-                  station_detail = $4,
-                  hydro_id = $5,
-                  hydro_name = $6,
-                  basin_id = $7,
-                  basin_name = $8,
-                  province_code = $9,
-                  province = $10,
-                  amphure = $11,
-                  latitude = $12,
-                  longitude = $13,
-                  ground_level = $14,
-                  q_max = $15,
-                  zg = $16,
-                  brae_level = $17,
-                  use_msl = $18,
-                  use_q_auto = $19,
-                  telemetry_id = $20,
-                  telemetry_source = $21,
-                  show_hourly_report = $22,
-                  show_daily_report = $23,
-                  updated_at = $24
-                WHERE station_id = $1
-              `;
-              const values = [
-                stationData.stationid,                               // station_id
-                stationData.stationcode,                            // station_code
-                stationData.stationname,                            // station_name
-                stationData.stationdetail,                          // station_detail
-                parseInt(stationData.hydroid || '0', 10),           // hydro_id
-                stationData.hydroname,                              // hydro_name
-                parseInt(stationData.basinid || '0', 10),           // basin_id
-                stationData.basinname,                              // basin_name
-                parseInt(stationData.provincecode || '0', 10),      // province_code
-                locationDetails.province,                           // province
-                locationDetails.amphure,                            // amphure
-                parseFloat(stationData.latitude || '0'),            // latitude
-                parseFloat(stationData.longitude || '0'),           // longitude
-                parseFloat(stationData.GroundLevel || '0'),         // ground_level
-                parseFloat(stationData.QMax || '0'),                // q_max
-                parseFloat(stationData.ZG || '0'),                  // zg
-                parseFloat(stationData.braelevel || '0'),           // brae_level
-                stationData.UseMSL === '1',                         // use_msl
-                stationData.UseQAuto === '1',                       // use_q_auto
-                parseInt(stationData.telemetryid || '0', 10),       // telemetry_id
-                stationData.telemetrysource || null,                // telemetry_source
-                true,                                               // show_hourly_report
-                true,                                               // show_daily_report
-                new Date().toISOString()                            // updated_at
-              ];
-              await client.query(updateQuery, values);
-              logger.info(`Updated existing station: ${stationData.stationid}`, 'TelemetrySync');
-            }
-          }
-        }
-
         // Process regular stations
         for (const station of dailyStations.data) {
           // Type assertion to handle the API response
@@ -361,11 +169,13 @@ async function syncStations() {
                 telemetry_id, telemetry_source,
                 show_hourly_report, show_daily_report,
                 is_warning, status, notes, data_source,
-                category, has_data
+                category, has_data,
+                original_station_id, updated_at
               ) VALUES (
                 $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
                 $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
-                $21, $22, $23, $24, $25, $26, $27, $28, $29, $30
+                $21, $22, $23, $24, $25, $26, $27, $28, $29, $30,
+                $31, $32
               )
             `;
             const values = [
@@ -391,14 +201,16 @@ async function syncStations() {
               stationData.UseQAuto === '1',                       // use_q_auto
               parseInt(stationData.telemetryid || '0', 10),       // telemetry_id
               stationData.telemetrysource || null,                // telemetry_source
-              true,                                               // show_hourly_report
-              true,                                               // show_daily_report
-              false,                                              // is_warning
+              stationData.ShowDailyReport,                        // show_daily_report - direct from API
+              stationData.ShowHourlyReport,                       // show_hourly_report - direct from API
+              stationData.iswarning === '1',                      // is_warning
               'active',                                           // status
               null,                                               // notes
-              'RID',                                             // data_source
-              'Common',                                           // category
-              true                                                // has_data
+              'RID',                                              // data_source
+              stationData.category || null,                       // category
+              stationData.hasdata === '1',                        // has_data
+              stationData.stationid,                              // original_station_id
+              new Date().toISOString()                            // updated_at
             ];
             await client.query(insertQuery, values);
             logger.info(`Inserted new station: ${stationData.stationid}`, 'TelemetrySync');
@@ -457,7 +269,14 @@ async function syncStations() {
                 telemetry_source = $21,
                 show_hourly_report = $22,
                 show_daily_report = $23,
-                updated_at = $24
+                is_warning = $24,
+                status = $25,
+                notes = $26,
+                data_source = $27,
+                category = $28,
+                has_data = $29,
+                original_station_id = $30,
+                updated_at = $31
               WHERE station_id = $1
             `;
             const values = [
@@ -482,8 +301,15 @@ async function syncStations() {
               stationData.UseQAuto === '1',                       // use_q_auto
               parseInt(stationData.telemetryid || '0', 10),       // telemetry_id
               stationData.telemetrysource || null,                // telemetry_source
-              true,                                               // show_hourly_report
-              true,                                               // show_daily_report
+              stationData.ShowDailyReport,                        // show_daily_report - direct from API
+              stationData.ShowHourlyReport,                       // show_hourly_report - direct from API
+              stationData.iswarning === '1',                      // is_warning
+              'active',                                           // status
+              null,                                               // notes
+              'RID',                                              // data_source
+              stationData.category || null,                       // category
+              stationData.hasdata === '1',                        // has_data
+              stationData.stationid,                              // original_station_id
               new Date().toISOString()                            // updated_at
             ];
             await client.query(updateQuery, values);
@@ -542,11 +368,13 @@ async function syncStations() {
                 telemetry_id, telemetry_source,
                 show_hourly_report, show_daily_report,
                 is_warning, status, notes, data_source,
-                category, has_data
+                category, has_data,
+                original_station_id, updated_at
               ) VALUES (
                 $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
                 $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
-                $21, $22, $23, $24, $25, $26, $27, $28, $29, $30
+                $21, $22, $23, $24, $25, $26, $27, $28, $29, $30,
+                $31, $32
               )
             `;
             const values = [
@@ -572,14 +400,16 @@ async function syncStations() {
               station.UseQAuto === '1',                       // use_q_auto
               parseInt(station.telemetryid || '0', 10),       // telemetry_id
               station.telemetrysource || null,                // telemetry_source
-              true,                                               // show_hourly_report
-              true,                                               // show_daily_report
-              false,                                              // is_warning
+              station.ShowDailyReport,                        // show_daily_report - direct from API
+              station.ShowHourlyReport,                       // show_hourly_report - direct from API
+              station.iswarning === '1',                      // is_warning
               'active',                                           // status
               null,                                               // notes
-              'RID',                                             // data_source
-              'Common',                                           // category
-              true                                                // has_data
+              'RID',                                              // data_source
+              station.category || null,                       // category
+              station.hasdata === '1',                        // has_data
+              station.stationid,                              // original_station_id
+              new Date().toISOString()                            // updated_at
             ];
             await client.query(insertQuery, values);
             logger.info(`Inserted new station: ${station.stationid}`, 'TelemetrySync');
@@ -638,7 +468,14 @@ async function syncStations() {
                 telemetry_source = $21,
                 show_hourly_report = $22,
                 show_daily_report = $23,
-                updated_at = $24
+                is_warning = $24,
+                status = $25,
+                notes = $26,
+                data_source = $27,
+                category = $28,
+                has_data = $29,
+                original_station_id = $30,
+                updated_at = $31
               WHERE station_id = $1
             `;
             const values = [
@@ -663,8 +500,15 @@ async function syncStations() {
               station.UseQAuto === '1',                       // use_q_auto
               parseInt(station.telemetryid || '0', 10),       // telemetry_id
               station.telemetrysource || null,                // telemetry_source
-              true,                                               // show_hourly_report
-              true,                                               // show_daily_report
+              station.ShowDailyReport,                        // show_daily_report - direct from API
+              station.ShowHourlyReport,                       // show_hourly_report - direct from API
+              station.iswarning === '1',                      // is_warning
+              'active',                                           // status
+              null,                                               // notes
+              'RID',                                              // data_source
+              station.category || null,                       // category
+              station.hasdata === '1',                        // has_data
+              station.stationid,                              // original_station_id
               new Date().toISOString()                            // updated_at
             ];
             await client.query(updateQuery, values);
