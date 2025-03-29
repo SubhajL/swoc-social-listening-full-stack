@@ -25,8 +25,8 @@ export interface RIDStationResponse {
   UseQAuto?: string;
   telemetryid?: string;
   telemetrysource?: string;
-  showhourlyreport?: string;
-  showdailyreport?: string;
+  ShowDailyReport?: string;
+  ShowHourlyReport?: string;
   iswarning?: string;
   notes?: string;
   category?: string;

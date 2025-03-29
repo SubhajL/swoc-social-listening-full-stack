@@ -14,6 +14,7 @@ export interface TelemetryReading {
 export interface TelemetryResponse {
   success: boolean;
   data: TelemetryReading[];
+  error?: string;
 }
 
 // Request parameters
@@ -29,4 +30,36 @@ export interface TelemetryError {
   status: number;
   message: string;
   details?: string;
+}
+
+// Station response type
+export interface RIDStationResponse {
+  stationid: string;
+  stationcode: string;
+  stationname: string;
+  stationdetail: string;
+  hydroid: string;
+  hydroname: string;
+  basinid: string;
+  basinname: string;
+  provincecode: string;
+  province: string;
+  amphurecode: string;
+  amphure: string;
+  latitude: string;
+  longitude: string;
+  GroundLevel: string;
+  QMax: string;
+  ZG: string;
+  braelevel: string;
+  UseMSL: string;
+  UseQAuto: string;
+  telemetryid: string;
+  telemetrysource: string;
+  showhourlyreport: string;
+  showdailyreport: string;
+  iswarning: string;
+  notes: string;
+  category: string;
+  hasdata: string;
 } 

@@ -19,7 +19,6 @@
     "sync:hii": "cd apps/backend && node -r dotenv/config src/scripts/sync-hii-data.mjs",
     "sync:tmd": "node apps/backend/src/scripts/sync-tmd-data.mjs",
     "sync:all": "cd apps/backend && node -r dotenv/config src/scripts/run-all-rainfall-sync.mjs",
-    
     "// ⚠️ DEPRECATED SCHEDULER COMMANDS - DO NOT USE": "Use the Backend Scheduler commands instead (cd apps/backend && npm run scheduler:start/stop/status)",
     "// ⚠️ LEGACY COMPONENTS": "These commands use deprecated components in scripts/legacy/ and will be removed in a future release",
     "scheduler:run": "node scripts/legacy/scheduler-service.js run",
@@ -27,7 +26,6 @@
     "scheduler:status": "node scripts/legacy/scheduler-service.js status",
     "scheduler:list": "node scripts/legacy/scheduler-service.js list",
     "scheduler:install": "node scripts/install-dependencies.js",
-    
     "autostart:install": "node scripts/autostart-manager.js install",
     "autostart:uninstall": "node scripts/autostart-manager.js uninstall"
   },
@@ -57,6 +55,7 @@
     "@types/react-dom": "^18.2.18",
     "axios": "^1.8.4",
     "crypto-js": "^4.2.0",
+    "csv-parse": "^5.6.0",
     "dayjs": "^1.11.13",
     "node-cron": "^3.0.3",
     "oauth-1.0a": "^2.2.6",

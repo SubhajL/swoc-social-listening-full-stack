@@ -96,6 +96,9 @@ async function createTelemetryStationsTable() {
     await pool.query(createTableQuery);
     console.log('telemetry_data_stations table created successfully.');
     
+    // Call setBooleanDefaults after table creation
+    await setBooleanDefaults();
+    
   } catch (error) {
     console.error('Error creating telemetry_data_stations table:', error);
     throw error;
@@ -127,6 +130,13 @@ async function addColumn(columnName) {
     case 'last_sync':
       columnDefinition = 'TIMESTAMP WITH TIME ZONE';
       break;
+    case 'use_msl':
+    case 'use_q_auto':
+    case 'show_hourly_report':
+    case 'show_daily_report':
+    case 'is_warning':
+      columnDefinition = 'BOOLEAN DEFAULT FALSE';
+      break;
     default:
       throw new Error(`Unknown column: ${columnName}`);
   }
@@ -138,6 +148,26 @@ async function addColumn(columnName) {
   
   await pool.query(addColumnQuery);
   console.log(`Added column ${columnName} to telemetry_data_stations table.`);
+}
+
+// Add function to set default values for boolean columns
+async function setBooleanDefaults() {
+  const booleanColumns = [
+    'use_msl',
+    'use_q_auto',
+    'show_hourly_report',
+    'show_daily_report',
+    'is_warning'
+  ];
+
+  for (const column of booleanColumns) {
+    const alterQuery = `
+      ALTER TABLE telemetry_data_stations 
+      ALTER COLUMN ${column} SET DEFAULT FALSE;
+    `;
+    await pool.query(alterQuery);
+    console.log(`Set default value for ${column} to FALSE`);
+  }
 }
 
 // Run the script
