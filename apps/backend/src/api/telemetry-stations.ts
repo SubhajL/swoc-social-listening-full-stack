@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { pool } from '../lib/db';
 import { logger } from '../utils/logger';
+import { getStationList } from '../services/telemetry/telemetry.service';
 
 const router = Router();
 
@@ -25,111 +26,224 @@ interface TelemetryStationWithMeasurements extends TelemetryStation {
 }
 
 router.get('/', async (req, res) => {
+  // Add backend log in the /stations route
+  console.log('📡 Received GET /api/telemetry-stations');
+  
   const { amphure, province } = req.query;
   
-  logger.info('🔍 Telemetry Station Query Started', {
-    amphure,
-    province,
-    origin: req.headers.origin,
+  // Log detailed query information
+  console.log('[Backend] Telemetry stations request details:', {
+    query: req.query,
+    amphure: amphure ? {
+      value: String(amphure),
+      type: typeof amphure,
+      length: String(amphure).length,
+      hexEncoded: Buffer.from(String(amphure)).toString('hex')
+    } : undefined,
+    province: province ? {
+      value: String(province),
+      type: typeof province,
+      length: String(province).length,
+      hexEncoded: Buffer.from(String(province)).toString('hex')
+    } : undefined,
+    path: req.path,
+    url: req.url,
+    originalUrl: req.originalUrl,
     timestamp: new Date().toISOString()
   });
   
+  // Log full request details for debugging
+  logger.info('🔍 Telemetry Station Request', {
+    method: req.method,
+    path: req.path,
+    query: req.query,
+    params: req.params,
+    headers: {
+      origin: req.headers.origin,
+      referer: req.headers.referer,
+      'user-agent': req.headers['user-agent']
+    },
+    timestamp: new Date().toISOString()
+  });
+
+  // Validate required parameters
+  if (!amphure && !province) {
+    logger.warn('Missing required location parameters', {
+      amphure,
+      province,
+      message: 'At least one of amphure or province is required'
+    });
+    return res.status(400).json({
+      success: false,
+      error: 'Missing required parameters',
+      message: 'At least one of amphure or province parameters is required'
+    });
+  }
+
+  // Convert parameters to strings and normalize to NFC form
+  const amphureStr = amphure ? String(amphure).normalize('NFC') : undefined;
+  const provinceStr = province ? String(province).normalize('NFC') : undefined;
+  
+  // Log detailed debugging information
+  logger.info('[Debug] Original parameters:', {
+    amphure: amphure ? String(amphure) : undefined,
+    province: province ? String(province) : undefined
+  });
+  
+  logger.info('[Debug] Normalized parameters:', {
+    amphure: amphureStr,
+    province: provinceStr
+  });
+  
+  // Log hexadecimal representation for troubleshooting
+  if (amphureStr) {
+    logger.info('[Debug] Amphure parameter details:', {
+      raw: amphure,
+      normalized: amphureStr,
+      hexEncoded: Buffer.from(amphureStr).toString('hex'),
+      codePoints: Array.from(amphureStr).map(char => ({
+        char,
+        codePoint: char.codePointAt(0)?.toString(16)
+      }))
+    });
+  }
+  
+  if (provinceStr) {
+    logger.info('[Debug] Province parameter details:', {
+      raw: province,
+      normalized: provinceStr,
+      hexEncoded: Buffer.from(provinceStr).toString('hex'),
+      codePoints: Array.from(provinceStr).map(char => ({
+        char,
+        codePoint: char.codePointAt(0)?.toString(16)
+      }))
+    });
+  }
+  
+  // Log sanitized parameters
+  logger.debug('Sanitized parameters', {
+    raw: { amphure, province },
+    normalized: { amphure: amphureStr, province: provinceStr }
+  });
+  
   try {
-    let query = `
-      SELECT 
-        id,
-        station_id, 
-        station_name, 
-        code, 
-        irrigation_office,
-        river_basin,
-        river_name,
-        amphure, 
-        province,
-        bank_level_meters,
-        capacity_cms,
-        pole_center_msl
-      FROM telemetry_station
-      WHERE 1=1
-    `;
+    logger.info('Calling telemetry service getStationList', {
+      amphure: amphureStr, 
+      province: provinceStr
+    });
     
-    const params: any[] = [];
+    // Use the enhanced service function with amphure-first, province-fallback logic
+    const response = await getStationList(amphureStr, provinceStr);
     
-    if (amphure) {
-      query += ` AND amphure = $${params.length + 1}`;
-      params.push(amphure);
-      logger.info(`🎯 Filtering by amphure: ${amphure}`);
-    } else if (province) {
-      query += ` AND province = $${params.length + 1}`;
-      params.push(province);
-      logger.info(`🎯 Filtering by province: ${province}`);
+    logger.debug('Service response', {
+      success: response.success,
+      dataLength: response.data?.length || 0,
+      error: response.error
+    });
+    
+    if (!response.success) {
+      logger.error('❌ Error in station service response', {
+        error: response.error,
+        amphure: amphureStr,
+        province: provinceStr,
+        timestamp: new Date().toISOString()
+      });
+      
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to fetch telemetry stations',
+        message: response.error || 'Unknown service error'
+      });
     }
-    
-    logger.debug('📝 Executing query', { query, params });
-    const { rows } = await pool.query<TelemetryStation>(query, params);
 
     // Log detailed station ID information from database
     logger.info('🔢 Station IDs from PostgreSQL', { 
-      stationIds: rows.map(station => ({
+      stationIds: response.data.map(station => ({
         id: station.id,
         station_id: station.station_id,
-        name: station.station_name
-      }))
-    });
-
-    // Group stations by amphure for better logging
-    const stationsByAmphure = rows.reduce((acc: Record<string, number>, station: TelemetryStation) => {
-      acc[station.amphure] = (acc[station.amphure] || 0) + 1;
-      return acc;
-    }, {});
-
-    logger.info('📊 Query Results Summary', { 
-      totalStations: rows.length,
-      stationsByAmphure,
-      province: rows[0]?.province || province,
-      timestamp: new Date().toISOString()
-    });
-
-    // Detailed station logging
-    logger.debug('📍 Station Details', {
-      stations: rows.map((station: TelemetryStation) => ({
-        id: station.station_id,
         name: station.station_name,
-        location: `${station.amphure}, ${station.province}`,
-      }))
+        amphure: station.amphure,
+        province: station.province
+      })),
+      count: response.data.length
     });
-    
-    // TODO: In a real implementation, we would fetch real-time water level and flow rate data
-    // from a telemetry system or another data source. For now, we'll return mock data.
-    const stations: TelemetryStationWithMeasurements[] = rows.map((station: TelemetryStation) => ({
-      ...station,
-      water_level: Math.random() * 10, // Mock water level between 0-10 meters
-      flow_rate: Math.random() * 100,  // Mock flow rate between 0-100 m³/s
-    }));
 
-    logger.info('✅ Successfully processed telemetry stations', {
-      totalStations: stations.length,
-      filterCriteria: amphure ? `amphure=${amphure}` : province ? `province=${province}` : 'none',
+    // Log summary
+    logger.info('📊 Query Results Summary', { 
+      totalStations: response.data.length,
+      location: {
+        amphure: amphureStr,
+        province: provinceStr
+      },
       timestamp: new Date().toISOString()
     });
 
+    // Add cache control headers
+    res.set('Cache-Control', 'public, max-age=300'); // Cache for 5 minutes
+    
     res.json({
-      stations,
-      total: stations.length,
+      success: true,
+      stations: response.data,
+      count: response.data.length,
+      location: {
+        amphure: amphureStr,
+        province: provinceStr
+      }
     });
+
   } catch (error) {
-    logger.error('❌ Failed to fetch telemetry stations', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      filterCriteria: amphure ? `amphure=${amphure}` : province ? `province=${province}` : 'none',
-      origin: req.headers.origin,
+    logger.error('❌ Error fetching telemetry stations:', {
+      error: error instanceof Error ? {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      } : 'Unknown error',
+      location: { 
+        amphure: amphureStr, 
+        province: provinceStr 
+      },
       timestamp: new Date().toISOString()
     });
     
-    res.status(500).json({ 
+    res.status(500).json({
+      success: false,
       error: 'Failed to fetch telemetry stations',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? error.message : 'Unknown error'
     });
   }
+});
+
+// Add a debug endpoint to get more information about the request
+router.get('/debug', (req, res) => {
+  const dbInfo = {
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER?.substring(0, 3) + '***' // Show only first 3 chars of username for security
+  };
+
+  res.json({
+    success: true,
+    message: 'Telemetry Stations API debug info',
+    api: {
+      version: '1.0.0',
+      endpoints: [
+        '/ - Get telemetry stations by location',
+        '/debug - Get debug information'
+      ]
+    },
+    environment: process.env.NODE_ENV,
+    database: dbInfo,
+    request: {
+      query: req.query,
+      path: req.path,
+      headers: {
+        origin: req.headers.origin,
+        referer: req.headers.referer,
+        'user-agent': req.headers['user-agent']
+      }
+    }
+  });
 });
 
 export default router; 

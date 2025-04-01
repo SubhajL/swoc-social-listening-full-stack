@@ -1,5 +1,6 @@
 import axiosInstance from '@/lib/api-client';
 import { toast } from '@/components/ui/use-toast';
+import { AxiosError } from 'axios';
 
 /**
  * API status check utility
@@ -10,14 +11,16 @@ import { toast } from '@/components/ui/use-toast';
 // API status check configuration
 const API_STATUS_CONFIG = {
   ENDPOINTS: [
-    '/api',
-    '/api/',
-    '/api/health',
-    '/api/posts'
+    '/api/health', // Primary health check endpoint
+    '/api/posts/count', // Secondary endpoint
+    '/api/users/status' // Tertiary endpoint
   ],
   TIMEOUT: 5000,
   MAX_RETRIES: 2,
-  RETRY_DELAY: 1000
+  RETRY_DELAY: 1000,
+  CHECK_INTERVAL: 30000, // 30s between checks
+  LAST_CHECK_TIMESTAMP: 0, // To prevent too frequent checks
+  MIN_CHECK_INTERVAL: 5000 // Minimum 5s between checks
 };
 
 /**
@@ -25,31 +28,52 @@ const API_STATUS_CONFIG = {
  * @returns Promise<boolean> - True if API is available, false otherwise
  */
 export async function checkApiStatus(): Promise<boolean> {
-  console.log('🔄 [API Status] Checking API status');
-  
-  // Try each endpoint in sequence
-  for (const endpoint of API_STATUS_CONFIG.ENDPOINTS) {
-    try {
-      console.log(`🔄 [API Status] Trying endpoint: ${endpoint}`);
-      
-      const response = await axiosInstance.get(endpoint, {
-        timeout: API_STATUS_CONFIG.TIMEOUT,
-        validateStatus: (status) => status < 500 // Accept any non-server error status
-      });
-      
-      // If we get any response (even 404), the server is running
-      // We just need to know the server is up, not that the specific endpoint works
-      console.log(`✅ [API Status] API server is running (endpoint: ${endpoint}, status: ${response.status})`);
-      return true;
-    } catch (error) {
-      console.log(`❌ [API Status] Failed to connect to endpoint ${endpoint}:`, error);
-      // Continue to next endpoint
-    }
+  // Prevent checking too frequently
+  const now = Date.now();
+  if (now - API_STATUS_CONFIG.LAST_CHECK_TIMESTAMP < API_STATUS_CONFIG.MIN_CHECK_INTERVAL) {
+    console.log('🔄 [API Status] Skipping check - too soon since last check');
+    return false;
   }
   
-  // If we've tried all endpoints and none worked, the API is not available
-  console.error('❌ [API Status] API server is not available after trying all endpoints');
-  return false;
+  API_STATUS_CONFIG.LAST_CHECK_TIMESTAMP = now;
+  console.log('🔄 [API Status] Checking API status');
+  
+  // Use only the first endpoint to reduce load and prevent flooding
+  const endpoint = API_STATUS_CONFIG.ENDPOINTS[0];
+  
+  try {
+    console.log(`🔄 [API Status] Trying endpoint: ${endpoint}`);
+    
+    const response = await axiosInstance.get(endpoint, {
+      timeout: API_STATUS_CONFIG.TIMEOUT,
+      validateStatus: (status) => status < 500 // Accept any non-server error status
+    });
+    
+    // Log the result of the health check
+    console.log(`✅ [API Status] API server is running (endpoint: ${endpoint}, status: ${response.status})`);
+    
+    // Log the response data for debugging if status is 200
+    if (response.status === 200) {
+      console.log(`✅ [API Status] Health check response:`, response.data);
+    }
+    
+    return true;
+  } catch (error) {
+    console.log(`❌ [API Status] Failed to connect to endpoint ${endpoint}:`, error);
+    
+    // More graceful error handling
+    if (error instanceof AxiosError) {
+      if (error.code === 'ECONNREFUSED') {
+        console.error('❌ [API Status] API server connection refused - server may be down');
+      } else if (error.code === 'ECONNABORTED') {
+        console.error('❌ [API Status] API server connection timeout - server may be overloaded');
+      } else if (error.response?.status && error.response.status >= 500) {
+        console.error(`❌ [API Status] API server error: ${error.response.status}`);
+      }
+    }
+    
+    return false;
+  }
 }
 
 /**

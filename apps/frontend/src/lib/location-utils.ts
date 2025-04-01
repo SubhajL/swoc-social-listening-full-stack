@@ -16,11 +16,19 @@ export const cleanLocationString = (location?: string | any): string | undefined
   const locationStr = String(location).trim();
   if (!locationStr) return undefined;
   
-  return locationStr
+  // Clean the location string by removing common Thai prefixes and normalizing
+  const cleaned = locationStr
     .replace(/^อ\.\s*/i, '')
     .replace(/^จ\.\s*/i, '')
     .replace(/^อำเภอ\s*/i, '')
-    .replace(/^จังหวัด\s*/i, '');
+    .replace(/^จังหวัด\s*/i, '')
+    .trim(); // Ensure we trim any whitespace
+
+  // Return undefined if the cleaned string is empty
+  if (!cleaned) return undefined;
+  
+  // Return the cleaned location string
+  return cleaned;
 };
 
 /**

@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize';
 import { QueryInterface } from 'sequelize';
 import { logger } from '../utils/logger';
 import { up as createApprovalRecords } from '../migrations/20240302_create_approval_records';
+import { up as alterTelemetryReportColumns } from '../migrations/20240329_alter_telemetry_report_columns';
 import dotenv from 'dotenv';
 
 // Load environment variables
@@ -39,6 +40,10 @@ async function runMigrations() {
     // Create approval_records table
     await createApprovalRecords(queryInterface);
     logger.info('Created approval_records table');
+
+    // Alter telemetry report columns
+    await alterTelemetryReportColumns(queryInterface);
+    logger.info('Altered telemetry report columns');
     
     logger.info('All migrations completed successfully');
     process.exit(0);

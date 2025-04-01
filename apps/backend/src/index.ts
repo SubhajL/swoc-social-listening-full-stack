@@ -155,6 +155,22 @@ const startServer = async () => {
     app.use('/api/auth', authRouter);
     app.use('/api/approval-records', approvalRecordRouter);
 
+    // Add comprehensive health check endpoint
+    app.get('/api/health', (req: Request, res: Response) => {
+      res.status(200).json({ 
+        status: 'ok', 
+        message: 'API is healthy',
+        timestamp: new Date().toISOString(),
+        version: process.env.npm_package_version || '1.0.0',
+        environment: process.env.NODE_ENV || 'development',
+        server: {
+          uptime: process.uptime(),
+          memory: process.memoryUsage(),
+          pid: process.pid
+        }
+      });
+    });
+
     // Add a simple health check endpoint for the root API path
     app.all('/api', (req: Request, res: Response) => {
       res.status(200).json({ status: 'ok', message: 'API server is running' });

@@ -49,8 +49,8 @@ router.get('/', async (req, res) => {
     let paramCount = 1;
 
     if (amphure) {
-      query += ` AND amphure ILIKE $${paramCount}`;
-      values.push(`%${amphure}%`);
+      query += ` AND amphure = $${paramCount}`;
+      values.push(amphure);
       paramCount++;
     }
 

@@ -142,7 +142,7 @@ export function Map({
   selectedAmphure, 
   selectedTumbon, 
   selectedOffice,
-  dateRange,
+  dateRange = { start: '', end: '' },
   allFilters,
   hasServerError = false
 }: MapProps) {
@@ -286,7 +286,16 @@ export function Map({
           complaintData.togglePostSelection(properties.id.toString());
           
           // Navigate to the complaint form with the post ID
-          navigate(`/complaint/create?postId=${properties.id}`);
+          try {
+            navigate(`/complaint/create?postId=${properties.id}`);
+          } catch (error) {
+            console.error('[Map] Error navigating to complaint form:', error);
+            toast({
+              title: "การนำทางล้มเหลว",
+              description: "ไม่สามารถเปิดหน้าแบบฟอร์มได้ กรุณาลองใหม่อีกครั้ง",
+              variant: "destructive"
+            });
+          }
         }
       });
 
@@ -371,7 +380,16 @@ export function Map({
                     complaintData.togglePostSelection(properties.id.toString());
                     
                     // Navigate to the complaint form with the post ID
-                    navigate(`/complaint/create?postId=${properties.id}`);
+                    try {
+                      navigate(`/complaint/create?postId=${properties.id}`);
+                    } catch (error) {
+                      console.error('[Map] Error navigating to complaint form:', error);
+                      toast({
+                        title: "การนำทางล้มเหลว",
+                        description: "ไม่สามารถเปิดหน้าแบบฟอร์มได้ กรุณาลองใหม่อีกครั้ง",
+                        variant: "destructive"
+                      });
+                    }
                   }
                 };
                 popupContent.appendChild(link);
@@ -460,7 +478,7 @@ export function Map({
     if (!mapRef.current || !areMarkersReady) return;
     
     // Skip if date range is not valid
-    if (!dateRange.start || !dateRange.end) {
+    if (!dateRange || !dateRange.start || !dateRange.end) {
       console.log('Skipping data reload: Invalid date range', dateRange);
       return;
     }

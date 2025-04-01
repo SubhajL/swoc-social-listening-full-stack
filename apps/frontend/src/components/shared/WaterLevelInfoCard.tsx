@@ -3,7 +3,7 @@ import { MonitoringStationCard } from "@/components/monitoring/MonitoringStation
 import { RainStationCard } from "@/components/monitoring/RainStationCard";
 import { ReservoirCard } from "@/components/monitoring/ReservoirCard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, Loader2, Droplet, MapPin, Plus, Settings, AlertTriangle, Droplets } from "lucide-react";
 import { useEffect, useState, useMemo, FC, useRef } from "react";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,9 @@ import { useLocation } from '@/hooks/useLocation';
 import React from "react";
 import { useReservoirLocations } from "@/hooks/useReservoirLocations";
 import { useReservoirData } from "@/hooks/useReservoirData";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface FetchedMonitoringStation {
   id: string;
@@ -419,6 +422,7 @@ interface WaterLevelInfoCardProps {
     amphure?: string;
     province?: string;
   };
+  disableAutoRefetch?: boolean;
 }
 
 // Define the props interface for WaterLevelInfoContent
@@ -427,9 +431,13 @@ interface WaterLevelInfoContentProps {
     amphure?: string;
     province?: string;
   };
+  disableAutoRefetch?: boolean;
 }
 
-const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => {
+const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ 
+  location,
+  disableAutoRefetch
+}) => {
   // Get the current location
   const { amphure, province } = location;
   
@@ -475,15 +483,17 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
   const { amphure: propAmphure, province: propProvince } = location || {};
   
   // Use the useLocation hook to access and manage location state
-  const locationState = useLocation();
+  // Destructure primitive values directly for stability
+  const { amphure: locationHookAmphure, province: locationHookProvince } = useLocation();
   
   // Clean location strings for display
   const cleanedPropAmphure = propAmphure?.replace(/อำเภอ/g, '').trim();
   const cleanedPropProvince = propProvince?.replace(/จังหวัด/g, '').trim();
   
   // Prioritize props over Jotai state, but use Jotai state as fallback
-  const displayAmphure = propAmphure || cleanedPropAmphure || locationState.amphure;
-  const displayProvince = propProvince || cleanedPropProvince || locationState.province;
+  // Use the directly destructured stable primitive values from useLocation
+  const displayAmphure = propAmphure || cleanedPropAmphure || locationHookAmphure;
+  const displayProvince = propProvince || cleanedPropProvince || locationHookProvince;
   
   // Check if we have valid location data
   const hasValidLocationData = !!displayAmphure || !!displayProvince;
@@ -493,6 +503,9 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
     amphure: '', 
     province: '' 
   });
+  
+  // Add isUpdating ref at the component level
+  const isUpdatingRef = useRef(false);
   
   // Memoize the display location from props or state
   const displayLocation = useMemo(() => {
@@ -539,6 +552,16 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
   
   // Update location data in useStationManagement when component mounts or location changes
   useEffect(() => {
+    // Create a stable, unique ID for this update to prevent multiple updates
+    const updateId = `update-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    // Remove the useRef call here and use the component level ref
+    
+    // Only proceed if we're not already updating
+    if (isUpdatingRef.current) {
+      console.log('[WaterLevelInfoCard] Update already in progress, skipping');
+      return;
+    }
+    
     if (displayLocation.amphure || displayLocation.province) {
       // Deep comparison to check if location has actually changed
       const hasLocationChanged = 
@@ -546,10 +569,13 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
         displayLocation.province !== prevLocationRef.current.province;
       
       if (hasLocationChanged) {
-        console.log('[WaterLevelInfoCard] Location changed, updating:', {
+        console.log(`[WaterLevelInfoCard] Location changed (${updateId}):`, {
           from: prevLocationRef.current,
           to: displayLocation
         });
+        
+        // Set updating flag
+        isUpdatingRef.current = true;
         
         // Update our ref with the new values
         prevLocationRef.current = { 
@@ -557,25 +583,71 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
           province: displayLocation.province 
         };
         
-        // Update location and trigger data fetching
-        updateLocation(displayLocation.amphure, displayLocation.province);
+        try {
+          // Update location and trigger data fetching
+          updateLocation(displayLocation.amphure, displayLocation.province);
+          
+          // Log the current state of user-selected stations
+          console.log('[WaterLevelInfoCard] Current user-selected stations:', {
+            monitoringStations: userSelectedMonitoring.length,
+            rainStations: userSelectedRain.length,
+            reservoirs: userSelectedReservoirs.length
+          });
+        } catch (error) {
+          console.error('[WaterLevelInfoCard] Error updating location:', error);
+        }
         
-        // Log the current state of user-selected stations
-        console.log('[WaterLevelInfoCard] Current user-selected stations:', {
-          monitoringStations: userSelectedMonitoring.length,
-          rainStations: userSelectedRain.length,
-          reservoirs: userSelectedReservoirs.length
-        });
+        // Reset updating flag after a delay
+        setTimeout(() => {
+          isUpdatingRef.current = false;
+          console.log(`[WaterLevelInfoCard] Update complete (${updateId})`);
+        }, 1000);
       } else {
         console.log('[WaterLevelInfoCard] Location unchanged, skipping update');
       }
     }
-  }, [displayLocation, updateLocation]); // Only depend on the memoized displayLocation and updateLocation
+  }, [displayLocation.amphure, displayLocation.province, updateLocation]);
   
   // Memoize the loading state
   const isLoading = useMemo(() => 
     isLoadingMonitoring || isLoadingRain || isLoadingReservoirs,
     [isLoadingMonitoring, isLoadingRain, isLoadingReservoirs]
+  );
+
+  // Separate component state from API loading state
+  const [isLoadingTimedOut, setIsLoadingTimedOut] = useState(false);
+
+  useEffect(() => {
+    if (isLoading) {
+      // Reset timeout when loading starts
+      setIsLoadingTimedOut(false);
+      
+      // Set a timeout to mark loading as timed out after 10 seconds
+      const timer = setTimeout(() => {
+        setIsLoadingTimedOut(true);
+        console.log('[WaterLevelInfoCard] Loading timeout triggered');
+      }, 10000);
+      
+      return () => clearTimeout(timer);
+    }
+    
+    // Reset timeout state when loading completes
+    setIsLoadingTimedOut(false);
+    
+    return undefined;
+  }, [isLoading]);
+
+  // Adjust the isLoading calculation to include the timeout
+  const effectiveIsLoading = useMemo(() => 
+    // Always show loading when any data is being loaded, regardless of hasViewedInThisSession
+    isLoadingMonitoring || isLoadingRain || isLoadingReservoirs || 
+    isLoadingReservoirLocations,
+    [
+      isLoadingMonitoring, 
+      isLoadingRain, 
+      isLoadingReservoirs, 
+      isLoadingReservoirLocations
+    ]
   );
   
   // Memoize the error state
@@ -715,7 +787,38 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
   
   // Memoize the monitoring stations section
   const monitoringStationsSection = useMemo(() => {
-    if (adaptedMonitoringStations.length === 0) return null;
+    // Check for loading state (only if there's no error)
+    if (adaptedMonitoringStations.length === 0) {
+      if (isLoadingMonitoring && !monitoringError) {
+        return (
+          <div className="flex justify-center items-center p-4">
+            <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+            <span className="ml-2 text-sm text-gray-500">กำลังโหลดข้อมูลสถานีเฝ้าระวัง...</span>
+          </div>
+        );
+      }
+      
+      // Show error state if we have an error
+      if (monitoringError) {
+        return (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              ไม่สามารถโหลดข้อมูลสถานีเฝ้าระวัง: {monitoringError.message}
+            </AlertDescription>
+          </Alert>
+        );
+      }
+      
+      // Show empty state if we have no stations
+      return (
+        <div className="text-muted-foreground flex flex-col items-center justify-center p-4 border rounded-md bg-muted/10 my-4">
+          <AlertCircle className="h-6 w-6 mb-2 text-yellow-500" />
+          <p>ไม่พบข้อมูลสถานีตรวจวัดน้ำสำหรับพื้นที่นี้</p>
+          <p className="text-sm mt-1">โปรดลองเลือกพื้นที่อื่น หรือเพิ่มสถานีด้วยตนเอง</p>
+        </div>
+      );
+    }
     
     return (
       <div>
@@ -729,16 +832,48 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
               station={station}
               showButtons={false}
               hideUnitLabels={false}
+              isLoading={!!(isLoadingMonitoring && !monitoringError)}
+              error={monitoringError}
             />
           ))}
         </div>
       </div>
     );
-  }, [adaptedMonitoringStations]);
+  }, [adaptedMonitoringStations, isLoadingMonitoring, monitoringError]);
   
   // Memoize the rain stations section
   const rainStationsSection = useMemo(() => {
-    if (adaptedRainStations.length === 0) return null;
+    // Add empty state for no rain stations
+    if (adaptedRainStations.length === 0) {
+      if (isLoadingRain && !rainError) {
+        return (
+          <div className="flex justify-center items-center p-4">
+            <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+            <span className="ml-2 text-sm text-gray-500">กำลังโหลดข้อมูลสถานีวัดน้ำฝน...</span>
+          </div>
+        );
+      }
+      
+      // Show error state if we have an error
+      if (rainError) {
+        return (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              ไม่สามารถโหลดข้อมูลสถานีวัดน้ำฝน: {rainError.message}
+            </AlertDescription>
+          </Alert>
+        );
+      }
+      
+      return (
+        <div className="text-muted-foreground flex flex-col items-center justify-center p-4 border rounded-md bg-muted/10 my-4">
+          <AlertCircle className="h-6 w-6 mb-2 text-yellow-500" />
+          <p>ไม่พบข้อมูลสถานีตรวจวัดฝนสำหรับพื้นที่นี้</p>
+          <p className="text-sm mt-1">โปรดลองเลือกพื้นที่อื่น หรือเพิ่มสถานีด้วยตนเอง</p>
+        </div>
+      );
+    }
     
     return (
       <div>
@@ -752,16 +887,70 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
               station={station}
               showButtons={false}
               hideUnitLabels={true}
+              disableAutoRefetch={disableAutoRefetch}
             />
           ))}
         </div>
       </div>
     );
-  }, [adaptedRainStations]);
+  }, [adaptedRainStations, isLoadingRain, rainError, disableAutoRefetch]);
+  
+  // Memoize the reservoirs section
+  const reservoirsSection = useMemo(() => {
+    // Add empty state for no reservoirs
+    if (adaptedReservoirs.length === 0) {
+      if (isLoadingReservoirs && !reservoirsError) {
+        return (
+          <div className="flex justify-center items-center p-4">
+            <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+            <span className="ml-2 text-sm text-gray-500">กำลังโหลดข้อมูลอ่างเก็บน้ำ...</span>
+          </div>
+        );
+      }
+      
+      // Show error state if we have an error
+      if (reservoirsError) {
+        return (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              ไม่สามารถโหลดข้อมูลอ่างเก็บน้ำ: {reservoirsError.message}
+            </AlertDescription>
+          </Alert>
+        );
+      }
+      
+      return (
+        <div className="text-muted-foreground flex flex-col items-center justify-center p-4 border rounded-md bg-muted/10 my-4">
+          <AlertCircle className="h-6 w-6 mb-2 text-yellow-500" />
+          <p>ไม่พบข้อมูลอ่างเก็บน้ำสำหรับพื้นที่นี้</p>
+          <p className="text-sm mt-1">โปรดลองเลือกพื้นที่อื่น หรือเพิ่มอ่างเก็บน้ำด้วยตนเอง</p>
+        </div>
+      );
+    }
+    
+    return (
+      <div>
+        <h3 className="text-base font-medium text-gray-700 mb-3">
+          {getStationLabel('reservoir')} ({adaptedReservoirs.length})
+        </h3>
+        <div className="space-y-8">
+          {adaptedReservoirs.map((reservoir) => (
+            <ReservoirCard
+              key={reservoir.id}
+              reservoir={reservoir}
+              showButtons={false}
+              hideUnitLabels={true}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }, [adaptedReservoirs, isLoadingReservoirs, reservoirsError]);
   
   // Render repository section with location-based data
   const renderReservoirSection = () => {
-    if (isLoadingReservoirLocations) {
+    if (isLoadingReservoirLocations && !reservoirLocationsError) {
       return (
         <div className="flex justify-center items-center p-4">
           <Loader2 className="mr-2 h-6 w-6 animate-spin" />
@@ -803,6 +992,46 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
     );
   };
   
+  // Add a helper function to display empty states when all stations are missing
+  const renderEmptyState = () => {
+    return (
+      <div className="space-y-4 py-4">
+        <div className="flex items-center gap-2 mb-2">
+          <Droplets className="h-5 w-5 text-gray-400" />
+          <h3 className="text-lg font-medium text-gray-700">ข้อมูลระดับน้ำ</h3>
+        </div>
+        
+        <div className="bg-gray-50 border border-gray-100 rounded-lg p-4">
+          <div className="flex flex-col items-center justify-center text-center p-4">
+            <AlertCircle className="h-10 w-10 text-gray-300 mb-3" />
+            <h4 className="text-base font-medium text-gray-700">ไม่พบข้อมูลสถานีในพื้นที่</h4>
+            <p className="text-sm text-gray-500 mt-2">
+              ไม่พบข้อมูลสถานีตรวจวัดน้ำ, สถานีวัดน้ำฝน, หรือเขื่อน/อ่างเก็บน้ำในพื้นที่ {displayLocation.amphure || ''} {displayLocation.province || ''}
+            </p>
+            
+            <Button 
+              variant="outline" 
+              className="mt-4"
+              onClick={() => updateLocation(displayLocation.amphure, displayLocation.province)}
+            >
+              ลองค้นหาอีกครั้ง
+            </Button>
+          </div>
+        </div>
+        
+        <Alert className="mt-6">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            <span className="font-medium">ข้อแนะนำ:</span>{' '}
+            <span className="text-gray-600">
+              ลองเลือกพื้นที่อื่น หรือเพิ่มสถานีเฝ้าระวังด้วยตนเอง
+            </span>
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  };
+  
   if (!hasValidLocationData) {
     return (
       <Alert className="mt-4">
@@ -814,13 +1043,22 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
     );
   }
   
-  if (isLoading) {
+  if (effectiveIsLoading) {
     return (
       <div className="flex flex-col justify-center items-center py-8 space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-[#42A5F5]" />
         <p className="text-sm text-[#64748B]">
           กำลังค้นหาสถานีในพื้นที่ {displayAmphure || ''} {displayProvince || ''}
         </p>
+        
+        <LoadingTimeout 
+          show={isLoadingTimedOut}
+          locationInfo={displayLocation}
+          onRetry={() => {
+            setIsLoadingTimedOut(false);
+            updateLocation(displayLocation.amphure, displayLocation.province);
+          }}
+        />
       </div>
     );
   }
@@ -832,45 +1070,88 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
         <AlertDescription>
           เกิดข้อผิดพลาดในการโหลดข้อมูล: {errorMessage}
           <div className="mt-2">
-            <button 
-              className="text-sm underline"
+            <Button 
+              variant="outline"
+              size="sm"
+              className="mt-2"
               onClick={() => updateLocation(displayAmphure, displayProvince)}
             >
               ลองใหม่อีกครั้ง
-            </button>
+            </Button>
           </div>
         </AlertDescription>
       </Alert>
     );
   }
   
+  // If we have no stations at all, show the empty state
+  if (!hasStations) {
+    return renderEmptyState();
+  }
+  
+  // Otherwise render the stations we have
   return (
     <div className="space-y-6">
       <p className="text-sm text-[#64748B]">
-        กำลังค้นหา: สถานีเฝ้าระวัง {adaptedMonitoringStations.length}, 
+        แสดงข้อมูล: สถานีเฝ้าระวัง {adaptedMonitoringStations.length}, 
         สถานีวัดน้ำฝน {adaptedRainStations.length}, 
         เขื่อน/อ่างเก็บน้ำ {adaptedReservoirs.length}
       </p>
       
-      {!hasStations && (
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            ไม่พบข้อมูลสถานีในพื้นที่ {displayAmphure || 'ไม่ระบุอำเภอ'} {displayProvince || 'ไม่ระบุจังหวัด'}
-          </AlertDescription>
-        </Alert>
-      )}
-      
-      {hasStations && (
-        <div className="space-y-8">
-          {monitoringStationsSection}
-          {rainStationsSection}
+      <div className="space-y-8">
+        {adaptedMonitoringStations.length > 0 && monitoringStationsSection}
+        {adaptedRainStations.length > 0 && rainStationsSection}
+        {adaptedReservoirs.length > 0 && reservoirsSection}
+        
+        {reservoirStations.length > 0 && (
           <div className="space-y-2">
             <h3 className="text-lg font-medium">เขื่อน/อ่างเก็บน้ำ {reservoirStations.length > 0 && `(${reservoirStations.length})`}</h3>
             {renderReservoirSection()}
           </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// New component for loading timeout message
+interface LoadingTimeoutProps {
+  show: boolean;
+  locationInfo: {
+    amphure?: string;
+    province?: string;
+  };
+  onRetry: () => void;
+}
+
+const LoadingTimeout: React.FC<LoadingTimeoutProps> = ({ 
+  show, 
+  locationInfo,
+  onRetry 
+}) => {
+  if (!show) return null;
+  
+  return (
+    <div className="text-amber-600 border border-amber-200 rounded-md p-4 mt-4 bg-amber-50 max-w-md">
+      <div className="flex">
+        <div className="flex-shrink-0">
+          <AlertTriangle className="h-5 w-5 text-amber-500" />
         </div>
-      )}
+        <div className="ml-3">
+          <h3 className="text-sm font-medium text-amber-800">
+            การโหลดข้อมูลใช้เวลานานกว่าปกติ
+          </h3>
+          <div className="mt-2 text-sm text-amber-700">
+            <p>อาจเกิดจากไม่พบข้อมูลสถานีตรวจวัดในพื้นที่ {locationInfo.amphure}, {locationInfo.province} หรือมีปัญหาการเชื่อมต่อกับเซิร์ฟเวอร์</p>
+            <button
+              onClick={onRetry}
+              className="mt-3 inline-flex items-center rounded-md border border-transparent bg-amber-100 px-2 py-1 text-xs font-medium text-amber-700 hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+            >
+              ลองอีกครั้ง
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -878,7 +1159,8 @@ const WaterLevelInfoContent: FC<WaterLevelInfoContentProps> = ({ location }) => 
 export const WaterLevelInfoCard: FC<WaterLevelInfoCardProps> = ({ 
   className = "",
   title = "ข้อมูลระดับน้ำ",
-  location
+  location,
+  disableAutoRefetch
 }) => {
   // Use the useLocation hook to access location state
   const locationState = useLocation();
@@ -887,6 +1169,38 @@ export const WaterLevelInfoCard: FC<WaterLevelInfoCardProps> = ({
   const { amphure: propAmphure, province: propProvince } = location || {};
   const amphure = propAmphure || locationState.amphure;
   const province = propProvince || locationState.province;
+  
+  // Track component mounting to avoid multiple data fetches
+  const [hasMounted, setHasMounted] = useState(false);
+  
+  // Add a state for data load attempts to avoid infinite loading
+  const [loadAttempts, setLoadAttempts] = useState(0);
+  
+  // When component mounts, mark it as mounted
+  useEffect(() => {
+    setHasMounted(true);
+    return () => {
+      // Reset when unmounted
+      setHasMounted(false);
+      setLoadAttempts(0);
+    };
+  }, []);
+  
+  // If load attempts exceed threshold, force display content even if still loading
+  const maxLoadAttempts = 2;
+  const shouldForceDisplay = loadAttempts > maxLoadAttempts;
+  
+  // Increment load attempts when loading state persists
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (hasMounted) {
+      // After 5 seconds of loading, increment attempt counter
+      timer = setTimeout(() => {
+        setLoadAttempts(prev => prev + 1);
+      }, 5000);
+    }
+    return () => clearTimeout(timer);
+  }, [hasMounted]);
   
   return (
     <Card className={cn("w-full h-full bg-white", className)}>
@@ -903,15 +1217,43 @@ export const WaterLevelInfoCard: FC<WaterLevelInfoCardProps> = ({
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              เกิดข้อผิดพลาดในการโหลดข้อมูล
+              เกิดข้อผิดพลาดในการโหลดข้อมูล 
+              <Button
+                onClick={() => window.location.reload()}
+                variant="link"
+                className="px-2 py-0 h-auto text-primary underline"
+              >
+                โหลดหน้าใหม่
+              </Button>
             </AlertDescription>
           </Alert>
         }>
-          <WaterLevelInfoContent location={location || {
-            amphure: locationState.amphure,
-            province: locationState.province
-          }} />
+          <WaterLevelInfoContent 
+            location={location || {
+              amphure: locationState.amphure,
+              province: locationState.province
+            }} 
+            disableAutoRefetch={disableAutoRefetch}
+          />
         </ErrorBoundary>
+        
+        {/* Add a fallback show if data persistently fails to load */}
+        {shouldForceDisplay && (
+          <div className="mt-4 p-4 border-t border-amber-100">
+            <div className="flex items-start">
+              <AlertTriangle className="h-5 w-5 text-amber-500 mt-1 mr-2" />
+              <div>
+                <p className="text-sm text-amber-800 font-semibold">
+                  การแสดงข้อมูลอาจไม่สมบูรณ์
+                </p>
+                <p className="text-sm text-amber-700 mt-1">
+                  ระบบพยายามโหลดข้อมูลหลายครั้งแล้ว หากยังไม่พบข้อมูลที่ต้องการ
+                  โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต หรือลองเลือกพื้นที่อื่น
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

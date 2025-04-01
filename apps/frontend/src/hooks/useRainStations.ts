@@ -141,6 +141,6 @@ export const useRainStations = (
     queryFn: () => fetchRainStations(amphure, province, dataSource),
     enabled: Boolean(amphure || province),
     retry: 2,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 15 * 60 * 1000, // 15 minutes
   });
 }; 

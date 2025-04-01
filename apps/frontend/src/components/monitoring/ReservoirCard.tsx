@@ -183,6 +183,9 @@ const ReservoirCardComponent = ({
 
   // Check if we have any data from PostgreSQL - consider the API response too
   const hasPostgresData = !!currentReservoirData || (reservoirDataResponse && !error);
+  
+  // Don't show loading indicator if there's an error
+  const showLoading = isLoading && !error;
 
   return (
     <div className="flex flex-col relative mt-6 mx-auto max-w-full w-full px-1.5">
@@ -198,9 +201,14 @@ const ReservoirCardComponent = ({
               {getDataSourceDisplay()}
             </span>
           )}
-          {!hasPostgresData && (
+          {!hasPostgresData && !showLoading && (
             <span className="bg-[#FEF9C3] text-[#A16207] px-2 py-0.5 rounded-full text-xs ml-1">
               ไม่พบข้อมูล
+            </span>
+          )}
+          {error && (
+            <span className="bg-red-100 text-red-800 px-2 py-0.5 rounded-full text-xs ml-1">
+              เกิดข้อผิดพลาด
             </span>
           )}
         </span>

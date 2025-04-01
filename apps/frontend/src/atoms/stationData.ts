@@ -8,6 +8,8 @@ import { locationAtom } from './location';
 // Define types for station data
 export interface MonitoringStation {
   id: string;
+  station_id: string;
+  station_name: string;
   name: string;
   location: string;
   coordinates: {
@@ -22,6 +24,12 @@ export interface MonitoringStation {
   };
   type: 'monitoring';
   source?: 'system' | 'user';
+  telemetry_data?: {
+    water_level: number;
+    flow_rate: number;
+    timestamp: string;
+    notation?: string;
+  };
 }
 
 export interface RainStation {
@@ -115,9 +123,27 @@ export const reservoirsAtom = atomWithStorage<Reservoir[]>(
   initialStationData.reservoirs
 );
 
+// Base atoms without logging
 export const userSelectedMonitoringStationsAtom = atomWithStorage<MonitoringStation[]>(
-  'userSelectedMonitoringStations',
-  initialStationData.userSelectedMonitoringStations
+  'user-selected-monitoring-stations',
+  []
+);
+
+// Derived atom for logging user selected stations
+export const userSelectedMonitoringStationsLogAtom = atom(
+  (get) => {
+    const stations = get(userSelectedMonitoringStationsAtom);
+    console.log('[userSelectedMonitoringStationsAtom] User selection updated:', {
+      count: stations.length,
+      stations: stations.map(s => ({
+        id: s.id,
+        station_id: s.station_id,
+        name: s.station_name
+      })),
+      timestamp: new Date().toISOString()
+    });
+    return stations;
+  }
 );
 
 export const userSelectedRainStationsAtom = atomWithStorage<RainStation[]>(
@@ -130,9 +156,23 @@ export const userSelectedReservoirsAtom = atomWithStorage<Reservoir[]>(
   initialStationData.userSelectedReservoirs
 );
 
+// Base atom without logging
 export const disabledMonitoringStationsAtom = atomWithStorage<Record<string, boolean>>(
-  'disabledMonitoringStations',
-  initialStationData.disabledMonitoringStations
+  'disabled-monitoring-stations',
+  {}
+);
+
+// Derived atom for logging disabled stations
+export const disabledMonitoringStationsLogAtom = atom(
+  (get) => {
+    const disabled = get(disabledMonitoringStationsAtom);
+    console.log('[disabledMonitoringStationsAtom] Disabled stations updated:', {
+      count: Object.keys(disabled).length,
+      disabledIds: Object.keys(disabled),
+      timestamp: new Date().toISOString()
+    });
+    return disabled;
+  }
 );
 
 export const disabledRainStationsAtom = atomWithStorage<Record<string, boolean>>(
@@ -201,41 +241,51 @@ export const monitoringStationsQueryAtom = atom(
     const amphure = get(currentAmphureAtom);
     const province = get(currentProvinceAtom);
     
-    console.log('[monitoringStationsQueryAtom] Fetching monitoring stations:', {
+    console.log('[monitoringStationsQueryAtom] Query triggered:', {
       amphure,
       province,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      hasAmphure: !!amphure,
+      hasProvince: !!province
     });
-    
-    // Only fetch if we have at least some location data (either amphure or province)
-    if (amphure || province) {
-      try {
-        console.log('[monitoringStationsQueryAtom] Fetching from API with:', { amphure, province });
-        
-        const response = await fetchMonitoringStations(amphure, province);
-        console.log('[monitoringStationsQueryAtom] API response:', {
-          stationsCount: response.stations?.length || 0,
-          success: !!response.stations
-        });
-        
-        // Log detailed station ID information stored in Jotai
-        console.log('[monitoringStationsQueryAtom] Station IDs stored in Jotai:', 
-          response.stations?.map((station: any) => ({
-            id: station.id,
-            station_id: station.station_id,
-            name: station.station_name
-          }))
-        );
-        
-        return response.stations || [];
-      } catch (error) {
-        console.error('[monitoringStationsQueryAtom] Error fetching monitoring stations:', error);
-        throw error;
-      }
+
+    // Add check: Only fetch if both amphure and province are defined
+    if (!amphure || !province) {
+      console.log('[monitoringStationsQueryAtom] Missing location data:', { 
+        amphure, 
+        province, 
+        timestamp: new Date().toISOString() 
+      });
+      return []; // Return empty array if location is incomplete
     }
-    
-    console.log('[monitoringStationsQueryAtom] No location data, returning empty array');
-    return [];
+
+    console.log('[monitoringStationsQueryAtom] Initiating API fetch:', { 
+      amphure, 
+      province, 
+      timestamp: new Date().toISOString() 
+    });
+    try {
+      // Pass amphure and province as separate arguments
+      const response = await fetchMonitoringStations(amphure, province);
+      const stationsCount = response?.stations?.length ?? 0;
+      console.log('[monitoringStationsQueryAtom] API response received:', { 
+        stationsCount,
+        // Use !!response.stations as success indicator based on previous code
+        success: !!response?.stations,
+        location: { province, amphure },
+        timestamp: new Date().toISOString(),
+        firstStation: stationsCount > 0 ? response.stations[0] : null
+      });
+      // Return response.stations, defaulting to empty array
+      return response?.stations ?? []; 
+    } catch (error) {
+      console.error('[monitoringStationsQueryAtom] Error fetching monitoring stations:', { 
+        error, 
+        location: { province, amphure },
+        timestamp: new Date().toISOString() 
+      });
+      return []; // Return empty array on error
+    }
   }
 );
 
@@ -243,33 +293,31 @@ export const rainStationsQueryAtom = atom(
   async (get) => {
     const amphure = get(currentAmphureAtom);
     const province = get(currentProvinceAtom);
-    
-    console.log('[rainStationsQueryAtom] Fetching rain stations:', {
-      amphure,
-      province,
-    });
+    console.log('[rainStationsQueryAtom] Fetching rain stations:', { amphure, province });
 
-    // If no location is selected, return empty array
-    if (!amphure && !province) {
+    // Add check: Only fetch if both amphure and province are defined
+    if (!amphure || !province) {
       console.log('[rainStationsQueryAtom] No location data, returning empty array');
       return [];
     }
 
+    console.log('[rainStationsQueryAtom] Fetching from API with:', { amphure, province });
     try {
-      console.log('[rainStationsQueryAtom] Fetching from API with:', { amphure, province });
-      
-      // Fetch both TMD and HII stations
+      // Pass amphure and province as separate arguments, include 'ALL'
       const response = await fetchRainStations(amphure, province, 'ALL');
-      console.log('[rainStationsQueryAtom] API response:', {
-        success: response.success,
-        total: response.total,
-        meta: response.meta
+      console.log('[rainStationsQueryAtom] API response:', { 
+        success: response?.success, 
+        total: response?.total,
+        meta: response?.meta // Log meta if needed
       });
-      
-      return response.stations;
+      // Return response.stations, defaulting to empty array
+      return response?.stations ?? [];
     } catch (error) {
-      console.error('[rainStationsQueryAtom] Error fetching rain stations:', error);
-      return [];
+      console.error('[rainStationsQueryAtom] Error fetching rain stations:', {
+        error, 
+        location: { province, amphure }
+      });
+      return []; // Return empty array on error
     }
   }
 );
@@ -296,77 +344,60 @@ export const reservoirsQueryAtom = atom(
     const amphure = get(currentAmphureAtom);
     const province = get(currentProvinceAtom);
     
-    console.log('[reservoirsQueryAtom] Fetching reservoirs:', {
-      amphure,
-      province,
-      timestamp: new Date().toISOString()
+    console.log('[reservoirsQueryAtom] Fetching reservoirs:', { 
+      amphure, 
+      province, 
+      timestamp: new Date().toISOString() 
     });
-    
-    // Only fetch if we have at least some location data (either amphure or province)
-    if (amphure || province) {
-      try {
-        console.log('[reservoirsQueryAtom] Fetching from API with:', { amphure, province });
-        
-        const response = await fetchReservoirs(amphure, province);
-        console.log('[reservoirsQueryAtom] API response:', {
-          reservoirsCount: response.reservoirs?.length || 0,
-          success: !!response.reservoirs
-        });
-        return response.reservoirs || [];
-      } catch (error) {
-        console.error('Error fetching reservoirs:', error);
-        throw error;
-      }
+
+    // Add check: Only fetch if both amphure and province are defined
+    if (!amphure || !province) {
+      console.log('[reservoirsQueryAtom] No location data, returning empty array');
+      return [];
     }
-    
-    console.log('[reservoirsQueryAtom] No location data, returning empty array');
-    return [];
+
+    console.log('[reservoirsQueryAtom] Fetching from API with:', { amphure, province });
+    try {
+      // Pass amphure and province as separate arguments
+      const response = await fetchReservoirs(amphure, province);
+      const reservoirsCount = response?.reservoirs?.length ?? 0;
+      console.log('[reservoirsQueryAtom] API response:', { 
+        reservoirsCount,
+        // Use !!response.reservoirs as success indicator based on previous code
+        success: !!response?.reservoirs 
+      });
+      // Return response.reservoirs, defaulting to empty array
+      return response?.reservoirs ?? [];
+    } catch (error) {
+      console.error('[reservoirsQueryAtom] Error fetching reservoirs:', {
+        error, 
+        location: { province, amphure }
+      });
+      return []; // Return empty array on error
+    }
   }
 );
 
 // Create a writable loading state atom
 export const loadingMonitoringStationsAtom = atom(false);
 
-// Update the isLoadingMonitoringStationsAtom to use the writable atom
+// Update the isLoadingMonitoringStationsAtom to ONLY use the writable atom
 export const isLoadingMonitoringStationsAtom = atom(
-  (get) => {
-    // Check the explicit loading state first
-    const isExplicitlyLoading = get(loadingMonitoringStationsAtom);
-    if (isExplicitlyLoading) return true;
-    
-    // Otherwise use the derived logic
-    const amphure = get(currentAmphureAtom);
-    const province = get(currentProvinceAtom);
-    const userSelected = get(userSelectedMonitoringStationsAtom);
-    const storedStations = get(monitoringStationsAtom);
-    
-    // Only show loading if we're fetching (have location but no user selections or stored stations)
-    return (amphure || province) && userSelected.length === 0 && storedStations.length === 0;
-  }
+  (get) => get(loadingMonitoringStationsAtom) // Directly return the state of the writable atom
 );
+
+// Create a writable loading state atom for rain stations
+export const loadingRainStationsAtom = atom(false);
 
 export const isLoadingRainStationsAtom = atom(
-  (get) => {
-    const amphure = get(currentAmphureAtom);
-    const province = get(currentProvinceAtom);
-    const userSelected = get(userSelectedRainStationsAtom);
-    const storedStations = get(rainStationsAtom);
-    
-    // Only show loading if we're fetching (have location but no user selections or stored stations)
-    return (amphure || province) && userSelected.length === 0 && storedStations.length === 0;
-  }
+  (get) => get(loadingRainStationsAtom) // Directly return the state of the writable atom
 );
 
+// Create a writable loading state atom for reservoirs
+export const loadingReservoirsAtom = atom(false);
+
 export const isLoadingReservoirsAtom = atom(
-  (get) => {
-    const amphure = get(currentAmphureAtom);
-    const province = get(currentProvinceAtom);
-    const userSelected = get(userSelectedReservoirsAtom);
-    const storedReservoirs = get(reservoirsAtom);
-    
-    // Only show loading if we're fetching (have location but no user selections or stored reservoirs)
-    return (amphure || province) && userSelected.length === 0 && storedReservoirs.length === 0;
-  }
+  (get) => get(loadingReservoirsAtom) // Directly return the state of the writable atom
 );
 
 // Error state atoms
@@ -374,7 +405,7 @@ export const monitoringStationsErrorAtom = atom<Error | null>(null);
 export const rainStationsErrorAtom = atom<Error | null>(null);
 export const reservoirsErrorAtom = atom<Error | null>(null);
 
-// Update the syncMonitoringStationsAtom to simplify the data fetching logic
+// Update the syncMonitoringStationsAtom function
 export const syncMonitoringStationsAtom = atom(
   null,
   async (get, set) => {
@@ -382,61 +413,127 @@ export const syncMonitoringStationsAtom = atom(
     const amphure = get(currentAmphureAtom);
     const province = get(currentProvinceAtom);
     
-    console.log('[syncMonitoringStationsAtom] Syncing monitoring stations with location:', { 
-      amphure, 
-      province 
+    console.log('[syncMonitoringStationsAtom] Syncing monitoring stations with location:', {
+      amphure,
+      province
     });
     
-    // Only fetch if we have location data
-    if (amphure || province) {
-      try {
-        // Set loading state
-        set(loadingMonitoringStationsAtom, true);
-        
-        // Clear previous error
-        set(monitoringStationsErrorAtom, null);
-        
-        // Directly fetch from API
-        const response = await fetchMonitoringStations(amphure, province);
-        
-        if (response.stations && Array.isArray(response.stations)) {
-          console.log('[syncMonitoringStationsAtom] Fetched stations:', {
-            count: response.stations.length
-          });
-          
-          // Convert API response to our internal MonitoringStation type
-          const mappedStations = response.stations.map((station: any) => ({
-            id: station.id,
-            name: station.station_name || station.name || `Station ${station.id}`,
-            location: station.location || `${amphure || ''}, ${province || ''}`,
-            coordinates: station.coordinates || { lat: 0, lng: 0 },
-            status: station.status || 'active',
-            lastReading: {
-              timestamp: station.telemetry_data?.timestamp || new Date().toISOString(),
-              value: station.telemetry_data?.water_level || 0,
-              unit: 'm'
-            },
-            type: 'monitoring' as const,
-            source: 'system' as const
-          }));
-          
-          // Update the atom with the new data
-          set(monitoringStationsAtom, mappedStations);
-        } else {
-          console.warn('[syncMonitoringStationsAtom] No stations returned from API');
-          // Set empty array to clear previous data
-          set(monitoringStationsAtom, []);
-        }
-      } catch (error) {
-        console.error('[syncMonitoringStationsAtom] Error fetching stations:', error);
-        // Set error atom
-        set(monitoringStationsErrorAtom, error instanceof Error ? error : new Error(String(error)));
-      } finally {
-        // Reset loading state
-        set(loadingMonitoringStationsAtom, false);
+    try {
+      // Set loading state
+      set(loadingMonitoringStationsAtom, true);
+      
+      // Clear previous error
+      set(monitoringStationsErrorAtom, null);
+      
+      // Enhanced debugging for API request
+      console.log('[syncMonitoringStationsAtom] Making API call with parameters:', {
+        amphure, 
+        province,
+        url: `${import.meta.env.VITE_API_URL}/api/telemetry/stations?amphure=${encodeURIComponent(amphure || '')}&province=${encodeURIComponent(province || '')}`
+      });
+      
+      // Early return if no location data to avoid infinite retries
+      if (!amphure && !province) {
+        console.log('[syncMonitoringStationsAtom] No location data, skipping fetch');
+        set(monitoringStationsAtom, []);
+        return;
       }
-    } else {
-      console.log('[syncMonitoringStationsAtom] No location data, skipping fetch');
+      
+      // Fetch monitoring stations - pass both amphure and province explicitly
+      const response = await fetchMonitoringStations(amphure, province);
+      
+      // Log response information
+      console.log('[syncMonitoringStationsAtom] Response summary:', {
+        stationCount: response?.stations?.length || 0,
+        message: response?.message || 'No message',
+        hasError: !!response?.error,
+        error: response?.error,
+        timestamp: new Date().toISOString(),
+        firstStation: response?.stations?.length > 0 ? JSON.stringify(response.stations[0]) : 'none'
+      });
+      
+      // Standardize station data for storage
+      if (response?.stations && Array.isArray(response.stations)) {
+        // Process stations to add proper telemetry data
+        const stationsWithTelemetry = await Promise.all(
+          response.stations.map(async (station: any) => {
+            // Debug each station
+            console.log(`[syncMonitoringStationsAtom] Processing station ${station.id || station.station_id}:`, {
+              water_level: station.water_level,
+              flow_rate: station.flow_rate,
+              timestamp: station.reading_time || station.timestamp,
+              telemetry_data: station.telemetry_data
+            });
+            
+            // Extract required station properties with fallbacks for missing fields
+            return {
+              id: station.id?.toString() || "",
+              station_id: station.station_id || station.id?.toString() || "",
+              station_name: station.station_name || station.name || `Station ${station.id || 'Unknown'}`,
+              name: station.name || station.station_name || `Station ${station.id || 'Unknown'}`,
+              location: station.location || `${amphure || ''}, ${province || ''}`,
+              coordinates: station.coordinates || { 
+                lat: parseFloat(station.latitude || 0), 
+                lng: parseFloat(station.longitude || 0) 
+              },
+              status: station.status || 'active',
+              water_level: parseFloat(station.water_level || 0),
+              flow_rate: parseFloat(station.flow_rate || 0),
+              lastReading: {
+                timestamp: station.reading_time || new Date().toISOString(),
+                value: parseFloat(station.water_level || 0),
+                unit: 'm'
+              },
+              telemetry_data: {
+                water_level: parseFloat(station.water_level || 0),
+                flow_rate: parseFloat(station.flow_rate || 0),
+                timestamp: station.reading_time || new Date().toISOString(),
+                notation: station.notation_string || ''
+              },
+              type: 'monitoring' as const,
+              source: 'system' as const,
+              // Add these properties to ensure correct filtering and display
+              province: station.province || province,
+              amphure: station.amphure || amphure
+            };
+          })
+        );
+        
+        // Update the stations atom with standardized data that includes telemetry
+        set(monitoringStationsAtom, stationsWithTelemetry);
+        console.log('[syncMonitoringStationsAtom] Updated monitoring stations:', {
+          count: stationsWithTelemetry.length,
+          firstStation: stationsWithTelemetry[0] ? {
+            id: stationsWithTelemetry[0].id,
+            name: stationsWithTelemetry[0].name,
+            water_level: stationsWithTelemetry[0].water_level,
+            flow_rate: stationsWithTelemetry[0].flow_rate,
+            telemetry_timestamp: stationsWithTelemetry[0].telemetry_data?.timestamp
+          } : null
+        });
+      } else {
+        // If no stations found or invalid response, set empty array
+        console.log('[syncMonitoringStationsAtom] No valid station data found, using empty array');
+        set(monitoringStationsAtom, []);
+      }
+      
+      // Handle any errors in the response
+      if (response?.error) {
+        set(monitoringStationsErrorAtom, new Error(response.error));
+      } else {
+        set(monitoringStationsErrorAtom, null);
+      }
+    } catch (error) {
+      console.error('[syncMonitoringStationsAtom] Error fetching monitoring stations:', error);
+      
+      // Set empty stations array
+      set(monitoringStationsAtom, []);
+      
+      // Update error state
+      set(monitoringStationsErrorAtom, error as Error);
+    } finally {
+      // Reset loading state
+      set(loadingMonitoringStationsAtom, false);
     }
   }
 );
@@ -456,8 +553,18 @@ export const syncRainStationsAtom = atom(
     // Only fetch if we have location data
     if (amphure || province) {
       try {
+        // Set loading state
+        set(loadingRainStationsAtom, true);
+        
         // Clear previous error
         set(rainStationsErrorAtom, null);
+        
+        // Enhanced debugging for API request
+        console.log('[syncRainStationsAtom] Making API call with parameters:', {
+          amphure, 
+          province,
+          url: `${import.meta.env.VITE_API_URL}/api/rain-stations?amphure=${encodeURIComponent(amphure || '')}&province=${encodeURIComponent(province || '')}`
+        });
         
         // Directly fetch from API
         const response = await fetchRainStations(amphure, province);
@@ -465,97 +572,184 @@ export const syncRainStationsAtom = atom(
         if (response.stations && Array.isArray(response.stations)) {
           console.log('[syncRainStationsAtom] Fetched rain stations:', {
             count: response.stations.length,
-            dataSources: response.stations.map((s: any) => s.data_source || 'unknown')
+            dataSources: response.stations.map((s: any) => s.data_source || 'unknown'),
+            firstStation: response.stations.length > 0 ? {
+              id: response.stations[0].id,
+              name: response.stations[0].name || response.stations[0].name_th,
+              rainfallData: {
+                rainfall10m: response.stations[0].rainfall10m,
+                rainfall1h: response.stations[0].rainfall1h,
+                rainfall3h: response.stations[0].rainfall3h,
+                rainfall24h: response.stations[0].rainfall24h,
+                rainfall_today: response.stations[0].rainfall_today
+              }
+            } : 'none'
           });
           
           // Convert API response to our internal RainStation type
-          const mappedStations = response.stations.map((station: any) => ({
-            id: station.id,
-            name: station.name || station.station_name || `Rain Station ${station.id}`,
-            name_th: station.name_th || null,
-            latitude: station.latitude || 0,
-            longitude: station.longitude || 0,
-            station_type: station.station_type || 'unknown',
-            data_source: station.data_source || 'unknown',
-            province: station.province || province || null,
-            amphure: station.amphure || amphure || null,
-            tambon: station.tambon || null,
-            rainfall10m: station.rainfall10m || null,
-            rainfall1h: station.rainfall1h || null,
-            rainfall3h: station.rainfall3h || null,
-            rainfall24h: station.rainfall24h || null,
-            rainfall_today: station.rainfall_today || null,
-            rainfall_date_calc: station.rainfall_date_calc || null,
-            rainfall_datetime: station.rainfall_datetime || null,
-            rainfall: {
-              daily: station.rainfall?.daily || station.rainfall_today || 0,
-              hourly: station.rainfall?.hourly || station.rainfall1h || 0,
-              tenMinutes: station.rainfall?.tenMinutes || station.rainfall10m || 0,
-              threeHours: station.rainfall?.threeHours || station.rainfall3h || 0,
-              timestamp: station.rainfall?.timestamp || station.rainfall_datetime || new Date().toISOString()
-            }
-          }));
+          const mappedStations = response.stations.map((station: any) => {
+            console.log(`[syncRainStationsAtom] Processing station ${station.id}:`, {
+              rainfall10m: station.rainfall10m,
+              rainfall1h: station.rainfall1h,
+              rainfall3h: station.rainfall3h,
+              rainfall24h: station.rainfall24h,
+              rainfall_today: station.rainfall_today
+            });
+            
+            return {
+              id: station.id,
+              name: station.name || station.station_name || `Rain Station ${station.id}`,
+              name_th: station.name_th || null,
+              latitude: station.latitude || 0,
+              longitude: station.longitude || 0,
+              station_type: station.station_type || 'unknown',
+              data_source: station.data_source || 'unknown',
+              province: station.province || province || null,
+              amphure: station.amphure || amphure || null,
+              tambon: station.tambon || null,
+              // Store original rainfall values exactly as they come from API 
+              rainfall10m: station.rainfall10m !== undefined ? station.rainfall10m : null,
+              rainfall1h: station.rainfall1h !== undefined ? station.rainfall1h : null,
+              rainfall3h: station.rainfall3h !== undefined ? station.rainfall3h : null,
+              rainfall24h: station.rainfall24h !== undefined ? station.rainfall24h : null,
+              rainfall_today: station.rainfall_today !== undefined ? station.rainfall_today : null,
+              rainfall_date_calc: station.rainfall_date_calc || null,
+              rainfall_datetime: station.rainfall_datetime || null,
+              // Also construct the standard rainfall object for backward compatibility
+              rainfall: {
+                daily: station.rainfall_today !== undefined ? station.rainfall_today : 
+                       station.rainfall24h !== undefined ? station.rainfall24h : 0,
+                hourly: station.rainfall1h !== undefined ? station.rainfall1h : 0,
+                tenMinutes: station.rainfall10m !== undefined ? station.rainfall10m : 0,
+                threeHours: station.rainfall3h !== undefined ? station.rainfall3h : 0,
+                timestamp: station.rainfall_datetime || new Date().toISOString()
+              }
+            };
+          });
           
-          // Update the atom with the new data
-          set(rainStationsAtom, mappedStations);
+          // Log stations with non-zero rainfall for debugging
+          const stationsWithRainfall = mappedStations.filter((s: any) => 
+            s.rainfall10m > 0 || s.rainfall1h > 0 || s.rainfall3h > 0 || 
+            s.rainfall24h > 0 || s.rainfall_today > 0
+          );
+          
+          console.log('[syncRainStationsAtom] Stations with rainfall data:', {
+            count: stationsWithRainfall.length,
+            stations: stationsWithRainfall.map((s: any) => ({
+              id: s.id,
+              name: s.name,
+              rainfall10m: s.rainfall10m,
+              rainfall1h: s.rainfall1h,
+              rainfall3h: s.rainfall3h,
+              rainfall24h: s.rainfall24h,
+              rainfall_today: s.rainfall_today
+            }))
+          });
+          
+          // Update the atom with the new data ONLY if it has changed
+          const currentStations = get(rainStationsAtom);
+          if (JSON.stringify(mappedStations) !== JSON.stringify(currentStations)) {
+            console.log('[syncRainStationsAtom] Rain station data changed, updating atom.');
+            set(rainStationsAtom, mappedStations);
+          } else {
+            console.log('[syncRainStationsAtom] Rain station data unchanged, skipping atom update.');
+          }
         } else {
           console.warn('[syncRainStationsAtom] No rain stations returned from API');
-          // Set empty array to clear previous data
-          set(rainStationsAtom, []);
+          // Set empty array to clear previous data ONLY if it's not already empty
+          if (get(rainStationsAtom).length > 0) {
+            console.log('[syncRainStationsAtom] Clearing existing rain station data.');
+            set(rainStationsAtom, []);
+          }
         }
       } catch (error) {
         console.error('[syncRainStationsAtom] Error fetching rain stations:', error);
         // Set error atom
         set(rainStationsErrorAtom, error instanceof Error ? error : new Error(String(error)));
+      } finally {
+         // Reset loading state
+         set(loadingRainStationsAtom, false);
       }
     } else {
       console.log('[syncRainStationsAtom] No location data, skipping fetch');
+      // Ensure loading is false if skipped
+      set(loadingRainStationsAtom, false);
     }
   }
 );
 
+// syncReservoirsAtom: Updated to map fetched data to the correct atom type
 export const syncReservoirsAtom = atom(
   null,
-  (get, set) => {
+  async (get, set) => { 
     console.log('[stationData] Syncing reservoirs');
     
     try {
-      // Get the current state
-      const reservoirs = get(reservoirsAtom) || [];
+      // Set loading state
+      set(loadingReservoirsAtom, true);
+
+      // Clear previous error
+      set(reservoirsErrorAtom, null);
+
+      // 1. Get the newly fetched data for the current location
+      const fetchedBackendReservoirs = await get(reservoirsQueryAtom); 
+      console.log('[stationData] Fetched reservoirs for sync:', {
+        count: fetchedBackendReservoirs.length,
+        // Assuming fetched data has reservoir_id or id
+        ids: fetchedBackendReservoirs.map((r: any) => r.reservoir_id || r.id)
+      });
+
+      // 2. Map the fetched data to the AtomReservoir structure
+      const mappedReservoirs: Reservoir[] = fetchedBackendReservoirs.map((item: any): Reservoir => {
+        const lat = parseFloat(item.reservoir_lat || item.latitude || 0);
+        const lng = parseFloat(item.reservoir_long || item.longitude || 0);
+        // Ensure id is a string, prioritize reservoir_id if present
+        const idString = item.reservoir_id?.toString() || item.id?.toString() || ''; 
+        
+        return {
+            id: idString, 
+            // Use reservoir_name first, then name, then construct default
+            name: item.reservoir_name || item.name || `Reservoir ${idString || 'Unknown'}`, 
+            // Construct location from amphure/province if available
+            location: `${item.amphure || ''}${item.amphure && item.province ? ', ' : ''}${item.province || ''}`, 
+            coordinates: { lat, lng },
+            status: 'active', // Default status
+            // Use capacity field, default 0. Check for normal_storage_capacity too.
+            capacity: parseFloat(item.normal_storage_capacity || item.capacity || 0), 
+            // Use current_volume or maybe storage? Default 0. Needs clarification which field is correct.
+            currentLevel: parseFloat(item.current_volume || item.storage || 0), 
+             // Use percent_full if available, default 0
+            percentFull: parseFloat(item.percent_full || 0),
+            type: 'reservoir',
+            source: 'system',
+        };
+      });
+      console.log('[stationData] Mapped fetched data:', {
+        count: mappedReservoirs.length,
+        ids: mappedReservoirs.map(r => r.id)
+      });
+
+      // 3. Update the main reservoirsAtom with the *mapped* data
+      set(reservoirsAtom, mappedReservoirs);
+      console.log('[stationData] Set reservoirsAtom with mapped data.');
+
+      // 4. Perform existing cleanup for user-selected and disabled reservoirs
       const userSelectedReservoirs = get(userSelectedReservoirsAtom) || [];
       const disabledReservoirs = get(disabledReservoirsAtom) || {};
       
-      // Log the current state with detailed information
-      console.log('[stationData] Current reservoirs state:', {
-        reservoirs: reservoirs.length,
-        reservoirIds: reservoirs.map(r => r.id),
-        userSelectedReservoirs: userSelectedReservoirs.length,
-        userSelectedReservoirIds: userSelectedReservoirs.map(r => r.id),
-        disabledReservoirs: Object.keys(disabledReservoirs).length,
-        disabledReservoirIds: Object.keys(disabledReservoirs)
+      console.log('[stationData] Current user/disabled state:', {
+        userSelected: userSelectedReservoirs.length,
+        disabled: Object.keys(disabledReservoirs).length
       });
-      
-      // Check for invalid data
-      const invalidReservoirs = reservoirs.filter(r => !r.id);
-      const invalidUserSelectedReservoirs = userSelectedReservoirs.filter(r => !r.id);
-      
-      if (invalidReservoirs.length > 0) {
-        console.warn('[stationData] Found invalid reservoirs without IDs:', invalidReservoirs);
-      }
-      
-      if (invalidUserSelectedReservoirs.length > 0) {
-        console.warn('[stationData] Found invalid user-selected reservoirs without IDs:', invalidUserSelectedReservoirs);
-      }
-      
+
       // Filter out user-selected reservoirs that are disabled
       const filteredUserSelectedReservoirs = userSelectedReservoirs.filter(
         reservoir => reservoir && reservoir.id && !disabledReservoirs[reservoir.id]
       );
-      
-      // Check for duplicate IDs
+
+      // Check for duplicate IDs (optional but good practice)
       const userSelectedIds = new Set<string>();
       const duplicateUserSelectedIds: string[] = [];
-      
       filteredUserSelectedReservoirs.forEach(reservoir => {
         if (userSelectedIds.has(reservoir.id)) {
           duplicateUserSelectedIds.push(reservoir.id);
@@ -563,40 +757,45 @@ export const syncReservoirsAtom = atom(
           userSelectedIds.add(reservoir.id);
         }
       });
-      
       if (duplicateUserSelectedIds.length > 0) {
         console.warn('[stationData] Found duplicate user-selected reservoir IDs:', duplicateUserSelectedIds);
       }
       
-      // If the filtered list is different from the current list, update it
+      // If the filtered list is different from the original user-selected list, update it
       if (JSON.stringify(filteredUserSelectedReservoirs) !== JSON.stringify(userSelectedReservoirs)) {
-        console.log('[stationData] Updating user-selected reservoirs:', {
+        console.log('[stationData] Updating user-selected reservoirs (filtering disabled):', {
           before: userSelectedReservoirs.length,
           after: filteredUserSelectedReservoirs.length,
           removedIds: userSelectedReservoirs
             .filter(r => !filteredUserSelectedReservoirs.some(fr => fr.id === r.id))
             .map(r => r.id)
         });
-        
         set(userSelectedReservoirsAtom, filteredUserSelectedReservoirs);
       } else {
-        console.log('[stationData] No changes needed for user-selected reservoirs');
+        console.log('[stationData] No changes needed for user-selected reservoirs based on disabled status.');
       }
       
-      // Log the updated state
-      console.log('[stationData] Updated reservoirs state:', {
-        reservoirs: reservoirs.length,
-        userSelectedReservoirs: filteredUserSelectedReservoirs.length,
-        disabledReservoirs: Object.keys(disabledReservoirs).length
-      });
+      // Clear any previous error for reservoirs
+      // set(reservoirsErrorAtom, null);
+
+      console.log('[stationData] Reservoir sync complete.');
+
     } catch (error) {
       console.error('[stationData] Error syncing reservoirs:', error);
-      // Attempt recovery by setting to empty array if needed
+      // Set error atom
+      set(reservoirsErrorAtom, error instanceof Error ? error : new Error(String(error)));
+      // Optionally clear the main atom on error?
+      // set(reservoirsAtom, []); 
+
+      // Attempt recovery for userSelectedReservoirsAtom if necessary
       const userSelectedReservoirs = get(userSelectedReservoirsAtom);
       if (!userSelectedReservoirs || !Array.isArray(userSelectedReservoirs)) {
         console.warn('[stationData] Attempting recovery by resetting user-selected reservoirs');
         set(userSelectedReservoirsAtom, []);
       }
+    } finally {
+       // Reset loading state
+       set(loadingReservoirsAtom, false);
     }
   }
 );

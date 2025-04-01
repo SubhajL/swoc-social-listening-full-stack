@@ -73,21 +73,21 @@ export const StationSelectionDialog = ({
   
   const stationsContainerRef = useRef<HTMLDivElement>(null);
   
-  // Fetch stations for current location
+  // Fetch stations for current location - now filtering by both amphure and province
   const { 
     data: monitoringData, 
     isLoading: isLoadingMonitoring 
-  } = useMonitoringStations(undefined, currentProvince); // Only filter by province, not amphure
+  } = useMonitoringStations(currentAmphure, currentProvince); // Filter by both amphure and province
   
   const { 
     data: rainData, 
     isLoading: isLoadingRain 
-  } = useRainStations(undefined, currentProvince); // Only filter by province, not amphure
+  } = useRainStations(currentAmphure, currentProvince); // Filter by both amphure and province
   
   const { 
     data: reservoirData, 
     isLoading: isLoadingReservoir 
-  } = useReservoirs(undefined, currentProvince); // Only filter by province, not amphure
+  } = useReservoirs(currentAmphure, currentProvince); // Already filtering by both
 
   // Reset state when dialog opens
   useEffect(() => {

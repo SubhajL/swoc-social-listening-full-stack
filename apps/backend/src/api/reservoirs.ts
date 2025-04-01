@@ -16,6 +16,7 @@ interface Reservoir {
   normal_storage_capacity: string | null;
   minimum_storage_capacity: string | null;
   type: string | null;
+  reservoir_id?: string | null;
 }
 
 interface ReservoirData {
@@ -45,9 +46,10 @@ router.get('/', async (req, res) => {
   });
 
   try {
+    // Query from reservoir_locations table directly instead of reservoir table
     let query = `
       SELECT *
-      FROM reservoir
+      FROM reservoir_locations
       WHERE 1=1
     `;
 
@@ -59,16 +61,16 @@ router.get('/', async (req, res) => {
       values.push(amphure);
       paramCount++;
     } else if (province) {
-      query += ` AND province = $${paramCount}`;
-      values.push(province);
+      query += ` AND province ILIKE $${paramCount}`;
+      values.push(`%${province}%`);
       paramCount++;
     }
 
-    query += ` ORDER BY sequence_number ASC NULLS LAST`;
+    query += ` ORDER BY id`;
 
     const { rows } = await pool.query(query, values);
 
-    logger.info('✅ Successfully processed reservoirs', {
+    logger.info('✅ Successfully processed reservoirs from reservoir_locations', {
       totalReservoirs: rows.length,
       filterCriteria: amphure ? `amphure=${amphure}` : province ? `province=${province}` : 'none',
       timestamp: new Date().toISOString()
@@ -112,22 +114,28 @@ router.get('/data', async (req, res) => {
     let query = `
       WITH latest_data AS (
         SELECT 
-          DISTINCT ON (reservoir_id) 
-          id,
-          reservoir_id,
-          reservoir_name,
-          storage,
-          dead_storage,
-          volume,
-          inflow,
-          outflow,
-          date,
-          type,
-          'dam' as data_source,
-          created_at,
-          updated_at
+          DISTINCT ON (rd.reservoir_id) 
+          rd.id,
+          rd.reservoir_id,
+          rd.reservoir_name,
+          rd.storage,
+          rd.dead_storage,
+          rd.volume,
+          rd.inflow,
+          rd.outflow,
+          rd.date,
+          rd.type as type,
+          CASE 
+            WHEN rl.reservoir_name LIKE '%เขื่อน%' THEN 'dam'
+            WHEN rl.reservoir_name LIKE '%อ่างเก็บน้ำ%' THEN 'reservoir'
+            ELSE 'reservoir'
+          END as data_source,
+          rd.created_at,
+          rd.updated_at
         FROM 
-          reservoir_data
+          reservoir_data rd
+        LEFT JOIN
+          reservoir_locations rl ON rd.reservoir_id = rl.reservoir_id
         WHERE 1=1
     `;
 
@@ -135,22 +143,22 @@ router.get('/data', async (req, res) => {
     let paramCount = 1;
 
     if (reservoirId) {
-      query += ` AND reservoir_id = $${paramCount}`;
+      query += ` AND rd.reservoir_id = $${paramCount}`;
       values.push(reservoirId);
       paramCount++;
     }
 
     if (reservoirName) {
-      query += ` AND reservoir_name ILIKE $${paramCount}`;
+      query += ` AND rd.reservoir_name ILIKE $${paramCount}`;
       values.push(`%${reservoirName}%`);
       paramCount++;
     }
 
     query += `
         ORDER BY 
-          reservoir_id, 
-          date DESC,
-          updated_at DESC
+          rd.reservoir_id, 
+          rd.date DESC,
+          rd.updated_at DESC
       )
       SELECT * FROM latest_data
       ORDER BY reservoir_name

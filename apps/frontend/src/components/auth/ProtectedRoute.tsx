@@ -1,6 +1,7 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState, useRef } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { storeConversationContext, getConversationContext } from "@/config";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -20,93 +21,58 @@ export function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { isAuthenticated, hasPermission, hasRole, checkAuth, user, token } = useAuth();
   const location = useLocation();
-  const [isValidating, setIsValidating] = useState(true);
+  const [isChecking, setIsChecking] = useState(true);
   const [isValid, setIsValid] = useState(false);
+  
+  // Add a ref to prevent repeated checks and redirect loops
+  const hasCheckedRef = useRef(false);
   
   // Check authentication status on mount and when location changes
   useEffect(() => {
-    let isMounted = true;
-    
-    const validateAuth = async () => {
-      setIsValidating(true);
+    const verifyAuth = async () => {
+      // Only check auth once per component mount to prevent cycles
+      if (hasCheckedRef.current) {
+        console.log('[ProtectedRoute] Auth already checked, skipping redundant check');
+        return;
+      }
       
-      console.log('[ProtectedRoute] Checking authentication status', {
-        isAuthenticated,
-        path: location.pathname,
-        user: user ? {
-          id: user.id,
-          email: user.email,
-          rbacRole: user.rbacRole
-        } : null,
-        hasToken: !!token,
-        tokenLength: token?.length || 0
-      });
+      hasCheckedRef.current = true;
       
-      // Check for token in localStorage as a fallback
-      const localStorageToken = localStorage.getItem('token');
-      const hasLocalToken = !!localStorageToken && localStorageToken.length > 0;
-      
-      console.log('[ProtectedRoute] Local storage token check:', {
-        hasLocalToken,
-        tokenLength: hasLocalToken ? localStorageToken.length : 0
-      });
-      
-      // Verify token is valid
-      let authValid = false;
-      if (isAuthenticated) {
-        authValid = await checkAuth();
-        console.log('[ProtectedRoute] Token validation result:', authValid);
+      try {
+        console.log('[ProtectedRoute] Verifying auth status...');
+        const isValid = await checkAuth();
         
-        // If token validation fails, clear localStorage and auth state
-        if (!authValid) {
-          console.log('[ProtectedRoute] Token validation failed, clearing auth data');
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          localStorage.removeItem('auth-storage');
-        }
-      } else if (hasLocalToken) {
-        // If Jotai state doesn't show authenticated but localStorage has a token,
-        // try to validate and restore the session
-        console.log('[ProtectedRoute] Found token in localStorage but not in auth state, attempting to restore');
-        
-        try {
-          // Check if token is valid
-          const tokenParts = localStorageToken.split('.');
-          if (tokenParts.length === 3) {
-            const payload = JSON.parse(atob(tokenParts[1]));
-            const expiry = payload.exp * 1000; // Convert to milliseconds
-            const now = Date.now();
-            
-            if (now < expiry) {
-              console.log('[ProtectedRoute] localStorage token is valid, will redirect to trigger auth state restoration');
-              // We'll handle this in the render logic below
-              authValid = true;
-            } else {
-              console.log('[ProtectedRoute] localStorage token is expired');
-              localStorage.removeItem('token');
-              localStorage.removeItem('user');
-            }
+        // Store auth state in MCP context
+        const context = getConversationContext();
+        storeConversationContext({
+          ...context,
+          systemState: {
+            ...context.systemState,
+            isAuthenticated: isValid,
+            currentRoute: location.pathname
           }
-        } catch (error) {
-          console.error('[ProtectedRoute] Error validating localStorage token:', error);
-        }
-      }
-      
-      if (isMounted) {
-        setIsValid(authValid);
-        setIsValidating(false);
+        });
+        
+        setIsValid(isValid);
+        console.log('[ProtectedRoute] Auth verification complete:', { isValid });
+      } catch (error) {
+        console.error('[ProtectedRoute] Auth check error:', error);
+        setIsValid(false);
+      } finally {
+        setIsChecking(false);
       }
     };
+
+    verifyAuth();
     
-    validateAuth();
-    
+    // Reset the check flag when location changes
     return () => {
-      isMounted = false;
+      hasCheckedRef.current = false;
     };
-  }, [isAuthenticated, location.pathname, user, token, checkAuth]);
+  }, [checkAuth, location.pathname]);
   
   // Show loading state while validating
-  if (isValidating) {
+  if (isChecking) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -119,14 +85,6 @@ export function ProtectedRoute({
   
   // Check if user is authenticated
   if (!isAuthenticated) {
-    // Special case: If we found a valid token in localStorage but Jotai state is not authenticated,
-    // redirect to login with a special flag to trigger immediate redirect back
-    const localStorageToken = localStorage.getItem('token');
-    if (localStorageToken && isValid) {
-      console.log('[ProtectedRoute] Valid token found in localStorage, redirecting to login to restore session');
-      return <Navigate to="/login" state={{ from: location.pathname, restoreSession: true }} replace />;
-    }
-    
     console.log('[ProtectedRoute] User not authenticated, redirecting to login', {
       from: location.pathname
     });

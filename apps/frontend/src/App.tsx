@@ -3,13 +3,17 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { 
   RouterProvider, 
   createBrowserRouter,
   createRoutesFromElements,
   Route,
-  Navigate
+  Navigate,
+  Outlet,
+  useNavigate,
+  useRouteError,
+  isRouteErrorResponse
 } from "react-router-dom";
 import Index from "./pages/index";
 import ComplaintForm from "./pages/ComplaintForm";
@@ -23,7 +27,7 @@ import ChangePassword from "./pages/ChangePassword";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { useHydrateStore } from "./stores/storeHydration";
 import { useEffect, useState, Suspense, useCallback } from "react";
-import { checkApiStatus } from "./utils/api-status";
+import { checkApiStatus } from '@/lib/api-status';
 import { RealTimeProvider } from "./contexts/RealTimeContext";
 import { ApiConnectionError } from "./components/ApiConnectionError";
 import { toast, useToast } from "@/components/ui/use-toast";
@@ -33,347 +37,199 @@ import { ErrorBoundary } from "@/components/error-boundary";
 import { handleError } from "@/utils/errorHandling";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { QueryClient } from "@tanstack/react-query";
 import { useAuth } from "./hooks/useAuth";
+import JotaiProvider from './providers/JotaiProvider';
+import Dashboard from './pages/Dashboard';
+import { MainPage } from './pages/MainPage';
 
-// Create a new query client
+// Create query client with configuration for better performance and reduced re-renders
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1,
+      // Prevent re-fetching on window focus by default unless specifically enabled
       refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      // Keep data valid for 5 minutes by default to reduce unnecessary fetches
+      staleTime: 1000 * 60 * 5,
+      // Keep data in cache for 10 minutes after becoming unused (replaces cacheTime)
+      gcTime: 1000 * 60 * 10,
+      // Don't retry by default - let individual queries configure this as needed
+      retry: false,
+      // Keep showing previous data while fetching for better UX
+      placeholderData: (previousData: unknown) => previousData,
+      // Only fetch when explicitly called, not automatically when focused or mounted
+      refetchOnMount: false,
+      // Always attempt to fetch data even if offline for reliable behavior
+      networkMode: 'always',
     },
   },
 });
 
-// Auth redirect component
-const AuthRedirect = () => {
-  const { checkAuth } = useAuth();
-  const [isChecking, setIsChecking] = useState(true);
-  const [authState, setAuthState] = useState<boolean>(false); // Default to false instead of using isAuthenticated
+// Custom error element
+function RootErrorBoundary() {
+  const error = useRouteError();
+  const navigate = useNavigate();
   
-  useEffect(() => {
-    const verifyAuth = async () => {
-      setIsChecking(true);
-      
-      console.log('[AuthRedirect] Verifying authentication state from scratch');
-      
-      // Always run a complete check without assuming initial auth state
-      try {
-        // Force an auth check by calling the function directly
-        const isValid = await checkAuth();
-        console.log('[AuthRedirect] Auth check result:', isValid);
-        setAuthState(isValid);
-      } catch (error) {
-        console.error('[AuthRedirect] Auth check error:', error);
-        setAuthState(false);
-      } finally {
-        setIsChecking(false);
-      }
-    };
-    
-    verifyAuth();
-  }, [checkAuth]);
+  let errorMessage = "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ";
+  let errorTitle = "เกิดข้อผิดพลาด";
   
-  // Show loading while checking auth
-  if (isChecking) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-t-blue-500 border-b-blue-500 border-l-transparent border-r-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-gray-600">กำลังตรวจสอบสถานะการเข้าสู่ระบบ...</p>
+  if (isRouteErrorResponse(error)) {
+    if (error.status === 404) {
+      errorTitle = "ไม่พบหน้าที่ต้องการ";
+      errorMessage = `ไม่พบหน้าที่ต้องการ: ${error.data}`;
+    } else {
+      errorMessage = error.data || error.statusText;
+    }
+  } else if (error instanceof Error) {
+    errorMessage = error.message;
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
+      <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
+        <div className="flex flex-col items-center">
+          <AlertTriangle className="text-red-500 w-16 h-16 mb-4" />
+          <h1 className="text-2xl font-bold mb-2 text-center">{errorTitle}</h1>
+          <p className="text-gray-600 mb-6 text-center">{errorMessage}</p>
+          <div className="flex gap-4">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate(-1)}
+            >
+              กลับไปหน้าก่อนหน้า
+            </Button>
+            <Button 
+              onClick={() => navigate('/')}
+            >
+              กลับไปหน้าหลัก
+            </Button>
+          </div>
         </div>
       </div>
-    );
-  }
-  
-  // Redirect based on verified auth state
-  return <Navigate to={authState ? "/dashboard" : "/login"} replace />;
+    </div>
+  );
+}
+
+// Create a component to handle auth redirects
+const AuthRedirect = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/main');
+    } else {
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate]);
+
+  return null;
 };
 
-// Create router with data router API
+// Create router
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <>
-      {/* Root will redirect based on auth state */}
+    <Route errorElement={<RootErrorBoundary />}>
       <Route path="/" element={<AuthRedirect />} />
-      
-      {/* Public routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/change-password" element={<ChangePassword />} />
       <Route path="/auth-test" element={<AuthTest />} />
       
-      {/* Protected routes */}
-      <Route path="/dashboard" element={
-        <ProtectedRoute>
-          <Index />
-        </ProtectedRoute>
-      } />
-      <Route path="/complaint/create" element={
-        <ProtectedRoute>
-          <ComplaintForm />
-        </ProtectedRoute>
-      } />
-      {/* Add a redirect route for /complaints/create to handle both URL patterns */}
-      <Route path="/complaints/create" element={
-        <ProtectedRoute>
-          <Navigate to="/complaint/create" replace />
-        </ProtectedRoute>
-      } />
-      <Route path="/station-card-edit" element={
-        <ProtectedRoute>
-          <Suspense fallback={<div>Loading...</div>}>
-            <StationCardEdit />
-          </Suspense>
-        </ProtectedRoute>
-      } />
-      <Route path="/document-preparation" element={
-        <ProtectedRoute>
-          <Suspense fallback={<div>Loading...</div>}>
-            <DocumentPreparation />
-          </Suspense>
-        </ProtectedRoute>
-      } />
-      <Route path="/approval-dashboard" element={
-        <ProtectedRoute>
-          <ApprovalDashboard />
-        </ProtectedRoute>
-      } />
-      <Route path="/approval-step" element={
-        <ProtectedRoute>
-          <ApprovalStep />
-        </ProtectedRoute>
-      } />
-      <Route path="/system-setting" element={
-        <ProtectedRoute>
-          <SystemSetting />
-        </ProtectedRoute>
-      } />
-    </>
-  ),
-  {
-    basename: "/",
-  }
+      {/* Protected Routes */}
+      <Route
+        element={
+          <ProtectedRoute>
+            <Outlet />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="/main" element={<MainPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/complaint-form" element={<ComplaintForm />} />
+        <Route path="/complaint/create" element={<ComplaintForm />} />
+        <Route path="/station-card-edit" element={<StationCardEdit />} />
+        <Route path="/document-preparation" element={<DocumentPreparation />} />
+        <Route path="/approval-dashboard" element={<ApprovalDashboard />} />
+        <Route path="/approval-step" element={<ApprovalStep />} />
+        <Route path="/system-setting" element={<SystemSetting />} />
+      </Route>
+    </Route>
+  )
 );
 
-const App = () => {
-  // Initialize the store to ensure it's hydrated from localStorage
-  const isHydrated = useHydrateStore();
-  
-  // Clear auth data on initial app load to ensure login page is shown first
-  useEffect(() => {
-    // Check if this is the initial load (we can use sessionStorage to track this)
-    const hasInitialized = sessionStorage.getItem('app_initialized');
-    
-    if (!hasInitialized) {
-      console.log('[App] First app load detected, clearing auth data to ensure login page is shown');
-      // Clear auth data
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      localStorage.removeItem('auth-storage');
-      
-      // Mark as initialized so we don't clear on subsequent loads during this session
-      sessionStorage.setItem('app_initialized', 'true');
-    } else {
-      console.log('[App] App already initialized in this session');
-    }
-    
-    // Now migrate any localStorage data to Jotai format after clearing
-    migrateLocalStorageToJotai();
-  }, []);
-  
-  const [apiAvailable, setApiAvailable] = useState(true);
-  const [retryCount, setRetryCount] = useState(0);
+export const App = () => {
+  // Call the hook directly at the top level of the component
+  const isStoreHydrated = useHydrateStore();
+  const [isApiConnected, setIsApiConnected] = useState(false);
+  const [isCheckingApi, setIsCheckingApi] = useState(true);
   const { toast } = useToast();
-  const { checkAuth } = useAuth();
 
-  // State to track hydration status
-  const [isHydrating, setIsHydrating] = useState(true);
-  
-  // State to track API status check
-  const [apiStatus, setApiStatus] = useState<'checking' | 'available' | 'unavailable'>('checking');
-  
-  // State to track auth initialization
-  const [isAuthInitialized, setIsAuthInitialized] = useState(false);
-
-  // Handle global errors
-  const handleGlobalError = useCallback((error: Error, errorInfo: React.ErrorInfo) => {
-    console.error('Global error caught:', error, errorInfo);
-    
-    // Use centralized error handling
-    handleError({
-      source: 'unknown',
-      operation: 'globalError',
-      originalError: error,
-      component: 'App',
-      details: {
-        componentStack: errorInfo.componentStack
-      }
-    });
-  }, []);
-
-  // Initialize authentication state
+  // Check API connection
   useEffect(() => {
-    const initializeAuth = async () => {
+    const checkConnection = async () => {
+      setIsCheckingApi(true);
       try {
-        console.log('[App] Initializing authentication state');
-        // Migrate localStorage auth data to Jotai if needed
-        migrateLocalStorageToJotai();
+        const status = await checkApiStatus(true);
+        setIsApiConnected(status);
         
-        // Check authentication status
-        const isValid = await checkAuth();
-        console.log('[App] Authentication check result:', isValid);
-        
-        setIsAuthInitialized(true);
+        // Show toast for reconnection
+        if (status && !isApiConnected) {
+          toast({
+            title: "เชื่อมต่อ API สำเร็จ",
+            description: "เชื่อมต่อกับ API เซิร์ฟเวอร์ได้สำเร็จแล้ว",
+            variant: "default",
+            duration: 3000,
+          });
+        }
       } catch (error) {
-        console.error('[App] Error initializing authentication:', error);
-        setIsAuthInitialized(true); // Still mark as initialized to prevent blocking the app
+        console.error('Error checking API status:', error);
+        setIsApiConnected(false);
+      } finally {
+        setIsCheckingApi(false);
       }
     };
-    
-    initializeAuth();
-  }, [checkAuth]);
 
-  // Hydrate the Zustand store after React is initialized
-  useEffect(() => {
-    let isMounted = true;
-    
-    if (isHydrated) {
-      const checkConnection = async () => {
-        try {
-          console.log('[App] Checking API status...');
-          const isConnected = await checkApiStatus();
-          console.log('[App] API status check result:', isConnected);
-          
-          if (isMounted) {
-            setApiStatus(isConnected ? 'available' : 'unavailable');
-            setIsHydrating(false);
-            
-            if (!isConnected) {
-              console.error('[App] API server is not running');
-              
-              // Use centralized error handling
-              handleError({
-                source: 'apiCall',
-                operation: 'checkApiStatus',
-                originalError: new Error('API server is not running'),
-                component: 'App'
-              });
-              
-              // Show toast notification
-              toast({
-                title: "API เซิร์ฟเวอร์ไม่พร้อมใช้งาน",
-                description: "ไม่สามารถเชื่อมต่อกับ API เซิร์ฟเวอร์ได้ กรุณาตรวจสอบว่า API เซิร์ฟเวอร์กำลังทำงานอยู่",
-                variant: "destructive",
-                duration: 10000, // Show for 10 seconds
-              });
-            }
-          }
-        } catch (error) {
-          console.error('[App] Error checking API status:', error);
-          if (isMounted) {
-            setApiStatus('unavailable');
-            setIsHydrating(false);
-            
-            // Use centralized error handling
-            handleError({
-              source: 'apiCall',
-              operation: 'checkApiStatus',
-              originalError: error instanceof Error ? error : new Error(String(error)),
-              component: 'App'
-            });
-            
-            // Show toast notification
-            toast({
-              title: "ไม่สามารถตรวจสอบสถานะ API เซิร์ฟเวอร์",
-              description: "เกิดข้อผิดพลาดในการตรวจสอบสถานะ API เซิร์ฟเวอร์ กรุณาตรวจสอบว่า API เซิร์ฟเวอร์กำลังทำงานอยู่",
-              variant: "destructive",
-              duration: 10000, // Show for 10 seconds
-            });
-          }
-        }
-      };
-      
-      checkConnection();
-    }
-    
-    return () => {
-      isMounted = false;
-    };
-  }, [isHydrated]);
+    checkConnection();
+    const interval = setInterval(checkConnection, 30000);
 
-  // Show loading state while hydrating or initializing auth
-  if (isHydrating || !isAuthInitialized) {
+    return () => clearInterval(interval);
+  }, [isApiConnected, toast]);
+
+  if (!isStoreHydrated) {
     return (
-      <ErrorBoundary onError={handleGlobalError}>
-        <div className="flex items-center justify-center min-h-screen bg-[#F0F8FF]">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-t-blue-500 border-b-blue-500 border-l-transparent border-r-transparent rounded-full animate-spin mx-auto"></div>
-            <p className="mt-4 text-lg text-[#17254D]">
-              กำลังโหลดข้อมูล...
-            </p>
-            <p className="mt-2 text-sm text-[#475569]">กรุณารอสักครู่...</p>
-          </div>
-        </div>
-      </ErrorBoundary>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
     );
   }
 
-  // Show API connection error if API is not connected
-  if (apiStatus === 'unavailable') {
+  if (isCheckingApi) {
     return (
-      <ErrorBoundary onError={handleGlobalError}>
-        <div className="flex items-center justify-center min-h-screen bg-[#F0F8FF]">
-          <div className="w-full max-w-3xl px-4">
-            <ApiConnectionError 
-              onRetry={async () => {
-                setApiStatus('checking');
-                try {
-                  const isConnected = await checkApiStatus();
-                  setApiStatus(isConnected ? 'available' : 'unavailable');
-                } catch (error) {
-                  setApiStatus('unavailable');
-                  
-                  // Use centralized error handling
-                  handleError({
-                    source: 'apiCall',
-                    operation: 'retryApiConnection',
-                    originalError: error instanceof Error ? error : new Error(String(error)),
-                    component: 'App'
-                  });
-                }
-              }}
-              message="ไม่สามารถเชื่อมต่อกับ API เซิร์ฟเวอร์ได้ กรุณาตรวจสอบว่า API เซิร์ฟเวอร์กำลังทำงานอยู่"
-            />
-          </div>
-        </div>
-      </ErrorBoundary>
+      <div className="flex flex-col items-center justify-center min-h-screen gap-2">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        <div className="text-sm text-muted-foreground">กำลังตรวจสอบการเชื่อมต่อกับ API...</div>
+      </div>
     );
+  }
+
+  if (!isApiConnected) {
+    return <ApiConnectionError />;
   }
 
   return (
-    <ErrorBoundary onError={handleGlobalError}>
-      <ThemeProvider defaultTheme="light">
-        <QueryClientProvider client={queryClient}>
-          <RealTimeProvider>
-            <TooltipProvider>
-              <Suspense fallback={
-                <div className="flex items-center justify-center min-h-screen">
-                  <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-t-blue-500 border-b-blue-500 border-l-transparent border-r-transparent rounded-full animate-spin mx-auto"></div>
-                    <p className="mt-4 text-gray-600">กำลังโหลด...</p>
-                  </div>
-                </div>
-              }>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <JotaiProvider>
+          <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+            <RealTimeProvider>
+              <TooltipProvider>
                 <RouterProvider router={router} />
-              </Suspense>
-              <Toaster />
-              <Sonner />
-            </TooltipProvider>
-          </RealTimeProvider>
-        </QueryClientProvider>
-      </ThemeProvider>
+                <Toaster />
+                <Sonner />
+              </TooltipProvider>
+            </RealTimeProvider>
+          </ThemeProvider>
+        </JotaiProvider>
+      </QueryClientProvider>
     </ErrorBoundary>
   );
 };

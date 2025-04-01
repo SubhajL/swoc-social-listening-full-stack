@@ -33,11 +33,22 @@ export default defineConfig({
       "/api": {
         target: "http://localhost:3000",
         changeOrigin: true,
+        configure: (proxy, options) => {
+          console.log('Proxy configuration for /api:', {
+            target: options.target
+          });
+        }
       },
       "/socket.io": {
         target: "http://localhost:3000",
         changeOrigin: true,
         ws: true,
+        configure: (proxy, options) => {
+          console.log('WebSocket proxy configuration:', {
+            target: options.target,
+            ws: true
+          });
+        }
       },
     },
   },
@@ -57,11 +68,6 @@ export default defineConfig({
     __DEV__: JSON.stringify(process.env.NODE_ENV !== 'production'),
   },
   envPrefix: ['VITE_', 'MAPBOX_'], // Allow MAPBOX_ prefixed env variables
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: ['./src/setupTests.ts']
-  },
   // Remove esbuild JSX options as we're using Babel
   esbuild: {
     jsx: 'preserve', // Let Babel handle JSX transformation

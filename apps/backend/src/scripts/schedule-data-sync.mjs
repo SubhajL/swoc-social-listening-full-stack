@@ -130,7 +130,7 @@ logger.info('Data preservation mode is ENABLED for all sync operations', {
 });
 
 // Helper function to execute a sync command using npm run
-function executeNpmCommand(command, taskName, logPrefix) {
+async function executeNpmCommand(command, taskName, logPrefix) {
   const timestamp = new Date().toISOString();
   
   logger.info(`Starting scheduled ${logPrefix}`, {
@@ -161,6 +161,47 @@ function executeNpmCommand(command, taskName, logPrefix) {
     SCHEDULER_MODE: 'true',
     PRESERVE_DATA: 'true'
   };
+
+  // Determine which tables need to be enabled/disabled based on the task
+  let tablesToToggle = [];
+  switch (taskName) {
+    case 'telemetry_stations':
+      tablesToToggle = ['telemetry_data_stations'];
+      break;
+    case 'thaiwater':
+      tablesToToggle = ['thaiwater_tele_stations'];
+      break;
+    case 'reservoir':
+      tablesToToggle = ['reservoir_locations'];
+      break;
+  }
+
+  // Enable required tables before sync
+  if (tablesToToggle.length > 0) {
+    logger.info(`Enabling station/location tables for ${taskName}`, {
+      component: 'Scheduler',
+      operation: 'EnableTables',
+      data: { tables: tablesToToggle }
+    });
+
+    for (const table of tablesToToggle) {
+      const enableCommand = `cd "${backendRoot}" && npm run table:enable -- --table=${table}`;
+      await new Promise((resolve, reject) => {
+        exec(enableCommand, { env }, (error) => {
+          if (error) {
+            logger.error(`Failed to enable table ${table}`, {
+              component: 'Scheduler',
+              operation: 'EnableTableFailed',
+              error: error.message
+            });
+            reject(error);
+          } else {
+            resolve();
+          }
+        });
+      });
+    }
+  }
   
   // Execute the npm command with the --scheduled flag and --preserve-data flag
   const fullCommand = `cd "${backendRoot}" && npm run ${command} -- --scheduled --preserve-data`;
@@ -173,8 +214,30 @@ function executeNpmCommand(command, taskName, logPrefix) {
   
   // Execute the command
   const startTime = Date.now();
-  exec(fullCommand, { env }, (error, stdout, stderr) => {
+  exec(fullCommand, { env }, async (error, stdout, stderr) => {
     const duration = Date.now() - startTime;
+    
+    // Disable tables after sync (whether successful or not)
+    if (tablesToToggle.length > 0) {
+      logger.info(`Disabling tables for ${taskName}`, {
+        component: 'Scheduler',
+        operation: 'DisableTables',
+        data: { tables: tablesToToggle }
+      });
+
+      for (const table of tablesToToggle) {
+        const disableCommand = `cd "${backendRoot}" && npm run table:disable -- --table=${table}`;
+        exec(disableCommand, { env }, (disableError) => {
+          if (disableError) {
+            logger.error(`Failed to disable table ${table}`, {
+              component: 'Scheduler',
+              operation: 'DisableTableFailed',
+              error: disableError.message
+            });
+          }
+        });
+      }
+    }
     
     if (error) {
       logger.error(`Error running ${logPrefix} command`, {
@@ -249,131 +312,82 @@ function executeNpmCommand(command, taskName, logPrefix) {
 const reservoirJob = schedule.scheduleJob('0 9 * * *', function() {
   logger.info('Executing reservoir data sync (consolidated scheduler)', {
     component: 'Scheduler',
-    operation: 'ReservoirSync',
-    data: {
-      time: new Date().toISOString(),
-      schedule: 'daily at 9:00 AM'
-    }
+    operation: 'ScheduleJob',
+    data: { job: 'reservoir' }
   });
-  executeNpmCommand('sync:reservoir', 'reservoir_sync', 'reservoir data sync');
+  executeNpmCommand('sync:reservoir', 'reservoir', 'Reservoir data');
 });
 
-// Schedule HII rainfall data sync to run hourly at minute 40
-const hiiJob = schedule.scheduleJob('40 * * * *', function() {
-  executeNpmCommand('sync:hii', 'hii_sync', 'HII data sync (hourly)');
-});
-
-// TMD data sync job - schedule to run hourly at minute 55
-const tmdJob = schedule.scheduleJob('55 * * * *', function() {
-  executeNpmCommand('sync:tmd', 'tmd_sync', 'TMD data sync (hourly)');
-});
-
-// Schedule a daily task progress report
-const progressJob = schedule.scheduleJob('15 9 * * *', function() {
-  logger.info('Running daily task progress report and generating report', {
+// Schedule telemetry data sync to run every hour at minute 20
+const telemetryDataJob = schedule.scheduleJob('20 * * * *', function() {
+  logger.info('Executing telemetry data sync (consolidated scheduler)', {
     component: 'Scheduler',
-    operation: 'ReportGeneration'
+    operation: 'ScheduleJob',
+    data: { job: 'telemetry_data' }
   });
-  
-  const env = { ...process.env, NODE_TLS_REJECT_UNAUTHORIZED: '0' };
-  
-  // First update the task progress data
-  exec(`node ${progressScriptPath}`, { env }, (error, stdout, stderr) => {
-    if (error) {
-      logger.error('Error running task progress report', {
-        component: 'Scheduler',
-        operation: 'ProgressReportFailed',
-        error
-      });
-      return;
-    }
-    
-    logger.info('Task progress data updated successfully', {
-      component: 'Scheduler',
-      operation: 'ProgressReportComplete'
-    });
-    
-    // Then generate the human-readable report
-    exec(`node ${reportScriptPath}`, { env }, (reportError, reportStdout, reportStderr) => {
-      if (reportError) {
-        logger.error('Error generating sync report', {
-          component: 'Scheduler',
-          operation: 'SyncReportFailed',
-          error: reportError
-        });
-        return;
-      }
-      
-      logger.info('Sync report generated successfully', {
-        component: 'Scheduler',
-        operation: 'SyncReportComplete'
-      });
-    });
-  });
+  executeNpmCommand('sync:telemetry:scheduled --data-only', 'telemetry_data', 'Telemetry data');
 });
 
-// Schedule telemetry sync jobs
-// 1. Station sync at end of month
-schedule.scheduleJob('0 0 28-31 * *', async () => {
-  try {
-    // Check if it's the last day of the month
-    const now = new Date();
-    const isLastDay = now.getDate() === new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    
-    if (isLastDay) {
-      logger.info('Starting monthly telemetry station sync', 'Scheduler');
-      
-      // Update task status to running
-      await updateTaskStatus('telemetry_station_sync', 'running');
-      
-      // Run the telemetry sync script with --scheduled flag
-      exec(`node ${telemetrySyncScriptPath} --scheduled`, (error, stdout, stderr) => {
-        if (error) {
-          logger.error('Telemetry station sync failed:', error);
-          updateTaskStatus('telemetry_station_sync', 'failed');
-          return;
-        }
-        
-        if (stderr) {
-          logger.warn('Telemetry station sync warnings:', stderr);
-        }
-        
-        logger.info('Telemetry station sync completed:', stdout);
-        updateTaskStatus('telemetry_station_sync', 'completed');
-      });
-    }
-  } catch (error) {
-    logger.error('Error in telemetry station sync job:', error);
-    updateTaskStatus('telemetry_station_sync', 'failed');
+// Schedule telemetry stations sync to run at 10:10 on the last day of each month
+const telemetryStationsJob = schedule.scheduleJob('10 10 28-31 * *', function() {
+  // Check if it's the last day of the month
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  
+  if (today.getMonth() !== tomorrow.getMonth()) {
+    logger.info('Executing telemetry stations sync (consolidated scheduler)', {
+      component: 'Scheduler',
+      operation: 'ScheduleJob',
+      data: { job: 'telemetry_stations' }
+    });
+    executeNpmCommand('sync:telemetry:scheduled --stations-only', 'telemetry_stations', 'Telemetry stations');
   }
 });
 
-// 2. Data sync at :20 of every hour
-schedule.scheduleJob('20 * * * *', async () => {
-  try {
-    logger.info('Starting hourly telemetry data sync', 'Scheduler');
-    
-    // Update task status to running
-    await updateTaskStatus('telemetry_data_sync', 'running');
-    
-    // Run the telemetry sync script with --scheduled flag
-    exec(`node ${telemetrySyncScriptPath} --scheduled`, (error, stdout, stderr) => {
-      if (error) {
-        logger.error('Telemetry data sync failed:', error);
-        updateTaskStatus('telemetry_data_sync', 'failed');
-        return;
-      }
-      
-      if (stderr) {
-        logger.warn('Telemetry data sync warnings:', stderr);
-      }
-      
-      logger.info('Telemetry data sync completed:', stdout);
-      updateTaskStatus('telemetry_data_sync', 'completed');
-    });
-  } catch (error) {
-    logger.error('Error in telemetry data sync job:', error);
-    updateTaskStatus('telemetry_data_sync', 'failed');
+// Schedule ThaiWater sync to run every hour at minute 40
+const thaiWaterJob = schedule.scheduleJob('40 * * * *', function() {
+  logger.info('Executing ThaiWater sync (consolidated scheduler)', {
+    component: 'Scheduler',
+    operation: 'ScheduleJob',
+    data: { job: 'thaiwater' }
+  });
+  executeNpmCommand('sync:thaiwater', 'thaiwater', 'ThaiWater data');
+});
+
+// Schedule TMD sync to run every hour at minute 55
+const tmdJob = schedule.scheduleJob('55 * * * *', function() {
+  logger.info('Executing TMD sync (consolidated scheduler)', {
+    component: 'Scheduler',
+    operation: 'ScheduleJob',
+    data: { job: 'tmd' }
+  });
+  executeNpmCommand('sync:tmd', 'tmd', 'TMD data');
+});
+
+// Schedule progress report to run at 9:15 AM every day
+const progressReportJob = schedule.scheduleJob('15 9 * * *', function() {
+  logger.info('Generating sync progress report (consolidated scheduler)', {
+    component: 'Scheduler',
+    operation: 'ScheduleJob',
+    data: { job: 'progress_report' }
+  });
+  executeNpmCommand('generate-report', 'progress_report', 'Progress report');
+});
+
+// Log all scheduled jobs
+logger.info('All scheduled jobs have been initialized', {
+  component: 'Scheduler',
+  operation: 'InitializeJobs',
+  data: {
+    jobs: [
+      { name: 'reservoir', schedule: '0 9 * * *' },
+      { name: 'telemetry_data', schedule: '20 * * * *' },
+      { name: 'telemetry_stations', schedule: '10 10 28-31 * *' },
+      { name: 'thaiwater', schedule: '40 * * * *' },
+      { name: 'tmd', schedule: '55 * * * *' },
+      { name: 'progress_report', schedule: '15 9 * * *' }
+    ]
   }
 });
 
@@ -384,34 +398,34 @@ logger.info('Scheduler started successfully', {
   data: {
     jobs: [
       {
-        name: 'reservoir_sync',
+        name: 'reservoir',
         schedule: 'daily at 9:00 AM',
         nextRun: reservoirJob.nextInvocation().toDate()
       },
       {
-        name: 'hii_sync',
-        schedule: 'hourly at minute 40',
-        nextRun: hiiJob.nextInvocation().toDate()
+        name: 'telemetry_data',
+        schedule: 'hourly at minute 20',
+        nextRun: telemetryDataJob.nextInvocation().toDate()
       },
       {
-        name: 'tmd_sync',
-        schedule: 'hourly at minute 55', 
+        name: 'telemetry_stations',
+        schedule: 'end of month',
+        nextRun: telemetryStationsJob.nextInvocation().toDate()
+      },
+      {
+        name: 'thaiwater',
+        schedule: 'hourly at minute 40',
+        nextRun: thaiWaterJob.nextInvocation().toDate()
+      },
+      {
+        name: 'tmd',
+        schedule: 'hourly at minute 55',
         nextRun: tmdJob.nextInvocation().toDate()
       },
       {
         name: 'progress_report',
         schedule: 'daily at 9:15 AM',
-        nextRun: progressJob.nextInvocation().toDate()
-      },
-      {
-        name: 'telemetry_station_sync',
-        schedule: 'end of month',
-        nextRun: 'Last day of each month'
-      },
-      {
-        name: 'telemetry_data_sync',
-        schedule: 'hourly at minute 20',
-        nextRun: 'Every hour at :20'
+        nextRun: progressReportJob.nextInvocation().toDate()
       }
     ]
   }
@@ -428,9 +442,11 @@ process.on('SIGINT', function() {
   });
   
   reservoirJob.cancel();
-  hiiJob.cancel();
+  telemetryDataJob.cancel();
+  telemetryStationsJob.cancel();
+  thaiWaterJob.cancel();
   tmdJob.cancel();
-  progressJob.cancel();
+  progressReportJob.cancel();
   
   logger.info('All scheduled jobs cancelled', {
     component: 'Scheduler',

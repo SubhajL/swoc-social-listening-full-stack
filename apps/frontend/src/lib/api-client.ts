@@ -1,6 +1,20 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { ProcessedPost } from '@/types/processed-post';
 import { toast } from '@/components/ui/use-toast';
+import { API_BASE_URL, API_TIMEOUT } from './config';
+
+/**
+ * API Client Configuration Notes
+ * 
+ * API Path Structure:
+ * - All backend API routes are registered with the '/api' prefix
+ * - The Vite development server proxies '/api' requests to the backend
+ * - In production, the API_BASE_URL is used directly
+ * 
+ * Therefore, all API endpoints should include the '/api' prefix:
+ * CORRECT: '/api/posts/unprocessed'
+ * INCORRECT: '/posts/unprocessed'
+ */
 
 // Create a throttled logger to prevent excessive console logging
 const createThrottledLogger = (name: string, interval: number = 5000) => {
@@ -17,20 +31,16 @@ const createThrottledLogger = (name: string, interval: number = 5000) => {
 
 const apiLogger = createThrottledLogger('🔌 API');
 
-// API base URL
-const API_BASE_URL = '/api';
-
 // Configuration for retries
 const RETRY_CONFIG = {
   MAX_RETRIES: 3,
   RETRY_DELAY: 1000, // 1 second
-  TIMEOUT: 30000, // 30 seconds
 };
 
 // Create axios instance
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  timeout: RETRY_CONFIG.TIMEOUT,
+  timeout: API_TIMEOUT,
 });
 
 // Add request interceptor for auth token and logging
@@ -235,8 +245,8 @@ export const apiClient = {
   ping: async (): Promise<boolean> => {
     try {
       apiLogger('Attempting to ping server');
-      // Make a simple HEAD request to the root endpoint
-      const response = await axiosInstance.head('/', { 
+      // Make a simple HEAD request to the API health endpoint
+      const response = await axiosInstance.head('/api/health', { 
         timeout: 5000 // Short timeout for quick response
       });
       apiLogger(`Server ping successful: ${response.status}`);
@@ -252,7 +262,7 @@ export const apiClient = {
     try {
       apiLogger(`Fetching posts with params:`, params);
       
-      const response = await axiosInstance.get('/posts/processed', { params });
+      const response = await axiosInstance.get('/api/posts/processed', { params });
       
       // Log the response details
       const postsCount = Array.isArray(response.data) ? response.data.length : 
@@ -297,11 +307,12 @@ export const apiClient = {
     try {
       apiLogger(`Fetching unprocessed posts with params:`, params);
       
-      const response = await axiosInstance.get('/posts/unprocessed', { params });
+      // Use the correct API path with the /api prefix
+      const response = await axiosInstance.get('/api/posts/unprocessed', { params });
       
       // Log the response details
       const postsCount = Array.isArray(response.data) ? response.data.length : 
-                         (response.data.data && Array.isArray(response.data.data)) ? response.data.data.length : 0;
+                       (response.data.data && Array.isArray(response.data.data)) ? response.data.data.length : 0;
       
       apiLogger(`Received ${postsCount} unprocessed posts from API`, {
         responseStatus: response.status,
@@ -309,7 +320,7 @@ export const apiClient = {
         isArray: Array.isArray(response.data),
         hasData: response.data && typeof response.data === 'object' && 'data' in response.data,
         sample: postsCount > 0 ? (Array.isArray(response.data) ? response.data[0] : 
-                (response.data.data && Array.isArray(response.data.data)) ? response.data.data[0] : null) : null
+              (response.data.data && Array.isArray(response.data.data)) ? response.data.data[0] : null) : null
       });
       
       // If no posts were returned, log a warning
@@ -339,7 +350,7 @@ export const apiClient = {
 
   getPostById: async (id: number) => {
     try {
-      const response = await axiosInstance.get(`/posts/processed/${id}`);
+      const response = await axiosInstance.get(`/api/posts/processed/${id}`);
       return response.data;
     } catch (error) {
       console.error('Get post by ID error:', error);
@@ -350,7 +361,7 @@ export const apiClient = {
   // Auth
   login: async (email: string, password: string) => {
     try {
-      const response = await axiosInstance.post('/auth/login', { email, password });
+      const response = await axiosInstance.post('/api/auth/login', { email, password });
       return response.data;
     } catch (error) {
       console.error('Login error:', error);
@@ -361,7 +372,7 @@ export const apiClient = {
   // User management
   changePassword: async (userId: number, newPassword: string) => {
     try {
-      const response = await axiosInstance.post('/auth/change-password', { 
+      const response = await axiosInstance.post('/api/auth/change-password', { 
         userId, 
         newPassword 
       });
@@ -373,6 +384,33 @@ export const apiClient = {
   },
 
   // Add more API functions as needed
+};
+
+export const checkApiHealth = async (): Promise<boolean> => {
+  try {
+    console.log('🔍 [API] Checking API health');
+    
+    const response = await fetch('/api/health', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    console.log('🔍 [API Health Check] Response:', {
+      status: response.status,
+      ok: response.ok,
+      timestamp: new Date().toISOString()
+    });
+
+    return response.ok;
+  } catch (error) {
+    console.error('❌ [API Health Check] Error:', {
+      error: error instanceof Error ? error.message : String(error),
+      timestamp: new Date().toISOString()
+    });
+    return false;
+  }
 };
 
 export default axiosInstance; 

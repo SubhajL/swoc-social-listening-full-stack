@@ -157,7 +157,7 @@ export const useHydrateStore = () => {
                 if (localStorageHasData && !storeHasData && hydrationAttempts >= MAX_ATTEMPTS) {
                   console.warn("🔍 [DEBUG-StoreHydration] Max attempts reached but data still missing, manually updating store");
                   try {
-                    // Manually set the station data in the store
+                    // Manually set the station data in the store - using setState method
                     useComplaintStore.setState({
                       stationData: parsedData.state.stationData
                     });

@@ -17,6 +17,7 @@ export default {
     merge_logs: true,
     exp_backoff_restart_delay: 100,
     max_restarts: 10,
-    min_uptime: '5s'
+    min_uptime: '5s',
+    pre_script: './src/scripts/cleanup-ports.sh'
   }]
 }; 

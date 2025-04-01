@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 import { Eye, EyeOff } from 'lucide-react';
@@ -22,7 +21,7 @@ const Login = () => {
   const [, checkAuth] = useAtom(checkAuthAtom);
   const [, loginWithJotai] = useAtom(loginAtom);
   const location = useLocation();
-  const from = location.state?.from || '/dashboard';
+  const from = location.state?.from || '/main';
   const restoreSession = location.state?.restoreSession || false;
   
   // Add debugging log on component mount
@@ -245,14 +244,25 @@ const Login = () => {
       }
     } catch (error) {
       console.error('❌ [Login] Login error:', error);
+      
+      // Type guard for error handling
+      const errorObj: Record<string, any> = error as Record<string, any>;
+      
       console.error('❌ [Login] Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-        headers: error.response?.headers,
-        config: error.config
+        message: errorObj?.message,
+        response: errorObj?.response?.data,
+        status: errorObj?.response?.status,
+        headers: errorObj?.response?.headers,
+        config: errorObj?.config
       });
-      toast.error(error.response?.data?.message || 'เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+      
+      // Safe access with type guard
+      const errorMessage = 
+        errorObj?.response?.data?.message || 
+        errorObj?.message || 
+        'เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง';
+      
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

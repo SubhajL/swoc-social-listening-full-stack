@@ -8,16 +8,51 @@ import { WaterLevelInfo } from "@/components/complaint/WaterLevelInfo";
 import { WaterFlowPanel } from "@/components/complaint/WaterFlowPanel";
 import { ComplaintNavigation } from "@/components/complaint/ComplaintNavigation";
 import { useComplaint } from "@/hooks/useComplaint";
-import { Complaint } from "@/types/complaint";
-import { ComplaintDTO } from "@/dto/complaint.dto";
+import { ComplaintDTO, CreateComplaintDTO } from "@/dto/complaint.dto";
 import { toast } from "sonner";
 
 const MAPBOX_TOKEN = "pk.eyJ1Ijoic3ViaGFqIiwiYSI6ImNtNHdtdHYzMzBmY3AyanBwdW5nMmNpenAifQ.M6zea2D_TLnke3L7iwBUFg";
 
+// Define interface based on ComplaintDTO schema for proper type checking
+interface ComplaintFormData {
+  id: number;
+  issue: string;
+  category: string;
+  reporter: string;
+  date: string;
+  link?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  location?: string;
+  tumbon?: string[];
+  amphure?: string[];
+  province?: string[];
+}
+
 const ComplaintForm = () => {
   const location = useLocation();
-  const complaintData = location.state as Complaint | undefined;
+  const complaintData = location.state as ComplaintFormData | undefined;
   const { isLoading } = useComplaint(complaintData?.id);
+
+  // Extract location data from complaint data
+  const getLocationParts = () => {
+    if (!complaintData?.location) return { amphure: '', province: '' };
+    
+    const locationParts = complaintData.location.split(' ');
+    // Assuming format is typically "Amphure Province"
+    if (locationParts.length >= 2) {
+      return {
+        amphure: locationParts[0],
+        province: locationParts[locationParts.length - 1]
+      };
+    }
+    // If only one part, assume it's the province
+    return { amphure: '', province: locationParts[0] };
+  };
+
+  const { amphure, province } = getLocationParts();
 
   const validateComplaintData = () => {
     if (!complaintData) return;
@@ -119,14 +154,14 @@ const ComplaintForm = () => {
         </Card>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <WaterLevelInfo />
+          <WaterLevelInfo amphure={amphure} province={province} />
           <WaterFlowPanel />
         </div>
 
         <Card className="p-6">
           <DynamicMap 
             token={MAPBOX_TOKEN}
-            selectedCategories={[complaintData?.category ?? '']}
+            selectedCategories={complaintData?.category ? [(complaintData.category as any)] : []}
             selectedProvince={complaintData?.location?.split(' ').pop() ?? null}
           />
         </Card>

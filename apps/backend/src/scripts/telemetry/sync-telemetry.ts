@@ -595,29 +595,54 @@ async function syncTelemetryData() {
 // Export sync functions
 export { syncStations, syncTelemetryData };
 
-// Main function to run the sync
+// Parse command line arguments
+const args = process.argv.slice(2);
+const isScheduled = args.includes('--scheduled');
+const isStationsOnly = args.includes('--stations-only');
+const isDataOnly = args.includes('--data-only');
+
 async function main() {
   try {
-    logger.info('Starting telemetry station sync', {
-      timestamp: new Date().toISOString(),
-      isScheduled: process.argv.includes('--scheduled')
+    logger.info('Starting telemetry sync', {
+      component: 'TelemetrySync',
+      operation: 'Start',
+      data: {
+        mode: isScheduled ? 'scheduled' : 'manual',
+        type: isStationsOnly ? 'stations-only' : isDataOnly ? 'data-only' : 'full'
+      }
     });
 
-    // Run station sync
-    await syncStations();
-    
-    // Run telemetry data sync
-    await syncTelemetryData();
-    
-    logger.info('Telemetry sync completed successfully', {
-      timestamp: new Date().toISOString()
-    });
-
-    process.exit(0);
+    if (isStationsOnly) {
+      // Only sync stations (monthly task)
+      await syncStations();
+      logger.info('Telemetry stations sync completed successfully', {
+        component: 'TelemetrySync',
+        operation: 'Complete',
+        data: { type: 'stations-only' }
+      });
+    } else if (isDataOnly) {
+      // Only sync telemetry data (hourly task)
+      await syncTelemetryData();
+      logger.info('Telemetry data sync completed successfully', {
+        component: 'TelemetrySync',
+        operation: 'Complete',
+        data: { type: 'data-only' }
+      });
+    } else {
+      // Manual run - do both
+      await syncStations();
+      await syncTelemetryData();
+      logger.info('Full telemetry sync completed successfully', {
+        component: 'TelemetrySync',
+        operation: 'Complete',
+        data: { type: 'full' }
+      });
+    }
   } catch (error) {
     logger.error('Telemetry sync failed', {
-      error: error instanceof Error ? error.message : String(error),
-      timestamp: new Date().toISOString()
+      component: 'TelemetrySync',
+      operation: 'Error',
+      error: error instanceof Error ? error.message : String(error)
     });
     process.exit(1);
   }

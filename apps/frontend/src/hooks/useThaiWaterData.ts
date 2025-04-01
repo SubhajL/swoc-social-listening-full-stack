@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import type { ThaiWaterResponse } from '../types/api';
 
@@ -8,9 +8,13 @@ interface ThaiWaterParams {
   date?: string;
   min_rainfall?: number;
   data_source?: 'HII' | 'TMD' | 'ALL';
+  disableAutoRefetch?: boolean; // New parameter to disable auto-refetching
 }
 
 export const useThaiWaterData = (params?: ThaiWaterParams) => {
+  // Determine if auto-refetching should be disabled
+  const shouldDisableAutoRefetch = params?.disableAutoRefetch === true;
+  
   return useQuery({
     queryKey: ["thaiwater", "rainfall", params],
     queryFn: async () => {
@@ -29,10 +33,13 @@ export const useThaiWaterData = (params?: ThaiWaterParams) => {
           throw new Error('Missing required parameters: province or amphoe');
         }
         
+        // Don't include the disableAutoRefetch param in the API request
+        const { disableAutoRefetch, ...apiParams } = params;
+        
         // Include data_source in the API request
         const requestParams = {
-          ...params,
-          data_source: params?.data_source || 'ALL' // Default to ALL if not specified
+          ...apiParams,
+          data_source: apiParams.data_source || 'ALL' // Default to ALL if not specified
         };
         
         const response = await axios.get(endpoint, {
@@ -108,5 +115,8 @@ export const useThaiWaterData = (params?: ThaiWaterParams) => {
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
     refetchOnMount: false,
+    // Disable refetch interval when requested
+    refetchInterval: shouldDisableAutoRefetch ? undefined : 5 * 60 * 1000, // 5 minutes by default, undefined if disabled
+    refetchIntervalInBackground: !shouldDisableAutoRefetch,
   });
 }; 

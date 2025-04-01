@@ -110,77 +110,115 @@ export const logoutAtom = atom(
 export const checkAuthAtom = atom(
   null,
   async (get, set) => {
+    // Check current auth state
     const { token, isAuthenticated } = get(authStateAtom);
     
-    console.log('🔍 [Auth] Checking authentication status', { 
-      isAuthenticated, 
-      hasToken: !!token 
-    });
-    
-    // If not authenticated, check if we have a token in localStorage
+    // If not authenticated, check localStorage
     if (!isAuthenticated || !token) {
-      const localStorageToken = localStorage.getItem('token');
-      const userJson = localStorage.getItem('user');
+      console.log('🔍 [Auth] Not authenticated in Jotai state, checking localStorage');
       
-      if (localStorageToken && userJson) {
-        console.log('🔍 [Auth] Found token in localStorage but not in auth state');
+      try {
+        const localStorageToken = localStorage.getItem('token');
+        const userJson = localStorage.getItem('user');
         
+        // If no token in localStorage, not authenticated
+        if (!localStorageToken || !userJson) {
+          console.log('ℹ️ [Auth] No token in localStorage');
+          
+          // Set consistent state
+          set(authStateAtom, {
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            isLoading: false,
+            error: null
+          });
+          
+          // Clear any stale auth localStorage items
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          
+          return false;
+        }
+        
+        // Validate token format and expiration
         try {
-          // Check if token is a JWT and if it's expired
+          // Check if token is still valid
           const tokenParts = localStorageToken.split('.');
-          if (tokenParts.length === 3) {
-            const payload = JSON.parse(atob(tokenParts[1]));
-            const expiry = payload.exp * 1000; // Convert to milliseconds
-            const now = Date.now();
+          
+          if (tokenParts.length !== 3) {
+            console.log('❌ [Auth] localStorage token is not in valid JWT format');
             
-            console.log('🔍 [Auth] localStorage token validation', {
-              isExpired: now > expiry,
-              expiryTime: new Date(expiry).toISOString(),
-              currentTime: new Date(now).toISOString(),
-              timeRemaining: Math.floor((expiry - now) / 1000 / 60) + ' minutes'
+            // Clear localStorage
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            
+            // Clear Jotai auth state
+            set(authStateAtom, {
+              user: null,
+              token: null,
+              isAuthenticated: false,
+              isLoading: false,
+              error: null
             });
             
-            if (now > expiry) {
-              console.log('❌ [Auth] localStorage token is expired, clearing auth state');
-              localStorage.removeItem('token');
-              localStorage.removeItem('user');
-              
-              // Clear Jotai auth state
-              set(authStateAtom, {
-                user: null,
-                token: null,
-                isAuthenticated: false,
-                isLoading: false,
-                error: null
-              });
-              
-              return false;
-            } else {
-              // Token is valid, restore auth state
-              const userData = JSON.parse(userJson);
-              
-              // Create user object for Jotai
-              const user = {
-                id: String(userData.id || userData.userId || ''),
-                name: userData.name || '',
-                email: userData.email || '',
-                rbacRole: userData.position || userData.rbacRole || 1,
-                organizationId: userData.office_id || userData.organizationId || '',
-                organizationName: userData.office_name || userData.organizationName || ''
-              };
-              
-              // Update Jotai auth state
-              set(authStateAtom, {
-                user,
-                token: localStorageToken,
-                isAuthenticated: true,
-                isLoading: false,
-                error: null
-              });
-              
-              console.log('✅ [Auth] Successfully restored auth state from localStorage');
-              return true;
-            }
+            return false;
+          }
+          
+          // Parse payload
+          const payload = JSON.parse(atob(tokenParts[1]));
+          
+          // Check if token has expired
+          const expiry = payload.exp * 1000; // Convert to milliseconds
+          const now = Date.now();
+          
+          console.log('🔍 [Auth] localStorage token validation', {
+            isExpired: now > expiry,
+            expiryTime: new Date(expiry).toISOString(),
+            currentTime: new Date(now).toISOString(),
+            timeRemaining: Math.floor((expiry - now) / 1000 / 60) + ' minutes'
+          });
+          
+          if (now > expiry) {
+            console.log('❌ [Auth] localStorage token is expired, clearing auth state');
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            
+            // Clear Jotai auth state
+            set(authStateAtom, {
+              user: null,
+              token: null,
+              isAuthenticated: false,
+              isLoading: false,
+              error: null
+            });
+            
+            return false;
+          } else {
+            // Token is valid, restore auth state
+            const userData = JSON.parse(userJson);
+            
+            // Create user object for Jotai
+            const user = {
+              id: String(userData.id || userData.userId || ''),
+              name: userData.name || '',
+              email: userData.email || '',
+              rbacRole: userData.position || userData.rbacRole || 1,
+              organizationId: userData.office_id || userData.organizationId || '',
+              organizationName: userData.office_name || userData.organizationName || ''
+            };
+            
+            // Update Jotai auth state
+            set(authStateAtom, {
+              user,
+              token: localStorageToken,
+              isAuthenticated: true,
+              isLoading: false,
+              error: null
+            });
+            
+            console.log('✅ [Auth] Successfully restored auth state from localStorage');
+            return true;
           }
         } catch (error) {
           console.error('❌ [Auth] Error validating localStorage token:', error);
@@ -201,15 +239,15 @@ export const checkAuthAtom = atom(
           
           return false;
         }
+      } catch (error) {
+        console.error('❌ [Auth] Error checking localStorage:', error);
+        return false;
       }
-      
-      // No token in localStorage or Jotai, not authenticated
-      return false;
     }
     
-    // If we have a token, verify it's still valid
+    // Already authenticated in Jotai, verify token
     try {
-      console.log('🔍 [Auth] Validating existing token');
+      console.log('🔍 [Auth] Validating existing Jotai token');
       
       // Basic JWT validation
       const tokenParts = token.split('.');
@@ -224,6 +262,10 @@ export const checkAuthAtom = atom(
           isLoading: false,
           error: 'Invalid token format'
         });
+        
+        // Also clear localStorage to maintain consistency
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
         
         return false;
       }
@@ -252,7 +294,22 @@ export const checkAuthAtom = atom(
           error: 'Token expired'
         });
         
+        // Also clear localStorage to maintain consistency
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        
         return false;
+      }
+      
+      // Ensure localStorage and Jotai state are in sync
+      const localStorageToken = localStorage.getItem('token');
+      if (localStorageToken !== token) {
+        console.log('⚠️ [Auth] Synchronizing token between Jotai and localStorage');
+        localStorage.setItem('token', token);
+        
+        if (get(authStateAtom).user) {
+          localStorage.setItem('user', JSON.stringify(get(authStateAtom).user));
+        }
       }
       
       console.log('✅ [Auth] Token is valid');
@@ -268,6 +325,10 @@ export const checkAuthAtom = atom(
         isLoading: false,
         error: 'Error validating token'
       });
+      
+      // Also clear localStorage to maintain consistency
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       
       return false;
     }

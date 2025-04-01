@@ -64,6 +64,7 @@ interface RainStationCardProps {
   onDeleteData?: () => void;
   onToggleDisabled?: () => void;
   className?: string;
+  disableAutoRefetch?: boolean;
 }
 
 const RainStationCardComponent = ({
@@ -76,7 +77,8 @@ const RainStationCardComponent = ({
   onAddData,
   onDeleteData,
   onToggleDisabled,
-  className
+  className,
+  disableAutoRefetch = false
 }: RainStationCardProps) => {
   // Add queryClient to invalidate cache
   const queryClient = useQueryClient();
@@ -86,9 +88,10 @@ const RainStationCardComponent = ({
     return {
       province: station.province,
       amphoe: station.amphure || station.location,
-      data_source: 'ALL' as 'ALL' // Always use ALL to get all records for the station
+      data_source: 'ALL' as 'ALL', // Always use ALL to get all records for the station
+      disableAutoRefetch // Pass the disableAutoRefetch parameter to the hook
     };
-  }, [station.province, station.amphure, station.location]);
+  }, [station.province, station.amphure, station.location, disableAutoRefetch]);
 
   const { data: thaiWaterApiData, isLoading, error, refetch } = useThaiWaterData(params);
 
@@ -230,35 +233,71 @@ const RainStationCardComponent = ({
       dataAvailable: false
     };
 
-    console.log(`[RainStationCard] Calculating rainfall data for station ${station.station_id}`);
-    console.log(`[RainStationCard] Station object:`, station);
-    console.log(`[RainStationCard] ThaiWater data:`, thaiWaterData);
+    console.log(`[RainStationCard] Calculating rainfall data for station ${station.station_id || station.id}`);
+    console.log(`[RainStationCard] Station rainfall properties:`, {
+      rainfall10m: station.rainfall10m,
+      rainfall1h: station.rainfall1h,
+      rainfall3h: station.rainfall3h,
+      rainfall24h: station.rainfall24h,
+      rainfall_today: station.rainfall_today,
+      rainfall_datetime: station.rainfall_datetime
+    });
 
-    // Check if we have ThaiWater data for this station
-    if (thaiWaterData) {
+    // Priority: Use direct station rainfall data from backend API
+    if (station.rainfall24h !== undefined || 
+        station.rainfall_today !== undefined ||
+        station.rainfall10m !== undefined || 
+        station.rainfall1h !== undefined ||
+        station.rainfall3h !== undefined) {
+      
+      // Extract data from station object with explicit null checks
+      data = {
+        // If rainfall24h is available, use it, otherwise use rainfall_today for TMD stations
+        rainfall24h: station.rainfall24h !== undefined && station.rainfall24h !== null 
+          ? parseNumericValue(station.rainfall24h) 
+          : null,
+          
+        // For today's rainfall, use rainfall_today or fallback to rainfall24h for some stations
+        rainfallToday: station.rainfall_today !== undefined && station.rainfall_today !== null 
+          ? parseNumericValue(station.rainfall_today) 
+          : null,
+          
+        // For timestamp, use rainfall_datetime or fallback to current time
+        lastUpdated: station.rainfall_datetime || new Date().toISOString(),
+        
+        // Consider data available if any rainfall value is set
+        dataAvailable: true
+      };
+      
+      console.log(`[RainStationCard] Using direct station rainfall data for ${station.station_id || station.id}:`, data);
+    } 
+    // Fallback to ThaiWater API data
+    else if (thaiWaterData) {
       data = {
         rainfall24h: thaiWaterData.rainfall24h !== null ? parseFloat(thaiWaterData.rainfall24h?.toString() || '0') : null,
         rainfallToday: thaiWaterData.rainfall_today !== null ? parseFloat(thaiWaterData.rainfall_today?.toString() || '0') : null,
         lastUpdated: thaiWaterData.rainfall_datetime || null,
-        dataAvailable: true // Always true if we have thaiWaterData, even if rainfall24h is null
+        dataAvailable: true
       };
       
-      console.log(`[RainStationCard] Parsed rainfall data for station ${station.station_id}:`, data);
-      console.log(`[RainStationCard] Using timestamp from ThaiWater data:`, thaiWaterData.rainfall_datetime);
+      console.log(`[RainStationCard] Using ThaiWater API data for station ${station.station_id || station.id}:`, data);
     } else {
-      // If we have direct rainfall data on the station object, use that
-      if (station.rainfall24h !== undefined || station.rainfall_today !== undefined) {
+      console.log(`[RainStationCard] No rainfall data available for station ${station.station_id || station.id}`);
+    }
+
+    // As a last resort, try to get data from the rainfall object
+    if (!data.dataAvailable && station.rainfall) {
+      console.log(`[RainStationCard] Checking rainfall object for station ${station.station_id || station.id}:`, station.rainfall);
+      
+      if (station.rainfall.daily !== undefined || station.rainfall.hourly !== undefined) {
         data = {
-          rainfall24h: station.rainfall24h !== undefined ? parseNumericValue(station.rainfall24h) : null,
-          rainfallToday: station.rainfall_today !== undefined ? parseNumericValue(station.rainfall_today) : null,
-          lastUpdated: station.rainfall_datetime || null,
+          rainfall24h: station.rainfall.daily !== undefined ? parseNumericValue(station.rainfall.daily) : null,
+          rainfallToday: station.rainfall.daily !== undefined ? parseNumericValue(station.rainfall.daily) : null,
+          lastUpdated: station.rainfall.timestamp || null,
           dataAvailable: true
         };
         
-        console.log(`[RainStationCard] Using direct rainfall data for station ${station.station_id}:`, data);
-        console.log(`[RainStationCard] Using timestamp from station object:`, station.rainfall_datetime);
-      } else {
-        console.log(`[RainStationCard] No rainfall data available for station ${station.station_id}`);
+        console.log(`[RainStationCard] Using rainfall object data for station ${station.station_id || station.id}:`, data);
       }
     }
 
@@ -360,6 +399,9 @@ const RainStationCardComponent = ({
     return !!error;
   }, [error]);
 
+  // Only show loading state if we're loading AND there's no error
+  const showLoading = isLoading && !error;
+
   // Determine if the timestamp is stale (older than 30 days)
   const isStaleData = useMemo(() => {
     if (!rainfallData.lastUpdated) return false;
@@ -406,7 +448,7 @@ const RainStationCardComponent = ({
             ข้อมูลเก่า
           </span>
         )}
-        {isLoadingData && (
+        {showLoading && (
           <span className="text-xs bg-blue-50 text-blue-600 rounded-full px-2 py-0.5 ml-2">
             กำลังโหลด...
           </span>

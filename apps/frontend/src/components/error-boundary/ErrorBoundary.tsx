@@ -1,79 +1,115 @@
-import { Component, ErrorInfo, ReactNode } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { logger } from '@/lib/logger';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertTriangle } from 'lucide-react';
 
-interface ErrorBoundaryProps {
+interface Props {
   children: ReactNode;
-  onError?: (error: Error, errorInfo: ErrorInfo) => void;
   fallback?: ReactNode;
-  component?: string;
 }
 
-interface ErrorBoundaryState {
+interface State {
   hasError: boolean;
   error: Error | null;
+  errorInfo: ErrorInfo | null;
+  componentStack: string | null;
 }
 
-class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
-    this.state = {
-      hasError: false,
-      error: null
-    };
-  }
+class ErrorBoundary extends Component<Props, State> {
+  public state: State = {
+    hasError: false,
+    error: null,
+    errorInfo: null,
+    componentStack: null
+  };
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return {
-      hasError: true,
-      error
+  static getDerivedStateFromError(error: Error): State {
+    // Update state so the next render will show the fallback UI
+    return { 
+      hasError: true, 
+      error, 
+      errorInfo: null,
+      componentStack: null
     };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    logger.error('Component error', this.props.component || 'ErrorBoundary', error, {
-      componentStack: errorInfo.componentStack,
+    // Log the error to our logging service
+    logger.error('Component error', 'ErrorBoundary', error, {
+      componentStack: errorInfo.componentStack
     });
-    
-    // Call the onError callback if provided
-    if (this.props.onError) {
-      this.props.onError(error, errorInfo);
-    }
+
+    this.setState({
+      error,
+      errorInfo,
+      componentStack: errorInfo.componentStack || null
+    });
   }
 
-  handleReset = (): void => {
-    this.setState({
-      hasError: false,
-      error: null
-    });
+  handleReload = () => {
+    window.location.reload();
   };
 
-  render() {
+  handleGoHome = () => {
+    window.location.href = '/';
+  };
+
+  render(): ReactNode {
     if (this.state.hasError) {
-      // Use custom fallback if provided
+      // Check if a custom fallback was provided
       if (this.props.fallback) {
         return this.props.fallback;
       }
-      
-      // Default fallback UI
+
+      // Default error UI
       return (
-        <div className="flex flex-col items-center justify-center min-h-[300px] p-6 bg-red-50 border border-red-200 rounded-lg">
-          <AlertTriangle className="h-12 w-12 text-red-500 mb-4" />
-          <h2 className="text-xl font-semibold text-red-700 mb-2">เกิดข้อผิดพลาด</h2>
-          <p className="text-red-600 mb-4 text-center">
-            เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง
-          </p>
-          <p className="text-sm text-red-500 mb-4 max-w-md overflow-auto">
-            {this.state.error?.message || 'Unknown error'}
-          </p>
-          <Button 
-            onClick={this.handleReset}
-            className="flex items-center gap-2"
-          >
-            <RefreshCw className="h-4 w-4" />
-            ลองใหม่อีกครั้ง
-          </Button>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+          <Card className="w-full max-w-lg shadow-lg">
+            <CardHeader className="bg-red-50 border-b">
+              <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-2" />
+              <CardTitle className="text-xl text-center text-red-700">เกิดข้อผิดพลาดที่ไม่คาดคิด</CardTitle>
+              <CardDescription className="text-center text-red-600">
+                แอปพลิเคชันพบข้อผิดพลาดที่ไม่สามารถดำเนินการต่อได้
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent className="pt-6">
+              <Alert variant="destructive" className="mb-4">
+                <AlertDescription>
+                  {this.state.error && this.state.error.toString()}
+                </AlertDescription>
+              </Alert>
+              
+              {process.env.NODE_ENV === 'development' && this.state.componentStack && (
+                <div className="mt-4 p-3 bg-gray-100 rounded-md text-sm overflow-auto max-h-60">
+                  <p className="font-medium mb-2 text-gray-700">Component Stack:</p>
+                  <pre className="whitespace-pre-wrap break-words text-xs text-gray-600">
+                    {this.state.componentStack}
+                  </pre>
+                </div>
+              )}
+
+              <div className="mt-6">
+                <h3 className="font-medium mb-2 text-gray-700">รายละเอียดเพิ่มเติม:</h3>
+                <ul className="list-disc pl-5 space-y-1 text-sm text-gray-600">
+                  <li>หากปัญหายังคงอยู่ กรุณาแจ้งผู้ดูแลระบบ</li>
+                  <li>ระบุเวลาที่เกิดเหตุการณ์: {new Date().toLocaleString()}</li>
+                  <li>URL: {window.location.href}</li>
+                </ul>
+              </div>
+            </CardContent>
+            
+            <CardFooter className="flex justify-between bg-gray-50 border-t pt-4">
+              <Button variant="outline" onClick={this.handleGoHome}>
+                กลับหน้าหลัก
+              </Button>
+              <Button onClick={this.handleReload}>
+                ลองอีกครั้ง
+              </Button>
+            </CardFooter>
+          </Card>
         </div>
       );
     }

@@ -1,25 +1,13 @@
-import { Card } from "@/components/ui/card";
 import { ComplaintHeader } from "@/components/complaint/ComplaintHeader";
-import { WaterLevelInfo } from "@/components/complaint/WaterLevelInfo";
-import { SocialPostInfo } from "@/components/complaint/SocialPostInfo";
 import { useComplaint } from "@/hooks/useComplaint";
-import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Complaint } from "@/types/complaint";
 import { ComplaintDTO } from "@/dto/complaint.dto";
 import { toast } from "sonner";
 import { ProcessedPost } from "@/types/processed-post";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useState, useEffect, useCallback, useMemo, useRef, useTransition, Suspense } from "react";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast";
+import { useState, useEffect, useCallback, useMemo, useRef, Suspense } from "react";
 import { useAtom, useSetAtom } from 'jotai';
 import { 
   titleAtom, 
@@ -36,16 +24,28 @@ import {
 import { navigationStateAtom, navigateToStationCardEditAtom, resetNavigationStateAtom } from '@/atoms/navigationState';
 import { useComplaintData } from "@/atoms/hooks";
 import { useStationData } from "@/atoms/hooks";
-import { ArrowLeft, ArrowRight, AlertTriangle } from "lucide-react";
-import { ComplaintInfoCard, WaterLevelInfoCard, WaterManagementPlanCard } from "@/components/shared";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { 
+  ComplaintInfoCard, 
+  WaterManagementPlanCard,
+  OptimizedWaterLevelInfoCard
+} from "@/components/shared";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import logo1 from "@/assets/logo1.png";
-import logo2 from "@/assets/logo2.png";
-import { Link } from "react-router-dom";
 import { useLocation as useJotaiLocation } from '@/hooks/useLocation';
 import { handleError, parseError } from '@/utils/errorHandling';
 import { useLocation as useRouterLocation } from 'react-router-dom';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+
+// Define the interface for location data
+interface LocationData {
+  amphure?: string;
+  province?: string;
+  tumbon?: string;
+  dataType?: string;
+  amphureType?: string;
+  provinceType?: string;
+}
 
 // Create a FormComplaint type that extends Complaint with additional fields needed in the form
 // but overrides some fields to match ComplaintDTO schema
@@ -154,9 +154,6 @@ const ComplaintForm = () => {
   const complaintDataFromLocation = location.state as ProcessedPost | undefined;
   const { isLoading, complaint } = useComplaint(postId ? Number(postId) : undefined);
   
-  // Add isPending state for transitions
-  const [isPending, startTransition] = useTransition();
-  
   // Get complaint data from Jotai store
   const {
     title, 
@@ -166,9 +163,7 @@ const ComplaintForm = () => {
     updateLocation,
     updateCoordinates,
     updateProcessedPosts,
-    togglePostSelection,
     processedPosts,
-    selectedPostIds
   } = useComplaintData();
   
   // Get station data from Jotai
@@ -178,14 +173,12 @@ const ComplaintForm = () => {
   const locationState = useJotaiLocation();
   const { amphure, province } = locationState;
   
-  // Destructure the synchronization functions
+  // Destructure the synchronization functions 
+  // Some of these are used in rendered JSX or for data flow even if not directly referenced in the code
   const { 
     syncMonitoringStations, 
     syncRainStations, 
     syncReservoirs,
-    updateLocation: updateStationLocation,
-    currentAmphure,
-    currentProvince,
     userSelectedMonitoringStations,
     userSelectedRainStations,
     userSelectedReservoirs,
@@ -229,14 +222,13 @@ const ComplaintForm = () => {
   }, [amphure, province, updateLocation, updateCoordinates]);
   
   // State to track if we're returning from StationCardEdit
-  const [returnedFromStationEdit, setReturnedFromStationEdit] = useState(false);
+  const [returnedFromStationEdit] = useState(false);
   
   // State for preserving data when returning from StationCardEdit
-  const [preservedData, setPreservedData] = useState<any>(null);
+  const [preservedData] = useState<any>(null);
   
-  // Ref to track if initial state restoration has been done
+  // Refs used for tracking state restoration and API calls
   const initialStateRestored = useRef(false);
-  // Ref to track if API call has been made
   const apiCallMade = useRef(false);
   
   // Initialize processed posts from Jotai store
@@ -354,7 +346,7 @@ const ComplaintForm = () => {
   const lastProcessedEditSessionRef = useRef(0);
   
   // Get navigation state from Jotai
-  const [navigationState, setNavigationState] = useAtom(navigationStateAtom);
+  const [navigationState] = useAtom(navigationStateAtom);
   const navigateToStationCardEdit = useSetAtom(navigateToStationCardEditAtom);
   const resetNavigationState = useSetAtom(resetNavigationStateAtom);
   
@@ -390,7 +382,8 @@ const ComplaintForm = () => {
     resetNavigationState
   ]);
 
-  // Add a function to refresh station data
+  // Define the refreshStationData function - currently only referenced in operation names
+  // but kept for future use and debugging
   const refreshStationData = useCallback(async () => {
     console.log('[ComplaintForm] Refreshing station data');
     
@@ -483,20 +476,26 @@ const ComplaintForm = () => {
     toast
   ]);
 
-  // Debug location data
+  // Use the safeExtractLocation function when processing data
   useEffect(() => {
-    const currentData = preservedData || complaint || complaintDataFromLocation;
-    console.log('[ComplaintForm] Current complaint data:', currentData);
-    
-    if (currentData) {
-      const locationData = convertToComplaintFormat(currentData);
-      console.log('[ComplaintForm] Location data extracted:', {
-        amphure: locationData.amphure,
-        province: locationData.province,
-        tumbon: locationData.tumbon
-      });
+    if (complaint) {
+      const locationData = safeExtractLocation(complaint);
+      console.log("[ComplaintForm] Extracted location from complaint data:", locationData);
+      
+      if (locationData.amphure || locationData.province) {
+        // Use locationState to update location
+        if (locationState.updateLocationData) {
+          locationState.updateLocationData(
+            locationData.amphure || '',
+            locationData.province || ''
+          );
+        }
+        
+        // Also update the complaint form location display
+        updateLocation(`${locationData.amphure || ''}, ${locationData.province || ''}`.trim());
+      }
     }
-  }, [preservedData, complaint, complaintDataFromLocation]);
+  }, [complaint, locationState, updateLocation]);
 
   // Add a useEffect to ensure location data is always set
   useEffect(() => {
@@ -766,6 +765,45 @@ const ComplaintForm = () => {
     toast.success('บันทึกข้อมูลสถานีสำเร็จ');
   };
 
+  // Extract location data safely from any API response format
+  const safeExtractLocation = (data: any): {amphure?: string, province?: string} => {
+    if (!data) return {};
+    
+    try {
+      // Handle multiple possible response formats
+      
+      // Format 1: data.location object
+      if (data.location && typeof data.location === 'object') {
+        return {
+          amphure: data.location.amphure,
+          province: data.location.province
+        };
+      }
+      
+      // Format 2: direct properties
+      if (data.amphure || data.province) {
+        return {
+          amphure: data.amphure,
+          province: data.province
+        };
+      }
+      
+      // Format 3: nested content.location
+      if (data.content && data.content.location && typeof data.content.location === 'object') {
+        return {
+          amphure: data.content.location.amphure,
+          province: data.content.location.province
+        };
+      }
+      
+      console.log("[ComplaintForm] Could not extract location from data:", data);
+      return {};
+    } catch (error) {
+      console.error("[ComplaintForm] Error extracting location:", error);
+      return {};
+    }
+  };
+  
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -907,19 +945,22 @@ const ComplaintForm = () => {
 
   // Render the WaterLevelInfoCard component
   const renderWaterLevelInfoCard = () => {
-    // Use location data from Jotai state
+    // Get the location data from state
     const locationInfo = {
       amphure: amphure || '',
       province: province || ''
     };
     
-    console.log('[ComplaintForm] Rendering WaterLevelInfoCard with location:', locationInfo);
+    console.log('[ComplaintForm] Rendering OptimizedWaterLevelInfoCard with location:', locationInfo);
     
-    // Pass the location data to the WaterLevelInfoCard component
     return (
-      <WaterLevelInfoCard
-        location={locationInfo}
-      />
+      <div className="mb-6">
+        <OptimizedWaterLevelInfoCard 
+          title="ข้อมูลสถานีตรวจวัดน้ำ"
+          location={locationInfo}
+          disableAutoRefetch={true} // Disable automatic refetching in the ComplaintForm
+        />
+      </div>
     );
   };
 

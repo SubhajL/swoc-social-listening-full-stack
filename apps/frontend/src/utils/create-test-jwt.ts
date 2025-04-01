@@ -5,10 +5,10 @@
  * Note: This is for development/testing only and should not be used in production.
  */
 
-// Simple base64url encoding function
+// Simple base64url encoding function for browser environment
 const base64url = (str: string): string => {
-  return Buffer.from(str)
-    .toString('base64')
+  // Use browser-native btoa instead of Node.js Buffer
+  return btoa(unescape(encodeURIComponent(str)))
     .replace(/=/g, '')
     .replace(/\+/g, '-')
     .replace(/\//g, '_');

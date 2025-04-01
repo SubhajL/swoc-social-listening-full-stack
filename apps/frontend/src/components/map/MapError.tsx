@@ -5,28 +5,32 @@ import { RefreshCw } from 'lucide-react';
 import { ApiConnectionError } from '@/components/ApiConnectionError';
 
 interface MapErrorProps {
-  error: Error | null;
+  error?: Error | null;
+  message?: string;
   onRetry?: () => void;
 }
 
-const MapError: React.FC<MapErrorProps> = ({ error, onRetry }) => {
+const MapError: React.FC<MapErrorProps> = ({ error, message, onRetry }) => {
   const [showError, setShowError] = useState(false);
 
   useEffect(() => {
-    if (error) {
+    if (error || message) {
       setShowError(true);
     }
-  }, [error]);
+  }, [error, message]);
 
-  if (!showError || !error) {
+  if (!showError) {
     return null;
   }
 
+  // Use the provided message or the error message
+  const errorMessage = message || (error?.message || 'เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุในการโหลดแผนที่');
+
   // Check if this is a network error
-  const isNetworkError = error.message?.includes('Network Error') || 
-                         error.message?.includes('Failed to fetch') ||
-                         error.message?.includes('NetworkError') ||
-                         error.message?.includes('ECONNREFUSED');
+  const isNetworkError = error?.message?.includes('Network Error') || 
+                         error?.message?.includes('Failed to fetch') ||
+                         error?.message?.includes('NetworkError') ||
+                         error?.message?.includes('ECONNREFUSED');
 
   // If it's a network error, show the API connection error component
   if (isNetworkError) {
@@ -49,7 +53,7 @@ const MapError: React.FC<MapErrorProps> = ({ error, onRetry }) => {
       <Alert variant="destructive" className="mb-4 max-w-md">
         <AlertTitle>เกิดข้อผิดพลาดในการโหลดแผนที่</AlertTitle>
         <AlertDescription className="mt-2">
-          <p className="text-sm mb-4">{error.message || 'เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุในการโหลดแผนที่'}</p>
+          <p className="text-sm mb-4">{errorMessage}</p>
           {onRetry && (
             <Button
               variant="outline"

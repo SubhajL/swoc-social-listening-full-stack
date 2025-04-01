@@ -158,6 +158,9 @@ export function useStationManagement() {
     syncReservoirs
   };
   
+  // Create a ref to track previous location
+  const prevLocationKeyRef = useRef('');
+  
   // Memoize the keys of disabled stations for dependency tracking
   const disabledMonitoringKeys = useMemo(() => 
     Object.keys(disabledMonitoring), [disabledMonitoring]);
@@ -477,7 +480,19 @@ export function useStationManagement() {
     const normalizedAmphure = amphure || '';
     const normalizedProvince = province || '';
     
-    // Check if we actually need to update
+    // Track if we've already processed this exact location combination (with === comparison)
+    const locationKey = `${normalizedAmphure}:${normalizedProvince}`;
+    
+    // Skip if it's exactly the same location we already processed
+    if (prevLocationKeyRef.current === locationKey) {
+      console.log('[useStationManagement] Exact same location already processed, skipping update');
+      return;
+    }
+    
+    // Update the ref to the current location
+    prevLocationKeyRef.current = locationKey;
+    
+    // Check if we actually need to update (allows for different objects with same string value)
     if (normalizedAmphure === currentAmphure && normalizedProvince === currentProvince) {
       console.log('[useStationManagement] Location unchanged, skipping update');
       return;
@@ -498,21 +513,54 @@ export function useStationManagement() {
       locationChanged = true;
     }
     
+    // Debug log to show URL encoded parameters
+    console.log('[useStationManagement] URL encoded parameters:', {
+      amphure: encodeURIComponent(normalizedAmphure),
+      province: encodeURIComponent(normalizedProvince)
+    });
+    
     // Force a refetch if location changed
     if (locationChanged) {
       console.log('[useStationManagement] Location changed, triggering refetch');
       
-      // Use a small timeout to ensure the location update has been processed
-      setTimeout(() => {
+      // Clear any existing errors before fetching
+      setMonitoringError(null);
+      setRainError(null);
+      setReservoirsError(null);
+      
+      // Debounce the API calls to prevent rapid successive requests
+      const timeoutRef = setTimeout(() => {
         // Trigger refetch by calling sync functions
-        syncFunctionsRef.current.syncMonitoring();
-        syncFunctionsRef.current.syncRain();
-        syncFunctionsRef.current.syncReservoirs();
-        
-        console.log('[useStationManagement] Refetch triggered for all station types');
-      }, 50);
+        Promise.all([
+          Promise.resolve(syncFunctionsRef.current.syncMonitoring()).catch(err => {
+            console.warn('[useStationManagement] Error syncing monitoring stations:', err);
+            return null;
+          }),
+          Promise.resolve(syncFunctionsRef.current.syncRain()).catch(err => {
+            console.warn('[useStationManagement] Error syncing rain stations:', err);
+            return null;
+          }),
+          Promise.resolve(syncFunctionsRef.current.syncReservoirs()).catch(err => {
+            console.warn('[useStationManagement] Error syncing reservoirs:', err);
+            return null;
+          })
+        ]).then(() => {
+          console.log('[useStationManagement] Refetch completed for all station types');
+        });
+      }, 100); // Small delay to debounce and ensure state updates are processed
+      
+      // Cleanup function to cancel timeout if component unmounts or function is called again
+      return () => clearTimeout(timeoutRef);
     }
-  }, [currentAmphure, currentProvince, setCurrentAmphure, setCurrentProvince]);
+  }, [
+    currentAmphure, 
+    currentProvince, 
+    setCurrentAmphure, 
+    setCurrentProvince, 
+    setMonitoringError,
+    setRainError,
+    setReservoirsError
+  ]);
   
   // Function to enter edit mode and save the original state
   const enterEditMode = useCallback(() => {
